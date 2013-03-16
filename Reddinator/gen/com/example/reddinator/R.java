@@ -9,8 +9,8 @@ package com.example.reddinator;
 
 public final class R {
     public static final class array {
-        public static final int listOptions=0x7f050000;
-        public static final int listValues=0x7f050001;
+        public static final int entries_list_preference=0x7f050000;
+        public static final int entryvalues_list_preference=0x7f050001;
     }
     public static final class attr {
     }
@@ -64,7 +64,11 @@ public final class R {
         public static final int AppTheme=0x7f070001;
     }
     public static final class xml {
-        public static final int app_widget_provider_info=0x7f040000;
-        public static final int prefs=0x7f040001;
+        public static final int advanced_preferences=0x7f040000;
+        public static final int app_widget_provider_info=0x7f040001;
+        public static final int fragmented_preferences=0x7f040002;
+        public static final int fragmented_preferences_inner=0x7f040003;
+        public static final int preference_dependencies=0x7f040004;
+        public static final int preference_headers=0x7f040005;
     }
 }

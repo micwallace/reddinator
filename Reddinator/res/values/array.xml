@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <string-array name="entries_list_preference">
+     <item>Option 1</item>
+     <item>Option 2</item>
+     <item>Option 3</item>
+     </string-array>
+ 
+   <string-array name="entryvalues_list_preference">
+     <item>1 is selected</item>
+     <item>2 is selected</item>
+     <item>3 is selected</item>
+   </string-array>
+ </resources>
