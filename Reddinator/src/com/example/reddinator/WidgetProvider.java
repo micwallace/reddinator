@@ -14,12 +14,14 @@ import android.widget.RemoteViews;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
+	public static String EXTRA_WORD = ""; // i have no idea what the fuck this is for but we need it for a working demo
 	private static final String ACTION_CLICK = "ACTION_CLICK_WIDGET";
 	public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
 	public static String ACTION_WIDGET_CLICK_REFRESH = "Action_refresh";
 	public WidgetProvider() {
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
@@ -28,15 +30,22 @@ public class WidgetProvider extends AppWidgetProvider {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
-
+            // setup the setting button click intent
             Intent intent = new Intent(context, PrefsActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             // Make the pending intent unique...
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+            // setup list view adaptor
+            Intent intent2 = new Intent(context, Rservice.class);
+            // Add the app widget ID to the intent extras.
+            intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            intent2.setData(Uri.parse(intent2.toUri(Intent.URI_INTENT_SCHEME)));
+            
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
+            // This is how you populate the data.
+            views.setRemoteAdapter(appWidgetIds[i], R.id.listview, intent2);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId,views);
