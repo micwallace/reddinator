@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
+    android:background="#FFFFFF"
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="152dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:contentDescription="Hey" />
+        android:layout_height="49dp"
+        android:layout_alignParentTop="true"
+        android:clickable="false" >
 
         <ProgressBar
             android:id="@+id/progressBar1"
@@ -26,18 +21,20 @@
             android:layout_alignParentTop="true" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/prefsbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/progressBar1"
-            android:text="Button" />
+            android:text="Settings"   
+            />
 
     </RelativeLayout>
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-    </ListView>
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/RelativeLayout1" >
 
-</LinearLayout>
+    </ListView>
+</RelativeLayout>

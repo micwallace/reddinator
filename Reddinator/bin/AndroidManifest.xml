@@ -33,6 +33,7 @@
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
+                <action android:name="com.example.redinator.WidgetProvider.ACTION_CLICK" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
