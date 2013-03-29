@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
-	public static String EXTRA_WORD = ""; // i have no idea what the fuck this is for but we need it for a working demo
+	public static String EXTRA_WORD = "com.example.reddinator.WORD"; // i have no idea what the fuck this is for but we need it for a working demo
 	private static final String ACTION_CLICK = "ACTION_CLICK_WIDGET";
 	public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
 	public static String ACTION_WIDGET_CLICK_REFRESH = "Action_refresh";
@@ -44,14 +44,16 @@ public class WidgetProvider extends AppWidgetProvider {
             intent2.setData(Uri.parse(intent2.toUri(Intent.URI_INTENT_SCHEME)));
             
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
+            
+            views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             // This is how you populate the data.
             views.setRemoteAdapter(appWidgetIds[i], R.id.listview, intent2);
-            views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             // Tell the AppWidgetManager to perform an update on the current app widget
-            appWidgetManager.updateAppWidget(appWidgetId,views);
-            //System.out.println("onUpdate() fires!");
+            appWidgetManager.updateAppWidget(appWidgetId , views);
+            //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.listview);
+            System.out.println("onUpdate() fires!");
         }
-
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 
 	@Override
@@ -80,24 +82,20 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onEnabled(Context context) {
 		AppWidgetManager mgr = AppWidgetManager.getInstance(context); 
-        //retrieve a ref to the manager so we can pass a view update 
-
+        //retrieve a ref to the manager so we can pass a view update
         Intent i = new Intent(); 
         i.setClassName("com.example.reddinator", "com.example.reddinator.PrefsActivity"); 
         PendingIntent myPI = PendingIntent.getService(context, 0, i, 0); 
-        //intent to start service 
-
-      // Get the layout for the App Widget 
-      RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain); 
-
-      //attach the click listener for the service start command intent 
-      views.setOnClickPendingIntent(R.id.prefsbutton, myPI); 
-
-      //define the componenet for self 
-      ComponentName comp = new ComponentName(context.getPackageName(), PrefsActivity.class.getName()); 
-
-      //tell the manager to update all instances of the toggle widget with the click listener 
-      mgr.updateAppWidget(comp, views); 
+        // Get the layout for the App Widget 
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain); 
+        //attach the click listener for the service start command intent 
+        views.setOnClickPendingIntent(R.id.prefsbutton, myPI); 
+        //define the componenet for self 
+        ComponentName comp = new ComponentName(context.getPackageName(), PrefsActivity.class.getName()); 
+        //tell the manager to update all instances of the widget with the click listener 
+        mgr.updateAppWidget(comp, views);
+        
+        super.onEnabled(context);
 	}
 
 	@Override
