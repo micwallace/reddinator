@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/srtoolbar"
         android:layout_width="fill_parent"
-        android:layout_height="30dip"
+        android:layout_height="40dip"
         android:layout_alignParentTop="true" >
 
 		<TextView
@@ -18,7 +18,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/srlist"
+        android:id="@android:id/list"
         android:layout_below="@+id/srtoolbar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >

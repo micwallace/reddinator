@@ -1,15 +1,17 @@
 package com.example.reddinator;
 
 
-import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -81,7 +83,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			e.printStackTrace();
 		}
 		RemoteViews row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
-
 		row.setTextViewText(R.id.text1, name);
 		row.setTextViewText(R.id.sourcetxt, domain);
 		Intent i = new Intent();
@@ -116,9 +117,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onDataSetChanged() {
 		// refresh data
-		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+		String curfeed = prefs.getString("currentfeed", "technology");
 		try {
-			data = rdata.getJSONFromUrl("technology", "hot").getJSONObject("data").getJSONArray("children");
+			data = rdata.getJSONFromUrl(curfeed, "hot").getJSONObject("data").getJSONArray("children");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

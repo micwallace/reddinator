@@ -21,7 +21,10 @@
         		<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
     		</intent-filter>
         </activity>
-
+		<activity
+            android:name="com.example.reddinator.SubredditSelect"
+            android:label="@string/app_name" >
+        </activity>
         <service
             android:name="com.example.reddinator.Rservice"
             android:enabled="true"
