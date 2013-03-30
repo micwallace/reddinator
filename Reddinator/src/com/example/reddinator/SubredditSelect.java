@@ -9,7 +9,7 @@ public class SubredditSelect extends Activity {
 	void onCreate(){
 		setContentView(R.layout.selectsubreddit);
 		// add predefined subreddits to arraylist (will load saved/personal subreddits later)
-		sreddit = new ArrayList();
+		sreddits = new ArrayList();
 	}
 	
 }
