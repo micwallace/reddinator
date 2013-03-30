@@ -38,9 +38,14 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent intent = new Intent(context, PrefsActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // Make the pending intent unique...
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // Subreddit BUTTON
+            Intent srintent = new Intent(context, SubredditSelect.class);
+            srintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
+            srintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            srintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // REMOTE DATA
             Intent intent2 = new Intent(context, Rservice.class);
             // Add the app widget ID to the intent extras.
@@ -60,6 +65,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // ADD ALL TO REMOTE VIEWS
             views.setPendingIntentTemplate(R.id.listview, clickPI);
+            views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             // This is how you populate the data.

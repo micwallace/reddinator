@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:orientation="vertical" >
-    
-	<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hello world" />
+
+    <RelativeLayout
+        android:id="@+id/srtoolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_alignParentTop="true" >
+
+		<TextView
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="put editing buttons here.." />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/srlist"
+        android:layout_below="@+id/srtoolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+        
+    </ListView>
 </RelativeLayout>
