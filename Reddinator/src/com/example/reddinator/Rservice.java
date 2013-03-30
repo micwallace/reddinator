@@ -68,9 +68,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 		String name = "";
 		String url = "";
+		String domain = "";
+		String id = "";
 		try {
 			JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
 			name = tempobj.getString("title");
+			domain = tempobj.getString("domain");
+			id = tempobj.getString("id");
 			url =  tempobj.getString("url");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -78,14 +82,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		RemoteViews row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 
-		row.setTextViewText(android.R.id.text1, name);
-
+		row.setTextViewText(R.id.text1, name);
+		row.setTextViewText(R.id.sourcetxt, domain);
 		Intent i = new Intent();
 		Bundle extras = new Bundle();
 		extras.putString(WidgetProvider.ITEM_URL, url);
 		i.putExtras(extras);
-		row.setOnClickFillInIntent(android.R.id.text1, i);
-		System.out.println("getViewAt() firing!");
+		row.setOnClickFillInIntent(R.id.listrow, i);
+		//System.out.println("getViewAt() firing!");
 		return (row);
 	}
 
@@ -112,6 +116,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onDataSetChanged() {
 		// refresh data
+		
 		try {
 			data = rdata.getJSONFromUrl("technology", "hot").getJSONObject("data").getJSONArray("children");
 		} catch (JSONException e) {
