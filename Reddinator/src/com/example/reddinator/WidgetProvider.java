@@ -20,10 +20,8 @@ import android.widget.RemoteViews.RemoteView;
 public class WidgetProvider extends AppWidgetProvider {
 	public static String ITEM_URL = "ITEM_URL";
 	public static String ITEM_CLICK = "ITEM_CLICK";
-	private static final String ACTION_CLICK = "ACTION_CLICK_WIDGET";
 	public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
-	public static String APPWIDGET_UPDATE = "Action_update";
-	public static String UPDATE_COMPLETE = "Action_update";
+	public static String APPWIDGET_UPDATE = "APPWIDGET_UPDATE_FEED";
 	public WidgetProvider() {
 	}
 
@@ -57,8 +55,9 @@ public class WidgetProvider extends AppWidgetProvider {
             // REFRESH BUTTON
             Intent irefresh = new Intent(context, WidgetProvider.class);
             irefresh.setAction(APPWIDGET_UPDATE);
+            irefresh.setPackage(context.getPackageName());
             irefresh.putExtra("id", appWidgetId);
-            PendingIntent rpIntent = PendingIntent.getBroadcast(context, 0, irefresh, 0);
+            PendingIntent rpIntent = PendingIntent.getBroadcast(context, 0, irefresh, PendingIntent.FLAG_UPDATE_CURRENT);
             // ITEM CLICK
             Intent clickintent = new Intent(context, WidgetProvider.class);
             clickintent.setAction(ITEM_CLICK);
@@ -83,8 +82,11 @@ public class WidgetProvider extends AppWidgetProvider {
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
-
-
+	// config activity not firing update, this is a workaround
+	/*public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int mAppWidgetId){
+		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
+		appWidgetManager.updateAppWidget(mAppWidgetId, views);
+	}*/
 	@Override
 	public void onAppWidgetOptionsChanged(Context context,
 			AppWidgetManager appWidgetManager, int appWidgetId,
@@ -117,7 +119,13 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (intent.getAction().equals(APPWIDGET_UPDATE)) {
 			int id = intent.getExtras().getInt("id");
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+			// show loader
+			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+			views.setViewVisibility(R.id.srloader, View.VISIBLE);
+			//views.setViewVisibility(R.id.refreshbutton, View.GONE);
+			mgr.partiallyUpdateAppWidget(id, views);
 			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);
+			System.out.println("updating feed");
 		}
 		if (intent.getAction().equals(ITEM_CLICK)) {
 			String url = intent.getStringExtra(ITEM_URL);
@@ -125,10 +133,10 @@ public class WidgetProvider extends AppWidgetProvider {
 			clickintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(clickintent);
 		}
+		if (intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+			System.out.println("execute firsttime startup");
+		}
 		System.out.println("broadcast received: "+intent.getAction().toString());
-		/*if (intent.getAction().equals(UPDATE_COMPLETE)) {
-			System.out.println("wiget update complete");
-		}*/
-         super.onReceive(context, intent);
+        super.onReceive(context, intent);
 	}
 }

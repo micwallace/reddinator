@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -41,13 +42,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy); 
 		rdata = new RedditData();
-			data = rdata.getRedditFeed("technology", "hot");
-		/*try {
-			System.out.print(data.get(0).toString());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+		String curfeed = prefs.getString("currentfeed", "technology");
+		data = rdata.getRedditFeed(curfeed, "hot");
+		//System.out.println("Service started");
 	}
 
 	@Override
@@ -114,5 +112,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
 		data = rdata.getRedditFeed(curfeed, "hot");
+		// hide loader
+		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
+		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
+		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
+		views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
+		mgr.partiallyUpdateAppWidget(appWidgetId, views);
 	}
 }

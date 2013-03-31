@@ -37,15 +37,16 @@ public class PrefsActivity extends PreferenceActivity {
 	}
 	public void onBackPressed(){
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-		RemoteViews views = new RemoteViews(this.getPackageName(),
-				R.layout.widgetmain);
-				appWidgetManager.updateAppWidget(mAppWidgetId, views);
-				Intent resultValue = new Intent();
-				resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-				setResult(RESULT_OK, resultValue);
-				finish();
+		RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widgetmain);
+		appWidgetManager.updateAppWidget(mAppWidgetId, views);
+		//appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+		//WidgetProvider.updateAppWidget(this, appWidgetManager, mAppWidgetId);
+		Intent resultValue = new Intent();
+		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+		setResult(RESULT_OK, resultValue);
+		finish();
 	}
-
+	
 	/**
 	 * Populate the activity with the top-level headers.
 	 */

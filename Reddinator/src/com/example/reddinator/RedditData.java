@@ -28,7 +28,7 @@ public class RedditData {
 	}
 	public JSONArray getSubreddits(){
 		JSONArray sreddits = new JSONArray();
-		String url = "http://www.reddit.com/subreddits/popular.json";
+		String url = "http://www.reddit.com/subreddits/popular.json?limit=50";
 		try {
 			sreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
 		} catch (JSONException e) {
