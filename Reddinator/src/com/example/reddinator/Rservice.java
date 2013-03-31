@@ -41,13 +41,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy); 
 		rdata = new RedditData();
-		try {
-			data = rdata.getJSONFromUrl("technology", "hot").getJSONObject("data").getJSONArray("children");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			data = new JSONArray();
-		}
+			data = rdata.getRedditFeed("technology", "hot");
 		/*try {
 			System.out.print(data.get(0).toString());
 		} catch (JSONException e) {
@@ -119,12 +113,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// refresh data
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
-		try {
-			data = rdata.getJSONFromUrl(curfeed, "hot").getJSONObject("data").getJSONArray("children");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			data = new JSONArray();
-		}
+		data = rdata.getRedditFeed(curfeed, "hot");
 	}
 }

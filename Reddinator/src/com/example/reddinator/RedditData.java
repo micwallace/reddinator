@@ -13,6 +13,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,8 +26,30 @@ public class RedditData {
 	RedditData(){
 		
 	}
-	public JSONObject getJSONFromUrl(String subreddit, String sort) {
-		 String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json";
+	public JSONArray getSubreddits(){
+		JSONArray sreddits = new JSONArray();
+		String url = "http://www.reddit.com/subreddits/popular.json";
+		try {
+			sreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sreddits;
+	}
+	public JSONArray getRedditFeed(String subreddit, String sort){
+		String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json";
+		JSONArray feed = new JSONArray();
+		try {
+			feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return feed;
+	}
+	private JSONObject getJSONFromUrl(String url) {
+		 
         // Making HTTP request
         try {
             // defaultHttpClient
