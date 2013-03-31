@@ -7,9 +7,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViews.RemoteView;
@@ -68,6 +70,10 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
+            // set current feed title
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    		String curfeed = prefs.getString("currentfeed", "technology");
+    		views.setTextViewText(R.id.subreddittxt, curfeed);
             // This is how you populate the data.
             views.setRemoteAdapter(appWidgetIds[i], R.id.listview, intent2);
             // Tell the AppWidgetManager to perform an update on the current app widget
