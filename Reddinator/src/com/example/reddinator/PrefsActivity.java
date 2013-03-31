@@ -36,8 +36,8 @@ public class PrefsActivity extends PreferenceActivity {
 		}
 	}
 	public void onBackPressed(){
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-		RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.widgetmain);
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
+		RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), R.layout.widgetmain);
 		appWidgetManager.updateAppWidget(mAppWidgetId, views);
 		//appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		//WidgetProvider.updateAppWidget(this, appWidgetManager, mAppWidgetId);
