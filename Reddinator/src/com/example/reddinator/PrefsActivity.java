@@ -27,6 +27,11 @@ public class PrefsActivity extends PreferenceActivity {
 			button.setText("Some action");
 			setListFooter(button);
 		}
+		
+	}
+	@Override
+	protected void onResume(){
+		super.onResume();
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
@@ -39,7 +44,7 @@ public class PrefsActivity extends PreferenceActivity {
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
 		RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), R.layout.widgetmain);
 		appWidgetManager.updateAppWidget(mAppWidgetId, views);
-		//appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+		appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		//WidgetProvider.updateAppWidget(this, appWidgetManager, mAppWidgetId);
 		Intent resultValue = new Intent();
 		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);

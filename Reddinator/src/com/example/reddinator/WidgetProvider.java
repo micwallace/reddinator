@@ -98,18 +98,19 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		// TODO Auto-generated method stub
 		super.onDeleted(context, appWidgetIds);
 	}
 
 	@Override
 	public void onDisabled(Context context) {
-		// TODO Auto-generated method stub
 		super.onDisabled(context);
 	}
 
 	@Override
 	public void onEnabled(Context context) {
+		Intent intent = new Intent();
+		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		context.sendBroadcast(intent);
         super.onEnabled(context);
 	}
 
@@ -134,7 +135,10 @@ public class WidgetProvider extends AppWidgetProvider {
 			context.startActivity(clickintent);
 		}
 		if (intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
-			System.out.println("execute firsttime startup");
+			/*int id = intent.getExtras().getInt("id");
+			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);*/
+			System.out.println("execute firsttime startup?");
 		}
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);

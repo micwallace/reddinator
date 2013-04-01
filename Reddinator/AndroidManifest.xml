@@ -42,8 +42,10 @@
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="com.example.redinator.WidgetProvider.ACTION_CLICK"></action>
+                <action android:name="com.example.redinator.WidgetProvider.ITEM_CLICK"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED"></action>
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED"></action>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info"/>
