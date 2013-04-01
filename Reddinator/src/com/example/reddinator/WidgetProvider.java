@@ -69,6 +69,7 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
+            views.setEmptyView(R.id.listview, R.id.empty_list_view);
             // set current feed title
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     		String curfeed = prefs.getString("currentfeed", "technology");

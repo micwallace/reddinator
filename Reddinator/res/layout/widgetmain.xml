@@ -82,4 +82,15 @@
         android:layout_below="@+id/RelativeLayout1" >
 
     </ListView>
+
+    <ImageView
+        android:id="@+id/empty_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/listview"
+        android:contentDescription="List view is empty"
+        android:scaleType="center"
+        android:src="@drawable/reddit_icon_small"
+        android:visibility="gone" />
+
 </RelativeLayout>

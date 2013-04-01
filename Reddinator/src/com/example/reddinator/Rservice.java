@@ -85,11 +85,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		extras.putString(WidgetProvider.ITEM_URL, url);
 		i.putExtras(extras);
 		row.setOnClickFillInIntent(R.id.listrow, i);
-		Intent i2 = new Intent(ctxt, ViewActivity.class);
+		Intent i2 = new Intent();
 		Bundle extras2 = new Bundle();
 		extras2.putString(WidgetProvider.ITEM_URL, "http://www.google.com.au");
 		i2.putExtras(extras);
-		row.setOnClickFillInIntent(R.id.votebox, i2);
+		row.setOnClickFillInIntent(R.id.imageView1, i2);
 		//System.out.println("getViewAt() firing!");
 		return (row);
 	}
