@@ -8,12 +8,33 @@
         android:id="@+id/srtoolbar"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:layout_alignParentTop="true" >
+        android:layout_alignParentTop="true"
+        android:background="#CEE3F8" >
 
-		<TextView
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:text="put editing buttons here.." />
+        <EditText
+            android:id="@+id/searchbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/searchbutton"
+            android:ems="10"
+            android:hint="Search" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageView
+            android:id="@+id/searchbutton"
+            android:onClick=""
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:src="@android:drawable/ic_menu_search" />
 
     </RelativeLayout>
 

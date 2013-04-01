@@ -43,7 +43,8 @@
 	    android:layout_height="wrap_content"
 	    android:layout_alignBottom="@+id/infbox"
 	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true" >
+	    android:layout_alignParentTop="true"
+	    android:clickable="true" >
 
 		<ImageView
 		    android:id="@+id/imageView1"
@@ -51,6 +52,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_centerHorizontal="true"
 		    android:layout_centerVertical="true"
+		    android:clickable="true"
 		    android:src="@android:drawable/ic_menu_edit" />
 
 	</RelativeLayout>

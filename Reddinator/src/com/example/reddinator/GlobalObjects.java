@@ -16,9 +16,11 @@ public class GlobalObjects extends Application {
 		return false;
 	}
 	public void putSrList(ArrayList<String> list){
-		srlist = list;
+		srlist.clear();
+		srlist.addAll(list);
 	}
 	public ArrayList<String> getSrList(){
+		System.out.println("Using cached subreddits");
 		return srlist;
 	}
 }

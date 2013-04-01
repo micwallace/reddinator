@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.Uri;
 import android.util.Log;
 
 public class RedditData {
@@ -29,6 +30,17 @@ public class RedditData {
 	public JSONArray getSubreddits(){
 		JSONArray sreddits = new JSONArray();
 		String url = "http://www.reddit.com/subreddits/popular.json?limit=50";
+		try {
+			sreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return sreddits;
+	}
+	public JSONArray getSubredditSearch(String query){
+		JSONArray sreddits = new JSONArray();
+		String url = "http://www.reddit.com/subreddits/search.json?q="+Uri.encode(query);
 		try {
 			sreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
 		} catch (JSONException e) {
@@ -88,7 +100,7 @@ public class RedditData {
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
-        System.out.println("Feed updated");
+        System.out.println("Download complete");
         // return JSON String
         return jObj;
  

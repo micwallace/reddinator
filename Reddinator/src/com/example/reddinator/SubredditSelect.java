@@ -56,6 +56,8 @@ public class SubredditSelect extends ListActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				String sreddit = ((TextView) view.findViewById(R.id.srname)).getText().toString();
+				// save list
+				savePersonalList();
 				// save preference
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelect.this);
 				Editor editor = prefs.edit();
