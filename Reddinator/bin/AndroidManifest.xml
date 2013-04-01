@@ -44,6 +44,7 @@
             <intent-filter>
                 <action android:name="com.example.redinator.WidgetProvider.ITEM_CLICK"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED"></action>
             </intent-filter>

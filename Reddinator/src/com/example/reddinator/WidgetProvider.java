@@ -91,33 +91,37 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onAppWidgetOptionsChanged(Context context,
 			AppWidgetManager appWidgetManager, int appWidgetId,
 			Bundle newOptions) {
-		// TODO Auto-generated method stub
+		System.out.println("onAppWidgetOptionsChanged fired");
+		this.onUpdate(context, appWidgetManager, new int[]{appWidgetId}); // fix for the widget not loading the second time round (adding to the homescreen)
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
 				newOptions);
 	}
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
+		System.out.println("onDeleted fired");
 		super.onDeleted(context, appWidgetIds);
 	}
 
 	@Override
 	public void onDisabled(Context context) {
+		System.out.println("onDisabled fired");
 		super.onDisabled(context);
 	}
 
 	@Override
 	public void onEnabled(Context context) {
-		Intent intent = new Intent();
+		System.out.println("onEnabled fired");
+		/*Intent intent = new Intent();
 		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		context.sendBroadcast(intent);
+		context.sendBroadcast(intent);*/
         super.onEnabled(context);
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
-		if (intent.getAction().equals(APPWIDGET_UPDATE)) {
+		String action = intent.getAction();
+		if (action.equals(APPWIDGET_UPDATE)) {
 			int id = intent.getExtras().getInt("id");
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			// show loader
@@ -128,18 +132,30 @@ public class WidgetProvider extends AppWidgetProvider {
 			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);
 			System.out.println("updating feed");
 		}
-		if (intent.getAction().equals(ITEM_CLICK)) {
+		if (action.equals(ITEM_CLICK)) {
 			String url = intent.getStringExtra(ITEM_URL);
 			Intent clickintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 			clickintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(clickintent);
 		}
-		if (intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
-			/*int id = intent.getExtras().getInt("id");
-			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+		if (action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+			//int id = intent.getExtras().getInt("id");
+			/*AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);*/
+			/*Intent initintent = new Intent();
+			initintent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+			initintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+			context.sendBroadcast(initintent);*/
 			System.out.println("execute firsttime startup?");
-		}
+		} 
+		
+		/*else if (AppWidgetManager.ACTION_APPWIDGET_ENABLED.equals(action)) {
+	        this.onEnabled(context);
+	    } else if (AppWidgetManager.ACTION_APPWIDGET_DISABLED.equals(action)) {
+	    	this.onDisabled(context);
+	    } else if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
+	        this.onDeleted(context, new int[]{intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)});
+	    }*/
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);
 	}
