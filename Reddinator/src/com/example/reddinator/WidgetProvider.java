@@ -140,6 +140,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			switch (clickpref){
 			case 1:
 				Intent clickintent1 = new Intent(context, ViewReddit.class);
+				clickintent1.putExtras(intent.getExtras());
 				clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent1);
 				break;

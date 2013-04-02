@@ -54,8 +54,11 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     /** (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
+    private Bundle clickbundle;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // get intent
+        //clickbundle = getIntent().getExtras();
         // Step 1: Inflate layout
         setContentView(R.layout.viewreddit);
         // Step 2: Setup TabHost
@@ -101,7 +104,6 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         // Attach a Tab view factory to the spec
         tabSpec.setContent(activity.new TabFactory(activity));
         String tag = tabSpec.getTag();
- 
         // Check to see if we already have a fragment for this tab, probably
         // from a previously saved state.  If so, deactivate it, because our
         // initial state is that a tab isn't shown.
