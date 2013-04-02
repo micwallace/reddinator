@@ -134,10 +134,28 @@ public class WidgetProvider extends AppWidgetProvider {
 			System.out.println("updating feed");
 		}
 		if (action.equals(ITEM_CLICK)) {
-			String url = intent.getStringExtra(ITEM_URL);
-			Intent clickintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-			clickintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(clickintent);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			String clickprefst = prefs.getString("onclickpref", "1");
+			int clickpref = Integer.valueOf(clickprefst);
+			switch (clickpref){
+			case 1:
+				Intent clickintent1 = new Intent(context, ViewReddit.class);
+				clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(clickintent1);
+				break;
+			case 2:
+				String url = intent.getStringExtra(ITEM_URL);
+				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(clickintent2);
+				break;
+			case 3:
+				Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com.au"));
+				clickintent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(clickintent3);
+				break;
+			}
+			
 		}
 		if (action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
 			//int id = intent.getExtras().getInt("id");

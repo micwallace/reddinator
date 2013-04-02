@@ -78,24 +78,20 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			e.printStackTrace();
 		}
 		RemoteViews row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
-		row.setTextViewText(R.id.text1, name);
+		row.setTextViewText(R.id.listheading, name);
 		row.setTextViewText(R.id.sourcetxt, domain);
 		Intent i = new Intent();
 		Bundle extras = new Bundle();
 		extras.putString(WidgetProvider.ITEM_URL, url);
 		i.putExtras(extras);
 		row.setOnClickFillInIntent(R.id.listrow, i);
-		Intent i2 = new Intent();
-		Bundle extras2 = new Bundle();
-		extras2.putString(WidgetProvider.ITEM_URL, "http://www.google.com.au");
-		i2.putExtras(extras);
-		row.setOnClickFillInIntent(R.id.imageView1, i2);
 		//System.out.println("getViewAt() firing!");
 		return (row);
 	}
 	@Override
 	public RemoteViews getLoadingView() {
-		return (null);
+		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(), R.layout.listrowload);
+		return rowload;
 	}
 
 	@Override
