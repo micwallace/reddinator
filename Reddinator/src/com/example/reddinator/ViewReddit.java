@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.Window;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
@@ -54,12 +55,14 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     /** (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
-    private Bundle clickbundle;
+    //private Bundle clickbundle;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // get intent
         //clickbundle = getIntent().getExtras();
         // Step 1: Inflate layout
+        // request loading bar first
+        getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.viewreddit);
         // Step 2: Setup TabHost
         initialiseTabHost(savedInstanceState);

@@ -19,6 +19,10 @@ import android.widget.RemoteViews.RemoteView;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
 	public static String ITEM_URL = "ITEM_URL";
+	public static String ITEM_TXT = "ITEM_TXT";
+	public static String ITEM_ID = "ITEM_ID";
+	public static String ITEM_VOTES = "ITEM_VOTES";
+	public static String ITEM_DOMAIN = "ITEM_DOMAIN";
 	public static String ITEM_CLICK = "ITEM_CLICK";
 	public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
 	public static String APPWIDGET_UPDATE = "APPWIDGET_UPDATE_FEED";

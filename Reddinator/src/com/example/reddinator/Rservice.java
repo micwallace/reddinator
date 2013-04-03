@@ -67,12 +67,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		String url = "";
 		String domain = "";
 		String id = "";
+		int score = 0;
 		try {
 			JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
 			name = tempobj.getString("title");
 			domain = tempobj.getString("domain");
 			id = tempobj.getString("id");
 			url =  tempobj.getString("url");
+			score = tempobj.getInt("score");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,6 +85,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		Intent i = new Intent();
 		Bundle extras = new Bundle();
 		extras.putString(WidgetProvider.ITEM_URL, url);
+		extras.putString(WidgetProvider.ITEM_TXT, name);
+		extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
+		extras.putInt(WidgetProvider.ITEM_VOTES, score);
 		i.putExtras(extras);
 		row.setOnClickFillInIntent(R.id.listrow, i);
 		//System.out.println("getViewAt() firing!");

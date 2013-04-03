@@ -1,11 +1,12 @@
 package com.example.reddinator;
 
-import android.net.Uri;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,9 +18,9 @@ public class TabWebFragment extends Fragment {
      */
 	private WebView wv;
 	private boolean firsttime = true;
-	LinearLayout ll;
-	Bundle WVState;
-	String url;
+	private LinearLayout ll;
+	private Bundle WVState;
+	private String url;
 	public void onCreated(Bundle savedInstanceState){
 		this.setRetainInstance(true);
 		
@@ -28,18 +29,37 @@ public class TabWebFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
        super.onActivityCreated(savedInstanceState);
        wv.restoreState(savedInstanceState);
+       
     }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+    	
 		System.out.println("URL is: "+url);
     		WVState = savedInstanceState;	
         if (firsttime){
+        	final Activity act = this.getActivity();
+        	act.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
         	wv = (WebView) ll.findViewById(R.id.webView1);
         	//wv = new WebView(this.getActivity().getApplicationContext());
         	wv.getSettings().setJavaScriptEnabled(true);
-        	wv.setWebChromeClient(new WebChromeClient());
+        	wv.getSettings().setSupportZoom(true);
+        	wv.getSettings().setBuiltInZoomControls(true);
+        	wv.getSettings().setDisplayZoomControls(true);
+        	wv.setWebChromeClient(new WebChromeClient(){
+                public void onProgressChanged(WebView view, int progress)   
+                {
+                 //Make the bar disappear after URL is loaded, and changes string to Loading...
+                act.setTitle("Loading...");
+                act.setProgress(progress * 100); //Make the bar disappear after URL is loaded
+
+                 // Return the app name after finish loading
+                    if(progress == 100){
+                    	act.setTitle(R.string.app_name);
+                  	}
+                }
+        	});
         	wv.setWebViewClient(new WebViewClient());
         	wv.loadUrl(url);
         	firsttime = false;

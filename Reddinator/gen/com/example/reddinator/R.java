@@ -19,27 +19,37 @@ public final class R {
         public static final int reddit_icon_small=0x7f020001;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f09000c;
+        public static final int RelativeLayout1=0x7f090016;
         public static final int addsrbutton=0x7f090007;
-        public static final int empty_list_view=0x7f090013;
-        public static final int imageView1=0x7f090011;
+        public static final int commentsheader=0x7f09000f;
+        public static final int downvotebtn=0x7f09000e;
+        public static final int empty_list_view=0x7f09001d;
+        public static final int imageView1=0x7f09001b;
         public static final int infbox=0x7f090002;
         public static final int listheading=0x7f090001;
         public static final int listrow=0x7f090000;
-        public static final int listview=0x7f090012;
-        public static final int menu_settings=0x7f090014;
-        public static final int prefsbutton=0x7f09000d;
+        public static final int listview=0x7f09001c;
+        public static final int menu_settings=0x7f09001e;
+        public static final int posttext=0x7f09000a;
+        public static final int prefsbutton=0x7f090017;
         public static final int realtabcontent=0x01010000;
-        public static final int refreshbutton=0x7f09000e;
-        public static final int searchbox=0x7f09000a;
-        public static final int searchbutton=0x7f09000b;
+        public static final int refreshbutton=0x7f090018;
+        public static final int searchbox=0x7f090014;
+        public static final int searchbutton=0x7f090015;
         public static final int sourcetxt=0x7f090003;
         public static final int srdeletebtn=0x7f090005;
-        public static final int srloader=0x7f09000f;
+        public static final int srloader=0x7f090019;
         public static final int srname=0x7f090004;
         public static final int srtoolbar=0x7f090006;
-        public static final int subreddittxt=0x7f090010;
+        public static final int subreddittxt=0x7f09001a;
+        public static final int tableRow1=0x7f090010;
+        public static final int tableRow2=0x7f090011;
+        public static final int tableRow3=0x7f090012;
+        public static final int tableRow4=0x7f090013;
         public static final int textView1=0x7f090008;
+        public static final int upvotebtn=0x7f09000c;
+        public static final int votebox=0x7f09000b;
+        public static final int votestext=0x7f09000d;
         public static final int webView1=0x7f090009;
     }
     public static final class layout {
