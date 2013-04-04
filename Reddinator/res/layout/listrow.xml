@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/listrow"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
 
 <TextView
     android:id="@+id/listheading"
@@ -13,18 +13,18 @@
     android:minHeight="50dip"
     android:paddingLeft="6dip"
     android:paddingRight="10dp"
-    android:paddingTop="1dip"
+    android:paddingTop="4dip"
     android:textAppearance="?android:attr/textAppearanceSmall"
-    android:textColor="#000000" />
+    android:textColor="#000000"
+    android:textSize="16sp" />
 
 <RelativeLayout
     android:id="@+id/infbox"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
-    android:layout_alignRight="@+id/listheading"
     android:layout_below="@+id/listheading"
-    android:paddingBottom="2dip"
+    android:paddingBottom="4dip"
     android:paddingLeft="6dip"
     android:paddingTop="1dip" >
 
@@ -32,8 +32,48 @@
         android:id="@+id/sourcetxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:text="domain.com"
+        android:textColor="#336699" />
+	
+    <ImageView
+        android:id="@+id/icon1"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/votestxt"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/star_off" />
+    
+    <TextView
+        android:id="@+id/votestxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/icon2"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="6dp"
         android:textColor="#336699" />
 
+    <ImageView
+        android:id="@+id/icon2"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/commentstxt"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/sym_action_chat" />
+    
+    <TextView
+        android:id="@+id/commentstxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="10dp"
+        android:textColor="#336699" />
 </RelativeLayout>
 
 	<RelativeLayout
@@ -43,4 +83,5 @@
 	    android:background="#D7D7D7" >
 
 	</RelativeLayout>
+
 </RelativeLayout>

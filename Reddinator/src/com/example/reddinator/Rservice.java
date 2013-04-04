@@ -69,6 +69,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		String domain = "";
 		String id = "";
 		int score = 0;
+		int numcomments = 0;
 		try {
 			JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
 			name = tempobj.getString("title");
@@ -77,6 +78,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			url =  tempobj.getString("url");
 			permalink =  tempobj.getString("permalink");
 			score = tempobj.getInt("score");
+			numcomments = tempobj.getInt("num_comments");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,6 +86,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		RemoteViews row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 		row.setTextViewText(R.id.listheading, name);
 		row.setTextViewText(R.id.sourcetxt, domain);
+		row.setTextViewText(R.id.votestxt, String.valueOf(score));
+		row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
 		Intent i = new Intent();
 		Bundle extras = new Bundle();
 		extras.putString(WidgetProvider.ITEM_ID, id);

@@ -1,7 +1,9 @@
 package com.example.reddinator;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,8 @@ public class TabWebFragment extends Fragment {
             return null;
         }
         if (firsttime){
+        	// get shared preferences
+        	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
         	// work out the url this instance should load
         	boolean commentswv = false;
         	if (this.getArguments() != null){
@@ -44,10 +48,10 @@ public class TabWebFragment extends Fragment {
         	}
         	if (commentswv){
         		url = "http://reddit.com"+getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK)+".compact";
-        		fontsize = 22;
+        		fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
         	} else {
         		url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-        		fontsize = 18;
+        		fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
         	}
         	// setup progressbar
         	final Activity act = this.getActivity();

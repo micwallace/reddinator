@@ -3,7 +3,9 @@ package com.example.reddinator;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -93,7 +95,14 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), ( tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
-        this.onTabChanged("Tab1");
+        // get shared preferences
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+    	if (prefs.getBoolean("commentsfirstpref", false)){
+    		this.mTabHost.setCurrentTab(1);
+    		this.onTabChanged("Tab2"); // load comments tab first
+    	} else {
+    		this.onTabChanged("Tab1");
+    	}
         //
         mTabHost.setOnTabChangedListener(this);
     }
