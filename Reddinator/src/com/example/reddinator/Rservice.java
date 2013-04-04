@@ -65,6 +65,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public RemoteViews getViewAt(int position) {
 		String name = "";
 		String url = "";
+		String permalink = "";
 		String domain = "";
 		String id = "";
 		int score = 0;
@@ -74,6 +75,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			domain = tempobj.getString("domain");
 			id = tempobj.getString("id");
 			url =  tempobj.getString("url");
+			permalink =  tempobj.getString("permalink");
 			score = tempobj.getInt("score");
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -84,7 +86,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		row.setTextViewText(R.id.sourcetxt, domain);
 		Intent i = new Intent();
 		Bundle extras = new Bundle();
+		extras.putString(WidgetProvider.ITEM_ID, id);
 		extras.putString(WidgetProvider.ITEM_URL, url);
+		extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
 		extras.putString(WidgetProvider.ITEM_TXT, name);
 		extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
 		extras.putInt(WidgetProvider.ITEM_VOTES, score);
@@ -116,7 +120,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private DLTask dltask;
 	@Override
 	public void onDataSetChanged() {
-		// startUpdateIfNoneAlready(); // aync task method (trying to find bug preventing feed to download twice)
+		// startUpdateIfNoneAlready(); // aync task method (trying to find bug making feed to download twice)
 		// refresh data
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
@@ -128,6 +132,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
 		
+	}
+	public void loadMoreReddits(){
+		System.out.println("loadMoreReddits(); fired");
 	}
 	private void startUpdateIfNoneAlready(){
 		if (dltask != null){

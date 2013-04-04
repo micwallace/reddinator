@@ -16,11 +16,11 @@
  
             <TabWidget
                 android:id="@android:id/tabs"
-                android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_weight="0"
-                />
+                android:background="#CEE3F8"
+                android:orientation="horizontal" />
  
             <FrameLayout
                 android:id="@android:id/tabcontent"

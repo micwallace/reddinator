@@ -19,6 +19,7 @@ import android.widget.RemoteViews.RemoteView;
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
 	public static String ITEM_URL = "ITEM_URL";
+	public static String ITEM_PERMALINK = "ITEM_PERMALINK";
 	public static String ITEM_TXT = "ITEM_TXT";
 	public static String ITEM_ID = "ITEM_ID";
 	public static String ITEM_VOTES = "ITEM_VOTES";
@@ -44,7 +45,7 @@ public class WidgetProvider extends AppWidgetProvider {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            // Subreddit BUTTON
+            // PICK Subreddit BUTTON
             Intent srintent = new Intent(context, SubredditSelect.class);
             srintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             srintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -52,8 +53,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // REMOTE DATA
             Intent intent2 = new Intent(context, Rservice.class);
-            // Add the app widget ID to the intent extras.
-            intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]); // Add the app widget ID to the intent extras.
             intent2.setData(Uri.parse(intent2.toUri(Intent.URI_INTENT_SCHEME)));
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
             // REFRESH BUTTON
@@ -143,19 +143,23 @@ public class WidgetProvider extends AppWidgetProvider {
 			int clickpref = Integer.valueOf(clickprefst);
 			switch (clickpref){
 			case 1:
+				// open in the reddinator view
 				Intent clickintent1 = new Intent(context, ViewReddit.class);
 				clickintent1.putExtras(intent.getExtras());
 				clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent1);
 				break;
 			case 2:
+				// open link in browser
 				String url = intent.getStringExtra(ITEM_URL);
 				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent2);
 				break;
 			case 3:
-				Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com.au"));
+				// open reddit comments page in browser
+				String plink = intent.getStringExtra(ITEM_PERMALINK);
+				Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+plink));
 				clickintent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent3);
 				break;

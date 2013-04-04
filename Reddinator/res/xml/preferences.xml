@@ -14,11 +14,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-            android:title="Reddit Account">
+            android:title="Reddinator View">
 		<CheckBoxPreference
                 android:key="checkbox_preference"
                 android:title="@string/app_name"
-                android:defaultValue=""
+                android:defaultValue="false"
                 android:summary="@string/app_name" />
         
         <EditTextPreference

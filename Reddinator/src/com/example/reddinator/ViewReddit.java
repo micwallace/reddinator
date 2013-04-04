@@ -16,7 +16,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     private TabHost mTabHost;
     private HashMap mapTabInfo = new HashMap();
     private TabInfo mLastTab = null;
- 
+    private GlobalObjects global;
     private class TabInfo {
          private String tag;
          private Class clss;
@@ -60,11 +60,11 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         super.onCreate(savedInstanceState);
         // get intent
         //clickbundle = getIntent().getExtras();
-        // Step 1: Inflate layout
+        // Inflate layout
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.viewreddit);
-        // Step 2: Setup TabHost
+        // Setup TabHost
         initialiseTabHost(savedInstanceState);
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
@@ -83,12 +83,14 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
      * Step 2: Setup TabHost
      */
     private void initialiseTabHost(Bundle args) {
+    	Bundle rargs = new Bundle();
+    	rargs.putBoolean("loadcom", true);
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
         TabInfo tabInfo = null;
         ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), ( tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
-        ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), ( tabInfo = new TabInfo("Tab2", TabFragment.class, args)));
+        ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), ( tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
         this.onTabChanged("Tab1");

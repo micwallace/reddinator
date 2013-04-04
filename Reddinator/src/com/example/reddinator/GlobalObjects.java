@@ -6,8 +6,10 @@ import android.app.Application;
 
 public class GlobalObjects extends Application {
 	private ArrayList<String> srlist;
+	//public RedditData redditdata;
 	public GlobalObjects(){
 		srlist = new ArrayList<String>();
+		//redditdata = new RedditData();
 	}
 	public boolean isSrlistCached(){
 		if (!srlist.isEmpty()){
