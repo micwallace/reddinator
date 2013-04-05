@@ -128,7 +128,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// refresh data
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
-		data = rdata.getRedditFeed(curfeed, "hot");
+		String sort = prefs.getString("sort", "hot");
+		data = rdata.getRedditFeed(curfeed, sort);
 		// hide loader
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
