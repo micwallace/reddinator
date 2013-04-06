@@ -47,7 +47,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		rdata = new RedditData();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
-		data = rdata.getRedditFeed(curfeed, "hot");
+		String limit = prefs.getString("numitemloadpref", "25");
+		data = rdata.getRedditFeed(curfeed, "hot", limit);
 		//System.out.println("Service started");
 	}
 
@@ -129,7 +130,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
 		String sort = prefs.getString("sort", "hot");
-		data = rdata.getRedditFeed(curfeed, sort);
+		String limit = prefs.getString("numitemloadpref", "25");
+		data = rdata.getRedditFeed(curfeed, sort, limit);
 		// hide loader
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
@@ -158,7 +160,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// refresh data
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 			String curfeed = prefs.getString("currentfeed", "technology");
-			data = rdata.getRedditFeed(curfeed, "hot");
+			String limit = prefs.getString("numitemloadpref", "25");
+			data = rdata.getRedditFeed(curfeed, "hot", limit);
 			return Long.valueOf("1");
 		}
 		protected void onPostExecute(Long result) {

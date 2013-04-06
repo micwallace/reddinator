@@ -12,6 +12,7 @@ public final class R {
         public static final int entries_list_preference=0x7f050000;
         public static final int entryvalues_list_preference=0x7f050001;
         public static final int fontsize_list_preference=0x7f050002;
+        public static final int reddit_item_load=0x7f050004;
         public static final int reddit_sorts=0x7f050003;
     }
     public static final class attr {

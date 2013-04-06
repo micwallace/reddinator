@@ -11,6 +11,15 @@
                 android:entries="@array/entries_list_preference"
                 android:entryValues="@array/entryvalues_list_preference"
                 android:dialogTitle="When I click on a post.." />
+			
+			<ListPreference
+                android:key="numitemloadpref"
+                android:title="Initial Items"
+                android:defaultValue="25"
+                android:summary="Initially load this many items.."
+                android:entries="@array/reddit_item_load"
+                android:entryValues="@array/reddit_item_load"
+                android:dialogTitle="Initially load this many items.." />
     </PreferenceCategory>
 
     <PreferenceCategory
