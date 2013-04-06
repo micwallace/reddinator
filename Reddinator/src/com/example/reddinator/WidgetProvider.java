@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.RemoteViews.RemoteView;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
@@ -35,7 +33,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
 			int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
-
+		
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
@@ -52,9 +50,9 @@ public class WidgetProvider extends AppWidgetProvider {
             srintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // REMOTE DATA
-            Intent intent2 = new Intent(context, Rservice.class);
-            intent2.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]); // Add the app widget ID to the intent extras.
-            intent2.setData(Uri.parse(intent2.toUri(Intent.URI_INTENT_SCHEME)));
+            Intent servintent = new Intent(context, Rservice.class);
+            servintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]); // Add the app widget ID to the intent extras.
+            servintent.setData(Uri.parse(servintent.toUri(Intent.URI_INTENT_SCHEME)));
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
             // REFRESH BUTTON
             Intent irefresh = new Intent(context, WidgetProvider.class);
@@ -79,7 +77,7 @@ public class WidgetProvider extends AppWidgetProvider {
     		String curfeed = prefs.getString("currentfeed", "technology");
     		views.setTextViewText(R.id.subreddittxt, curfeed);
             // This is how you populate the data.
-            views.setRemoteAdapter(appWidgetIds[i], R.id.listview, intent2);
+            views.setRemoteAdapter(appWidgetIds[i], R.id.listview, servintent);
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId , views);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview);
@@ -126,37 +124,57 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
+		int widgetid = intent.getExtras().getInt("id");
 		if (action.equals(APPWIDGET_UPDATE)) {
-			int id = intent.getExtras().getInt("id");
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			// show loader
 			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
 			//views.setViewVisibility(R.id.refreshbutton, View.GONE);
-			mgr.partiallyUpdateAppWidget(id, views);
-			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);
+			mgr.partiallyUpdateAppWidget(widgetid, views);
+			mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
 			System.out.println("updating feed");
 		}
 		if (action.equals(ITEM_CLICK)) {
+			// check if its the load more button being clicked
+			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
+			if (redditid.equals("0")){
+				// TEST CODE
+				/*GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+				global.setLoadMore();
+				AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+				// show loader
+				RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+				views.setViewVisibility(R.id.srloader, View.VISIBLE);
+				//views.setViewVisibility(R.id.refreshbutton, View.GONE);
+				mgr.partiallyUpdateAppWidget(widgetid, views);
+				mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);*/
+				
+				// open google link for now
+				System.out.println("loadmore intent captured");
+				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(clickintent2);
+			} else {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			String clickprefst = prefs.getString("onclickpref", "1");
 			int clickpref = Integer.valueOf(clickprefst);
 			switch (clickpref){
-			case 1:
+				case 1:
 				// open in the reddinator view
 				Intent clickintent1 = new Intent(context, ViewReddit.class);
 				clickintent1.putExtras(intent.getExtras());
 				clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent1);
 				break;
-			case 2:
+				case 2:
 				// open link in browser
 				String url = intent.getStringExtra(ITEM_URL);
 				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(clickintent2);
 				break;
-			case 3:
+				case 3:
 				// open reddit comments page in browser
 				String plink = intent.getStringExtra(ITEM_PERMALINK);
 				Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+plink));
@@ -164,7 +182,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				context.startActivity(clickintent3);
 				break;
 			}
-			
+			}
 		}
 		if (action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
 			//int id = intent.getExtras().getInt("id");
@@ -187,4 +205,5 @@ public class WidgetProvider extends AppWidgetProvider {
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);
 	}
+
 }

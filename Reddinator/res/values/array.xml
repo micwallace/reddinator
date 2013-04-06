@@ -24,6 +24,16 @@
      <item>10</item>
     </string-array>
     
+   <string-array name="widget_fontsize_preference">
+     <item>24</item>
+     <item>22</item>
+     <item>20</item>
+     <item>18</item>
+     <item>16</item>
+     <item>14</item>
+     <item>12</item>
+    </string-array>
+    
    <string-array name="reddit_sorts">
        	<item>hot</item>
      	<item>new</item>

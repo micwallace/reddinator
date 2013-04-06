@@ -20,6 +20,15 @@
                 android:entries="@array/reddit_item_load"
                 android:entryValues="@array/reddit_item_load"
                 android:dialogTitle="Initially load this many items.." />
+			
+			<ListPreference
+                android:key="widgetfontpref"
+                android:title="Item title size"
+                android:defaultValue="16"
+                android:summary="Font size for item title"
+                android:entries="@array/widget_fontsize_preference"
+                android:entryValues="@array/widget_fontsize_preference"
+                android:dialogTitle="Font size for item title" />
     </PreferenceCategory>
 
     <PreferenceCategory
