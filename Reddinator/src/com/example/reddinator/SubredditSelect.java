@@ -44,7 +44,7 @@ public class SubredditSelect extends ListActivity {
 		Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
 		if (feeds.isEmpty()){
 			// first time setup
-			personallist = new ArrayList<String>(Arrays.asList("all","arduino","askreddit","technology","video","worldnews"));
+			personallist = new ArrayList<String>(Arrays.asList("all","arduino","AskReddit","technology","video","worldnews"));
 			savePersonalList();
 		} else {
 			personallist = new ArrayList<String>(feeds);

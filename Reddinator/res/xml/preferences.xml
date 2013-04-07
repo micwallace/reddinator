@@ -23,12 +23,12 @@
 			
 			<ListPreference
                 android:key="widgetfontpref"
-                android:title="Item title size"
+                android:title="Item Title Size"
                 android:defaultValue="16"
-                android:summary="Font size for item title"
+                android:summary="Font size for item titles"
                 android:entries="@array/widget_fontsize_preference"
                 android:entryValues="@array/widget_fontsize_preference"
-                android:dialogTitle="Font size for item title" />
+                android:dialogTitle="Font size for item titles" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -41,7 +41,7 @@
         <ListPreference
                 android:key="commentfontpref"
                 android:title="Reddit Font Size"
-                android:summary="default font size for the comments view"
+                android:summary="Default font size for the comments view"
                 android:entries="@array/fontsize_list_preference"
                 android:entryValues="@array/fontsize_list_preference"
                 android:defaultValue="22"
@@ -49,7 +49,7 @@
 		<ListPreference
                 android:key="contentfontpref"
                 android:title="Content Font Size"
-                android:summary="default font size for the content view"
+                android:summary="Default font size for the content view"
                 android:entries="@array/fontsize_list_preference"
                 android:entryValues="@array/fontsize_list_preference"
                 android:defaultValue="18"

@@ -3,9 +3,12 @@ package com.example.reddinator;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,6 +37,7 @@ public class ViewAllSubreddits extends ListActivity {
 		// setup list view
 		listview = getListView();
 		listview.setTextFilterEnabled(true);
+		listview.setEmptyView(findViewById(R.id.subredditload));
 		listview.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
@@ -50,34 +54,9 @@ public class ViewAllSubreddits extends ListActivity {
 			sreddits = global.getSrList();
 			setListAdaptor();
 		} else {
-			final ProgressDialog dialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Loading data..."), true);
-			Thread t = new Thread() {
-					public void run() {
-						// get all popular subreddits
-						rdata = new RedditData();
-						srjson = rdata.getSubreddits();
-						// put into arraylist
-						sreddits = new ArrayList<String>();
-						int i = 0;
-						while (i<srjson.length()){
-							try {
-								sreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							i++;
-						}
-						global.putSrList(sreddits);
-						runOnUiThread(new Runnable() {
-								public void run() {
-									setListAdaptor();
-									dialog.dismiss();
-								}
-						});
-					}
-			};
-			t.start();	
+			sreddits = new ArrayList<String>();
+			setListAdaptor();
+			loadPopularSubreddits();
 		}
 		// setup search buttons
 		searchbox = (EditText) this.findViewById(R.id.searchbox);
@@ -97,7 +76,11 @@ public class ViewAllSubreddits extends ListActivity {
 			@Override
 			public void onClick(View v) {
 				String query = searchbox.getText().toString();
-				search(query);
+				if (!query.equals("")){
+					search(query);
+				} else {
+					new AlertDialog.Builder(ViewAllSubreddits.this).setTitle("No Query").setMessage("Please enter something to search for").show();
+				}
 			}
 		});
 	}
@@ -116,8 +99,42 @@ public class ViewAllSubreddits extends ListActivity {
 		System.out.println("onResume()");
 		super.onResume();
 	}
+	private void loadPopularSubreddits(){
+		dlpopulartask = new DLTask();
+		dlpopulartask.execute("");
+		// OLD thread loading code; this is now done in an async task so the user can search for subreddits without waiting for the populars to load
+		/*final ProgressDialog dialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Loading data..."), true);
+		Thread t = new Thread() {
+				public void run() {
+					// get all popular subreddits
+					rdata = new RedditData();
+					srjson = rdata.getSubreddits();
+					// put into arraylist
+					sreddits = new ArrayList<String>();
+					int i = 0;
+					while (i<srjson.length()){
+						try {
+							sreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						i++;
+					}
+					global.putSrList(sreddits);
+					runOnUiThread(new Runnable() {
+							public void run() {
+								setListAdaptor();
+								dialog.dismiss();
+							}
+					});
+				}
+		};
+		t.start();*/
+	}
 	private void search(final String query){
 		System.out.println("Searching: "+query);
+		dlpopulartask.cancel(true);
 		// use a thread for searching
 		final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Searching..."), true);
 		Thread t = new Thread() {
@@ -150,11 +167,43 @@ public class ViewAllSubreddits extends ListActivity {
 		};
 		t.start();
 	}
+	
 	private void setListAdaptor(){
 		listadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, sreddits);
 		listview.setAdapter(listadapter);
 	}
+	
 	private void updateAdapter(){
 		listadapter.notifyDataSetChanged();
+	}
+	
+	private DLTask dlpopulartask;
+	private class DLTask extends AsyncTask<String, Integer, ArrayList<String>> {
+		@Override
+		protected ArrayList<String> doInBackground(String... string) {
+				// load popular subreddits
+				rdata = new RedditData();
+				srjson = rdata.getSubreddits();
+				// put into arraylist
+				ArrayList<String> popreddits = new ArrayList<String>();
+				int i = 0;
+				while (i<srjson.length()){
+					try {
+						popreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					i++;
+				}
+				global.putSrList(popreddits);
+				return popreddits;
+		}
+		protected void onPostExecute(ArrayList<String> resultlist) {
+			if (!this.isCancelled()){
+				sreddits.addAll(resultlist);
+				updateAdapter();
+			}
+		}
 	}
 }

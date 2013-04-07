@@ -4,16 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -52,17 +47,17 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private String itemfontsize = "16";
 	@Override
 	public void onCreate() {
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-				.permitAll().build();
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		rdata = new RedditData();
-		SharedPreferences prefs = PreferenceManager
+		global = ((GlobalObjects) ctxt.getApplicationContext());
+		/*SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
 		int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
 		data = rdata.getRedditFeed(curfeed, "hot", limit, "0");
-		// System.out.println("Service started");
-		global = ((GlobalObjects) ctxt.getApplicationContext());
+		System.out.println("Service started");*/
+		data = new JSONArray();
 	}
 
 	@Override
@@ -80,7 +75,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		RemoteViews row;
 		// check if its the last view and return loading view instead of normal row
 		if (position == data.length()) {
-			System.out.println("load more getViewAt() firing"); 
+			//System.out.println("load more getViewAt()"); 
 			RemoteViews loadmorerow = new RemoteViews(ctxt.getPackageName(), R.layout.listrowloadmore);
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
@@ -154,29 +149,27 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		return (true);
 	}
 
-	private DLTask dltask;
-
 	@Override
 	public void onDataSetChanged() {
-		// startUpdateIfNoneAlready(); // aync task method (trying to find bug making feed to download twice)
 		// refresh data
 		if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
 			global.SetLoad();
 			loadMoreReddits();
+			//startDownloadIfNoneAlready(true); // use aync task download method; CURRENTLY NOT FUNCTIONING AND MIGHT NOT BE NEEDED
 		} else {
 			loadReddits(false);
+			//startDownloadIfNoneAlready(false); // use aync task download method
 		}
 	}
 	
-	public String lastitemid = "0";
+	private String lastitemid = "0";
 	
-	public void loadMoreReddits() {
-		System.out.println("loadMoreReddits(); fired");
+	private void loadMoreReddits() {
+		System.out.println("loadMoreReddits();");
 		loadReddits(true);
 	}
 	
-	// async task to be used in the future
-	public void loadReddits(boolean loadmore){
+	private void loadReddits(boolean loadmore){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
 		String sort = prefs.getString("sort", "hot");
@@ -214,41 +207,45 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(),
 				R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
-		views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
+		//views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
+		
 	}
-
-	private void startUpdateIfNoneAlready() {
+	
+	// REDUNDANT ASYNC TASK STUFF
+	/*private DLTask dltask;
+	private void startDownloadIfNoneAlready(boolean loadmore) {
+		String loadstr;
+		if (loadmore){
+			loadstr ="1";
+		} else {
+			loadstr ="0";
+		}
 		if (dltask != null) {
 			if (dltask.getStatus().equals(AsyncTask.Status.FINISHED)) {
 				dltask = new DLTask();
-				dltask.execute("");
+				dltask.execute(loadstr);
 			}
 		} else {
 			dltask = new DLTask();
-			dltask.execute("");
+			dltask.execute(loadstr);
 		}
 	}
-
 	private class DLTask extends AsyncTask<String, Integer, Long> {
 		@Override
-		protected Long doInBackground(String... _global) {
+		protected Long doInBackground(String... loadmore) {
 			// refresh data
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(ctxt);
-			String curfeed = prefs.getString("currentfeed", "technology");
-			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
-			data = rdata.getRedditFeed(curfeed, "hot", limit, "0");
+			if (loadmore[0].equals("0")){
+				loadReddits(false);
+			} else {
+				System.out.println("async loading more reddits");
+				loadMoreReddits();
+			}
 			return Long.valueOf("1");
 		}
 
 		protected void onPostExecute(Long result) {
-			AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
-			RemoteViews views = new RemoteViews(ctxt.getPackageName(),
-					R.layout.widgetmain);
-			views.setViewVisibility(R.id.srloader, View.INVISIBLE);
-			views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
-			mgr.partiallyUpdateAppWidget(appWidgetId, views);
+			
 		}
-	}
+	}*/
 }

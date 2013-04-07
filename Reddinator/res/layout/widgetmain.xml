@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/RelativeLayout1"
+        android:id="@+id/widgetheader"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:paddingRight="5dp"
@@ -74,23 +74,42 @@
             android:src="@drawable/reddit_icon_small" />
 
     </RelativeLayout>
+    
+    <LinearLayout
+        android:id="@+id/empty_list_view"
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/widgetheader"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center" >
+
+	    <ImageView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:contentDescription="loading_img"
+	        android:scaleType="center"
+	        android:src="@drawable/reddit_icon_small" />
+
+	    <TextView
+	        android:id="@+id/initloadtxt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_marginLeft="10dp"
+	        android:text="Loading..."
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="#000" />
+	</LinearLayout>
 
     <ListView
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/RelativeLayout1" >
+        android:layout_below="@+id/widgetheader" >
 
     </ListView>
-
-    <ImageView
-        android:id="@+id/empty_list_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/listview"
-        android:contentDescription="List view is empty"
-        android:scaleType="center"
-        android:src="@drawable/reddit_icon_small"
-        android:visibility="gone" />
-
+    
 </RelativeLayout>

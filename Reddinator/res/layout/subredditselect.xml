@@ -9,10 +9,11 @@
         android:layout_width="fill_parent"
         android:layout_height="40dip"
         android:layout_alignParentTop="true"
-        android:background="#FFF"
-        android:paddingLeft="14dp"
+        android:background="#EFF7FF"
         android:gravity="center_vertical"
-        android:text="Sort:  hot" >
+        android:paddingLeft="14dp"
+        android:text="Sort:  hot"
+        android:textColor="#FF4500" >
 
     </Button>
     
@@ -45,9 +46,10 @@
 
     <ListView
         android:id="@android:id/list"
-        android:layout_below="@+id/srtoolbar"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/srtoolbar"
+        android:background="#FFF" >
         
     </ListView>
 </RelativeLayout>

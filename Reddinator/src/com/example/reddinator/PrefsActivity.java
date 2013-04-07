@@ -3,9 +3,11 @@ package com.example.reddinator;
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RemoteViews;
 
@@ -24,6 +26,7 @@ public class PrefsActivity extends PreferenceActivity {
 			setListFooter(button);
 		}
 		addPreferencesFromResource(R.xml.preferences);
+		getListView().setBackgroundColor(Color.WHITE);
 	}
 	@Override
 	protected void onResume(){
@@ -39,6 +42,7 @@ public class PrefsActivity extends PreferenceActivity {
 	public void onBackPressed(){
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
 		RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), R.layout.widgetmain);
+		views.setViewVisibility(R.id.srloader, View.VISIBLE);
 		appWidgetManager.updateAppWidget(mAppWidgetId, views);
 		appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		//WidgetProvider.updateAppWidget(this, appWidgetManager, mAppWidgetId);

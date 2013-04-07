@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -31,10 +30,8 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-			int[] appWidgetIds) {
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
-		
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
@@ -92,13 +89,10 @@ public class WidgetProvider extends AppWidgetProvider {
 		appWidgetManager.updateAppWidget(mAppWidgetId, views);
 	}*/
 	@Override
-	public void onAppWidgetOptionsChanged(Context context,
-			AppWidgetManager appWidgetManager, int appWidgetId,
-			Bundle newOptions) {
+	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 		System.out.println("onAppWidgetOptionsChanged fired");
 		this.onUpdate(context, appWidgetManager, new int[]{appWidgetId}); // fix for the widget not loading the second time round (adding to the homescreen)
-		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId,
-				newOptions);
+		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 	}
 
 	@Override
@@ -125,8 +119,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 		if (action.equals(APPWIDGET_UPDATE)) {
+			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			// show loader
 			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
@@ -137,6 +131,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			System.out.println("updating feed");
 		}
 		if (action.equals(ITEM_CLICK)) {
+			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			// check if its the load more button being clicked
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
 			if (redditid.equals("0")){
