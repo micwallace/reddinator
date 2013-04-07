@@ -26,13 +26,12 @@ public class Rservice extends RemoteViewsService {
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		return new ListRemoteViewsFactory(this.getApplicationContext(), intent);
 	}
-	public class LocalBinder extends Binder {
+	/*public class LocalBinder extends Binder {
         Rservice getService() {
             // Return this instance of LocalService so clients can call public methods
             return Rservice.this;
         }
-    }
-
+    }*/
 }
 
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -49,7 +48,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	
 	private RedditData rdata;
 	private JSONArray data;
-	//private GlobalObjects global;
+	private GlobalObjects global;
 	private String itemfontsize = "16";
 	@Override
 	public void onCreate() {
@@ -60,10 +59,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
-		String limit = prefs.getString("numitemloadpref", "25");
-		data = rdata.getRedditFeed(curfeed, "hot", limit);
+		int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
+		data = rdata.getRedditFeed(curfeed, "hot", limit, "0");
 		// System.out.println("Service started");
-		//global = ((GlobalObjects) ctxt.getApplicationContext());
+		global = ((GlobalObjects) ctxt.getApplicationContext());
 	}
 
 	@Override
@@ -81,7 +80,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		RemoteViews row;
 		// check if its the last view and return loading view instead of normal row
 		if (position == data.length()) {
-			System.out.println("load more firing"); 
+			System.out.println("load more getViewAt() firing"); 
 			RemoteViews loadmorerow = new RemoteViews(ctxt.getPackageName(), R.layout.listrowloadmore);
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
@@ -161,16 +160,55 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		// startUpdateIfNoneAlready(); // aync task method (trying to find bug making feed to download twice)
 		// refresh data
-		/*if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
+		if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
 			global.SetLoad();
 			loadMoreReddits();
-		} else {*/
+		} else {
+			loadReddits(false);
+		}
+	}
+	
+	public String lastitemid = "0";
+	
+	public void loadMoreReddits() {
+		System.out.println("loadMoreReddits(); fired");
+		loadReddits(true);
+	}
+	
+	// async task to be used in the future
+	public void loadReddits(boolean loadmore){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
 		String sort = prefs.getString("sort", "hot");
-		String limit = prefs.getString("numitemloadpref", "25");
 		itemfontsize = prefs.getString("widgetfontpref", "16");
-		data = rdata.getRedditFeed(curfeed, sort, limit);
+		// Load more or initial load/reload?
+		if (loadmore){
+			// fetch 25 more after current last item and append to the list
+			int limit = 25;
+			JSONArray tempdata = rdata.getRedditFeed(curfeed, sort, limit, lastitemid);
+			int i = 0;
+			while (i<tempdata.length()){
+				try {
+					data.put(tempdata.get(i));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				i++;
+			}
+		} else {
+			// reloading
+			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
+			data = rdata.getRedditFeed(curfeed, sort, limit, "0");
+		}
+		// set last item id for "loadmore use"
+		// Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
+		try {
+			lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+		} catch (JSONException e) {
+			lastitemid = "0"; // last item of 0 will fetch the first page
+			e.printStackTrace();
+		};
 		// hide loader
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(),
@@ -178,11 +216,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
 		views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
-		//}
-	}
-
-	public void loadMoreReddits() {
-		System.out.println("loadMoreReddits(); fired");
 	}
 
 	private void startUpdateIfNoneAlready() {
@@ -204,8 +237,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			SharedPreferences prefs = PreferenceManager
 					.getDefaultSharedPreferences(ctxt);
 			String curfeed = prefs.getString("currentfeed", "technology");
-			String limit = prefs.getString("numitemloadpref", "25");
-			data = rdata.getRedditFeed(curfeed, "hot", limit);
+			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
+			data = rdata.getRedditFeed(curfeed, "hot", limit, "0");
 			return Long.valueOf("1");
 		}
 

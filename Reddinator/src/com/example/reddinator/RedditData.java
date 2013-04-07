@@ -68,8 +68,8 @@ public class RedditData {
 		}
 		return sreddits;
 	}
-	public JSONArray getRedditFeed(String subreddit, String sort, String limit){
-		String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json?limit="+limit;
+	public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid){
+		String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json?limit="+String.valueOf(limit)+(!afterid.equals("0")?"&after="+afterid:"");
 		JSONArray feed = new JSONArray();
 		try {
 			feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");

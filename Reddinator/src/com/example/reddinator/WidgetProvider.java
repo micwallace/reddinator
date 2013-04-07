@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -58,7 +59,7 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent irefresh = new Intent(context, WidgetProvider.class);
             irefresh.setAction(APPWIDGET_UPDATE);
             irefresh.setPackage(context.getPackageName());
-            irefresh.putExtra("id", appWidgetId);
+            irefresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             PendingIntent rpIntent = PendingIntent.getBroadcast(context, 0, irefresh, PendingIntent.FLAG_UPDATE_CURRENT);
             // ITEM CLICK
             Intent clickintent = new Intent(context, WidgetProvider.class);
@@ -124,7 +125,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		int widgetid = intent.getExtras().getInt("id");
+		int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 		if (action.equals(APPWIDGET_UPDATE)) {
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			// show loader
@@ -139,22 +140,16 @@ public class WidgetProvider extends AppWidgetProvider {
 			// check if its the load more button being clicked
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
 			if (redditid.equals("0")){
-				// TEST CODE
-				/*GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
-				global.setLoadMore();
-				AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-				// show loader
-				RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
-				views.setViewVisibility(R.id.srloader, View.VISIBLE);
-				//views.setViewVisibility(R.id.refreshbutton, View.GONE);
-				mgr.partiallyUpdateAppWidget(widgetid, views);
-				mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);*/
-				
-				// open google link for now
 				System.out.println("loadmore intent captured");
-				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(clickintent2);
+				// set loadmore indicator so the notifydatasetchanged function knows what to do
+				GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+				global.setLoadMore();
+				AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
+				// show loader
+				RemoteViews views2 = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+				views2.setViewVisibility(R.id.srloader, View.VISIBLE);
+				mgr2.updateAppWidget(widgetid, views2);
+				mgr2.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
 			} else {
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 			String clickprefst = prefs.getString("onclickpref", "1");
