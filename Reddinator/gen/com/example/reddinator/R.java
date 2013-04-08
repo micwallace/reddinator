@@ -37,7 +37,7 @@ public final class R {
         public static final int listrow=0x7f090000;
         public static final int listrowloadmore=0x7f090008;
         public static final int listview=0x7f090027;
-        public static final int loadtxt=0x7f090009;
+        public static final int loadmoretxt=0x7f090009;
         public static final int menu_settings=0x7f090028;
         public static final int poploadtxt=0x7f09001e;
         public static final int posttext=0x7f090011;

@@ -69,10 +69,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public int getCount() {
 		return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
 	}
-
 	@Override
 	public RemoteViews getViewAt(int position) {
 		RemoteViews row;
+		if (position > data.length()){
+			//System.out.println("getViewAt(); index "+ position + "not found"); 
+			// this is a fix for listview bug causing blank views when left to automatically update after more than one page has loaded.
+			return null; //  By returning null we presumably force a call to getCount() from the listview to get a new listlength thus forcing the view to update properly
+		}
 		// check if its the last view and return loading view instead of normal row
 		if (position == data.length()) {
 			//System.out.println("load more getViewAt()"); 
@@ -81,6 +85,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			Bundle extras = new Bundle();
 			extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider
 			i.putExtras(extras);
+			
 			loadmorerow.setOnClickFillInIntent(R.id.listrowloadmore, i);
 			return loadmorerow;
 		} else {
@@ -161,14 +166,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			//startDownloadIfNoneAlready(false); // use aync task download method
 		}
 	}
-	
 	private String lastitemid = "0";
-	
+	private boolean endoffeed = false;
 	private void loadMoreReddits() {
 		System.out.println("loadMoreReddits();");
 		loadReddits(true);
 	}
-	
 	private void loadReddits(boolean loadmore){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed", "technology");
@@ -179,17 +182,23 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// fetch 25 more after current last item and append to the list
 			int limit = 25;
 			JSONArray tempdata = rdata.getRedditFeed(curfeed, sort, limit, lastitemid);
-			int i = 0;
-			while (i<tempdata.length()){
-				try {
-					data.put(tempdata.get(i));
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (tempdata.length() == 0){
+				endoffeed = true;
+			} else {
+				endoffeed = false;
+				int i = 0;
+				while (i<tempdata.length()){
+					try {
+						data.put(tempdata.get(i));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					i++;
 				}
-				i++;
 			}
 		} else {
+			endoffeed = false;
 			// reloading
 			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
 			data = rdata.getRedditFeed(curfeed, sort, limit, "0");
@@ -204,10 +213,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		};
 		// hide loader
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
-		RemoteViews views = new RemoteViews(ctxt.getPackageName(),
-				R.layout.widgetmain);
+		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
-		//views.setViewVisibility(R.id.refreshbutton, View.VISIBLE);
+		if (endoffeed){ 
+			views.setTextViewText(R.id.loadmoretxt, "There's nothing more here");
+		}
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
 		
 	}
