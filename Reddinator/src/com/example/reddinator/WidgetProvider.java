@@ -51,7 +51,6 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent servintent = new Intent(context, Rservice.class);
             servintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]); // Add the app widget ID to the intent extras.
             servintent.setData(Uri.parse(servintent.toUri(Intent.URI_INTENT_SCHEME)));
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
             // REFRESH BUTTON
             Intent irefresh = new Intent(context, WidgetProvider.class);
             irefresh.setAction(APPWIDGET_UPDATE);
@@ -65,6 +64,7 @@ public class WidgetProvider extends AppWidgetProvider {
             clickintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // ADD ALL TO REMOTE VIEWS
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
             views.setPendingIntentTemplate(R.id.listview, clickPI);
             views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
@@ -72,22 +72,18 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
             // set current feed title
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    		String curfeed = prefs.getString("currentfeed", "technology");
+    		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
     		views.setTextViewText(R.id.subreddittxt, curfeed);
-            // This is how you populate the data.
-            views.setRemoteAdapter(appWidgetIds[i], R.id.listview, servintent);
-            // Tell the AppWidgetManager to perform an update on the current app widget
-            appWidgetManager.updateAppWidget(appWidgetId , views);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.listview);
-            System.out.println("onUpdate() fires!");
+    		// This is how you populate the data.
+    		views.setRemoteAdapter(R.id.listview, servintent);
+    		// Tell the AppWidgetManager to perform an update on the current app widget
+    		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
+        //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this causes the feed to update twice :(
+        System.out.println("onUpdate() fires!");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
-	// config activity not firing update, this is a workaround
-	/*public static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int mAppWidgetId){
-		RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
-		appWidgetManager.updateAppWidget(mAppWidgetId, views);
-	}*/
+	
 	@Override
 	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 		System.out.println("onAppWidgetOptionsChanged fired");
@@ -110,9 +106,6 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onEnabled(Context context) {
 		System.out.println("onEnabled fired");
-		/*Intent intent = new Intent();
-		intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-		context.sendBroadcast(intent);*/
         super.onEnabled(context);
 	}
 
@@ -135,7 +128,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			// check if its the load more button being clicked
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
 			if (redditid.equals("0")){
-				System.out.println("loadmore intent captured");
+				System.out.println("loading more feed items");
 				// set loadmore indicator so the notifydatasetchanged function knows what to do
 				GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
 				global.setLoadMore();
@@ -174,24 +167,6 @@ public class WidgetProvider extends AppWidgetProvider {
 			}
 			}
 		}
-		if (action.equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
-			//int id = intent.getExtras().getInt("id");
-			/*AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			mgr.notifyAppWidgetViewDataChanged(id, R.id.listview);*/
-			/*Intent initintent = new Intent();
-			initintent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
-			initintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-			context.sendBroadcast(initintent);*/
-			System.out.println("execute firsttime startup?");
-		} 
-		
-		/*else if (AppWidgetManager.ACTION_APPWIDGET_ENABLED.equals(action)) {
-	        this.onEnabled(context);
-	    } else if (AppWidgetManager.ACTION_APPWIDGET_DISABLED.equals(action)) {
-	    	this.onDisabled(context);
-	    } else if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
-	        this.onDeleted(context, new int[]{intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)});
-	    }*/
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);
 	}

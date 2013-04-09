@@ -8,6 +8,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -21,71 +22,82 @@ public class Rservice extends RemoteViewsService {
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		return new ListRemoteViewsFactory(this.getApplicationContext(), intent);
 	}
-	/*public class LocalBinder extends Binder {
-        Rservice getService() {
-            // Return this instance of LocalService so clients can call public methods
-            return Rservice.this;
-        }
-    }*/
 }
 
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private Context ctxt = null;
-
 	private int appWidgetId;
+	private JSONArray data;
+	private GlobalObjects global;
+	private SharedPreferences prefs;
+	private Editor prefseditor;
+	private String itemfontsize = "16";
+	private boolean loadcached = false;
 	
 	public ListRemoteViewsFactory(Context ctxt, Intent intent) {
 		this.ctxt = ctxt;
-		appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-				AppWidgetManager.INVALID_APPWIDGET_ID);
+		appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+		global = ((GlobalObjects) ctxt.getApplicationContext());
+		prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+		prefseditor = prefs.edit();
+		System.out.println("New view factory created for widget ID:"+appWidgetId);
+		try {
+			data = new JSONArray(prefs.getString("feeddata-"+appWidgetId, "[]"));
+		} catch (JSONException e) {
+			data = new JSONArray();
+			e.printStackTrace();
+		}
+		System.out.println("cached Data length: "+data.length());
+		if (data.length() != 0){
+			itemfontsize = prefs.getString("widgetfontpref", "16");
+			try {
+				lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
+			} catch (JSONException e) {
+				lastitemid = "1"; // eventually this will indicate not to load any more items and perform a reload once instead on next request.
+				e.printStackTrace();
+			}
+			loadcached = true;	
+		}
 	}
-
 	
-	private RedditData rdata;
-	private JSONArray data;
-	private GlobalObjects global;
-	private String itemfontsize = "16";
 	@Override
 	public void onCreate() {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
-		rdata = new RedditData();
-		global = ((GlobalObjects) ctxt.getApplicationContext());
-		/*SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(ctxt);
-		String curfeed = prefs.getString("currentfeed", "technology");
-		int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
-		data = rdata.getRedditFeed(curfeed, "hot", limit, "0");
-		System.out.println("Service started");*/
-		data = new JSONArray();
+		System.out.println("Service started");
+		endoffeed = false;
 	}
 
 	@Override
 	public void onDestroy() {
 		// no-op
+		System.out.println("Service detroyed");
 	}
 
 	@Override
 	public int getCount() {
 		return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
 	}
+	
 	@Override
 	public RemoteViews getViewAt(int position) {
 		RemoteViews row;
 		if (position > data.length()){
-			//System.out.println("getViewAt(); index "+ position + "not found"); 
-			// this is a fix for listview bug causing blank views when left to automatically update after more than one page has loaded.
-			return null; //  By returning null we presumably force a call to getCount() from the listview to get a new listlength thus forcing the view to update properly
+			return null; //  prevent errornous views
 		}
 		// check if its the last view and return loading view instead of normal row
 		if (position == data.length()) {
-			//System.out.println("load more getViewAt()"); 
+			//System.out.println("load more getViewAt("+position+") firing"); 
 			RemoteViews loadmorerow = new RemoteViews(ctxt.getPackageName(), R.layout.listrowloadmore);
+			if (endoffeed){ 
+				loadmorerow.setTextViewText(R.id.loadmoretxt, "There's nothing more here");
+			} else {
+				loadmorerow.setTextViewText(R.id.loadmoretxt, "Load more...");
+			}
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
-			extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider
+			extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
 			i.putExtras(extras);
-			
 			loadmorerow.setOnClickFillInIntent(R.id.listrowloadmore, i);
 			return loadmorerow;
 		} else {
@@ -134,8 +146,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public RemoteViews getLoadingView() {
-		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(),
-				R.layout.listrowload);
+		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(), R.layout.listrowload);
 		return rowload;
 	}
 
@@ -151,19 +162,24 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public boolean hasStableIds() {
-		return (true);
+		return (false);
 	}
 
 	@Override
 	public void onDataSetChanged() {
-		// refresh data
+		if (!loadcached){
+			// refresh data
 		if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
 			global.SetLoad();
 			loadMoreReddits();
-			//startDownloadIfNoneAlready(true); // use aync task download method; CURRENTLY NOT FUNCTIONING AND MIGHT NOT BE NEEDED
 		} else {
+			System.out.println("loadReddits();");
 			loadReddits(false);
-			//startDownloadIfNoneAlready(false); // use aync task download method
+		}
+		} else {
+			loadcached = false;
+			// hide loader
+			hideWidgetLoader();
 		}
 	}
 	private String lastitemid = "0";
@@ -174,14 +190,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 	private void loadReddits(boolean loadmore){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
-		String curfeed = prefs.getString("currentfeed", "technology");
-		String sort = prefs.getString("sort", "hot");
+		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
+		String sort = prefs.getString("sort"+appWidgetId, "hot");
 		itemfontsize = prefs.getString("widgetfontpref", "16");
 		// Load more or initial load/reload?
 		if (loadmore){
 			// fetch 25 more after current last item and append to the list
 			int limit = 25;
-			JSONArray tempdata = rdata.getRedditFeed(curfeed, sort, limit, lastitemid);
+			JSONArray tempdata = global.rdata.getRedditFeed(curfeed, sort, limit, lastitemid);
 			if (tempdata.length() == 0){
 				endoffeed = true;
 			} else {
@@ -196,12 +212,16 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 					}
 					i++;
 				}
+				prefseditor.putString("feeddata-"+appWidgetId, data.toString());
+				prefseditor.commit();
 			}
 		} else {
 			endoffeed = false;
 			// reloading
 			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
-			data = rdata.getRedditFeed(curfeed, sort, limit, "0");
+			data = global.rdata.getRedditFeed(curfeed, sort, limit, "0");
+			prefseditor.putString("feeddata-"+appWidgetId, data.toString());
+			prefseditor.commit();
 		}
 		// set last item id for "loadmore use"
 		// Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
@@ -212,50 +232,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			e.printStackTrace();
 		};
 		// hide loader
+		hideWidgetLoader();
+	}
+	// hide appwidget loader
+	private void hideWidgetLoader(){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
-		if (endoffeed){ 
-			views.setTextViewText(R.id.loadmoretxt, "There's nothing more here");
-		}
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
-		
 	}
-	
-	// REDUNDANT ASYNC TASK STUFF
-	/*private DLTask dltask;
-	private void startDownloadIfNoneAlready(boolean loadmore) {
-		String loadstr;
-		if (loadmore){
-			loadstr ="1";
-		} else {
-			loadstr ="0";
-		}
-		if (dltask != null) {
-			if (dltask.getStatus().equals(AsyncTask.Status.FINISHED)) {
-				dltask = new DLTask();
-				dltask.execute(loadstr);
-			}
-		} else {
-			dltask = new DLTask();
-			dltask.execute(loadstr);
-		}
-	}
-	private class DLTask extends AsyncTask<String, Integer, Long> {
-		@Override
-		protected Long doInBackground(String... loadmore) {
-			// refresh data
-			if (loadmore[0].equals("0")){
-				loadReddits(false);
-			} else {
-				System.out.println("async loading more reddits");
-				loadMoreReddits();
-			}
-			return Long.valueOf("1");
-		}
-
-		protected void onPostExecute(Long result) {
-			
-		}
-	}*/
 }

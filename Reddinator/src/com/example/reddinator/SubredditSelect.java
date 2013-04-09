@@ -55,10 +55,8 @@ public class SubredditSelect extends ListActivity {
 		listView.setTextFilterEnabled(true);
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
-		if (extras != null) {
-		    mAppWidgetId = extras.getInt(
-		            AppWidgetManager.EXTRA_APPWIDGET_ID, 
-		            AppWidgetManager.INVALID_APPWIDGET_ID);
+		if (extras != null) {	
+			mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		}
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -69,7 +67,7 @@ public class SubredditSelect extends ListActivity {
 				// save preference
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelect.this);
 				Editor editor = prefs.edit();
-				editor.putString("currentfeed", sreddit);
+				editor.putString("currentfeed-"+mAppWidgetId, sreddit);
 				editor.commit();
 				// refresh widget and close activity (NOTE: put in function)
 				AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
@@ -94,7 +92,7 @@ public class SubredditSelect extends ListActivity {
 		});
 		// sort button
 		sortbtn = (Button) findViewById(R.id.sortselect);
-		cursort = prefs.getString("sort", "hot");
+		cursort = prefs.getString("sort-"+mAppWidgetId, "hot");
 		String sorttxt = "Sort:  "+cursort;
 		sortbtn.setText(sorttxt);
 		sortbtn.setOnClickListener(new OnClickListener() {
@@ -117,7 +115,7 @@ public class SubredditSelect extends ListActivity {
 	public void onBackPressed(){
 		savePersonalList();
 		// check if sort has changed
-		if (!cursort.equals(prefs.getString("sort", "hot"))){
+		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot"))){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
@@ -152,7 +150,7 @@ public class SubredditSelect extends ListActivity {
 	            	   		case 3 : sort = "controversial"; break;
 	            	   		case 4 : sort = "top"; break;
 	            	   }
-	            	   prefsedit.putString("sort", sort);
+	            	   prefsedit.putString("sort-"+mAppWidgetId, sort);
 	            	   prefsedit.commit();
 	            	   // set new text in button
 	            	   String sorttxt = "Sort:  "+sort;

@@ -1,6 +1,9 @@
 package com.example.reddinator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.json.JSONArray;
 
 import android.app.Application;
 
@@ -9,10 +12,24 @@ public class GlobalObjects extends Application {
 	static int LOADTYPE_LOAD = 0;
 	static int LOADTYPE_LOADMORE = 1;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
+	public RedditData rdata;
+	private HashMap<Integer, JSONArray> datastore;
 	//public RedditData redditdata;
 	public GlobalObjects(){
 		srlist = new ArrayList<String>();
-		//redditdata = new RedditData();
+		rdata = new RedditData();
+		datastore = new HashMap<Integer, JSONArray>();
+	}
+	// data
+	public JSONArray getFeedData(Integer widgetid){
+		if (datastore.containsKey(widgetid)){
+			return datastore.get(widgetid);
+		} else {
+			return (new JSONArray());
+		}
+	}
+	public void putFeedData(Integer widgetid, JSONArray data){
+		datastore.put(widgetid, data);
 	}
 	public boolean isSrlistCached(){
 		if (!srlist.isEmpty()){
