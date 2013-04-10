@@ -2,14 +2,14 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-            android:title="Widget">
+            android:title="All Widgets">
 			<ListPreference
                 android:key="onclickpref"
                 android:title="On-Click Action"
                 android:defaultValue="1"
                 android:summary="When I click on a post.."
-                android:entries="@array/entries_list_preference"
-                android:entryValues="@array/entryvalues_list_preference"
+                android:entries="@array/onclick_list_preference"
+                android:entryValues="@array/onclick_values_list_preference"
                 android:dialogTitle="When I click on a post.." />
 			
 			<ListPreference
@@ -20,6 +20,15 @@
                 android:entries="@array/reddit_item_load"
                 android:entryValues="@array/reddit_item_load"
                 android:dialogTitle="Initially load this many items.." />
+			
+			<ListPreference
+                android:key="refreshrate"
+                android:title="Auto Refresh"
+                android:defaultValue="43200000"
+                android:summary="Refresh the widget feed every.."
+                android:entries="@array/widget_refresh_list"
+                android:entryValues="@array/widget_refresh_values"
+                android:dialogTitle="Refresh the widget feed every.." />
 			
 			<ListPreference
                 android:key="widgetfontpref"

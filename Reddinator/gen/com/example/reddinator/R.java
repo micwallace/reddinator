@@ -9,12 +9,14 @@ package com.example.reddinator;
 
 public final class R {
     public static final class array {
-        public static final int entries_list_preference=0x7f050000;
-        public static final int entryvalues_list_preference=0x7f050001;
         public static final int fontsize_list_preference=0x7f050002;
+        public static final int onclick_list_preference=0x7f050000;
+        public static final int onclick_values_list_preference=0x7f050001;
         public static final int reddit_item_load=0x7f050005;
         public static final int reddit_sorts=0x7f050004;
         public static final int widget_fontsize_preference=0x7f050003;
+        public static final int widget_refresh_list=0x7f050006;
+        public static final int widget_refresh_values=0x7f050007;
     }
     public static final class attr {
     }

@@ -12,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -123,7 +124,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				e.printStackTrace();
 			}
 			row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
-			row.setTextViewText(R.id.listheading, name);
+			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
 			row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize));
 			row.setTextViewText(R.id.sourcetxt, domain);
 			row.setTextViewText(R.id.votestxt, String.valueOf(score));

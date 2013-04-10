@@ -1,9 +1,11 @@
 package com.example.reddinator;
 
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +26,10 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static String ITEM_DOMAIN = "ITEM_DOMAIN";
 	public static String ITEM_CLICK = "ITEM_CLICK";
 	public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
-	public static String APPWIDGET_UPDATE = "APPWIDGET_UPDATE_FEED";
+	public static String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
+	public static String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
+	public static String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
+	private PendingIntent updateintent = null;
 	public WidgetProvider() {
 	}
 
@@ -53,7 +58,7 @@ public class WidgetProvider extends AppWidgetProvider {
             servintent.setData(Uri.parse(servintent.toUri(Intent.URI_INTENT_SCHEME)));
             // REFRESH BUTTON
             Intent irefresh = new Intent(context, WidgetProvider.class);
-            irefresh.setAction(APPWIDGET_UPDATE);
+            irefresh.setAction(APPWIDGET_UPDATE_FEED);
             irefresh.setPackage(context.getPackageName());
             irefresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             irefresh.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -100,12 +105,34 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onDisabled(Context context) {
+		Intent intent =  new Intent(context.getApplicationContext(), WidgetProvider.class);
+        intent.setAction(APPWIDGET_AUTO_UPDATE);
+        intent.setPackage(context.getPackageName());
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+		final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		m.cancel(updateintent);
 		System.out.println("onDisabled fired");
 		super.onDisabled(context);
 	}
+	
 
 	@Override
 	public void onEnabled(Context context) {
+		// set the pending intent for automatic update
+        Intent intent =  new Intent(context.getApplicationContext(), WidgetProvider.class);
+        intent.setAction(APPWIDGET_AUTO_UPDATE);
+        intent.setPackage(context.getPackageName());
+        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+        updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		int refreshrate = Integer.valueOf(prefs.getString("refreshrate", "43200000"));
+		if (refreshrate!=0){
+        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
+		} else {
+			m.cancel(updateintent); // just incase theres a rougue alarm
+		}
 		System.out.println("onEnabled fired");
         super.onEnabled(context);
 	}
@@ -113,16 +140,14 @@ public class WidgetProvider extends AppWidgetProvider {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		if (action.equals(APPWIDGET_UPDATE)) {
+		if (action.equals(APPWIDGET_UPDATE_FEED)) {
 			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			// show loader
 			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
-			//views.setViewVisibility(R.id.refreshbutton, View.GONE);
 			mgr.partiallyUpdateAppWidget(widgetid, views);
 			mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
-			System.out.println("updating feed");
 		}
 		if (action.equals(ITEM_CLICK)) {
 			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
@@ -167,6 +192,15 @@ public class WidgetProvider extends AppWidgetProvider {
 				break;
 			}
 			}
+		}
+		if (action.equals(APPWIDGET_AUTO_UPDATE)) {
+			AppWidgetManager mgr3 = AppWidgetManager.getInstance(context);
+			int[] appWidgetIds = mgr3.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+			// show loader
+			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+			views.setViewVisibility(R.id.srloader, View.VISIBLE);
+			mgr3.updateAppWidget(appWidgetIds, views);
+			mgr3.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
 		}
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <string-array name="entries_list_preference">
+   <string-array name="onclick_list_preference">
      <item>Open Reddinator View</item>
      <item>Open Content Page</item>
      <item>Open Reddit Page</item>
      </string-array>
  
-   <string-array name="entryvalues_list_preference">
+   <string-array name="onclick_values_list_preference">
      <item>1</item>
      <item>2</item>
      <item>3</item>
@@ -48,5 +48,28 @@
      	<item>50</item>
      	<item>75</item>
      	<item>100</item>
+   </string-array>
+   
+   <string-array name="widget_refresh_list">
+       	<item>10 Minutes</item>
+       	<item>1 Hour</item>
+     	<item>2 Hours</item>
+     	<item>4 Hours</item>
+     	<item>6 Hours</item>
+     	<item>12 Hours</item>
+     	<item>24 Hours</item>
+     	<item>48 Hours</item>
+     	<item>Never</item>
+   </string-array>
+   <string-array name="widget_refresh_values">
+       	<item>1800000</item>
+     	<item>3600000</item>
+     	<item>7200000</item>
+     	<item>14400000</item>
+     	<item>21600000</item>
+     	<item>43200000</item>
+     	<item>86400000</item>
+     	<item>172800000</item>
+     	<item>0</item>
    </string-array>
 </resources>
