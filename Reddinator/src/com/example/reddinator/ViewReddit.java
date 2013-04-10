@@ -1,6 +1,7 @@
 package com.example.reddinator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -71,6 +72,10 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
         }
+    }
+    
+    public void onBackPressed(){
+    	this.finish();
     }
  
     /** (non-Javadoc)

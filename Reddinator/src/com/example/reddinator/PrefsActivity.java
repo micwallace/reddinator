@@ -56,6 +56,9 @@ public class PrefsActivity extends PreferenceActivity {
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
 			RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
+			// bypass cache if service not loaded
+			GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
+			global.setBypassCache(true);
 			appWidgetManager.updateAppWidget(mAppWidgetId, views);
 			appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		}

@@ -33,6 +33,7 @@ public class SubredditSelect extends ListActivity {
 	ArrayAdapter<String> listadaptor;
 	private ArrayList<String> personallist;
 	SharedPreferences prefs;
+	GlobalObjects global;
 	String cursort;
 	Button sortbtn;
 	private int mAppWidgetId;
@@ -41,6 +42,7 @@ public class SubredditSelect extends ListActivity {
 		setContentView(R.layout.subredditselect);
 		// load personal list from saved prefereces, if null use default and save
 		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		global = ((GlobalObjects) SubredditSelect.this.getApplicationContext());
 		Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
 		if (feeds.isEmpty()){
 			// first time setup
@@ -69,12 +71,14 @@ public class SubredditSelect extends ListActivity {
 				Editor editor = prefs.edit();
 				editor.putString("currentfeed-"+mAppWidgetId, sreddit);
 				editor.commit();
+				
 				// refresh widget and close activity (NOTE: put in function)
 				AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 				RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
 				views.setTextViewText(R.id.subreddittxt, sreddit);
 				views.setViewVisibility(R.id.srloader, View.VISIBLE);
-				//views.setViewVisibility(R.id.refreshbutton, View.GONE);
+				// bypass cache if service not loaded
+				global.setBypassCache(true);
 				appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 				appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 				finish();
@@ -119,7 +123,8 @@ public class SubredditSelect extends ListActivity {
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
-			//views.setViewVisibility(R.id.refreshbutton, View.GONE);
+			// bypass cache if service not loaded
+			global.setBypassCache(true);
 			appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 			appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		}

@@ -143,6 +143,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (action.equals(APPWIDGET_UPDATE_FEED)) {
 			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+			// set cache bypass
+			GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+			global.setBypassCache(true);
 			// show loader
 			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
@@ -157,6 +160,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				System.out.println("loading more feed items");
 				// set loadmore indicator so the notifydatasetchanged function knows what to do
 				GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+				global.setBypassCache(true);
 				global.setLoadMore();
 				AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
 				// show loader
@@ -196,6 +200,9 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (action.equals(APPWIDGET_AUTO_UPDATE)) {
 			AppWidgetManager mgr3 = AppWidgetManager.getInstance(context);
 			int[] appWidgetIds = mgr3.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+			// set cache bypass
+			GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+			global.setBypassCache(true);
 			// show loader
 			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);

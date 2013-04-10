@@ -12,6 +12,7 @@ public class GlobalObjects extends Application {
 	static int LOADTYPE_LOAD = 0;
 	static int LOADTYPE_LOADMORE = 1;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
+	private boolean bypasscache = false; // tells the service to bypass the cache
 	public RedditData rdata;
 	private HashMap<Integer, JSONArray> datastore;
 	//public RedditData redditdata;
@@ -54,5 +55,12 @@ public class GlobalObjects extends Application {
 	}
 	public void SetLoad(){
 		loadtype = 0;
+	}
+	// data cache functions
+	public boolean getBypassCache(){
+		return bypasscache;
+	}
+	public void setBypassCache(boolean bypassed){
+		bypasscache = bypassed;
 	}
 }

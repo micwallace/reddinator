@@ -42,22 +42,26 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		prefseditor = prefs.edit();
 		System.out.println("New view factory created for widget ID:"+appWidgetId);
-		try {
-			data = new JSONArray(prefs.getString("feeddata-"+appWidgetId, "[]"));
-		} catch (JSONException e) {
-			data = new JSONArray();
-			e.printStackTrace();
-		}
-		System.out.println("cached Data length: "+data.length());
-		if (data.length() != 0){
-			itemfontsize = prefs.getString("widgetfontpref", "16");
+		// if this is a user request or an auto update, do not attempt to load cache
+		if (!global.getBypassCache()){
+			System.out.println("This is not a user request or auto update, checking for cache");
 			try {
-				lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
+				data = new JSONArray(prefs.getString("feeddata-"+appWidgetId, "[]"));
 			} catch (JSONException e) {
-				lastitemid = "1"; // eventually this will indicate not to load any more items and perform a reload once instead on next request.
+				data = new JSONArray();
 				e.printStackTrace();
 			}
-			loadcached = true;	
+			System.out.println("cached Data length: "+data.length());
+			if (data.length() != 0){
+				itemfontsize = prefs.getString("widgetfontpref", "16");
+				try {
+					lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
+				} catch (JSONException e) {
+					lastitemid = "1"; // eventually this will indicate not to load any more items and perform a reload once instead on next request.
+					e.printStackTrace();
+				}
+				loadcached = true;	
+			}
 		}
 	}
 	
@@ -65,7 +69,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onCreate() {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
-		System.out.println("Service started");
 		endoffeed = false;
 	}
 
@@ -170,13 +173,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		if (!loadcached){
 			// refresh data
-		if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
-			global.SetLoad();
-			loadMoreReddits();
-		} else {
-			System.out.println("loadReddits();");
-			loadReddits(false);
-		}
+			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
+				global.SetLoad();
+				loadMoreReddits();
+			} else {
+				System.out.println("loadReddits();");
+				loadReddits(false);
+			}
+			global.setBypassCache(false); // don't bypass the cache check the next time the service starts
 		} else {
 			loadcached = false;
 			// hide loader

@@ -26,14 +26,14 @@ public class TabWebFragment extends Fragment {
 	//private Bundle WVState;
 	private String url;
 	public void onCreated(Bundle savedInstanceState){
-		this.setRetainInstance(true);
-		
+		//this.setRetainInstance(true);
 	}
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
        super.onActivityCreated(savedInstanceState);
-       //wv.restoreState(savedInstanceState);  
+       //wv.restoreState(savedInstanceState);
     }
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	if (container == null) {
             return null;
