@@ -51,7 +51,7 @@
    </string-array>
    
    <string-array name="widget_refresh_list">
-       	<item>10 Minutes</item>
+       	<item>30 Minutes</item>
        	<item>1 Hour</item>
      	<item>2 Hours</item>
      	<item>4 Hours</item>
