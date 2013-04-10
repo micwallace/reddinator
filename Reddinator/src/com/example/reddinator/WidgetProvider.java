@@ -56,6 +56,7 @@ public class WidgetProvider extends AppWidgetProvider {
             irefresh.setAction(APPWIDGET_UPDATE);
             irefresh.setPackage(context.getPackageName());
             irefresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            irefresh.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent rpIntent = PendingIntent.getBroadcast(context, 0, irefresh, PendingIntent.FLAG_UPDATE_CURRENT);
             // ITEM CLICK
             Intent clickintent = new Intent(context, WidgetProvider.class);
