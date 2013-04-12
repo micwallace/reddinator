@@ -5,11 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import au.com.wallaceit.reddinator.R;
-
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;

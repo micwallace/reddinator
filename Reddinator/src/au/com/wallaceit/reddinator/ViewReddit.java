@@ -18,15 +18,14 @@ import android.widget.TabHost.TabContentFactory;
 public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeListener {
  
     private TabHost mTabHost;
-    private HashMap mapTabInfo = new HashMap();
+    private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
     private TabInfo mLastTab = null;
-    private GlobalObjects global;
     private class TabInfo {
          private String tag;
-         private Class clss;
+         private Class<TabWebFragment> clss;
          private Bundle args;
          private Fragment fragment;
-         TabInfo(String tag, Class clazz, Bundle args) {
+         TabInfo(String tag, Class<TabWebFragment> clazz, Bundle args) {
              this.tag = tag;
              this.clss = clazz;
              this.args = args;
@@ -142,7 +141,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
      * @see android.widget.TabHost.OnTabChangeListener#onTabChanged(java.lang.String)
      */
     public void onTabChanged(String tag) {
-        TabInfo newTab = (TabInfo) this.mapTabInfo.get(tag);
+        TabInfo newTab = this.mapTabInfo.get(tag);
         if (mLastTab != newTab) {
             android.support.v4.app.FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
             if (mLastTab != null) {

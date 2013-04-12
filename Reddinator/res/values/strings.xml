@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Reddinator</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="loading">Loading&#8230;</string>
     <string name="menu_settings">Settings</string>
 
 </resources>

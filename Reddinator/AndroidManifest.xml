@@ -42,7 +42,6 @@
             android:enabled="true"
             android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
-
         <receiver
             android:name="au.com.wallaceit.reddinator.WidgetProvider"
             android:enabled="true" >

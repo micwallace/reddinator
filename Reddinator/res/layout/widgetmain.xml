@@ -35,8 +35,7 @@
             android:layout_toLeftOf="@+id/prefsbutton"
             android:background="#CEE3F8"
             android:visibility="visible"
-            android:src="@android:drawable/ic_menu_rotate"
-            android:text="Settings" />
+            android:src="@android:drawable/ic_menu_rotate" />
 
         <ProgressBar
             android:id="@+id/srloader"
@@ -60,7 +59,7 @@
             android:drawablePadding="5dp"
             android:drawableRight="@android:drawable/arrow_down_float"
             android:gravity="center_vertical"
-            android:text="reddinator"
+            android:text="@+String/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000" />
 
@@ -71,6 +70,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dp"
+            android:contentDescription="logo"
             android:src="@drawable/reddit_icon_small" />
 
     </RelativeLayout>
@@ -99,7 +99,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
 	        android:layout_marginLeft="10dp"
-	        android:text="Loading..."
+	        android:text="@+String/loading"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#000" />
 	</LinearLayout>
