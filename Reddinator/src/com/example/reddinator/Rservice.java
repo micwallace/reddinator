@@ -115,8 +115,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			int score = 0;
 			int numcomments = 0;
 			try {
-				JSONObject tempobj = data.getJSONObject(position)
-						.getJSONObject("data");
+				JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
 				name = tempobj.getString("title");
 				domain = tempobj.getString("domain");
 				id = tempobj.getString("id");
@@ -125,15 +124,17 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				score = tempobj.getInt("score");
 				numcomments = tempobj.getInt("num_comments");
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				// return null; // The view is invalid;
 			}
+			// build view
 			row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
 			row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize));
 			row.setTextViewText(R.id.sourcetxt, domain);
 			row.setTextViewText(R.id.votestxt, String.valueOf(score));
 			row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
+			// add extras and set click intent
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
 			extras.putString(WidgetProvider.ITEM_ID, id);
@@ -144,9 +145,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			extras.putInt(WidgetProvider.ITEM_VOTES, score);
 			i.putExtras(extras);
 			row.setOnClickFillInIntent(R.id.listrow, i);
-			
 		}
-		//System.out.println("getViewAt("+position+") firing!");
+		//System.out.println("getViewAt("+position+");");
 		return row;
 	}
 

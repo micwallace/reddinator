@@ -86,25 +86,26 @@ public class WidgetProvider extends AppWidgetProvider {
     		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
         //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this causes the feed to update twice :(
-        System.out.println("onUpdate() fires!");
+        System.out.println("onUpdate();");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 	
 	@Override
 	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-		System.out.println("onAppWidgetOptionsChanged fired");
+		System.out.println("onAppWidgetOptionsChanged();");
 		this.onUpdate(context, appWidgetManager, new int[]{appWidgetId}); // fix for the widget not loading the second time round (adding to the homescreen)
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 	}
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		System.out.println("onDeleted fired");
+		System.out.println("onDeleted();");
 		super.onDeleted(context, appWidgetIds);
 	}
 
 	@Override
 	public void onDisabled(Context context) {
+		// cancel the alarm for automatic updates
 		Intent intent =  new Intent(context.getApplicationContext(), WidgetProvider.class);
         intent.setAction(APPWIDGET_AUTO_UPDATE);
         intent.setPackage(context.getPackageName());
@@ -112,7 +113,7 @@ public class WidgetProvider extends AppWidgetProvider {
         updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
 		final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		m.cancel(updateintent);
-		System.out.println("onDisabled fired");
+		System.out.println("onDisabled();");
 		super.onDisabled(context);
 	}
 	
@@ -131,92 +132,109 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (refreshrate!=0){
         	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
 		} else {
-			m.cancel(updateintent); // just incase theres a rougue alarm
+			m.cancel(updateintent); // auto update disabled
 		}
-		System.out.println("onEnabled fired");
+		System.out.println("onEnabled();");
         super.onEnabled(context);
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		if (action.equals(APPWIDGET_UPDATE_FEED)) {
-			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-			// set cache bypass
-			GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
-			global.setBypassCache(true);
-			// show loader
-			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
-			views.setViewVisibility(R.id.srloader, View.VISIBLE);
-			mgr.partiallyUpdateAppWidget(widgetid, views);
-			mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
-		}
 		if (action.equals(ITEM_CLICK)) {
-			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			// check if its the load more button being clicked
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
 			if (redditid.equals("0")){
-				System.out.println("loading more feed items");
+				// LOAD MORE FEED ITEM CLICKED
+				System.out.println("loading more feed items...");
+				int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 				// set loadmore indicator so the notifydatasetchanged function knows what to do
-				GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
-				global.setBypassCache(true);
-				global.setLoadMore();
-				AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
+				setLoadMore(context);
 				// show loader
-				RemoteViews views2 = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
-				views2.setViewVisibility(R.id.srloader, View.VISIBLE);
-				mgr2.updateAppWidget(widgetid, views2);
-				mgr2.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
+				showLoaderAndUpdate(context, intent, new int[]{widgetid});
 			} else {
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-			String clickprefst = prefs.getString("onclickpref", "1");
-			int clickpref = Integer.valueOf(clickprefst);
-			switch (clickpref){
-				case 1:
-				// open in the reddinator view
-				Intent clickintent1 = new Intent(context, ViewReddit.class);
-				clickintent1.putExtras(intent.getExtras());
-				clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(clickintent1);
-				break;
-				case 2:
-				// open link in browser
-				String url = intent.getStringExtra(ITEM_URL);
-				Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-				clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(clickintent2);
-				break;
-				case 3:
-				// open reddit comments page in browser
-				String plink = intent.getStringExtra(ITEM_PERMALINK);
-				Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+plink));
-				clickintent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(clickintent3);
-				break;
+				// NORMAL FEED ITEM CLICK
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+				String clickprefst = prefs.getString("onclickpref", "1");
+				int clickpref = Integer.valueOf(clickprefst);
+				switch (clickpref){
+					case 1:
+						// open in the reddinator view
+						Intent clickintent1 = new Intent(context, ViewReddit.class);
+						clickintent1.putExtras(intent.getExtras());
+						clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(clickintent1);
+						break;
+					case 2:
+						// open link in browser
+						String url = intent.getStringExtra(ITEM_URL);
+						Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+						clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(clickintent2);
+						break;
+					case 3:
+						// open reddit comments page in browser
+						String plink = intent.getStringExtra(ITEM_PERMALINK);
+						Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+plink));
+						clickintent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(clickintent3);
+						break;
+				}
 			}
-			}
+		}
+		if (action.equals(APPWIDGET_UPDATE_FEED)) {
+			// get widget id
+			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+			// set cache bypass incase widget needs new view factory
+			setNoCache(context);
+			// show loader and update data
+			showLoaderAndUpdate(context, intent, new int[]{widgetid});
 		}
 		if (action.equals(APPWIDGET_AUTO_UPDATE)) {
-			AppWidgetManager mgr3 = AppWidgetManager.getInstance(context);
-			int[] appWidgetIds = mgr3.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+			int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
 			// set cache bypass
-			GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
-			global.setBypassCache(true);
-			// show loader
-			RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
-			views.setViewVisibility(R.id.srloader, View.VISIBLE);
-			mgr3.updateAppWidget(appWidgetIds, views);
-			mgr3.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
+			setNoCache(context);
+			// perform full update
+			onUpdate(context, mgr, appWidgetIds);
+			//RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+			//views.setViewVisibility(R.id.srloader, View.VISIBLE);
+			//mgr.updateAppWidget(appWidgetIds, views);
+			// request update from service
+			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
 		}
 		if (action.equals("android.intent.action.PACKAGE_RESTARTED")){
-			AppWidgetManager mgr4 = AppWidgetManager.getInstance(context);
-			int[] appWidgetIds = mgr4.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+			AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
+			int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
 			// perform full widget update
-			onUpdate(context, mgr4, appWidgetIds);
+			onUpdate(context, mgr2, appWidgetIds);
 		}
 		System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);
+	}
+	
+	private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid){
+		AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+		// show loader
+		RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+		views.setViewVisibility(R.id.srloader, View.VISIBLE);
+		// update view
+		mgr.partiallyUpdateAppWidget(widgetid, views);
+		// request update of listview data
+		mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
+	}
+	
+	private void setLoadMore(Context context){
+		// set the loadmore indicator in global object, we also set bypass cache in case a new remoteviewsfactory is created
+		GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+		global.setBypassCache(true);
+		global.setLoadMore();
+	}
+	
+	private void setNoCache(Context context){
+		// the bypass cache indicator is used when the last remoteviewfactory has been terminated. A new one is created so we need to tell it not to load the cached data
+		GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+		global.setBypassCache(true);
 	}
 
 }

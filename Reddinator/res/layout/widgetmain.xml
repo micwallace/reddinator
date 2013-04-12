@@ -60,7 +60,7 @@
             android:drawablePadding="5dp"
             android:drawableRight="@android:drawable/arrow_down_float"
             android:gravity="center_vertical"
-            android:text="technology"
+            android:text="reddinator"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000" />
 

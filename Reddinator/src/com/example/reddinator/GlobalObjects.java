@@ -12,7 +12,7 @@ public class GlobalObjects extends Application {
 	static int LOADTYPE_LOAD = 0;
 	static int LOADTYPE_LOADMORE = 1;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
-	private boolean bypasscache = false; // tells the service to bypass the cache
+	private boolean bypasscache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData rdata;
 	private HashMap<Integer, JSONArray> datastore;
 	//public RedditData redditdata;
