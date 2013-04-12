@@ -57,11 +57,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				try {
 					lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
 				} catch (JSONException e) {
-					lastitemid = "1"; // eventually this will indicate not to load any more items and perform a reload once instead on next request.
+					lastitemid = "0"; // Could not get last item ID; perform a reload next time and show error view :(
 					e.printStackTrace();
 				}
 				loadcached = true;	
 			}
+		} else {
+			data = new JSONArray(); // set empty data to prevent any NPE
 		}
 	}
 	
@@ -173,7 +175,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		if (!loadcached){
 			// refresh data
-			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE){
+			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
 				global.SetLoad();
 				loadMoreReddits();
 			} else {
@@ -233,7 +235,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		try {
 			lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name"); // name is actually the unique id we want
 		} catch (JSONException e) {
-			lastitemid = "0"; // last item of 0 will fetch the first page
+			lastitemid = "0"; // Could not get last item ID; perform a reload next time and show error view :(
 			e.printStackTrace();
 		};
 		// hide loader

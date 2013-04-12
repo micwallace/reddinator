@@ -41,14 +41,12 @@
         <service
             android:name="com.example.reddinator.Rservice"
             android:enabled="true"
-            android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
 
         <receiver
             android:name="com.example.reddinator.WidgetProvider"
-            android:enabled="true"
-            android:exported="true" >
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="com.example.redinator.WidgetProvider.ITEM_CLICK"></action>
                 <action android:name="com.example.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE"></action>
@@ -57,6 +55,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED"></action>
+                <action android:name="android.intent.action.PACKAGE_RESTARTED"></action>
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info"/>
