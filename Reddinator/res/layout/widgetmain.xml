@@ -59,7 +59,7 @@
             android:drawablePadding="5dp"
             android:drawableRight="@android:drawable/arrow_down_float"
             android:gravity="center_vertical"
-            android:text="@+String/app_name"
+            android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000000" />
 
@@ -99,7 +99,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
 	        android:layout_marginLeft="10dp"
-	        android:text="@+String/loading"
+	        android:text="@string/loading"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#000" />
 	</LinearLayout>

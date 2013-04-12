@@ -35,7 +35,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private SharedPreferences prefs;
 	private Editor prefseditor;
 	private String itemfontsize = "16";
-	private boolean loadcached = false;
+	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
 	
 	public ListRemoteViewsFactory(Context ctxt, Intent intent) {
 		this.ctxt = ctxt;
@@ -44,9 +44,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		prefseditor = prefs.edit();
 		System.out.println("New view factory created for widget ID:"+appWidgetId);
-		// if this is a user request or an auto update, do not attempt to load cache
-		if (!global.getBypassCache()){
-			System.out.println("This is not a user request or auto update, checking for cache");
+		// if this is a user request (apart from 'loadmore') or an auto update, do not attempt to load cache. 
+		// when a user clicks load more and a new view factory needs to be created we don't want to bypass cache, we want to load the cached items
+		int loadtype = global.getLoadType();
+		if (!global.getBypassCache() || loadtype ==  GlobalObjects.LOADTYPE_LOADMORE){
+			System.out.println("This is not a standard user request or auto update, checking for cache");
 			try {
 				data = new JSONArray(prefs.getString("feeddata-"+appWidgetId, "[]"));
 			} catch (JSONException e) {
@@ -62,7 +64,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 					lastitemid = "0"; // Could not get last item ID; perform a reload next time and show error view :(
 					e.printStackTrace();
 				}
-				loadcached = true;	
+				if (loadtype == GlobalObjects.LOADTYPE_LOAD){
+					loadcached = true; // this isn't a loadmore request, the cache is loaded and we're done
+					System.out.println("Cache loaded, no user request received.");
+				}
 			}
 		} else {
 			data = new JSONArray(); // set empty data to prevent any NPE
