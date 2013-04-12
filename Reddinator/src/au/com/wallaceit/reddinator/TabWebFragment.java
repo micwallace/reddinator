@@ -1,4 +1,6 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;

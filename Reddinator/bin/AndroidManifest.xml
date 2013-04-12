@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.reddinator"
+    package="au.com.wallaceit.reddinator"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -13,44 +13,43 @@
         android:icon="@drawable/reddit_icon_small"
         android:label="Reddinator"
         android:theme="@style/AppTheme"
-        android:name="com.example.reddinator.GlobalObjects" >
-        
+        android:name="au.com.wallaceit.reddinator.GlobalObjects" >
         <activity
-            android:name="com.example.reddinator.PrefsActivity"
+            android:name="au.com.wallaceit.reddinator.PrefsActivity"
             android:label="@string/app_name" >
             <intent-filter>
         		<action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
     		</intent-filter>
         </activity>
 		<activity
-            android:name="com.example.reddinator.SubredditSelect"
+            android:name="au.com.wallaceit.reddinator.SubredditSelect"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.reddinator.ViewAllSubreddits"
+            android:name="au.com.wallaceit.reddinator.ViewAllSubreddits"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.reddinator.ViewReddit"
+            android:name="au.com.wallaceit.reddinator.ViewReddit"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         
         <service
-            android:name="com.example.reddinator.Rservice"
+            android:name="au.com.wallaceit.reddinator.Rservice"
             android:enabled="true"
             android:permission="android.permission.BIND_REMOTEVIEWS">
         </service>
 
         <receiver
-            android:name="com.example.reddinator.WidgetProvider"
+            android:name="au.com.wallaceit.reddinator.WidgetProvider"
             android:enabled="true" >
             <intent-filter>
-                <action android:name="com.example.redinator.WidgetProvider.ITEM_CLICK"></action>
-                <action android:name="com.example.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE"></action>
-                <action android:name="com.example.redinator.WidgetProvider.APPWIDGET_UPDATE_FEED"></action>
+                <action android:name="au.com.wallaceit.redinator.WidgetProvider.ITEM_CLICK"></action>
+                <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE"></action>
+                <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_UPDATE_FEED"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS"></action>
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED"></action>

@@ -1,10 +1,12 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -71,7 +73,6 @@ public class SubredditSelect extends ListActivity {
 				Editor editor = prefs.edit();
 				editor.putString("currentfeed-"+mAppWidgetId, sreddit);
 				editor.commit();
-				
 				// refresh widget and close activity (NOTE: put in function)
 				AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 				RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);

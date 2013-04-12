@@ -1,7 +1,8 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import java.util.HashMap;
-import java.util.Iterator;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;

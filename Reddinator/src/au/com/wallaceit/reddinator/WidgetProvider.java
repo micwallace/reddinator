@@ -1,4 +1,6 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -82,6 +84,7 @@ public class WidgetProvider extends AppWidgetProvider {
     		views.setTextViewText(R.id.subreddittxt, curfeed);
     		// This is how you populate the data.
     		views.setRemoteAdapter(R.id.listview, servintent);
+    		views.setScrollPosition(R.id.listview, 0); // in-case an auto update
     		// Tell the AppWidgetManager to perform an update on the current app widget
     		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
@@ -197,9 +200,6 @@ public class WidgetProvider extends AppWidgetProvider {
 			setNoCache(context);
 			// perform full update
 			onUpdate(context, mgr, appWidgetIds);
-			//RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
-			//views.setViewVisibility(R.id.srloader, View.VISIBLE);
-			//mgr.updateAppWidget(appWidgetIds, views);
 			// request update from service
 			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
 		}

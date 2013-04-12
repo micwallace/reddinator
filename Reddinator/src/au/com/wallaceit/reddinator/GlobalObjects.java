@@ -1,4 +1,4 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,8 +1,10 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -186,7 +188,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		} else {
 			loadcached = false;
 			// hide loader
-			hideWidgetLoader();
+			hideWidgetLoader(false); // don't go to top as the user is probably interacting with the list
 		}
 	}
 	private String lastitemid = "0";
@@ -239,13 +241,21 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			e.printStackTrace();
 		};
 		// hide loader
-		hideWidgetLoader();
+		if (loadmore){
+			hideWidgetLoader(false); // don't go to top of list
+		} else {
+			hideWidgetLoader(true); // go to top
+		}
 	}
 	// hide appwidget loader
-	private void hideWidgetLoader(){
+	private void hideWidgetLoader(boolean gototopoflist){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
+		// go to the top of the list view
+		if (gototopoflist){
+			views.setScrollPosition(R.id.listview, 0);
+		}
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
 	}
 }

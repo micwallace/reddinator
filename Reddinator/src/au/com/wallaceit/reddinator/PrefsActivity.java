@@ -1,4 +1,6 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -59,7 +61,7 @@ public class PrefsActivity extends PreferenceActivity {
 			// bypass cache if service not loaded
 			GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
 			global.setBypassCache(true);
-			appWidgetManager.updateAppWidget(mAppWidgetId, views);
+			appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 			appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		}
 		// check if refresh rate has changed and update if needed

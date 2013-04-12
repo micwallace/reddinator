@@ -1,4 +1,4 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,6 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

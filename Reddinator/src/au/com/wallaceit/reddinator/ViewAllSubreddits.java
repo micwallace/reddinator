@@ -1,8 +1,10 @@
-package com.example.reddinator;
+package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import au.com.wallaceit.reddinator.R;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
