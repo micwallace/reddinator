@@ -66,7 +66,7 @@ public class PrefsActivity extends PreferenceActivity {
 		}
 		// check if refresh rate has changed and update if needed
 		if (!refreshrate.equals(prefs.getString("refreshrate", "43200000"))){
-			System.out.println("Refresh preference changed, updating alarm");
+			//System.out.println("Refresh preference changed, updating alarm");
 			Intent intent =  new Intent(getApplicationContext(), WidgetProvider.class);
 	        intent.setAction(WidgetProvider.APPWIDGET_AUTO_UPDATE);
 	        intent.setPackage(getApplicationContext().getPackageName());

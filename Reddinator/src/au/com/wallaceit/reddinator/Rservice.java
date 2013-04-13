@@ -44,19 +44,19 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		global = ((GlobalObjects) ctxt.getApplicationContext());
 		prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		prefseditor = prefs.edit();
-		System.out.println("New view factory created for widget ID:"+appWidgetId);
+		//System.out.println("New view factory created for widget ID:"+appWidgetId);
 		// if this is a user request (apart from 'loadmore') or an auto update, do not attempt to load cache. 
 		// when a user clicks load more and a new view factory needs to be created we don't want to bypass cache, we want to load the cached items
 		int loadtype = global.getLoadType();
 		if (!global.getBypassCache() || loadtype ==  GlobalObjects.LOADTYPE_LOADMORE){
-			System.out.println("This is not a standard user request or auto update, checking for cache");
+			//System.out.println("This is not a standard user request or auto update, checking for cache");
 			try {
 				data = new JSONArray(prefs.getString("feeddata-"+appWidgetId, "[]"));
 			} catch (JSONException e) {
 				data = new JSONArray();
 				e.printStackTrace();
 			}
-			System.out.println("cached Data length: "+data.length());
+			//System.out.println("cached Data length: "+data.length());
 			if (data.length() != 0){
 				itemfontsize = prefs.getString("widgetfontpref", "16");
 				try {
@@ -67,7 +67,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 				if (loadtype == GlobalObjects.LOADTYPE_LOAD){
 					loadcached = true; // this isn't a loadmore request, the cache is loaded and we're done
-					System.out.println("Cache loaded, no user request received.");
+					//System.out.println("Cache loaded, no user request received.");
 				}
 			}
 		} else {
@@ -188,7 +188,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				global.SetLoad();
 				loadMoreReddits();
 			} else {
-				System.out.println("loadReddits();");
+				//System.out.println("loadReddits();");
 				loadReddits(false);
 			}
 			global.setBypassCache(false); // don't bypass the cache check the next time the service starts
@@ -201,7 +201,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private String lastitemid = "0";
 	private boolean endoffeed = false;
 	private void loadMoreReddits() {
-		System.out.println("loadMoreReddits();");
+		//System.out.println("loadMoreReddits();");
 		loadReddits(true);
 	}
 	private void loadReddits(boolean loadmore){

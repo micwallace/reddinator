@@ -34,8 +34,8 @@ public class RedditData {
     static String json = "";
 	RedditData(){
 		// Create the HTTP Client
-		httpclient = createHttpClient();
-		System.out.println("HTTPClient created");
+		// httpclient = createHttpClient(); // only create when called
+		// System.out.println("HTTPClient created");
 	}
 	// data fetch calls
 	public JSONArray getSubreddits(){
@@ -87,6 +87,10 @@ public class RedditData {
 	}
 	// HTTP Get Request
 	private JSONObject getJSONFromUrl(String url) {
+		// create client if null
+		if (httpclient == null){
+			httpclient = createHttpClient();
+		}
         // Making HTTP request
         try {
             // defaultHttpClient
@@ -125,7 +129,7 @@ public class RedditData {
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing data " + e.toString());
         }
-        System.out.println("Download complete");
+        //System.out.println("Download complete");
         // return JSON String
         return jObj;
  

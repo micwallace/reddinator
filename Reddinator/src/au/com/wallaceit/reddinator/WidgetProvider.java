@@ -92,21 +92,20 @@ public class WidgetProvider extends AppWidgetProvider {
     		// Tell the AppWidgetManager to perform an update on the current app widget
     		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
-        //appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this causes the feed to update twice :(
-        System.out.println("onUpdate();");
+        //System.out.println("onUpdate();");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 	
 	@Override
 	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-		System.out.println("onAppWidgetOptionsChanged();");
+		//System.out.println("onAppWidgetOptionsChanged();");
 		this.onUpdate(context, appWidgetManager, new int[]{appWidgetId}); // fix for the widget not loading the second time round (adding to the homescreen)
 		super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
 	}
 
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds) {
-		System.out.println("onDeleted();");
+		//System.out.println("onDeleted();");
 		super.onDeleted(context, appWidgetIds);
 	}
 
@@ -120,7 +119,7 @@ public class WidgetProvider extends AppWidgetProvider {
         updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
 		final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		m.cancel(updateintent);
-		System.out.println("onDisabled();");
+		//System.out.println("onDisabled();");
 		super.onDisabled(context);
 	}
 	
@@ -141,7 +140,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		} else {
 			m.cancel(updateintent); // auto update disabled
 		}
-		System.out.println("onEnabled();");
+		// System.out.println("onEnabled();");
         super.onEnabled(context);
 	}
 
@@ -153,7 +152,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
 			if (redditid.equals("0")){
 				// LOAD MORE FEED ITEM CLICKED
-				System.out.println("loading more feed items...");
+				//System.out.println("loading more feed items...");
 				int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 				// set loadmore indicator so the notifydatasetchanged function knows what to do
 				setLoadMore(context);
@@ -207,13 +206,13 @@ public class WidgetProvider extends AppWidgetProvider {
 			// request update from service
 			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
 		}
-		if (action.equals("android.intent.action.PACKAGE_RESTARTED")){
+		if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED")){
 			AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
 			int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
 			// perform full widget update
 			onUpdate(context, mgr2, appWidgetIds);
 		}
-		System.out.println("broadcast received: "+intent.getAction().toString());
+		//System.out.println("broadcast received: "+intent.getAction().toString());
         super.onReceive(context, intent);
 	}
 	

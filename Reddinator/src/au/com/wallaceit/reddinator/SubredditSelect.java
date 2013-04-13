@@ -79,7 +79,7 @@ public class SubredditSelect extends ListActivity {
 				appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 				appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 				finish();
-				System.out.println(sreddit+" selected");
+				//System.out.println(sreddit+" selected");
 				
 			}
 		});
@@ -157,7 +157,7 @@ public class SubredditSelect extends ListActivity {
 	            	   // set new text in button
 	            	   String sorttxt = "Sort:  "+sort;
 	           			sortbtn.setText(sorttxt);
-	            	   System.out.println("Sort set: "+sort);
+	            	   //System.out.println("Sort set: "+sort);
 	            	   dialog.dismiss();
 	               }
 	    });
@@ -167,11 +167,9 @@ public class SubredditSelect extends ListActivity {
 	class MyRedditsAdapter extends ArrayAdapter<String> {
 		private LayoutInflater inflater;
 		
-		public MyRedditsAdapter(Context context,
-				List<String> objects) {
+		public MyRedditsAdapter(Context context, List<String> objects) {
 			super(context, R.layout.myredditlistitem, R.id.srname, objects);
-			inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 		
 		@Override
