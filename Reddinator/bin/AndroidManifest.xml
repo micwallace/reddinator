@@ -55,7 +55,8 @@
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED"></action>
                 <action android:name="android.intent.action.PACKAGE_RESTARTED"></action>
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider"
+            <meta-data 
+                android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info"/>
         </receiver>
     </application>

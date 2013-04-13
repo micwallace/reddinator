@@ -16,6 +16,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -137,7 +138,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// build view
 			row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
-			row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize));
+			// row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize)); // This was only introduced in api 16, using the method below instead
+			row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(itemfontsize)); // use for compatibility
 			row.setTextViewText(R.id.sourcetxt, domain);
 			row.setTextViewText(R.id.votestxt, String.valueOf(score));
 			row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));

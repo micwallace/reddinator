@@ -35,6 +35,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public WidgetProvider() {
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 		final int N = appWidgetIds.length;
@@ -82,7 +83,11 @@ public class WidgetProvider extends AppWidgetProvider {
     		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
     		views.setTextViewText(R.id.subreddittxt, curfeed);
     		// Set remote adapter for widget.
-    		views.setRemoteAdapter(R.id.listview, servintent);
+    		if (android.os.Build.VERSION.SDK_INT >= 14){
+    			views.setRemoteAdapter(R.id.listview, servintent); // API 14 and above
+    		} else {	
+    			views.setRemoteAdapter(appWidgetId, R.id.listview, servintent); // older version compatibility
+    		}
     		views.setScrollPosition(R.id.listview, 0); // in-case an auto update
     		// Tell the AppWidgetManager to perform an update on the current app widget
     		appWidgetManager.updateAppWidget(appWidgetId , views);
