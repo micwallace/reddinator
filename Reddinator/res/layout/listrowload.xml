@@ -8,7 +8,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_alignParentRight="true"
-    android:contentDescription="loading_img"
+    android:contentDescription="@string/loading_img"
     android:scaleType="center"
     android:src="@drawable/reddit_icon_small" >
 </ImageView>

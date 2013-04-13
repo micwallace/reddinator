@@ -13,7 +13,7 @@
         android:icon="@drawable/reddit_icon_small"
         android:label="Reddinator"
         android:theme="@style/AppTheme"
-        android:name="au.com.wallaceit.reddinator.GlobalObjects" >
+        android:name="au.com.wallaceit.reddinator.GlobalObjects" >  
         <activity
             android:name="au.com.wallaceit.reddinator.PrefsActivity"
             android:label="@string/app_name" >

@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
+            android:contentDescription="@string/configure"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -29,6 +30,7 @@
             android:id="@+id/refreshbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/refresh"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:layout_alignTop="@+id/prefsbutton"
@@ -70,7 +72,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dp"
-            android:contentDescription="logo"
+            android:contentDescription="@string/logo"
             android:src="@drawable/reddit_icon_small" />
 
     </RelativeLayout>
@@ -89,7 +91,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
-	        android:contentDescription="loading_img"
+	        android:contentDescription="@string/loading_img"
 	        android:scaleType="center"
 	        android:src="@drawable/reddit_icon_small" />
 

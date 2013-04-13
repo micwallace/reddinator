@@ -21,7 +21,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/searchbutton"
             android:ems="10"
-            android:hint="Search" >
+            android:hint="@string/search" >
 
             <requestFocus />
         </EditText>
@@ -35,6 +35,7 @@
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:contentDescription="@string/search"
             android:src="@android:drawable/ic_menu_search" />
 
     </RelativeLayout>
@@ -60,7 +61,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
-	        android:contentDescription="loading_img"
+	        android:contentDescription="@string/loading_pop_desc"
 	        android:scaleType="center"
 	        android:src="@drawable/reddit_icon_small" />
 
@@ -70,7 +71,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
 	        android:layout_marginLeft="10dp"
-	        android:text="Loading popular..."
+	        android:text="@string/loading_popular"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#000" />
 	</LinearLayout>

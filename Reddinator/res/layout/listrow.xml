@@ -10,6 +10,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:gravity="top"
+    android:textIsSelectable="false"
     android:minHeight="50dip"
     android:paddingLeft="6dip"
     android:paddingRight="10dp"
@@ -34,11 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:text="domain.com"
+        android:text="@string/reddit_domain"
         android:textColor="#336699" />
 	
     <ImageView
         android:id="@+id/icon1"
+        android:contentDescription="@string/icon"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_centerVertical="true"
@@ -48,6 +50,7 @@
     
     <TextView
         android:id="@+id/votestxt"
+        android:textIsSelectable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -58,6 +61,7 @@
 
     <ImageView
         android:id="@+id/icon2"
+        android:contentDescription="@string/icon"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_centerVertical="true"
@@ -67,6 +71,7 @@
     
     <TextView
         android:id="@+id/commentstxt"
+        android:textIsSelectable="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

@@ -12,7 +12,7 @@
         android:background="#EFF7FF"
         android:gravity="center_vertical"
         android:paddingLeft="14dp"
-        android:text="Sort:  hot"
+        android:text="@string/sort_hot"
         android:textColor="#FF4500" >
 
     </Button>
@@ -30,7 +30,7 @@
 		    android:layout_height="wrap_content"
 		    android:layout_alignParentRight="true"
 		    android:layout_alignParentTop="true"
-		    android:text="Add" />
+		    android:text="@string/add" />
 
 		<TextView
 		    android:id="@+id/textView1"
@@ -39,7 +39,7 @@
 		    android:layout_alignParentLeft="true"
 		    android:layout_centerVertical="true"
 		    android:layout_marginLeft="14dp"
-		    android:text="My Subreddits"
+		    android:text="@string/my_subreddits"
 		    android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </RelativeLayout>
