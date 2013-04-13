@@ -207,7 +207,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private void loadReddits(boolean loadmore){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
-		String sort = prefs.getString("sort"+appWidgetId, "hot");
+		String sort = prefs.getString("sort-"+appWidgetId, "hot");
 		itemfontsize = prefs.getString("widgetfontpref", "16");
 		// Load more or initial load/reload?
 		if (loadmore){

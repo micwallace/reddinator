@@ -156,7 +156,7 @@ public class SubredditSelect extends ListActivity {
 	            	   prefsedit.commit();
 	            	   // set new text in button
 	            	   String sorttxt = "Sort:  "+sort;
-	           			sortbtn.setText(sorttxt);
+	           		   sortbtn.setText(sorttxt);
 	            	   //System.out.println("Sort set: "+sort);
 	            	   dialog.dismiss();
 	               }
