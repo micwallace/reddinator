@@ -75,6 +75,7 @@ public class WidgetProvider extends AppWidgetProvider {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
             views.setPendingIntentTemplate(R.id.listview, clickPI);
             views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
+            views.setOnClickPendingIntent(R.id.widget_logo, srpendIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);

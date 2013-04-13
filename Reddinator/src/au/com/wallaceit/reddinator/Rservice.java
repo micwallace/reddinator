@@ -236,6 +236,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// reloading
 			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
 			data = global.rdata.getRedditFeed(curfeed, sort, limit, "0");
+			if (data.length() == 0){
+				endoffeed=true;
+			}
 			prefseditor.putString("feeddata-"+appWidgetId, data.toString());
 			prefseditor.commit();
 		}
