@@ -136,7 +136,9 @@ public class ViewAllSubreddits extends ListActivity {
 	}
 	private void search(final String query){
 		System.out.println("Searching: "+query);
-		dlpopulartask.cancel(true);
+		if (dlpopulartask!=null){
+			dlpopulartask.cancel(true);
+		}
 		// use a thread for searching
 		final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Searching..."), true);
 		Thread t = new Thread() {
