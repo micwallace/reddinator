@@ -32,6 +32,7 @@ public class ViewAllSubreddits extends ListActivity {
 	private ArrayAdapter<String> listadapter;
 	private EditText searchbox;
 	private ListView listview;
+	private TextView emptyview;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		global = ((GlobalObjects) getApplicationContext());
@@ -48,18 +49,11 @@ public class ViewAllSubreddits extends ListActivity {
 				intent.putExtra("subreddit", sreddit);
 				setResult(1, intent);
 				finish();
-				System.out.println(sreddit+" selected");
+				//System.out.println(sreddit+" selected");
 			}
 		});
-		// get list data
-		if (global.isSrlistCached()){
-			sreddits = global.getSrList();
-			setListAdaptor();
-		} else {
-			sreddits = new ArrayList<String>();
-			setListAdaptor();
-			loadPopularSubreddits();
-		}
+		// get empty view text for easy access later
+		emptyview = (TextView) findViewById(R.id.poploadtxt);
 		// setup search buttons
 		searchbox = (EditText) this.findViewById(R.id.searchbox);
 		searchbox.setOnEditorActionListener(new OnEditorActionListener(){
@@ -87,52 +81,39 @@ public class ViewAllSubreddits extends ListActivity {
 		});
 	}
 	public void onBackPressed(){
-		System.out.println("onBackPressed()");
+		// System.out.println("onBackPressed()");
 		if (searchbox.getText().toString().equals("")){
 			this.finish();
 		} else {
-			sreddits.clear();
-			sreddits.addAll(global.getSrList());
-			updateAdapter();
+			if (global.isSrlistCached()){
+				sreddits.clear();
+				sreddits.addAll(global.getSrList());
+				updateAdapter();
+			} else {
+				emptyview.setText("Loading popular...");
+				sreddits.clear();
+				updateAdapter();
+				loadPopularSubreddits();
+			}
 			searchbox.setText("");
 		}
 	}
 	protected void onResume(){
-		System.out.println("onResume()");
+		//System.out.println("onResume()");
+		// get list data
+				if (global.isSrlistCached()){
+					sreddits = global.getSrList();
+					setListAdaptor();
+				} else {
+					sreddits = new ArrayList<String>();
+					setListAdaptor();
+					loadPopularSubreddits();
+				}
 		super.onResume();
 	}
 	private void loadPopularSubreddits(){
 		dlpopulartask = new DLTask();
 		dlpopulartask.execute("");
-		// OLD thread loading code; this is now done in an async task so the user can search for subreddits without waiting for the populars to load
-		/*final ProgressDialog dialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Loading data..."), true);
-		Thread t = new Thread() {
-				public void run() {
-					// get all popular subreddits
-					rdata = new RedditData();
-					srjson = rdata.getSubreddits();
-					// put into arraylist
-					sreddits = new ArrayList<String>();
-					int i = 0;
-					while (i<srjson.length()){
-						try {
-							sreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						i++;
-					}
-					global.putSrList(sreddits);
-					runOnUiThread(new Runnable() {
-							public void run() {
-								setListAdaptor();
-								dialog.dismiss();
-							}
-					});
-				}
-		};
-		t.start();*/
 	}
 	private void search(final String query){
 		System.out.println("Searching: "+query);
@@ -147,7 +128,7 @@ public class ViewAllSubreddits extends ListActivity {
 					rdata = new RedditData();
 					srjson = rdata.getSubredditSearch(query);
 					// put into arraylist
-					sreddits.clear();
+					sreddits = new ArrayList<String>();
 					int i = 0;
 					while (i<srjson.length()){
 						try {
@@ -159,10 +140,14 @@ public class ViewAllSubreddits extends ListActivity {
 						i++;
 					}
 					
-					System.out.println("search complete");
+					//System.out.println("search complete");
 					runOnUiThread(new Runnable() {
 							public void run() {
-								updateAdapter();
+								setListAdaptor();
+								if (sreddits.size() == 0){
+									// set no result text in no items view
+									emptyview.setText("No subreddits found");
+								}
 								sdialog.dismiss();
 							}
 					});

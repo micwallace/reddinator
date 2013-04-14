@@ -64,9 +64,9 @@ public class RedditData {
 		String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json?limit="+String.valueOf(limit)+(!afterid.equals("0")?"&after="+afterid:"");
 		JSONArray feed = new JSONArray();
 		try {
-			feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+			feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children"); // get the feed items
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			feed.put("-1"); // error indicator
 			e.printStackTrace();
 		}
 		return feed;
@@ -87,6 +87,8 @@ public class RedditData {
 	}
 	// HTTP Get Request
 	private JSONObject getJSONFromUrl(String url) {
+		// create null object to return on errors
+		jObj = new JSONObject();
 		// create client if null
 		if (httpclient == null){
 			httpclient = createHttpClient();
@@ -96,19 +98,21 @@ public class RedditData {
             // defaultHttpClient
             //DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
- 
             HttpResponse httpResponse = httpclient.execute(httpget);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();          
  
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
+        	return jObj;
         } catch (ClientProtocolException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
+        	return jObj;
         } catch (IOException e) {
-            e.printStackTrace();
+        	e.printStackTrace();
+        	return jObj;
         }
- 
+        // read data
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     is, "iso-8859-1"), 8);
@@ -120,14 +124,18 @@ public class RedditData {
             is.close();
             json = sb.toString();
         } catch (Exception e) {
-            Log.e("Buffer Error", "Error converting result " + e.toString());
+            //Log.e("Buffer Error", "Error converting result " + e.toString());
+        	e.printStackTrace();
+        	return jObj;
         }
  
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            Log.e("JSON Parser", "Error parsing data " + e.toString());
+            //Log.e("JSON Parser", "Error parsing data " + e.toString());
+        	e.printStackTrace();
+        	return jObj;
         }
         //System.out.println("Download complete");
         // return JSON String

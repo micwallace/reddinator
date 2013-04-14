@@ -222,6 +222,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		// show loader
 		RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.VISIBLE);
+		views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
 		// update view
 		mgr.partiallyUpdateAppWidget(widgetid, views);
 		// request update of listview data

@@ -14,24 +14,14 @@ public class GlobalObjects extends Application {
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
 	private boolean bypasscache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData rdata;
-	private HashMap<Integer, JSONArray> datastore;
 	//public RedditData redditdata;
 	public GlobalObjects(){
-		srlist = new ArrayList<String>();
-		rdata = new RedditData();
-		datastore = new HashMap<Integer, JSONArray>();
-	}
-	// data
-	public JSONArray getFeedData(Integer widgetid){
-		if (datastore.containsKey(widgetid)){
-			return datastore.get(widgetid);
-		} else {
-			return (new JSONArray());
+		if (srlist == null){
+			srlist = new ArrayList<String>();
 		}
+		rdata = new RedditData();
 	}
-	public void putFeedData(Integer widgetid, JSONArray data){
-		datastore.put(widgetid, data);
-	}
+	// cached data
 	public boolean isSrlistCached(){
 		if (!srlist.isEmpty()){
 			return true;
@@ -43,7 +33,7 @@ public class GlobalObjects extends Application {
 		srlist.addAll(list);
 	}
 	public ArrayList<String> getSrList(){
-		System.out.println("Using cached subreddits");
+		//System.out.println("Using cached subreddits");
 		return srlist;
 	}
 	// data loadtype functions

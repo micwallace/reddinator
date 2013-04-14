@@ -50,6 +50,20 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:visibility="visible" />
+        
+        <ImageButton
+            android:id="@+id/erroricon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_toLeftOf="@+id/refreshbutton"
+            android:background="#CEE3F8"
+            android:contentDescription="@string/error"
+            android:src="@android:drawable/stat_notify_error"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/subreddittxt"

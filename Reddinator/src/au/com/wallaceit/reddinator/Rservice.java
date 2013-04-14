@@ -195,7 +195,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		} else {
 			loadcached = false;
 			// hide loader
-			hideWidgetLoader(false); // don't go to top as the user is probably interacting with the list
+			hideWidgetLoader(false, false); // don't go to top as the user is probably interacting with the list
 		}
 	}
 	private String lastitemid = "0";
@@ -212,35 +212,46 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// Load more or initial load/reload?
 		if (loadmore){
 			// fetch 25 more after current last item and append to the list
-			int limit = 25;
-			JSONArray tempdata = global.rdata.getRedditFeed(curfeed, sort, limit, lastitemid);
-			if (tempdata.length() == 0){
-				endoffeed = true;
-			} else {
-				endoffeed = false;
-				int i = 0;
-				while (i<tempdata.length()){
-					try {
-						data.put(tempdata.get(i));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+			JSONArray tempdata = global.rdata.getRedditFeed(curfeed, sort, 25, lastitemid);
+			if (!isError(tempdata)){
+				if (tempdata.length() == 0){
+					endoffeed = true;
+				} else {
+					endoffeed = false;
+					int i = 0;
+					while (i<tempdata.length()){
+						try {
+							data.put(tempdata.get(i));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						i++;
 					}
-					i++;
+					prefseditor.putString("feeddata-"+appWidgetId, data.toString());
+					prefseditor.commit();
 				}
-				prefseditor.putString("feeddata-"+appWidgetId, data.toString());
-				prefseditor.commit();
+			} else {
+				hideWidgetLoader(false, true); // don't go to top of list and show error icon
+				return;
 			}
 		} else {
 			endoffeed = false;
 			// reloading
 			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
-			data = global.rdata.getRedditFeed(curfeed, sort, limit, "0");
-			if (data.length() == 0){
-				endoffeed=true;
+			JSONArray temparray = global.rdata.getRedditFeed(curfeed, sort, limit, "0");
+			// check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
+			if (!isError(temparray)){
+				data = temparray;
+				if (data.length() == 0){
+					endoffeed=true;
+				}
+				prefseditor.putString("feeddata-"+appWidgetId, data.toString());
+				prefseditor.commit();
+			} else {
+				hideWidgetLoader(false, true); // don't go to top of list and show error icon
+				return;
 			}
-			prefseditor.putString("feeddata-"+appWidgetId, data.toString());
-			prefseditor.commit();
 		}
 		// set last item id for "loadmore use"
 		// Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
@@ -252,19 +263,33 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		};
 		// hide loader
 		if (loadmore){
-			hideWidgetLoader(false); // don't go to top of list
+			hideWidgetLoader(false, false); // don't go to top of list
 		} else {
-			hideWidgetLoader(true); // go to top
+			hideWidgetLoader(true, false); // go to top
 		}
 	}
+	// check if the array is an error array
+	private boolean isError(JSONArray temparray){
+		boolean error;
+		try {
+			error = temparray.getString(0).equals("-1");
+		} catch (JSONException e) {
+			error = true;
+			e.printStackTrace();
+		}
+		return error;
+	}
 	// hide appwidget loader
-	private void hideWidgetLoader(boolean gototopoflist){
+	private void hideWidgetLoader(boolean gototopoflist, boolean showerror){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
 		// go to the top of the list view
 		if (gototopoflist){
 			views.setScrollPosition(R.id.listview, 0);
+		}
+		if (showerror){
+			views.setViewVisibility(R.id.erroricon, View.VISIBLE);
 		}
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
 	}

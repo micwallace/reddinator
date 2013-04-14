@@ -6,6 +6,7 @@
     <string name="search">Search</string>
     <string name="configure">Configure</string>
     <string name="refresh">Refresh</string>
+    <string name="error">Error</string>
     <string name="logo">logo</string>
     <string name="loading_img">loading image</string>
     <string name="loading_pop_desc">loading popular</string>
