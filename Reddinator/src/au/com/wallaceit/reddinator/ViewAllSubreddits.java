@@ -80,6 +80,7 @@ public class ViewAllSubreddits extends ListActivity {
 			}
 		});
 	}
+	private boolean cancelrevert = false;
 	public void onBackPressed(){
 		// System.out.println("onBackPressed()");
 		if (searchbox.getText().toString().equals("")){
@@ -93,7 +94,11 @@ public class ViewAllSubreddits extends ListActivity {
 				emptyview.setText("Loading popular...");
 				sreddits.clear();
 				updateAdapter();
-				loadPopularSubreddits();
+				if (dlpopulartask == null){
+					loadPopularSubreddits();
+				} else {
+					cancelrevert=true;
+				}
 			}
 			searchbox.setText("");
 		}
@@ -189,7 +194,7 @@ public class ViewAllSubreddits extends ListActivity {
 				return popreddits;
 		}
 		protected void onPostExecute(ArrayList<String> resultlist) {
-			if (!this.isCancelled()){
+			if (!this.isCancelled() || cancelrevert){
 				sreddits.addAll(resultlist);
 				updateAdapter();
 			}

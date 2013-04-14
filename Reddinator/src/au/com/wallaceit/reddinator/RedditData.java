@@ -29,7 +29,6 @@ import android.util.Log;
 
 public class RedditData {
 	private DefaultHttpClient httpclient;
-	static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
 	RedditData(){
@@ -93,6 +92,7 @@ public class RedditData {
 		if (httpclient == null){
 			httpclient = createHttpClient();
 		}
+		InputStream is;
         // Making HTTP request
         try {
             // defaultHttpClient
@@ -112,6 +112,7 @@ public class RedditData {
         	e.printStackTrace();
         	return jObj;
         }
+        
         // read data
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
