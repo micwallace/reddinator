@@ -59,6 +59,7 @@ public class TabWebFragment extends Fragment {
         	act.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
         	wv = (WebView) ll.findViewById(R.id.webView1);
+        	wv.requestFocus(View.FOCUS_DOWN);
         	wv.getSettings().setJavaScriptEnabled(true);
         	//wv.getSettings().setDefaultZoom(ZoomDensity.FAR);
         	wv.getSettings().setSupportZoom(true);
