@@ -118,6 +118,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		}
 		// check if its the last view and return loading view instead of normal row
 		if (position == data.length()) {
+			// build load more item
 			//System.out.println("load more getViewAt("+position+") firing"); 
 			RemoteViews loadmorerow = new RemoteViews(ctxt.getPackageName(), R.layout.listrowloadmore);
 			if (endoffeed){ 
@@ -132,6 +133,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			loadmorerow.setOnClickFillInIntent(R.id.listrowloadmore, i);
 			return loadmorerow;
 		} else {
+			// build normal item
 			String name = "";
 			String url = "";
 			String permalink = "";
@@ -288,11 +290,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	// check if the array is an error array
 	private boolean isError(JSONArray temparray){
 		boolean error;
-		try {
-			error = temparray.getString(0).equals("-1");
-		} catch (JSONException e) {
-			error = true;
-			e.printStackTrace();
+		if (temparray.length() > 0){
+			try {
+				error = temparray.getString(0).equals("-1");
+			} catch (JSONException e) {
+				error = true;
+				e.printStackTrace();
+			}
+		} else {
+			error = false; // empty array means no more feed items
 		}
 		return error;
 	}

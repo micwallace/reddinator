@@ -42,12 +42,12 @@
         <ProgressBar
             android:id="@+id/srloader"
             style="?android:attr/progressBarStyleSmall"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:visibility="visible" />
         

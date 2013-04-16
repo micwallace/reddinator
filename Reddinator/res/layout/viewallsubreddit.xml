@@ -22,8 +22,6 @@
             android:layout_toLeftOf="@+id/searchbutton"
             android:ems="10"
             android:hint="@string/search" >
-
-            <requestFocus />
         </EditText>
 
         <ImageView

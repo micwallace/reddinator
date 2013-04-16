@@ -161,7 +161,6 @@ public class ViewAllSubreddits extends ListActivity {
 						}
 						i++;
 					}
-					
 					//System.out.println("search complete");
 					runOnUiThread(new Runnable() {
 							public void run() {
@@ -198,6 +197,8 @@ public class ViewAllSubreddits extends ListActivity {
 				// put into arraylist
 				ArrayList<String> popreddits = new ArrayList<String>();
 				int i = 0;
+				popreddits.add("Front Page"); // slap the front page on there
+				popreddits.add("all"); // and an all
 				while (i<srjson.length()){
 					try {
 						popreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));

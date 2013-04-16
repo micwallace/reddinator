@@ -17,6 +17,8 @@
  */
 package au.com.wallaceit.reddinator;
 
+import java.lang.reflect.Field;
+
 import au.com.wallaceit.reddinator.R;
 
 import android.app.Activity;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
@@ -80,6 +83,7 @@ public class TabWebFragment extends Fragment {
         	wv.getSettings().setJavaScriptEnabled(true);
         	//wv.getSettings().setDefaultZoom(ZoomDensity.FAR);
         	wv.getSettings().setSupportZoom(true);
+        	wv.getSettings().setUseWideViewPort(true);
         	wv.getSettings().setBuiltInZoomControls(true);
         	wv.getSettings().setDisplayZoomControls(true);
         	wv.getSettings().setDefaultFontSize(fontsize);

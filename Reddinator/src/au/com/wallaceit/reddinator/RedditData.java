@@ -47,9 +47,6 @@ public class RedditData {
     static JSONObject jObj = null;
     static String json = "";
 	RedditData(){
-		// Create the HTTP Client
-		// httpclient = createHttpClient(); // only create when called
-		// System.out.println("HTTPClient created");
 	}
 	// data fetch calls
 	public JSONArray getSubreddits(){
@@ -75,7 +72,7 @@ public class RedditData {
 		return sreddits;
 	}
 	public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid){
-		String url = "http://www.reddit.com/r/"+subreddit+"/"+sort+".json?limit="+String.valueOf(limit)+(!afterid.equals("0")?"&after="+afterid:"");
+		String url = "http://www.reddit.com"+(subreddit.equals("Front Page")?"":"/r/"+subreddit)+"/"+sort+".json?limit="+String.valueOf(limit)+(!afterid.equals("0")?"&after="+afterid:"");
 		JSONArray feed = new JSONArray();
 		try {
 			feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children"); // get the feed items
@@ -110,8 +107,6 @@ public class RedditData {
 		InputStream is;
         // Making HTTP request
         try {
-            // defaultHttpClient
-            //DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(url);
             HttpResponse httpResponse = httpclient.execute(httpget);
             HttpEntity httpEntity = httpResponse.getEntity();

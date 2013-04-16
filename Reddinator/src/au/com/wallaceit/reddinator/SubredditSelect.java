@@ -61,7 +61,7 @@ public class SubredditSelect extends ListActivity {
 		Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
 		if (feeds.isEmpty()){
 			// first time setup
-			personallist = new ArrayList<String>(Arrays.asList("all","arduino","AskReddit","technology","video","worldnews"));
+			personallist = new ArrayList<String>(Arrays.asList("Front Page","all","arduino","AskReddit","technology","science","video","worldnews"));
 			savePersonalList();
 		} else {
 			personallist = new ArrayList<String>(feeds);
@@ -72,7 +72,7 @@ public class SubredditSelect extends ListActivity {
 		listView.setTextFilterEnabled(true);
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
-		if (extras != null) {	
+		if (extras != null) {
 			mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		}
 		listView.setOnItemClickListener(new OnItemClickListener() {

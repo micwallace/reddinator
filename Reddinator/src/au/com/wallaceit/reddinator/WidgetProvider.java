@@ -96,6 +96,7 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
+            // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop is displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
@@ -103,7 +104,7 @@ public class WidgetProvider extends AppWidgetProvider {
     		// Set remote adapter for widget.
     		if (android.os.Build.VERSION.SDK_INT >= 14){
     			views.setRemoteAdapter(R.id.listview, servintent); // API 14 and above
-    		} else {	
+    		} else {
     			views.setRemoteAdapter(appWidgetId, R.id.listview, servintent); // older version compatibility
     		}
     		views.setScrollPosition(R.id.listview, 0); // in-case an auto update
