@@ -18,10 +18,6 @@
 package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import org.json.JSONArray;
-
 import android.app.Application;
 
 public class GlobalObjects extends Application {

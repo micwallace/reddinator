@@ -41,8 +41,7 @@
     android:minWidth="80dp"
     android:paddingTop="4dp"
     android:scaleType="centerCrop"
-    android:src="@drawable/ic_launcher"
-    android:visibility="visible" />
+    android:visibility="gone" />
 
 </RelativeLayout>
 
