@@ -40,6 +40,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -51,6 +54,8 @@ public class SubredditSelect extends ListActivity {
 	GlobalObjects global;
 	String cursort;
 	Button sortbtn;
+	boolean curthumbpref;
+	CheckBox thumbchkbox;
 	private int mAppWidgetId;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -119,6 +124,18 @@ public class SubredditSelect extends ListActivity {
 				showSortDialog();
 			}
 		});
+		// widget checkbox
+		thumbchkbox = (CheckBox) findViewById(R.id.thumbnailpref);
+		curthumbpref = prefs.getBoolean("thumbnails-"+mAppWidgetId, false);
+		thumbchkbox.setChecked(curthumbpref);
+		thumbchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				Editor prefsedit = prefs.edit();
+				prefsedit.putBoolean("thumbnails-"+mAppWidgetId, isChecked);
+          	   	prefsedit.commit();
+			}
+		});
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -133,7 +150,7 @@ public class SubredditSelect extends ListActivity {
 	public void onBackPressed(){
 		savePersonalList();
 		// check if sort has changed
-		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot"))){
+		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, false)){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);

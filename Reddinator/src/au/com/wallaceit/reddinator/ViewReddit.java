@@ -92,7 +92,12 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     }
     
     public void onBackPressed(){
-    	this.finish();
+    	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+        if (webview.wv.canGoBack()){
+        	webview.wv.goBack();
+        } else {
+        	super.onBackPressed();
+        }
     }
  
     /** (non-Javadoc)

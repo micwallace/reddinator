@@ -26,7 +26,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -40,7 +42,7 @@ public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
-	private WebView wv;
+	public WebView wv;
 	private boolean firsttime = true;
 	private LinearLayout ll;
 	private int fontsize;
@@ -79,9 +81,23 @@ public class TabWebFragment extends Fragment {
         	act.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
         	wv = (WebView) ll.findViewById(R.id.webView1);
+        	// fixes for webview not taking keyboard input on some devices
         	wv.requestFocus(View.FOCUS_DOWN);
-        	wv.getSettings().setJavaScriptEnabled(true);
-        	//wv.getSettings().setDefaultZoom(ZoomDensity.FAR);
+        	wv.setOnTouchListener(new View.OnTouchListener() { 
+        		@Override
+        		public boolean onTouch(View v, MotionEvent event) {
+        		           switch (event.getAction()) { 
+        		               case MotionEvent.ACTION_DOWN: 
+        		               case MotionEvent.ACTION_UP: 
+        		                   if (!v.hasFocus()) { 
+        		                       v.requestFocus(); 
+        		                   } 
+        		                   break; 
+        		           } 
+        		           return false; 
+        		}
+        	});
+        	wv.getSettings().setJavaScriptEnabled(true); // enable ecmascript
         	wv.getSettings().setSupportZoom(true);
         	wv.getSettings().setUseWideViewPort(true);
         	wv.getSettings().setBuiltInZoomControls(true);

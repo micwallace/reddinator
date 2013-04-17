@@ -3,25 +3,41 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
-	
-    <Button
-        android:id="@+id/sortselect"
-        android:layout_width="fill_parent"
-        android:layout_height="40dip"
-        android:layout_alignParentTop="true"
-        android:background="#EFF7FF"
-        android:gravity="center_vertical"
-        android:paddingLeft="14dp"
-        android:text="@string/sort_hot"
-        android:textColor="#FF4500" >
 
-    </Button>
+    <LinearLayout
+        android:id="@+id/widgetpref"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true" >
+
+        <Button
+            android:id="@+id/sortselect"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="0.62"
+            android:background="#EFF7FF"
+            android:gravity="center_vertical"
+            android:paddingLeft="14dp"
+            android:text="@string/sort_hot"
+            android:textColor="#FF4500" />
+
+        <CheckBox
+            android:id="@+id/thumbnailpref"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.39"
+            android:background="#EFF7FF"
+            android:paddingLeft="30dp"
+            android:text="Thumbnails" />
+
+    </LinearLayout>
     
     <RelativeLayout
         android:id="@+id/srtoolbar"
         android:layout_width="fill_parent"
         android:layout_height="40dip"
-        android:layout_below="@+id/sortselect"
+        android:layout_below="@+id/widgetpref"
         android:background="#CEE3F8" >
 
 		<Button
@@ -52,4 +68,5 @@
         android:background="#FFF" >
         
     </ListView>
+
 </RelativeLayout>

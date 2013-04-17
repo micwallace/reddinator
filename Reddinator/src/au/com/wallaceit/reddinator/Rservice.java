@@ -17,6 +17,14 @@
  */
 package au.com.wallaceit.reddinator;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +36,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -54,6 +64,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private Editor prefseditor;
 	private String itemfontsize = "16";
 	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
+	private boolean loadthumbnails = false;
 	
 	public ListRemoteViewsFactory(Context ctxt, Intent intent) {
 		this.ctxt = ctxt;
@@ -97,6 +108,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 		endoffeed = false;
+		// get thumbnail load preference for the widget
+		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
 	}
 
 	@Override
@@ -137,6 +150,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			String name = "";
 			String url = "";
 			String permalink = "";
+			String thumbnail = "";
 			String domain = "";
 			String id = "";
 			int score = 0;
@@ -148,6 +162,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				id = tempobj.getString("id");
 				url = tempobj.getString("url");
 				permalink = tempobj.getString("permalink");
+				thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
 				score = tempobj.getInt("score");
 				numcomments = tempobj.getInt("num_comments");
 			} catch (JSONException e) {
@@ -173,9 +188,34 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			extras.putInt(WidgetProvider.ITEM_VOTES, score);
 			i.putExtras(extras);
 			row.setOnClickFillInIntent(R.id.listrow, i);
+			// load thumbnail if they are enabled for this widget
+			if (loadthumbnails){
+				if (!thumbnail.equals("")){ // check for thumbnail
+					Bitmap bitmap = loadImage(thumbnail);
+					if (bitmap != null){
+						row.setImageViewBitmap(R.id.thumbnail, bitmap);
+						row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
+					}
+				}
+			} else {
+				row.setViewVisibility(R.id.thumbnail, View.GONE);
+			}
 		}
 		//System.out.println("getViewAt("+position+");");
 		return row;
+	}
+	private Bitmap loadImage(String urlstr){
+		URL url = null;
+		Bitmap bmp = null;
+		try {
+			url = new URL(urlstr);
+			bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    return bmp;
 	}
 
 	@Override
@@ -201,6 +241,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public void onDataSetChanged() {
+		// get thumbnail load preference for the widget
+		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
 		if (!loadcached){
 			// refresh data
 			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
@@ -216,6 +258,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// hide loader
 			hideWidgetLoader(false, false); // don't go to top as the user is probably interacting with the list
 		}
+		
 	}
 	private String lastitemid = "0";
 	private boolean endoffeed = false;
