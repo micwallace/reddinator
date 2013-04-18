@@ -21,14 +21,17 @@ import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.R;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
@@ -75,14 +78,18 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     /** (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
-    //private Bundle clickbundle;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // get intent
-        //clickbundle = getIntent().getExtras();
-        // Inflate layout
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        // get actionbar and set home button, pad the icon
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        ImageView view = (ImageView)findViewById(android.R.id.home);
+        if (view != null){
+        	view.setPadding(5, 0, 5, 0);
+        }
+        // set content view
         setContentView(R.layout.viewreddit);
         // Setup TabHost
         initialiseTabHost(savedInstanceState);
@@ -93,10 +100,28 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     
     public void onBackPressed(){
     	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
-        if (webview.wv.canGoBack()){
+    	if (webview.fullsview != null){
+            webview.chromeclient.onHideCustomView();
+    	} else if (webview.wv.canGoBack()){
         	webview.wv.goBack();
         } else {
-        	super.onBackPressed();
+        	webview.wv.stopLoading();
+        	webview.wv.loadData("", "text/html", "utf-8");
+        	this.finish();
+        }
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+            	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+            	webview.wv.stopLoading();
+                webview.wv.loadData("", "text/html", "utf-8");
+                this.finish();
+            	return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
  

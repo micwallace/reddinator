@@ -17,20 +17,12 @@
  */
 package au.com.wallaceit.reddinator;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import au.com.wallaceit.reddinator.R;
-
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -42,8 +34,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -195,7 +185,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 					if (bitmap != null){
 						row.setImageViewBitmap(R.id.thumbnail, bitmap);
 						row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
+					} else {
+						row.setViewVisibility(R.id.thumbnail, View.GONE);
 					}
+				} else {
+					row.setViewVisibility(R.id.thumbnail, View.GONE);
 				}
 			} else {
 				row.setViewVisibility(R.id.thumbnail, View.GONE);

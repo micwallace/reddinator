@@ -17,31 +17,29 @@
  */
 package au.com.wallaceit.reddinator;
 
-import java.lang.reflect.Field;
-
-import au.com.wallaceit.reddinator.R;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
+	private Context context;
 	public WebView wv;
 	private boolean firsttime = true;
 	private LinearLayout ll;
@@ -56,8 +54,14 @@ public class TabWebFragment extends Fragment {
        super.onActivityCreated(savedInstanceState);
        //wv.restoreState(savedInstanceState);
     }
-	
+	public View fullsview;
+	private LinearLayout tabcontainer;
+	private FrameLayout videoframe;
+	private WebChromeClient.CustomViewCallback fullscallback;
+	public WebChromeClient chromeclient;
+	private Activity act;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    	context = this.getActivity();
     	if (container == null) {
             return null;
         }
@@ -77,7 +81,7 @@ public class TabWebFragment extends Fragment {
         		fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
         	}
         	// setup progressbar
-        	final Activity act = this.getActivity();
+        	act = this.getActivity();
         	act.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
         	wv = (WebView) ll.findViewById(R.id.webView1);
@@ -89,10 +93,10 @@ public class TabWebFragment extends Fragment {
         		           switch (event.getAction()) { 
         		               case MotionEvent.ACTION_DOWN: 
         		               case MotionEvent.ACTION_UP: 
-        		                   if (!v.hasFocus()) { 
+        		                   if (!v.hasFocus()) {
         		                       v.requestFocus(); 
         		                   } 
-        		                   break; 
+        		                   break;
         		           } 
         		           return false; 
         		}
@@ -103,17 +107,8 @@ public class TabWebFragment extends Fragment {
         	wv.getSettings().setBuiltInZoomControls(true);
         	wv.getSettings().setDisplayZoomControls(true);
         	wv.getSettings().setDefaultFontSize(fontsize);
-        	wv.setWebChromeClient(new WebChromeClient(){
-                public void onProgressChanged(WebView view, int progress){
-                	//Make the bar disappear after URL is loaded, and changes string to Loading...
-                	act.setTitle("Loading...");
-                	act.setProgress(progress * 100); //Make the bar disappear after URL is loaded
-                	// Return the app name after finish loading
-                    if(progress == 100){
-                    	act.setTitle(R.string.app_name);
-                  	}
-                }
-        	});
+        	chromeclient = newchromeclient;
+        	wv.setWebChromeClient(chromeclient);
         	wv.setWebViewClient(new WebViewClient());
         	wv.loadUrl(url);
         	firsttime = false;
@@ -134,4 +129,56 @@ public class TabWebFragment extends Fragment {
     	super.onPause();
     	//wv.saveState(WVState);
     }
+    // web chrome client
+    WebChromeClient newchromeclient = new WebChromeClient(){
+        public void onProgressChanged(WebView view, int progress){
+        	//Make the bar disappear after URL is loaded, and changes string to Loading...
+        	act.setTitle("Loading...");
+        	act.setProgress(progress * 100); //Make the bar disappear after URL is loaded
+        	// Return the app name after finish loading
+            if(progress == 100){
+            	act.setTitle(R.string.app_name);
+          	}
+        }
+        FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        @Override
+        public void onShowCustomView(View view, CustomViewCallback callback) {
+            // if a view already exists then immediately terminate the new one
+            if (fullsview != null) {
+                callback.onCustomViewHidden();
+                return;
+            }
+            tabcontainer = (LinearLayout) ((Activity) context).findViewById(R.id.redditview);
+            tabcontainer.setVisibility(View.GONE);
+            videoframe = new FrameLayout(context);
+            videoframe.setLayoutParams(LayoutParameters);
+            videoframe.setBackgroundResource(android.R.color.black);
+            videoframe.addView(view);
+            view.setLayoutParams(LayoutParameters);
+            fullsview = view;
+            fullscallback = callback;
+            act.getActionBar().hide();
+            videoframe.setVisibility(View.VISIBLE);
+            ((Activity) context).setContentView(videoframe);
+        }
+
+        @Override
+        public void onHideCustomView() {
+            if (fullsview == null) {
+                return;
+            } else {
+                // Hide the custom view.  
+                fullsview.setVisibility(View.GONE);
+                // Remove the custom view from its container.  
+                videoframe.removeView(fullsview);
+                fullsview = null;
+                videoframe.setVisibility(View.GONE);
+                fullscallback.onCustomViewHidden();
+                // Show the content view.
+                act.getActionBar().show();
+                tabcontainer.setVisibility(View.VISIBLE);
+                ((Activity) context).setContentView(tabcontainer);
+            }
+        }
+    };
 }

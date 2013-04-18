@@ -6,32 +6,28 @@
     android:layout_gravity="center_horizontal"
     android:paddingBottom="15dip"
     android:paddingTop="15dip" >
-
 <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true" >
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:contentDescription="loading_img"
+        android:contentDescription="@string/loading_img"
         android:scaleType="center"
         android:src="@drawable/reddit_icon_small" />
-
     <TextView
         android:id="@+id/loadmoretxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="10dp"
-        android:text="Load more..."
+        android:text="@string/load_more"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000" />
-
 </LinearLayout>
 
 </RelativeLayout>

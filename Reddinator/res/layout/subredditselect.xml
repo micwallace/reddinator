@@ -29,7 +29,7 @@
             android:layout_weight="0.39"
             android:background="#EFF7FF"
             android:paddingLeft="30dp"
-            android:text="Thumbnails" />
+            android:text="@string/thumbnails" />
 
     </LinearLayout>
     
