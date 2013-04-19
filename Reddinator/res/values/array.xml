@@ -70,4 +70,17 @@
      	<item>172800000</item>
      	<item>0</item>
    </string-array>
+   
+   <string-array name="widget_theme_preference">
+       	<item>Reddit Classic</item>
+     	<item>Reddit Dark</item>
+     	<item>Android Holo</item>
+     	<item>Holo Light</item>
+   </string-array>
+   <string-array name="widget_theme_values">
+     	<item>1</item>
+     	<item>2</item>
+     	<item>3</item>
+     	<item>4</item>
+   </string-array>
 </resources>

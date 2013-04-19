@@ -46,7 +46,6 @@ public class GlobalObjects extends Application {
 		srlist.addAll(list);
 	}
 	public ArrayList<String> getSrList(){
-		//System.out.println("Using cached subreddits");
 		return srlist;
 	}
 	// data loadtype functions

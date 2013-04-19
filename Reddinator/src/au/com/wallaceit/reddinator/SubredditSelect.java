@@ -93,7 +93,7 @@ public class SubredditSelect extends ListActivity {
 				editor.commit();
 				// refresh widget and close activity (NOTE: put in function)
 				AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
-				RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
+				RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 				views.setTextViewText(R.id.subreddittxt, sreddit);
 				views.setViewVisibility(R.id.srloader, View.VISIBLE);
 				// bypass cache if service not loaded
@@ -152,7 +152,7 @@ public class SubredditSelect extends ListActivity {
 		// check if sort has changed
 		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, false)){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
-			RemoteViews views = new RemoteViews(getPackageName(), R.layout.widgetmain);
+			RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
 			// bypass cache if service not loaded
 			global.setBypassCache(true);
@@ -223,5 +223,17 @@ public class SubredditSelect extends ListActivity {
 			});
 			return convertView;
 		}
+	}
+	
+	private int getThemeLayoutId(){
+		// get theme layout id
+     	int layoutid = 1;
+     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     		case 1: layoutid = R.layout.widgetmain; break;
+     		case 2: layoutid = R.layout.widgetdark; break;
+     		case 3: layoutid = R.layout.widgetholo; break;
+     		case 4: layoutid = R.layout.widgethololight; break;
+     	}
+     	return layoutid;
 	}
 }

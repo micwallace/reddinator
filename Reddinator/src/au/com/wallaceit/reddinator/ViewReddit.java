@@ -24,6 +24,8 @@ import au.com.wallaceit.reddinator.R;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -31,6 +33,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
@@ -80,6 +83,9 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+     // set window flags
+   		getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+   		getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
@@ -141,6 +147,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     	rargs.putBoolean("loadcom", true);
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
+        // add tabs
         TabInfo tabInfo = null;
         ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), ( tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
@@ -155,7 +162,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     	} else {
     		this.onTabChanged("Tab1");
     	}
-        //
+    	// set change listener
         mTabHost.setOnTabChangedListener(this);
     }
  

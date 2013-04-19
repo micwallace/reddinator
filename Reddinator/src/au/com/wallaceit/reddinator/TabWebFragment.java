@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -51,8 +52,8 @@ public class TabWebFragment extends Fragment {
 	}
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
-       super.onActivityCreated(savedInstanceState);
-       //wv.restoreState(savedInstanceState);
+		super.onActivityCreated(savedInstanceState);
+       	//wv.restoreState(savedInstanceState);
     }
 	public View fullsview;
 	private LinearLayout tabcontainer;
@@ -112,11 +113,11 @@ public class TabWebFragment extends Fragment {
         	wv.setWebViewClient(new WebViewClient());
         	wv.loadUrl(url);
         	firsttime = false;
+        	//System.out.println("Created fragment");
         } else {
-        	//wv.restoreState(savedInstanceState);
         	((ViewGroup) ll.getParent()).removeView(ll);
         }
-        System.out.println("Created fragment");
+        
         return ll;
     }
     @Override
@@ -148,8 +149,10 @@ public class TabWebFragment extends Fragment {
                 callback.onCustomViewHidden();
                 return;
             }
+            // get main view and hide
             tabcontainer = (LinearLayout) ((Activity) context).findViewById(R.id.redditview);
             tabcontainer.setVisibility(View.GONE);
+            // create custom view to show
             videoframe = new FrameLayout(context);
             videoframe.setLayoutParams(LayoutParameters);
             videoframe.setBackgroundResource(android.R.color.black);
@@ -157,7 +160,10 @@ public class TabWebFragment extends Fragment {
             view.setLayoutParams(LayoutParameters);
             fullsview = view;
             fullscallback = callback;
+            // hide actionbar
             act.getActionBar().hide();
+            // set fullscreen
+            ((Activity) context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             videoframe.setVisibility(View.VISIBLE);
             ((Activity) context).setContentView(videoframe);
         }
@@ -176,6 +182,8 @@ public class TabWebFragment extends Fragment {
                 fullscallback.onCustomViewHidden();
                 // Show the content view.
                 act.getActionBar().show();
+                // remove fullscreen
+                ((Activity) context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                 tabcontainer.setVisibility(View.VISIBLE);
                 ((Activity) context).setContentView(tabcontainer);
             }

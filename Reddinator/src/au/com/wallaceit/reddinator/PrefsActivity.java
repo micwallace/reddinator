@@ -23,6 +23,7 @@ import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -42,6 +43,7 @@ public class PrefsActivity extends PreferenceActivity {
 	private SharedPreferences prefs;
 	private String refreshrate = "";
 	private String widgetfont = "";
+	private String widgettheme = ""; 
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +70,13 @@ public class PrefsActivity extends PreferenceActivity {
 		prefs = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
 		refreshrate = prefs.getString("refreshrate", "43200000");
 		widgetfont = prefs.getString("widgetfontpref", "16");
+		widgettheme = prefs.getString("widgetthemepref", "1");
 	}
 	public void onBackPressed(){
 		// check if font preference has changed and update listview if needed
 		if (!widgetfont.equals(prefs.getString("widgetfontpref", "16"))){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
-			RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), R.layout.widgetmain);
+			RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
 			// bypass cache if service not loaded
 			GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
@@ -97,11 +100,30 @@ public class PrefsActivity extends PreferenceActivity {
 				m.cancel(updateintent); // just incase theres a rougue alarm
 			}
 		}
+		// check if theme has changed and update if needed
+		if (!widgettheme.equals(prefs.getString("widgetthemepref", "1"))){
+			AppWidgetManager mgr = AppWidgetManager.getInstance(PrefsActivity.this);
+			int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
+			WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds);
+			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
+		}
 		// for first time setup, widget provider receives this intent in onWidgetOptionsChanged();
 		Intent resultValue = new Intent();
 		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 		setResult(RESULT_OK, resultValue);
 		finish();
+	}
+	
+	private int getThemeLayoutId(){
+		// get theme layout id
+     	int layoutid = R.layout.widgetmain;
+     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     		case 1: layoutid = R.layout.widgetmain; break;
+     		case 2: layoutid = R.layout.widgetdark; break;
+     		case 3: layoutid = R.layout.widgetholo; break;
+     		case 4: layoutid = R.layout.widgethololight; break;
+     	}
+     	return layoutid;
 	}
 
 }

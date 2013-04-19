@@ -52,14 +52,21 @@ public class WidgetProvider extends AppWidgetProvider {
 	public WidgetProvider() {
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+		updateAppWidgets(context, appWidgetManager, appWidgetIds);
+        //System.out.println("onUpdate();");
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
 		final int N = appWidgetIds.length;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int i=0; i<N; i++) {
-            int appWidgetId = appWidgetIds[i];
-            // CONFIG BUTTON
+        	int appWidgetId = appWidgetIds[i];
+        	// CONFIG BUTTON
             Intent intent = new Intent(context, PrefsActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -73,7 +80,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // REMOTE DATA
             Intent servintent = new Intent(context, Rservice.class);
-            servintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]); // Add the app widget ID to the intent extras.
+            servintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId); // Add the app widget ID to the intent extras.
             servintent.setData(Uri.parse(servintent.toUri(Intent.URI_INTENT_SCHEME)));
             // REFRESH BUTTON
             Intent irefresh = new Intent(context, WidgetProvider.class);
@@ -85,11 +92,19 @@ public class WidgetProvider extends AppWidgetProvider {
             // ITEM CLICK
             Intent clickintent = new Intent(context, WidgetProvider.class);
             clickintent.setAction(ITEM_CLICK);
-            clickintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            clickintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             clickintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            // get theme layout id
+         	int layout = R.layout.widgetmain;
+         	switch(Integer.valueOf(prefs.getString("widgetthemepref", "reddit"))){
+         		case 1: layout = R.layout.widgetmain; break;
+         		case 2: layout = R.layout.widgetdark; break;
+         		case 3: layout = R.layout.widgetholo; break;
+         		case 4: layout = R.layout.widgethololight; break;
+         	}
             // ADD ALL TO REMOTE VIEWS
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widgetmain);
+            RemoteViews views = new RemoteViews(context.getPackageName(), layout);
             views.setPendingIntentTemplate(R.id.listview, clickPI);
             views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
             views.setOnClickPendingIntent(R.id.widget_logo, srpendIntent);
@@ -98,7 +113,6 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop is displaying on screen rotation) so we need to show it when updating.
             // set current feed title
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
     		views.setTextViewText(R.id.subreddittxt, curfeed);
     		// Set remote adapter for widget.
@@ -111,8 +125,6 @@ public class WidgetProvider extends AppWidgetProvider {
     		// Tell the AppWidgetManager to perform an update on the current app widget
     		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
-        //System.out.println("onUpdate();");
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 	
 	@Override
@@ -238,7 +250,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 		// show loader
-		RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widgetmain);
+		RemoteViews views = new RemoteViews(intent.getPackage(), getThemeLayoutId(context));
 		views.setViewVisibility(R.id.srloader, View.VISIBLE);
 		views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
 		// update view
@@ -259,5 +271,17 @@ public class WidgetProvider extends AppWidgetProvider {
 		GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
 		global.setBypassCache(true);
 	}
-
+	
+	private int getThemeLayoutId(Context context){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		// get theme layout id
+     	int layoutid = 1;
+     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     		case 1: layoutid = R.layout.widgetmain; break;
+     		case 2: layoutid = R.layout.widgetdark; break;
+     		case 3: layoutid = R.layout.widgetholo; break;
+     		case 4: layoutid = R.layout.widgethololight; break;
+     	}
+     	return layoutid;
+	}
 }

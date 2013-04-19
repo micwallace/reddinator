@@ -31,6 +31,15 @@
                 android:dialogTitle="Refresh the widget feed every.." />
 			
 			<ListPreference
+                android:key="widgetthemepref"
+                android:title="Widget Theme"
+                android:defaultValue="1"
+                android:summary="Choose the widget theme"
+                android:entries="@array/widget_theme_preference"
+                android:entryValues="@array/widget_theme_values"
+                android:dialogTitle="Choose the widget theme" />
+			
+			<ListPreference
                 android:key="widgetfontpref"
                 android:title="Item Title Size"
                 android:defaultValue="16"

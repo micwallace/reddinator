@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -53,6 +54,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private SharedPreferences prefs;
 	private Editor prefseditor;
 	private String itemfontsize = "16";
+	private int[] themecolors;
 	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
 	private boolean loadthumbnails = false;
 	
@@ -129,6 +131,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			} else {
 				loadmorerow.setTextViewText(R.id.loadmoretxt, "Load more...");
 			}
+			loadmorerow.setTextColor(R.id.loadmoretxt, themecolors[1]);
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
 			extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
@@ -164,6 +167,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
 			// row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize)); // This was only introduced in api 16, using the method below instead
 			row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(itemfontsize)); // use for compatibility
+			row.setTextColor(R.id.listheading, themecolors[0]);
 			row.setTextViewText(R.id.sourcetxt, domain);
 			row.setTextViewText(R.id.votestxt, String.valueOf(score));
 			row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
@@ -237,6 +241,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		// get thumbnail load preference for the widget
 		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
+		getThemeColors(); // reset theme colors
 		if (!loadcached){
 			// refresh data
 			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
@@ -342,7 +347,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	// hide appwidget loader
 	private void hideWidgetLoader(boolean gototopoflist, boolean showerror){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
-		RemoteViews views = new RemoteViews(ctxt.getPackageName(), R.layout.widgetmain);
+		// get theme layout id
+     	int layout = 1;
+     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     		case 1: layout = R.layout.widgetmain; break;
+     		case 2: layout = R.layout.widgetdark; break;
+     		case 3: layout = R.layout.widgetholo; break;
+     		case 4: layout = R.layout.widgethololight; break;
+     	}
+		RemoteViews views = new RemoteViews(ctxt.getPackageName(), layout);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
 		// go to the top of the list view
 		if (gototopoflist){
@@ -352,5 +365,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			views.setViewVisibility(R.id.erroricon, View.VISIBLE);
 		}
 		mgr.partiallyUpdateAppWidget(appWidgetId, views);
+	}
+	
+	private void getThemeColors(){
+     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     		case 1: themecolors = new int[]{Color.BLACK, Color.BLACK}; break;
+     		case 2: themecolors = new int[]{Color.WHITE, Color.WHITE}; break;
+     		case 3: themecolors = new int[]{Color.WHITE, Color.WHITE}; break;
+     		case 4: themecolors = new int[]{Color.BLACK, Color.BLACK}; break;
+     	}
 	}
 }
