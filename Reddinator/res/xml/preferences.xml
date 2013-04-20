@@ -40,13 +40,22 @@
                 android:dialogTitle="Choose the widget theme" />
 			
 			<ListPreference
-                android:key="widgetfontpref"
+                android:key="titlefontpref"
                 android:title="Item Title Size"
                 android:defaultValue="16"
                 android:summary="Font size for item titles"
                 android:entries="@array/widget_fontsize_preference"
                 android:entryValues="@array/widget_fontsize_preference"
                 android:dialogTitle="Font size for item titles" />
+			
+			<ListPreference
+                android:key="titlecolorpref"
+                android:title="Item Title Color"
+                android:defaultValue="0"
+                android:summary="Font color for item titles"
+                android:entries="@array/widget_fontcolor_preference"
+                android:entryValues="@array/widget_fontcolor_values"
+                android:dialogTitle="Font color for item titles" />
     </PreferenceCategory>
 
     <PreferenceCategory

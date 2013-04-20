@@ -51,7 +51,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentLeft="true"
     android:layout_below="@+id/headcontainer"
-    android:paddingBottom="2dp"
+    android:paddingBottom="4dp"
     android:paddingLeft="6dip"
     android:paddingTop="1dip" >
 
@@ -109,6 +109,7 @@
 </RelativeLayout>
 
 	<RelativeLayout
+	    android:id="@+id/listdivider"
 	    android:layout_width="fill_parent"
 	    android:layout_height="1dp"
 	    android:layout_alignParentLeft="true"

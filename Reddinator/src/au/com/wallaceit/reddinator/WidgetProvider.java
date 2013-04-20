@@ -101,7 +101,7 @@ public class WidgetProvider extends AppWidgetProvider {
          		case 1: layout = R.layout.widgetmain; break;
          		case 2: layout = R.layout.widgetdark; break;
          		case 3: layout = R.layout.widgetholo; break;
-         		case 4: layout = R.layout.widgethololight; break;
+         		case 4: layout = R.layout.widgetdarkholo; break;
          	}
             // ADD ALL TO REMOTE VIEWS
             RemoteViews views = new RemoteViews(context.getPackageName(), layout);
@@ -280,7 +280,7 @@ public class WidgetProvider extends AppWidgetProvider {
      		case 1: layoutid = R.layout.widgetmain; break;
      		case 2: layoutid = R.layout.widgetdark; break;
      		case 3: layoutid = R.layout.widgetholo; break;
-     		case 4: layoutid = R.layout.widgethololight; break;
+     		case 4: layoutid = R.layout.widgetdarkholo; break;
      	}
      	return layoutid;
 	}

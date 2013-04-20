@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="@android:drawable/dark_header"
             android:contentDescription="@string/configure"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/prefsbutton"
             android:layout_toLeftOf="@+id/prefsbutton"
+            android:background="@android:drawable/dark_header"
             android:contentDescription="@string/refresh"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
@@ -115,7 +117,7 @@
 	        android:layout_marginLeft="10dp"
 	        android:text="@string/loading"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
-	        android:textColor="#000" />
+	        android:textColor="#FFF" />
 	</LinearLayout>
 
     <ListView

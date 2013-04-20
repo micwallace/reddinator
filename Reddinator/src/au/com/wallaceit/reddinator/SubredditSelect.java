@@ -232,7 +232,7 @@ public class SubredditSelect extends ListActivity {
      		case 1: layoutid = R.layout.widgetmain; break;
      		case 2: layoutid = R.layout.widgetdark; break;
      		case 3: layoutid = R.layout.widgetholo; break;
-     		case 4: layoutid = R.layout.widgethololight; break;
+     		case 4: layoutid = R.layout.widgetdarkholo; break;
      	}
      	return layoutid;
 	}

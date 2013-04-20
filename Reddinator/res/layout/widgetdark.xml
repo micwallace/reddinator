@@ -71,14 +71,14 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
-            android:paddingLeft="8dp"
             android:layout_toRightOf="@+id/widget_logo"
             android:drawablePadding="5dp"
             android:drawableRight="@android:drawable/arrow_down_float"
             android:gravity="center_vertical"
+            android:paddingLeft="8dp"
             android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000" />
+            android:textColor="#000" />
 
         <ImageView
             android:id="@+id/widget_logo"
@@ -118,7 +118,7 @@
 	        android:layout_marginLeft="10dp"
 	        android:text="@string/loading"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
-	        android:textColor="#000" />
+	        android:textColor="#FFF" />
 	</LinearLayout>
 
     <ListView

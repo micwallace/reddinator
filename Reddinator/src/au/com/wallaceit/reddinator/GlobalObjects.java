@@ -24,6 +24,7 @@ public class GlobalObjects extends Application {
 	private ArrayList<String> srlist;
 	static int LOADTYPE_LOAD = 0;
 	static int LOADTYPE_LOADMORE = 1;
+	static int LOADTYPE_REFRESH_VIEW = 3;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
 	private boolean bypasscache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData rdata;
@@ -57,6 +58,9 @@ public class GlobalObjects extends Application {
 	}
 	public void SetLoad(){
 		loadtype = 0;
+	}
+	public void setRefreshView(){
+		loadtype = 3;
 	}
 	// data cache functions
 	public boolean getBypassCache(){

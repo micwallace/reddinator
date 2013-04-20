@@ -42,7 +42,8 @@ public class PrefsActivity extends PreferenceActivity {
 	public int mAppWidgetId;
 	private SharedPreferences prefs;
 	private String refreshrate = "";
-	private String widgetfont = "";
+	private String titlefontsize = "";
+	private String titlefontcolor = "";
 	private String widgettheme = ""; 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -69,12 +70,13 @@ public class PrefsActivity extends PreferenceActivity {
 		}
 		prefs = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
 		refreshrate = prefs.getString("refreshrate", "43200000");
-		widgetfont = prefs.getString("widgetfontpref", "16");
 		widgettheme = prefs.getString("widgetthemepref", "1");
+		titlefontsize = prefs.getString("titlefontpref", "16");
+		titlefontcolor = prefs.getString("titlecolorpref", "0");
 	}
 	public void onBackPressed(){
 		// check if font preference has changed and update listview if needed
-		if (!widgetfont.equals(prefs.getString("widgetfontpref", "16"))){
+		/*if (!widgetfont.equals(prefs.getString("titlefontpref", "16"))){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(PrefsActivity.this);
 			RemoteViews views = new RemoteViews(PrefsActivity.this.getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
@@ -83,7 +85,7 @@ public class PrefsActivity extends PreferenceActivity {
 			global.setBypassCache(true);
 			appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 			appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
-		}
+		}*/
 		// check if refresh rate has changed and update if needed
 		if (!refreshrate.equals(prefs.getString("refreshrate", "43200000"))){
 			//System.out.println("Refresh preference changed, updating alarm");
@@ -101,17 +103,31 @@ public class PrefsActivity extends PreferenceActivity {
 			}
 		}
 		// check if theme has changed and update if needed
-		if (!widgettheme.equals(prefs.getString("widgetthemepref", "1"))){
-			AppWidgetManager mgr = AppWidgetManager.getInstance(PrefsActivity.this);
-			int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
-			WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds);
-			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
+		if (!widgettheme.equals(prefs.getString("widgetthemepref", "1")) || !titlefontcolor.equals(prefs.getString("titlefontpref", "0")) || !titlefontsize.equals(prefs.getString("titlefontpref", "16"))){
+			// set theme selected title color if theme has changed but font hasn't.
+			if (titlefontcolor.equals(prefs.getString("titlecolorpref", "0")) && !widgettheme.equals(prefs.getString("widgetthemepref", "1"))){
+				setUseThemeColor();
+			}
+			updateWidget();
 		}
 		// for first time setup, widget provider receives this intent in onWidgetOptionsChanged();
 		Intent resultValue = new Intent();
 		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
 		setResult(RESULT_OK, resultValue);
 		finish();
+	}
+	
+	private void updateWidget(){
+		AppWidgetManager mgr = AppWidgetManager.getInstance(PrefsActivity.this);
+		int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
+		WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds);
+		GlobalObjects global = ((GlobalObjects) this.getApplicationContext());
+		global.setRefreshView();
+		mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
+	}
+	
+	private void setUseThemeColor(){
+		prefs.edit().putString("titlecolorpref", "0").commit();
 	}
 	
 	private int getThemeLayoutId(){
@@ -121,7 +137,7 @@ public class PrefsActivity extends PreferenceActivity {
      		case 1: layoutid = R.layout.widgetmain; break;
      		case 2: layoutid = R.layout.widgetdark; break;
      		case 3: layoutid = R.layout.widgetholo; break;
-     		case 4: layoutid = R.layout.widgethololight; break;
+     		case 4: layoutid = R.layout.widgetdarkholo; break;
      	}
      	return layoutid;
 	}

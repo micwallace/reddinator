@@ -19,7 +19,7 @@
         android:scaleType="center"
         android:src="@drawable/reddit_icon_small" />
     <TextView
-        android:id="@+id/loadmoretxt"
+        android:id="@+id/listloadtxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

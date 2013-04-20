@@ -53,7 +53,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private GlobalObjects global;
 	private SharedPreferences prefs;
 	private Editor prefseditor;
-	private String itemfontsize = "16";
+	private String titlefontsize = "16";
+	private int titlefontcolor;
 	private int[] themecolors;
 	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
 	private boolean loadthumbnails = false;
@@ -78,7 +79,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			}
 			//System.out.println("cached Data length: "+data.length());
 			if (data.length() != 0){
-				itemfontsize = prefs.getString("widgetfontpref", "16");
+				titlefontsize = prefs.getString("widgetfontpref", "16");
 				try {
 					lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
 				} catch (JSONException e) {
@@ -165,12 +166,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			// build view
 			row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
-			// row.setTextViewTextSize(R.id.listheading, TypedValue.COMPLEX_UNIT_SP, Integer.valueOf(itemfontsize)); // This was only introduced in api 16, using the method below instead
-			row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(itemfontsize)); // use for compatibility
+			row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titlefontsize)); // use for compatibility setTextViewTextSize only introduced in API 16
 			row.setTextColor(R.id.listheading, themecolors[0]);
 			row.setTextViewText(R.id.sourcetxt, domain);
+			row.setTextColor(R.id.sourcetxt, themecolors[3]);
+			row.setTextColor(R.id.votestxt, themecolors[4]);
+			row.setTextColor(R.id.commentstxt, themecolors[4]);
 			row.setTextViewText(R.id.votestxt, String.valueOf(score));
 			row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
+			row.setInt(R.id.listdivider, "setBackgroundColor", themecolors[2]);
 			// add extras and set click intent
 			Intent i = new Intent();
 			Bundle extras = new Bundle();
@@ -219,6 +223,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getLoadingView() {
 		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(), R.layout.listrowload);
+		rowload.setTextColor(R.id.listloadtxt, themecolors[0]);
 		return rowload;
 	}
 
@@ -241,10 +246,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		// get thumbnail load preference for the widget
 		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
+		titlefontsize = prefs.getString("titlefontpref", "16");
 		getThemeColors(); // reset theme colors
+		int loadtype = global.getLoadType();
+		loadcached = (loadtype==GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly
 		if (!loadcached){
 			// refresh data
-			if (global.getLoadType() == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
+			if (loadtype == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
 				global.SetLoad();
 				loadMoreReddits();
 			} else {
@@ -254,6 +262,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			global.setBypassCache(false); // don't bypass the cache check the next time the service starts
 		} else {
 			loadcached = false;
+			global.SetLoad();
 			// hide loader
 			hideWidgetLoader(false, false); // don't go to top as the user is probably interacting with the list
 		}
@@ -266,10 +275,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		loadReddits(true);
 	}
 	private void loadReddits(boolean loadmore){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
 		String sort = prefs.getString("sort-"+appWidgetId, "hot");
-		itemfontsize = prefs.getString("widgetfontpref", "16");
 		// Load more or initial load/reload?
 		if (loadmore){
 			// fetch 25 more after current last item and append to the list
@@ -353,7 +360,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
      		case 1: layout = R.layout.widgetmain; break;
      		case 2: layout = R.layout.widgetdark; break;
      		case 3: layout = R.layout.widgetholo; break;
-     		case 4: layout = R.layout.widgethololight; break;
+     		case 4: layout = R.layout.widgetdarkholo; break;
      	}
 		RemoteViews views = new RemoteViews(ctxt.getPackageName(), layout);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
@@ -369,10 +376,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	
 	private void getThemeColors(){
      	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
-     		case 1: themecolors = new int[]{Color.BLACK, Color.BLACK}; break;
-     		case 2: themecolors = new int[]{Color.WHITE, Color.WHITE}; break;
-     		case 3: themecolors = new int[]{Color.WHITE, Color.WHITE}; break;
-     		case 4: themecolors = new int[]{Color.BLACK, Color.BLACK}; break;
+     		// set colors array: healine text, load more text, divider, domain text, vote & comments
+     		case 1: themecolors = new int[]{Color.BLACK, Color.BLACK, Color.parseColor("#D7D7D7"), Color.parseColor("#336699"), Color.parseColor("#FF4500")}; break;
+     		case 2: themecolors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#5F99CF"), Color.parseColor("#FF8B60")}; break;
+     		case 3: 
+     		case 4: themecolors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")}; break;
+     	}
+     	// user title color override
+     	if (!prefs.getString("titlecolorpref", "0").equals("0")){
+     		themecolors[0] = Color.parseColor(prefs.getString("titlecolorpref", "#000"));
      	}
 	}
 }
