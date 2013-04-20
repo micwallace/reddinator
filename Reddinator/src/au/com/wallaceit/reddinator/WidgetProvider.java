@@ -98,7 +98,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // get theme layout id
          	int layout = R.layout.widgetmain;
-         	switch(Integer.valueOf(prefs.getString("widgetthemepref", "reddit"))){
+         	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
          		case 1: layout = R.layout.widgetmain; break;
          		case 2: layout = R.layout.widgetdark; break;
          		case 3: layout = R.layout.widgetholo; break;

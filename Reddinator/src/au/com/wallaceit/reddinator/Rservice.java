@@ -20,6 +20,8 @@ package au.com.wallaceit.reddinator;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -187,12 +189,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			row.setOnClickFillInIntent(R.id.listrow, i);
 			// load thumbnail if they are enabled for this widget
 			if (loadthumbnails){
-				if (!thumbnail.equals("")){ // check for thumbnail
+				if (!thumbnail.equals("") && !thumbnail.equals("self")){ // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for the moment
 					Bitmap bitmap = loadImage(thumbnail);
 					if (bitmap != null){
 						row.setImageViewBitmap(R.id.thumbnail, bitmap);
 						row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
 					} else {
+						// row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
 						row.setViewVisibility(R.id.thumbnail, View.GONE);
 					}
 				} else {
@@ -210,11 +213,16 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		Bitmap bmp = null;
 		try {
 			url = new URL(urlstr);
-			bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+			URLConnection con = url.openConnection();
+			con.setConnectTimeout(8000);
+			con.setReadTimeout(8000);
+			bmp = BitmapFactory.decodeStream(con.getInputStream());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 	    return bmp;
 	}
