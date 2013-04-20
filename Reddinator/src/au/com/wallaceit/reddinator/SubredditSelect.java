@@ -96,6 +96,7 @@ public class SubredditSelect extends ListActivity {
 				RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 				views.setTextViewText(R.id.subreddittxt, sreddit);
 				views.setViewVisibility(R.id.srloader, View.VISIBLE);
+				views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
 				// bypass cache if service not loaded
 				global.setBypassCache(true);
 				appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
@@ -124,9 +125,9 @@ public class SubredditSelect extends ListActivity {
 				showSortDialog();
 			}
 		});
-		// widget checkbox
+		// widget thumbnails checkbox
 		thumbchkbox = (CheckBox) findViewById(R.id.thumbnailpref);
-		curthumbpref = prefs.getBoolean("thumbnails-"+mAppWidgetId, false);
+		curthumbpref = prefs.getBoolean("thumbnails-"+mAppWidgetId, true);
 		thumbchkbox.setChecked(curthumbpref);
 		thumbchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
@@ -154,6 +155,7 @@ public class SubredditSelect extends ListActivity {
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
+			views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
 			// bypass cache if service not loaded
 			global.setBypassCache(true);
 			appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);

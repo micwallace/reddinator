@@ -54,7 +54,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private SharedPreferences prefs;
 	private Editor prefseditor;
 	private String titlefontsize = "16";
-	private int titlefontcolor;
 	private int[] themecolors;
 	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
 	private boolean loadthumbnails = false;
@@ -245,11 +244,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public void onDataSetChanged() {
 		// get thumbnail load preference for the widget
-		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
+		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, true);
 		titlefontsize = prefs.getString("titlefontpref", "16");
 		getThemeColors(); // reset theme colors
 		int loadtype = global.getLoadType();
 		loadcached = (loadtype==GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly
+		//System.out.println("Loading type "+loadtype);
 		if (!loadcached){
 			// refresh data
 			if (loadtype == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")){ // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
@@ -339,6 +339,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	// check if the array is an error array
 	private boolean isError(JSONArray temparray){
 		boolean error;
+		if (temparray == null){
+			return true; // null error
+		}
 		if (temparray.length() > 0){
 			try {
 				error = temparray.getString(0).equals("-1");

@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -34,7 +35,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
@@ -61,7 +61,8 @@ public class TabWebFragment extends Fragment {
 	private WebChromeClient.CustomViewCallback fullscallback;
 	public WebChromeClient chromeclient;
 	private Activity act;
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @SuppressLint("SetJavaScriptEnabled")
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	context = this.getActivity();
     	if (container == null) {
             return null;

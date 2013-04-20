@@ -24,8 +24,6 @@ import au.com.wallaceit.reddinator.R;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;

@@ -61,7 +61,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
-            android:background="#CEE3F8"
+            android:background="#5F99CF"
             android:contentDescription="@string/error"
             android:src="@android:drawable/stat_notify_error"
             android:visibility="gone" />

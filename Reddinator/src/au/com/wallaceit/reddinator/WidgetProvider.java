@@ -54,13 +54,13 @@ public class WidgetProvider extends AppWidgetProvider {
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-		updateAppWidgets(context, appWidgetManager, appWidgetIds);
+		updateAppWidgets(context, appWidgetManager, appWidgetIds, true);
         //System.out.println("onUpdate();");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
+	public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop){
 		final int N = appWidgetIds.length;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         // Perform this loop procedure for each App Widget that belongs to this provider
@@ -69,6 +69,7 @@ public class WidgetProvider extends AppWidgetProvider {
         	// CONFIG BUTTON
             Intent intent = new Intent(context, PrefsActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
+            intent.putExtra("firsttimeconfig", 0); // not first time config
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -121,7 +122,9 @@ public class WidgetProvider extends AppWidgetProvider {
     		} else {
     			views.setRemoteAdapter(appWidgetId, R.id.listview, servintent); // older version compatibility
     		}
-    		views.setScrollPosition(R.id.listview, 0); // in-case an auto update
+    		if (scrolltotop){
+    			views.setScrollPosition(R.id.listview, 0); // in-case an auto update
+    		}
     		// Tell the AppWidgetManager to perform an update on the current app widget
     		appWidgetManager.updateAppWidget(appWidgetId , views);
         }
