@@ -256,7 +256,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		titlefontsize = prefs.getString("titlefontpref", "16");
 		getThemeColors(); // reset theme colors
 		int loadtype = global.getLoadType();
-		loadcached = (loadtype==GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly
+		if (!loadcached){
+			loadcached = (loadtype==GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly but only check it if load cached is not already set true in the above constructor
+		}
 		//System.out.println("Loading type "+loadtype);
 		if (!loadcached){
 			// refresh data
