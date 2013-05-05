@@ -22,11 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -155,15 +158,19 @@ public class RedditData {
         return jObj;
  
     }
-	// UNUSED CODE BELOW
-	/*// Post calls
-		public String vote(String id, String direction){
+	
+	// Post calls
+		private String modhash = "";
+		// unused
+		/*public String vote(String id, String direction){
 			String result="";
 			String url="https://ssl.reddit.com/api/vote.json?id="+id+"&dir="+direction+"&uh="+modhash+"&api_type=json";		
 			JSONObject resultjson = new JSONObject();
 			// if modhash is blank, try to login
-			String logresult = login("micwallace", "#Gromit11", false);
-			if (logresult.equals("1")){
+			if (modhash==""){
+				String logresult = login("micwallace", "#Gromit11", false);
+			}
+			if (modhash!=""){
 				try {
 				resultjson = getJSONFromPost(url).getJSONObject("json");
 				JSONArray errors = resultjson.getJSONArray("errors");
@@ -185,6 +192,33 @@ public class RedditData {
 			}
 			System.out.println("vote result: "+resultjson.toString());
 			return result;
+		}*/
+		public ArrayList<String> getMySubreddits(String username, String password){
+			ArrayList<String> mysrlist = new ArrayList<String>();
+			String logresult = "1";
+			logresult = login(username, password, false);
+			if (logresult == "1"){
+				String url="https://ssl.reddit.com/subreddits/mine.json";
+				JSONArray resultjson = new JSONArray();
+				try {
+					resultjson = getJSONFromPost(url).getJSONObject("data").getJSONArray("children");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				int i = 0;
+				while (i < resultjson.length()-1){
+					try {
+						mysrlist.add(resultjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					i++;
+				}
+				System.out.println("Import Subred Output: "+mysrlist.toString());
+			} else {
+				mysrlist.add("Error: "+logresult);
+			}
+			return mysrlist;
 		}
 		public String login(String username, String passwd, boolean remember){
 			String result="";
@@ -192,22 +226,26 @@ public class RedditData {
 			JSONObject resultjson = new JSONObject();
 			try {
 				resultjson = getJSONFromPost(url).getJSONObject("json");
-				if (resultjson.getJSONArray("errors").get(0) != null){
+				if (resultjson.getJSONArray("errors").isNull(0)){
 					modhash = resultjson.getJSONObject("data").getString("modhash");
 					result = "1";
 				} else {
-					//JSONArray error1 = (JSONArray) resultjson.getJSONArray("errors").get(0);
-					result = "0";
+					result = resultjson.getJSONArray("errors").getJSONArray(0).getString(1);
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
-				result = "0";
+				result = "JSON Parse exception";
 			}
 			System.out.println("login result: "+resultjson.toString());
 			return result;
 		}
 		// HTTPS POST Request
 		private JSONObject getJSONFromPost(String url){
+			InputStream is = null;
+			// create client if null
+			if (httpclient == null){
+				httpclient = createHttpClient();
+			}
 			try {
 	            HttpPost httppost = new HttpPost(url);
 	            HttpResponse httpResponse = httpclient.execute(httppost);
@@ -230,16 +268,15 @@ public class RedditData {
 	            is.close();
 	            json = sb.toString();
 	        } catch (Exception e) {
-	            Log.e("Buffer Error", "Error converting result " + e.toString());
+	        	System.out.println("Error converting result " + e.toString());
 	        }
 	        // try parse the string to a JSON object
 	        try {
 	            jObj = new JSONObject(json);
 	        } catch (JSONException e) {
-	            Log.e("JSON Parser", "Error parsing data " + e.toString());
+	            System.out.println("Error parsing data " + e.toString());
 	        }
-	        System.out.println("POST complete");
 	        // return json response
 	        return jObj;
-		}*/
+		}
 }

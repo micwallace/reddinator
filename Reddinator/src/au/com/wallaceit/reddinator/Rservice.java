@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,7 +102,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		StrictMode.setThreadPolicy(policy);
 		endoffeed = false;
 		// get thumbnail load preference for the widget
-		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, false);
+		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, true);
 	}
 
 	@Override
@@ -164,8 +163,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				e.printStackTrace();
 				// return null; // The view is invalid;
 			}
+			// create remote view from specified layout
+			if (prefs.getBoolean("bigthumbs-"+appWidgetId, false)){
+				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrowbigthumb);
+			} else {
+				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
+			}
 			// build view
-			row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
 			row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titlefontsize)); // use for compatibility setTextViewTextSize only introduced in API 16
 			row.setTextColor(R.id.listheading, themecolors[0]);
@@ -189,7 +193,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			row.setOnClickFillInIntent(R.id.listrow, i);
 			// load thumbnail if they are enabled for this widget
 			if (loadthumbnails){
-				if (!thumbnail.equals("") && !thumbnail.equals("self")){ // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for the moment
+				if (!thumbnail.equals("") && !thumbnail.equals("self")){ // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
 					Bitmap bitmap = loadImage(thumbnail);
 					if (bitmap != null){
 						row.setImageViewBitmap(R.id.thumbnail, bitmap);
@@ -236,7 +240,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public int getViewTypeCount() {
-		return (2);
+		return (3);
 	}
 
 	@Override

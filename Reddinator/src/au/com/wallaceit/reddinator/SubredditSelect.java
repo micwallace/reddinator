@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -43,6 +44,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.TextView;
@@ -55,7 +57,9 @@ public class SubredditSelect extends ListActivity {
 	String cursort;
 	Button sortbtn;
 	boolean curthumbpref;
+	boolean curbigthumbpref;
 	CheckBox thumbchkbox;
+	CheckBox bigthumbchkbox;
 	private int mAppWidgetId;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -66,7 +70,7 @@ public class SubredditSelect extends ListActivity {
 		Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
 		if (feeds.isEmpty()){
 			// first time setup
-			personallist = new ArrayList<String>(Arrays.asList("Front Page","all","arduino","AskReddit","technology","science","video","worldnews"));
+			personallist = new ArrayList<String>(Arrays.asList("Front Page","all","arduino","AskReddit","pics","technology","science","videos","worldnews"));
 			savePersonalList();
 		} else {
 			personallist = new ArrayList<String>(feeds);
@@ -106,12 +110,19 @@ public class SubredditSelect extends ListActivity {
 				
 			}
 		});
-		Button btn = (Button) findViewById(R.id.addsrbutton);
-		btn.setOnClickListener(new OnClickListener() {
+		Button addbtn = (Button) findViewById(R.id.addsrbutton);
+		addbtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(SubredditSelect.this, ViewAllSubreddits.class);
 				startActivityForResult(intent, 0);
+			}
+		});
+		Button importbtn = (Button) findViewById(R.id.importsrbutton);
+		importbtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				showImportDialog();
 			}
 		});
 		// sort button
@@ -137,6 +148,18 @@ public class SubredditSelect extends ListActivity {
           	   	prefsedit.commit();
 			}
 		});
+		// widget big thumbnails checkbox
+		bigthumbchkbox = (CheckBox) findViewById(R.id.bigthumbpref);
+		curbigthumbpref = prefs.getBoolean("bigthumbs-"+mAppWidgetId, false);
+		bigthumbchkbox.setChecked(curbigthumbpref);
+		bigthumbchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				Editor prefsedit = prefs.edit();
+				prefsedit.putBoolean("bigthumbs-"+mAppWidgetId, isChecked);
+		        prefsedit.commit();
+			}
+		});
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -151,7 +174,7 @@ public class SubredditSelect extends ListActivity {
 	public void onBackPressed(){
 		savePersonalList();
 		// check if sort has changed
-		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, true)){
+		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, true) || curbigthumbpref!=prefs.getBoolean("bigthumbs-"+mAppWidgetId, false)){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
@@ -198,6 +221,67 @@ public class SubredditSelect extends ListActivity {
 	               }
 	    });
 	    builder.show();
+	}
+	// show the import/login dialog
+	private void showImportDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelect.this);
+	    // Get the layout inflater
+	    LayoutInflater inflater = getLayoutInflater();
+	    final View v = inflater.inflate(R.layout.importdialog, null);
+	    builder.setView(v)
+	    // Add action buttons
+	    .setPositiveButton("Import", new DialogInterface.OnClickListener() {
+	    	@Override
+	        public void onClick(DialogInterface dialog, int id) {
+	    		String username =  ((EditText) v.findViewById(R.id.username)).getText().toString();
+	            String password =  ((EditText) v.findViewById(R.id.password)).getText().toString();
+	            boolean clearlist =  ((CheckBox) v.findViewById(R.id.clearlist)).isChecked();
+	    		dialog.cancel();
+	        	// import
+	    		importSubreddits(username, password, clearlist);
+	        }
+	    })
+	    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int id) {
+	            dialog.cancel();
+	        }
+	    })
+	    .setTitle("Login to Reddit");    
+		builder.create().show();
+	}
+	// import personal subreddits
+	private void importSubreddits(final String username, final String password, final boolean clearlist){
+		// use a thread for searching
+		final ProgressDialog sdialog = ProgressDialog.show(SubredditSelect.this, "", ("Importing..."), true);
+		Thread t = new Thread() {
+				public void run() {
+					
+					final ArrayList<String> list = global.rdata.getMySubreddits(username, password);
+					// copy into current personal list if not empty or error
+					if (!list.isEmpty() && !list.get(0).contains("Error:")){
+						if (clearlist){
+							personallist.clear();
+						}
+						personallist.addAll(list);
+					}
+					runOnUiThread(new Runnable() {
+							public void run() {
+								sdialog.dismiss();
+								if (list.isEmpty() || list.get(0).contains("Error:")){
+									new AlertDialog.Builder(SubredditSelect.this).setMessage(list.isEmpty()?"No subreddits to import!":list.get(0))
+									.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								           public void onClick(DialogInterface dialog, int id) {
+								                dialog.cancel();
+								           }
+								       }).show();
+								} else {
+									listadaptor.notifyDataSetChanged();
+								}
+							}
+					});	
+				}
+		};
+		t.start();
 	}
 	// list adapter
 	class MyRedditsAdapter extends ArrayAdapter<String> {

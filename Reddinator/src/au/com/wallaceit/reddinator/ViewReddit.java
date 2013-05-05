@@ -17,22 +17,29 @@
  */
 package au.com.wallaceit.reddinator;
 
+import java.io.File;
 import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.R;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
@@ -88,6 +95,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
+        //actionBar.setCustomView(R.layout.sharemenu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         ImageView view = (ImageView)findViewById(android.R.id.home);
         if (view != null){
@@ -113,6 +121,33 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         	webview.wv.loadData("", "text/html", "utf-8");
         	this.finish();
         }
+    }
+    
+    private ShareActionProvider shareActionProvider;
+    @SuppressLint("NewApi")
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu){
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sharemenu, menu);
+    	if (android.os.Build.VERSION.SDK_INT >= 14){
+    		// Get the menu item.
+    	    MenuItem menuItem = menu.findItem(R.id.menu_share);
+    	    // Get the provider and hold onto it to set/change the share intent.
+    	    shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
+    		// Set the default share intent
+    	    shareActionProvider.setShareIntent(getCurrentShareIntent());
+    	}
+    	return true;
+    }
+    
+    @SuppressLint("InlinedApi")
+	public Intent getCurrentShareIntent(){
+    	Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    	shareIntent.setType("text/plain");
+    	String contenturl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+    	String redditurl = "http://reddit.com"+getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+    	shareIntent.putExtra(Intent.EXTRA_TEXT, "Content: "+contenturl+" \nReddit: "+redditurl);
+    	return shareIntent;
     }
     
     @Override
