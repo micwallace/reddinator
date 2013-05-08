@@ -10,11 +10,20 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" >
+		<LinearLayout
+            android:id="@+id/row1"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:background="#EFF7FF"
+            android:gravity="right" >
 
         <Button
             android:id="@+id/sortselect"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
+            android:layout_gravity="left"
             android:layout_weight="0.62"
             android:background="#EFF7FF"
             android:gravity="center_vertical"
@@ -26,11 +35,44 @@
             android:id="@+id/thumbnailpref"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:layout_marginLeft="8dp"
             android:layout_weight="0.39"
             android:background="#EFF7FF"
             android:paddingLeft="30dp"
             android:text="@string/thumbnails" />
 
+		</LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_weight="50"
+            android:background="#EFF7FF"
+            android:gravity="right"
+            android:orientation="vertical" >
+
+            <CheckBox
+                android:id="@+id/hideinfpref"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="50"
+                android:paddingLeft="30dp"
+                android:text="Hide Post Info" />
+
+            <CheckBox
+                android:id="@+id/bigthumbpref"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="left"
+                android:layout_weight="50"
+                android:paddingLeft="30dp"
+                android:text="Thumb on top" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <ListView
@@ -39,7 +81,6 @@
         android:layout_height="fill_parent"
         android:layout_below="@+id/srtoolbar"
         android:background="#FFF" >
-        
     </ListView>
 
     <RelativeLayout
@@ -47,7 +88,7 @@
         android:layout_width="fill_parent"
         android:layout_height="35dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/widgetpref2"
+        android:layout_below="@id/widgetpref"
         android:background="#CEE3F8" >
 
         <Button
@@ -56,7 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="@string/add" />
+            android:text="@string/add"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/importsrbutton"
@@ -64,7 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/addsrbutton"
-            android:text="@string/sr_import" />
+            android:text="@string/sr_import"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView1"
@@ -76,34 +119,5 @@
             android:text="@string/my_subreddits"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/widgetpref2"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="false"
-        android:layout_below="@id/widgetpref"
-        android:background="#EFF7FF"
-        android:gravity="right" >
-
-        <CheckBox
-            android:id="@+id/hideinfpref"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0.35"
-            android:paddingLeft="30dp"
-            android:text="Hide Post Info" />
-
-        <CheckBox
-            android:id="@+id/bigthumbpref"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.65"
-            android:paddingLeft="30dp"
-            android:text="Big Thumbs" />
-
-    </LinearLayout>
 
 </RelativeLayout>

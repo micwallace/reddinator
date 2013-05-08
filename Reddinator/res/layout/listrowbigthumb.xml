@@ -11,13 +11,16 @@
 
     <ImageView
         android:id="@+id/thumbnail"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:layout_marginTop="4dp"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/img"
-        android:maxHeight="500dp"
+        android:maxHeight="80dp"
+        android:maxWidth="80dp"
         android:paddingTop="4dp"
         android:scaleType="fitCenter"
         android:visibility="gone" />
@@ -30,6 +33,7 @@
     android:layout_alignParentRight="true"
     android:layout_below="@id/thumbnail"
     android:gravity="top"
+    android:paddingBottom="4dp"
     android:paddingLeft="6dip"
     android:paddingRight="10dp"
     android:paddingTop="4dip"
@@ -47,8 +51,7 @@
     android:layout_alignParentLeft="true"
     android:layout_below="@+id/headcontainer"
     android:paddingBottom="4dp"
-    android:paddingLeft="6dip"
-    android:paddingTop="1dip" >
+    android:paddingLeft="6dip" >
 
     <TextView
         android:id="@+id/sourcetxt"

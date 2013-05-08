@@ -58,6 +58,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private int[] themecolors;
 	private boolean loadcached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
 	private boolean loadthumbnails = false;
+	private boolean bigthumbs = false;
+	private boolean hideinf = false;
 	
 	public ListRemoteViewsFactory(Context ctxt, Intent intent) {
 		this.ctxt = ctxt;
@@ -103,6 +105,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		endoffeed = false;
 		// get thumbnail load preference for the widget
 		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, true);
+		bigthumbs = prefs.getBoolean("bigthumbs-"+appWidgetId, false);
+		hideinf = prefs.getBoolean("hideinf-"+appWidgetId, false);
 	}
 
 	@Override
@@ -164,7 +168,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				// return null; // The view is invalid;
 			}
 			// create remote view from specified layout
-			if (prefs.getBoolean("bigthumbs-"+appWidgetId, false)){
+			if (bigthumbs){
 				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrowbigthumb);
 			} else {
 				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
@@ -207,6 +211,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 				}
 			} else {
 				row.setViewVisibility(R.id.thumbnail, View.GONE);
+			}
+			// hide info bar if options set
+			if (hideinf){
+				row.setViewVisibility(R.id.infbox, View.GONE);
+			} else {
+				row.setViewVisibility(R.id.infbox, View.VISIBLE);
 			}
 		}
 		//System.out.println("getViewAt("+position+");");
@@ -257,6 +267,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	public void onDataSetChanged() {
 		// get thumbnail load preference for the widget
 		loadthumbnails = prefs.getBoolean("thumbnails-"+appWidgetId, true);
+		bigthumbs = prefs.getBoolean("bigthumbs-"+appWidgetId, false);
+		hideinf = prefs.getBoolean("hideinf-"+appWidgetId, false);
 		titlefontsize = prefs.getString("titlefontpref", "16");
 		getThemeColors(); // reset theme colors
 		int loadtype = global.getLoadType();

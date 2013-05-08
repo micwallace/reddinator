@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -136,6 +137,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     	    shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
     		// Set the default share intent
     	    shareActionProvider.setShareIntent(getCurrentShareIntent());
+    	    shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
     	}
     	return true;
     }

@@ -58,8 +58,10 @@ public class SubredditSelect extends ListActivity {
 	Button sortbtn;
 	boolean curthumbpref;
 	boolean curbigthumbpref;
+	boolean curhideinfpref;
 	CheckBox thumbchkbox;
 	CheckBox bigthumbchkbox;
+	CheckBox hideinfchkbox;
 	private int mAppWidgetId;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -160,6 +162,18 @@ public class SubredditSelect extends ListActivity {
 		        prefsedit.commit();
 			}
 		});
+		// widget hide info
+		hideinfchkbox = (CheckBox) findViewById(R.id.hideinfpref);
+		curhideinfpref = prefs.getBoolean("hideinf-"+mAppWidgetId, false);
+		hideinfchkbox.setChecked(curhideinfpref);
+		hideinfchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				Editor prefsedit = prefs.edit();
+				prefsedit.putBoolean("hideinf-"+mAppWidgetId, isChecked);
+		        prefsedit.commit();
+			}
+		});
 	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
@@ -174,7 +188,7 @@ public class SubredditSelect extends ListActivity {
 	public void onBackPressed(){
 		savePersonalList();
 		// check if sort has changed
-		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, true) || curbigthumbpref!=prefs.getBoolean("bigthumbs-"+mAppWidgetId, false)){
+		if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot")) || curthumbpref!=prefs.getBoolean("thumbnails-"+mAppWidgetId, true) || curbigthumbpref!=prefs.getBoolean("bigthumbs-"+mAppWidgetId, false) || curhideinfpref!=prefs.getBoolean("hideinf-"+mAppWidgetId, false)){
 			AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
 			RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
