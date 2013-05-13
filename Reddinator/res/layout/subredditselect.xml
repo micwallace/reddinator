@@ -7,73 +7,38 @@
     <LinearLayout
         android:id="@+id/widgetpref"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
-		<LinearLayout
-            android:id="@+id/row1"
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:background="#EFF7FF"
-            android:gravity="right" >
+        android:layout_alignParentRight="true"
+        android:background="#EFF7FF"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/sortselect"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
+            android:layout_height="fill_parent"
             android:layout_gravity="left"
-            android:layout_weight="0.62"
+            android:layout_weight="50"
             android:background="#EFF7FF"
             android:gravity="center_vertical"
             android:paddingLeft="14dp"
             android:text="@string/sort_hot"
             android:textColor="#FF4500" />
 
-        <CheckBox
-            android:id="@+id/thumbnailpref"
+        <TextView
+            android:id="@+id/widgetprefbtn"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_marginLeft="8dp"
-            android:layout_weight="0.39"
-            android:background="#EFF7FF"
-            android:paddingLeft="30dp"
-            android:text="@string/thumbnails" />
-
-		</LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/row2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_height="fill_parent"
             android:layout_weight="50"
-            android:background="#EFF7FF"
-            android:gravity="right"
-            android:orientation="vertical" >
+            android:drawablePadding="2dp"
+            android:drawableRight="@android:drawable/ic_menu_preferences"
+            android:gravity="right|center_vertical"
+            android:paddingRight="5dp"
+            android:text="@string/widget_prefs"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#336699" />
 
-            <CheckBox
-                android:id="@+id/hideinfpref"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="50"
-                android:paddingLeft="30dp"
-                android:text="Hide Post Info" />
-
-            <CheckBox
-                android:id="@+id/bigthumbpref"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="left"
-                android:layout_weight="50"
-                android:paddingLeft="30dp"
-                android:text="Thumb on top" />
-
-        </LinearLayout>
-    </LinearLayout>
+	</LinearLayout>
 
     <ListView
         android:id="@android:id/list"
@@ -86,7 +51,7 @@
     <RelativeLayout
         android:id="@+id/srtoolbar"
         android:layout_width="fill_parent"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/widgetpref"
         android:background="#CEE3F8" >

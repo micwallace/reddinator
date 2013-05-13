@@ -12,7 +12,7 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="username" />
+        android:hint="@string/username" />
     <EditText
         android:id="@+id/password"
         android:inputType="textPassword"
@@ -23,7 +23,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif"
-        android:hint="password"/>
+        android:hint="@string/password"/>
 
     <CheckBox
         android:id="@+id/clearlist"
@@ -32,6 +32,6 @@
         android:layout_marginTop="4dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:text="Replace current list" />
+        android:text="@string/replace_current_list" />
 
 </LinearLayout>

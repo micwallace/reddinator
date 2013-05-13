@@ -197,6 +197,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			row.setOnClickFillInIntent(R.id.listrow, i);
 			// load thumbnail if they are enabled for this widget
 			if (loadthumbnails){
+				// load big image if preference is set
 				if (!thumbnail.equals("") && !thumbnail.equals("self")){ // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
 					Bitmap bitmap = loadImage(thumbnail);
 					if (bitmap != null){
@@ -244,6 +245,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	@Override
 	public RemoteViews getLoadingView() {
 		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(), R.layout.listrowload);
+		if (themecolors==null){
+			getThemeColors(); // prevents null pointer
+		}
 		rowload.setTextColor(R.id.listloadtxt, themecolors[0]);
 		return rowload;
 	}

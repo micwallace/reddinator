@@ -42,8 +42,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RemoteViews;
@@ -59,9 +57,7 @@ public class SubredditSelect extends ListActivity {
 	boolean curthumbpref;
 	boolean curbigthumbpref;
 	boolean curhideinfpref;
-	CheckBox thumbchkbox;
-	CheckBox bigthumbchkbox;
-	CheckBox hideinfchkbox;
+	TextView widgetprefbtn;
 	private int mAppWidgetId;
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -138,46 +134,47 @@ public class SubredditSelect extends ListActivity {
 				showSortDialog();
 			}
 		});
-		// widget thumbnails checkbox
-		thumbchkbox = (CheckBox) findViewById(R.id.thumbnailpref);
+		// set options dialog click listener
+		widgetprefbtn = (TextView) findViewById(R.id.widgetprefbtn);
+		widgetprefbtn.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
+			    final boolean[] initvalue = {prefs.getBoolean("thumbnails-"+mAppWidgetId, true), prefs.getBoolean("bigthumbs-"+mAppWidgetId, false),  prefs.getBoolean("hideinf-"+mAppWidgetId, false)};
+			    AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelect.this);
+			    builder.setTitle("Widget Options");
+			    builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener(){
+			        public void onClick(DialogInterface dialogInterface, int item, boolean state) {
+			        	Editor prefsedit = prefs.edit();
+			        	switch(item){
+			        		case 0:
+			        			prefsedit.putBoolean("thumbnails-"+mAppWidgetId, state);
+			        			break;
+			        		case 1:
+			        			prefsedit.putBoolean("bigthumbs-"+mAppWidgetId, state);
+			        			break;
+			        		case 2:
+			        			prefsedit.putBoolean("hideinf-"+mAppWidgetId, state);
+			        			break;
+			        	}
+			        	prefsedit.commit();
+			        }
+			    });
+			    builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+			        public void onClick(DialogInterface dialog, int id) {
+			            dialog.cancel();
+			        }
+			    });
+			    builder.create().show();
+			}
+		});
+		// load initial values for comparison
 		curthumbpref = prefs.getBoolean("thumbnails-"+mAppWidgetId, true);
-		thumbchkbox.setChecked(curthumbpref);
-		thumbchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor prefsedit = prefs.edit();
-				prefsedit.putBoolean("thumbnails-"+mAppWidgetId, isChecked);
-          	   	prefsedit.commit();
-			}
-		});
-		// widget big thumbnails checkbox
-		bigthumbchkbox = (CheckBox) findViewById(R.id.bigthumbpref);
 		curbigthumbpref = prefs.getBoolean("bigthumbs-"+mAppWidgetId, false);
-		bigthumbchkbox.setChecked(curbigthumbpref);
-		bigthumbchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor prefsedit = prefs.edit();
-				prefsedit.putBoolean("bigthumbs-"+mAppWidgetId, isChecked);
-		        prefsedit.commit();
-			}
-		});
-		// widget hide info
-		hideinfchkbox = (CheckBox) findViewById(R.id.hideinfpref);
 		curhideinfpref = prefs.getBoolean("hideinf-"+mAppWidgetId, false);
-		hideinfchkbox.setChecked(curhideinfpref);
-		hideinfchkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Editor prefsedit = prefs.edit();
-				prefsedit.putBoolean("hideinf-"+mAppWidgetId, isChecked);
-		        prefsedit.commit();
-			}
-		});
 	}
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-            Intent data) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == 1){
 			String subreddit = data.getStringExtra("subreddit");
 			personallist.add(subreddit);
@@ -193,8 +190,12 @@ public class SubredditSelect extends ListActivity {
 			RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
 			views.setViewVisibility(R.id.srloader, View.VISIBLE);
 			views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
-			// bypass cache if service not loaded
-			global.setBypassCache(true);
+			// bypass the cached entrys only if the sorting preference has changed
+			if (!cursort.equals(prefs.getString("sort-"+mAppWidgetId, "hot"))){
+				global.setBypassCache(true);
+			} else {
+				global.setRefreshView();
+			}
 			appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
 			appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
 		}

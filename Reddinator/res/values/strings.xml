@@ -19,4 +19,9 @@
 	<string name="add">Add</string>
 	<string name="my_subreddits">My Subreddits</string>
 	<string name="sr_import">Import</string>
+	<string name="username">username</string>
+	<string name="password">password</string>
+	<string name="replace_current_list">Replace current list</string>
+	<string name="share">Share</string>
+	<string name="widget_prefs">Widget Prefs</string>
 </resources>

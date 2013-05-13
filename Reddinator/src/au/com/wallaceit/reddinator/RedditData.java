@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -93,7 +92,7 @@ public class RedditData {
 	    HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
 	    HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
 	    HttpProtocolParams.setUseExpectContinue(params, true);
-	    HttpConnectionParams.setConnectionTimeout(params, 10000);
+	    HttpConnectionParams.setConnectionTimeout(params, 12000);
 	    HttpConnectionParams.setSoTimeout(params, 10000);
 	    SchemeRegistry schReg = new SchemeRegistry();
 	    schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
@@ -160,7 +159,7 @@ public class RedditData {
     }
 	
 	// Post calls
-		private String modhash = "";
+	private String modhash = "";
 		// unused
 		/*public String vote(String id, String direction){
 			String result="";

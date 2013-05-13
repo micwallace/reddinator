@@ -71,12 +71,14 @@ public class WidgetProvider extends AppWidgetProvider {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.putExtra("firsttimeconfig", 0); // not first time config
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             // PICK Subreddit BUTTON
             Intent srintent = new Intent(context, SubredditSelect.class);
             srintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             srintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            srintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             srintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // REMOTE DATA
@@ -203,6 +205,7 @@ public class WidgetProvider extends AppWidgetProvider {
 						Intent clickintent1 = new Intent(context, ViewReddit.class);
 						clickintent1.putExtras(intent.getExtras());
 						clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						clickintent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
 						context.startActivity(clickintent1);
 						break;
 					case 2:
