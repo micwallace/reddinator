@@ -221,7 +221,7 @@ public class RedditData {
 		}
 		public String login(String username, String passwd, boolean remember){
 			String result="";
-			String url="https://ssl.reddit.com/api/login.json?user="+username+"&passwd="+passwd+"&rem="+String.valueOf(remember)+"&api_type=json";		
+			String url="https://ssl.reddit.com/api/login.json?user="+Uri.encode(username)+"&passwd="+Uri.encode(passwd)+"&rem="+String.valueOf(remember)+"&api_type=json";		
 			JSONObject resultjson = new JSONObject();
 			try {
 				resultjson = getJSONFromPost(url).getJSONObject("json");
