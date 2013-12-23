@@ -40,26 +40,26 @@ public class TabFragment extends Fragment {
     	this.setRetainInstance(true);
     	if (mFirstTime){
     		// Get global objects
-            global = ((GlobalObjects) getActivity().getApplicationContext());
-    		Bundle actbundle = getActivity().getIntent().getExtras();
-    		redditid = actbundle.getString(WidgetProvider.ITEM_ID);
-    		ll = (LinearLayout)inflater.inflate(R.layout.tab2, container, false);
-    		((TextView) ll.findViewById(R.id.posttext)).setText(actbundle.getString(WidgetProvider.ITEM_TXT));
-    		votestxt = (TextView) ll.findViewById(R.id.votestext);
-    		votestxt.setText(String.valueOf(actbundle.getInt(WidgetProvider.ITEM_VOTES)));
-    		ll.findViewById(R.id.upvotebtn).setOnClickListener(new OnClickListener(){
-				@Override
-				public void onClick(View v) {
-					//global.redditdata.vote(redditid, "1");
-				}
-			});
-    		ll.findViewById(R.id.downvotebtn).setOnClickListener(new OnClickListener(){
-				@Override
-				public void onClick(View v) {
-					//global.redditdata.vote(redditid, "-1");
-				}
-			});
-    		mFirstTime = false;
+//            global = ((GlobalObjects) getActivity().getApplicationContext());
+//    		Bundle actbundle = getActivity().getIntent().getExtras();
+//    		redditid = actbundle.getString(WidgetProvider.ITEM_ID);
+//    		ll = (LinearLayout)inflater.inflate(R.layout.tab2, container, false);
+//    		((TextView) ll.findViewById(R.id.posttext)).setText(actbundle.getString(WidgetProvider.ITEM_TXT));
+//    		votestxt = (TextView) ll.findViewById(R.id.votestext);
+//    		votestxt.setText(String.valueOf(actbundle.getInt(WidgetProvider.ITEM_VOTES)));
+//    		ll.findViewById(R.id.upvotebtn).setOnClickListener(new OnClickListener(){
+//				@Override
+//				public void onClick(View v) {
+//					//global.redditdata.vote(redditid, "1");
+//				}
+//			});
+//    		ll.findViewById(R.id.downvotebtn).setOnClickListener(new OnClickListener(){
+//				@Override
+//				public void onClick(View v) {
+//					//global.redditdata.vote(redditid, "-1");
+//				}
+//			});
+//    		mFirstTime = false;
     	} else {
         	((ViewGroup) ll.getParent()).removeView(ll);
         }

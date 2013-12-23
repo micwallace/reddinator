@@ -100,7 +100,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
             // get theme layout id
          	int layout = R.layout.widgetmain;
-         	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+         	switch(Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))){
          		case 1: layout = R.layout.widgetmain; break;
          		case 2: layout = R.layout.widgetdark; break;
          		case 3: layout = R.layout.widgetholo; break;
@@ -170,7 +170,7 @@ public class WidgetProvider extends AppWidgetProvider {
         updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
         final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		int refreshrate = Integer.valueOf(prefs.getString("refreshrate", "43200000"));
+		int refreshrate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
 		if (refreshrate!=0){
         	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
 		} else {
@@ -186,7 +186,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		if (action.equals(ITEM_CLICK)) {
 			// check if its the load more button being clicked
 			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
-			if (redditid.equals("0")){
+			if ("0".equals(redditid)){
 				// LOAD MORE FEED ITEM CLICKED
 				//System.out.println("loading more feed items...");
 				int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
@@ -197,7 +197,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			} else {
 				// NORMAL FEED ITEM CLICK
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				String clickprefst = prefs.getString("onclickpref", "1");
+				String clickprefst = prefs.getString(context.getString(R.string.on_click_pref), "1");
 				int clickpref = Integer.valueOf(clickprefst);
 				switch (clickpref){
 					case 1:
@@ -282,7 +282,7 @@ public class WidgetProvider extends AppWidgetProvider {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		// get theme layout id
      	int layoutid = 1;
-     	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
+     	switch(Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))){
      		case 1: layoutid = R.layout.widgetmain; break;
      		case 2: layoutid = R.layout.widgetdark; break;
      		case 3: layoutid = R.layout.widgetholo; break;

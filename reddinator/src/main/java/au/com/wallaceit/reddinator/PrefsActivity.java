@@ -36,12 +36,12 @@ import android.widget.Button;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PrefsActivity extends PreferenceActivity {
 	public int mAppWidgetId;
-	private SharedPreferences prefs;
-	private String refreshrate = "";
-	private String titlefontsize = "";
-	private String titlefontcolor = "";
-	private String widgettheme = ""; 
-	int firsttimesetup = 1;
+	private SharedPreferences mSharedPreferences;
+	private String mRefreshrate = "";
+	private String mTitleFontSize = "";
+	private String mTitleFontColor = "";
+	private String mWidgetTheme = "";
+	int mFirstTimeSetup = 1;
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +64,17 @@ public class PrefsActivity extends PreferenceActivity {
 		    mAppWidgetId = extras.getInt(
 		            AppWidgetManager.EXTRA_APPWIDGET_ID, 
 		            AppWidgetManager.INVALID_APPWIDGET_ID);
-		    firsttimesetup = extras.getInt("firsttimeconfig", 1);
+		    mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
 		}
-		prefs = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-		refreshrate = prefs.getString("refreshrate", "43200000");
-		widgettheme = prefs.getString("widgetthemepref", "1");
-		titlefontsize = prefs.getString("titlefontpref", "16");
-		titlefontcolor = prefs.getString("titlecolorpref", "0");
+		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
+		mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
+		mWidgetTheme = mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1");
+		mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
+		mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
 	}
 	public void onBackPressed(){
 		// check if refresh rate has changed and update if needed
-		if (!refreshrate.equals(prefs.getString("refreshrate", "43200000"))){
+		if (!mRefreshrate.equals(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"))){
 			//System.out.println("Refresh preference changed, updating alarm");
 			Intent intent =  new Intent(getApplicationContext(), WidgetProvider.class);
 	        intent.setAction(WidgetProvider.APPWIDGET_AUTO_UPDATE);
@@ -82,7 +82,7 @@ public class PrefsActivity extends PreferenceActivity {
 	        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 	        PendingIntent updateintent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 	        final AlarmManager m = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-			int refreshrate = Integer.valueOf(prefs.getString("refreshrate", "43200000"));
+			int refreshrate = Integer.valueOf(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"));
 			if (refreshrate!=0){
 	        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
 			} else {
@@ -91,12 +91,16 @@ public class PrefsActivity extends PreferenceActivity {
 		}
 		
 		// check if theme or style has changed and update if needed
-		if (!widgettheme.equals(prefs.getString("widgetthemepref", "1")) || !titlefontcolor.equals(prefs.getString("titlefontpref", "0")) || !titlefontsize.equals(prefs.getString("titlefontpref", "16"))){
+		if (!mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))
+                || !mTitleFontColor.equals(mSharedPreferences.getString(getString(R.string.title_color_pref), "0"))
+                || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))){
+
 			// set theme selected title color if theme has changed but font hasn't.
-			if (titlefontcolor.equals(prefs.getString("titlecolorpref", "0")) && !widgettheme.equals(prefs.getString("widgetthemepref", "1"))){
+			if (mTitleFontColor.equals(mSharedPreferences.getString(getString(R.string.title_color_pref), "0"))
+                    && !mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))){
 				setUseThemeColor();
 			}
-			if (firsttimesetup == 0){ // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
+			if (mFirstTimeSetup == 0){ // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
 				updateWidget();
 			}
 		}
@@ -117,7 +121,7 @@ public class PrefsActivity extends PreferenceActivity {
 	}
 	
 	private void setUseThemeColor(){
-		prefs.edit().putString("titlecolorpref", "0").commit();
+		mSharedPreferences.edit().putString(getString(R.string.title_color_pref), "0").commit();
 	}
 
 }

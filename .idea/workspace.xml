@@ -12,15 +12,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelect.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelect.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="reddinator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -83,102 +81,165 @@
     <favorites_list name="reddinator" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="TabFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="60" selection-start="1891" selection-end="1891" vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="918">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0" vertical-offset="810" max-vertical-offset="1296">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="app_widget_provider_info.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="39" selection-start="204" selection-end="204" vertical-scroll-proportion="0.11273486" vertical-offset="0" max-vertical-offset="479">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="preferences.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="29" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1638">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="43" selection-start="952" selection-end="952" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ViewReddit.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="152" column="27" selection-start="5748" selection-end="5748" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3996">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GlobalObjects.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="33" selection-start="1298" selection-end="1298" vertical-scroll-proportion="0.0" vertical-offset="53" max-vertical-offset="954">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PrefsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="36" column="13" selection-start="1371" selection-end="1371" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1782">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RedditData.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="65" column="32" selection-start="2415" selection-end="2415" vertical-scroll-proportion="0.0" vertical-offset="984" max-vertical-offset="5274">
-              <folding>
-                <element signature="e#0#10873#0" expanded="true" />
-                <element signature="imports" expanded="true" />
-                <element signature="e#7464#7472#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ViewAllSubreddits.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubreddits.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="150" column="35" selection-start="4908" selection-end="4908" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3132">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <splitter split-orientation="horizontal" split-proportion="0.66452444">
+      <split-first>
+        <leaf>
+          <file leaf-file-name="TabFragment.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="77" column="0" selection-start="3268" selection-end="3268" vertical-scroll-proportion="0.0" vertical-offset="522" max-vertical-offset="1098">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="WidgetProvider.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="87" column="25" selection-start="4422" selection-end="4422" vertical-scroll-proportion="0.0" vertical-offset="972" max-vertical-offset="4806">
+                  <folding>
+                    <element signature="e#5467#5512#0" expanded="true" />
+                    <element signature="e#9189#9234#0" expanded="true" />
+                    <element signature="e#10363#10404#0" expanded="true" />
+                    <element signature="e#14163#14208#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Rservice.java" pinned="false" current="true" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="275" column="40" selection-start="10450" selection-end="10450" vertical-scroll-proportion="0.24793388" vertical-offset="4104" max-vertical-offset="7056">
+                  <folding>
+                    <element signature="e#3511#3556#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0" vertical-offset="810" max-vertical-offset="1296">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="app_widget_provider_info.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="3" column="39" selection-start="204" selection-end="204" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="preferences.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="24" column="38" selection-start="1068" selection-end="1068" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1638">
+                  <folding>
+                    <element signature="e#199#222#0" expanded="true" />
+                    <element signature="e#629#657#0" expanded="true" />
+                    <element signature="e#1497#1524#0" expanded="true" />
+                    <element signature="e#1915#1940#0" expanded="true" />
+                    <element signature="e#2349#2375#0" expanded="true" />
+                    <element signature="e#2879#2908#0" expanded="true" />
+                    <element signature="e#3125#3152#0" expanded="true" />
+                    <element signature="e#3558#3585#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="GlobalObjects.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="29" column="33" selection-start="1298" selection-end="1298" vertical-scroll-proportion="0.0" vertical-offset="431" max-vertical-offset="954">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="PrefsActivity.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="123" column="78" selection-start="5739" selection-end="5739" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="1854">
+                  <folding>
+                    <element signature="e#2552#2589#0" expanded="true" />
+                    <element signature="e#2650#2687#0" expanded="true" />
+                    <element signature="e#2743#2778#0" expanded="true" />
+                    <element signature="e#2836#2872#0" expanded="true" />
+                    <element signature="e#3029#3066#0" expanded="true" />
+                    <element signature="e#3727#3764#0" expanded="true" />
+                    <element signature="e#4122#4159#0" expanded="true" />
+                    <element signature="e#4239#4275#0" expanded="true" />
+                    <element signature="e#4354#4389#0" expanded="true" />
+                    <element signature="e#4535#4571#0" expanded="true" />
+                    <element signature="e#4652#4689#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="RedditData.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="65" column="32" selection-start="2415" selection-end="2415" vertical-scroll-proportion="0.0" vertical-offset="984" max-vertical-offset="5274">
+                  <folding>
+                    <element signature="e#0#10873#0" expanded="true" />
+                    <element signature="imports" expanded="true" />
+                    <element signature="e#7464#7472#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="ViewAllSubreddits.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubreddits.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="150" column="35" selection-start="4908" selection-end="4908" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3132">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-first>
+      <split-second>
+        <leaf>
+          <file leaf-file-name="preferences.xml" pinned="false" current="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="76" column="35" selection-start="3565" selection-end="3565" vertical-scroll-proportion="0.0" vertical-offset="597" max-vertical-offset="1638">
+                  <folding>
+                    <element signature="e#199#222#0" expanded="true" />
+                    <element signature="e#629#657#0" expanded="true" />
+                    <element signature="e#1058#1085#0" expanded="true" />
+                    <element signature="e#1497#1524#0" expanded="true" />
+                    <element signature="e#1915#1940#0" expanded="true" />
+                    <element signature="e#2349#2375#0" expanded="true" />
+                    <element signature="e#2879#2908#0" expanded="true" />
+                    <element signature="e#3125#3152#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="strings.xml" pinned="false" current="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="28" column="44" selection-start="1356" selection-end="1356" vertical-scroll-proportion="0.6737968" vertical-offset="0" max-vertical-offset="748">
+                  <folding />
+                </state>
+              </provider>
+            </entry>
+          </file>
+        </leaf>
+      </split-second>
+    </splitter>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -837,13 +898,17 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
       </list>
     </option>
   </component>
@@ -1397,7 +1462,7 @@
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32969153" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32994923" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994923" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
@@ -1412,7 +1477,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1487,51 +1552,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="13" selection-start="1409" selection-end="1409" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4806">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="60" selection-start="1891" selection-end="1891" vertical-scroll-proportion="0.0" vertical-offset="93" max-vertical-offset="918">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="43" selection-start="952" selection-end="952" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="594">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="29" selection-start="140" selection-end="140" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1638">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="152" column="27" selection-start="5748" selection-end="5748" vertical-scroll-proportion="0.0" vertical-offset="1890" max-vertical-offset="3996">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="36" column="13" selection-start="1371" selection-end="1371" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1782">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="33" selection-start="1298" selection-end="1298" vertical-scroll-proportion="0.0" vertical-offset="53" max-vertical-offset="954">
           <folding />
         </state>
       </provider>
@@ -1547,13 +1570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubreddits.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="35" selection-start="4908" selection-end="4908" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3132">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0" vertical-offset="810" max-vertical-offset="1296">
@@ -1563,8 +1579,92 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="39" selection-start="204" selection-end="204" vertical-scroll-proportion="0.11273486" vertical-offset="0" max-vertical-offset="479">
+        <state line="3" column="39" selection-start="204" selection-end="204" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="77" column="0" selection-start="3268" selection-end="3268" vertical-scroll-proportion="0.0" vertical-offset="522" max-vertical-offset="1098">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubreddits.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="35" selection-start="4908" selection-end="4908" vertical-scroll-proportion="0.0" vertical-offset="1479" max-vertical-offset="3132">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="33" selection-start="1298" selection-end="1298" vertical-scroll-proportion="0.0" vertical-offset="53" max-vertical-offset="954">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="123" column="78" selection-start="5739" selection-end="5739" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="1854">
+          <folding>
+            <element signature="e#2552#2589#0" expanded="true" />
+            <element signature="e#2650#2687#0" expanded="true" />
+            <element signature="e#2743#2778#0" expanded="true" />
+            <element signature="e#2836#2872#0" expanded="true" />
+            <element signature="e#3029#3066#0" expanded="true" />
+            <element signature="e#3727#3764#0" expanded="true" />
+            <element signature="e#4122#4159#0" expanded="true" />
+            <element signature="e#4239#4275#0" expanded="true" />
+            <element signature="e#4354#4389#0" expanded="true" />
+            <element signature="e#4535#4571#0" expanded="true" />
+            <element signature="e#4652#4689#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="44" selection-start="1356" selection-end="1356" vertical-scroll-proportion="0.6737968" vertical-offset="0" max-vertical-offset="748">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="38" selection-start="1068" selection-end="1068" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1638">
+          <folding>
+            <element signature="e#199#222#0" expanded="true" />
+            <element signature="e#629#657#0" expanded="true" />
+            <element signature="e#1497#1524#0" expanded="true" />
+            <element signature="e#1915#1940#0" expanded="true" />
+            <element signature="e#2349#2375#0" expanded="true" />
+            <element signature="e#2879#2908#0" expanded="true" />
+            <element signature="e#3125#3152#0" expanded="true" />
+            <element signature="e#3558#3585#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="87" column="25" selection-start="4422" selection-end="4422" vertical-scroll-proportion="0.0" vertical-offset="972" max-vertical-offset="4806">
+          <folding>
+            <element signature="e#5467#5512#0" expanded="true" />
+            <element signature="e#9189#9234#0" expanded="true" />
+            <element signature="e#10363#10404#0" expanded="true" />
+            <element signature="e#14163#14208#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="275" column="40" selection-start="10450" selection-end="10450" vertical-scroll-proportion="0.24793388" vertical-offset="4104" max-vertical-offset="7056">
+          <folding>
+            <element signature="e#3511#3556#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

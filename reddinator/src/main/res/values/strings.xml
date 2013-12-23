@@ -24,4 +24,13 @@
 	<string name="replace_current_list">Replace current list</string>
 	<string name="share">Share</string>
 	<string name="widget_prefs">Widget Prefs</string>
+    <string name="on_click_pref">onclickpref</string>
+    <string name="num_item_load_pref">numitemloadpref</string>
+    <string name="refresh_rate_pref">refreshrate</string>
+    <string name="widget_theme_pref">widgetthemepref</string>
+    <string name="title_font_pref">titlefontpref</string>
+    <string name="title_color_pref">titlecolorpref</string>
+    <string name="comments_first_pref">commentsfirstpref</string>
+    <string name="comment_font_pref">commentfontpref</string>
+    <string name="content_font_pref">contentfontpref</string>
 </resources>

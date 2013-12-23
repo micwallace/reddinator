@@ -61,11 +61,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private boolean bigthumbs = false;
 	private boolean hideinf = false;
 	
-	public ListRemoteViewsFactory(Context ctxt, Intent intent) {
-		this.ctxt = ctxt;
+	public ListRemoteViewsFactory(Context context, Intent intent) {
+		this.ctxt = context;
 		appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-		global = ((GlobalObjects) ctxt.getApplicationContext());
-		prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+		global = ((GlobalObjects) context.getApplicationContext());
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		prefseditor = prefs.edit();
 		//System.out.println("New view factory created for widget ID:"+appWidgetId);
 		// if this is a user request (apart from 'loadmore') or an auto update, do not attempt to load cache. 
@@ -81,7 +81,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			}
 			//System.out.println("cached Data length: "+data.length());
 			if (data.length() != 0){
-				titlefontsize = prefs.getString("widgetfontpref", "16");
+				titlefontsize = prefs.getString(context.getString(R.string.widget_theme_pref), "16");
 				try {
 					lastitemid = data.getJSONObject(data.length()-1).getJSONObject("data").getString("name");
 				} catch (JSONException e) {

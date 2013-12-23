@@ -4,7 +4,7 @@
     <PreferenceCategory
             android:title="All Widgets">
 			<ListPreference
-                android:key="onclickpref"
+                android:key="@string/on_click_pref"
                 android:title="On-Click Action"
                 android:defaultValue="1"
                 android:summary="When I click on a post.."
@@ -13,7 +13,7 @@
                 android:dialogTitle="When I click on a post.." />
 			
 			<ListPreference
-                android:key="numitemloadpref"
+                android:key="@string/num_item_load_pref"
                 android:title="Initial Items"
                 android:defaultValue="25"
                 android:summary="Initially load this many items.."
@@ -22,7 +22,7 @@
                 android:dialogTitle="Initially load this many items.." />
 			
 			<ListPreference
-                android:key="refreshrate"
+                android:key="@string/refresh_rate_pref"
                 android:title="Auto Refresh"
                 android:defaultValue="43200000"
                 android:summary="Refresh the widget feed every.."
@@ -31,7 +31,7 @@
                 android:dialogTitle="Refresh the widget feed every.." />
 			
 			<ListPreference
-                android:key="widgetthemepref"
+                android:key="@string/widget_theme_pref"
                 android:title="Widget Theme"
                 android:defaultValue="1"
                 android:summary="Choose the widget theme"
@@ -40,7 +40,7 @@
                 android:dialogTitle="Choose the widget theme" />
 			
 			<ListPreference
-                android:key="titlefontpref"
+                android:key="@string/title_font_pref"
                 android:title="Item Title Size"
                 android:defaultValue="16"
                 android:summary="Font size for item titles"
@@ -49,7 +49,7 @@
                 android:dialogTitle="Font size for item titles" />
 			
 			<ListPreference
-                android:key="titlecolorpref"
+                android:key="@string/title_color_pref"
                 android:title="Item Title Color"
                 android:defaultValue="0"
                 android:summary="Font color for item titles"
@@ -61,12 +61,12 @@
     <PreferenceCategory
             android:title="Reddinator View">
 		<CheckBoxPreference
-                android:key="commentsfirstpref"
+                android:key="@string/comments_first_pref"
                 android:title="Load Comments First"
                 android:defaultValue="false"
                 android:summary="Load the comments page first?" />
         <ListPreference
-                android:key="commentfontpref"
+                android:key="@string/comment_font_pref"
                 android:title="Reddit Font Size"
                 android:summary="Default font size for the comments view"
                 android:entries="@array/fontsize_list_preference"
@@ -74,7 +74,7 @@
                 android:defaultValue="22"
                 android:dialogTitle="Reddit Font Size" />
 		<ListPreference
-                android:key="contentfontpref"
+                android:key="@string/content_font_pref"
                 android:title="Content Font Size"
                 android:summary="Default font size for the content view"
                 android:entries="@array/fontsize_list_preference"
