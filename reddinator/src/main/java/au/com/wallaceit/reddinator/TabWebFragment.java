@@ -40,34 +40,31 @@ public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
-	private Context context;
-	public WebView wv;
-	private boolean firsttime = true;
+	private Context mContext;
+	public WebView mWebView;
+	private boolean mFirstTime = true;
 	private LinearLayout ll;
-	private int fontsize;
-	//private Bundle WVState;
-	private String url;
-	public void onCreated(Bundle savedInstanceState){
-		//this.setRetainInstance(true);
-	}
+    //private Bundle WVState;
+    public View mFullSView;
+    private LinearLayout mTabcontainer;
+    private FrameLayout mVideoFrame;
+    private WebChromeClient.CustomViewCallback mFullSCallback;
+    public WebChromeClient mChromeClient;
+    private Activity mActivity;
+
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-       	//wv.restoreState(savedInstanceState);
+       	//mWebView.restoreState(savedInstanceState);
     }
-	public View fullsview;
-	private LinearLayout tabcontainer;
-	private FrameLayout videoframe;
-	private WebChromeClient.CustomViewCallback fullscallback;
-	public WebChromeClient chromeclient;
-	private Activity act;
+
     @SuppressLint("SetJavaScriptEnabled")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	context = this.getActivity();
+    	mContext = this.getActivity();
     	if (container == null) {
             return null;
         }
-        if (firsttime){
+        if (mFirstTime){
         	// get shared preferences
         	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
         	// work out the url this instance should load
@@ -75,6 +72,9 @@ public class TabWebFragment extends Fragment {
         	if (this.getArguments() != null){
         		commentswv = this.getArguments().getBoolean("loadcom", false);
         	}
+
+            int fontsize;
+            String url;
         	if (commentswv){
         		url = "http://reddit.com"+getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK)+".compact";
         		fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
@@ -83,37 +83,37 @@ public class TabWebFragment extends Fragment {
         		fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
         	}
         	// setup progressbar
-        	act = this.getActivity();
-        	act.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
+        	mActivity = this.getActivity();
+        	mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
-        	wv = (WebView) ll.findViewById(R.id.webView1);
+        	mWebView = (WebView) ll.findViewById(R.id.webView1);
         	// fixes for webview not taking keyboard input on some devices
-        	wv.requestFocus(View.FOCUS_DOWN);
-        	wv.setOnTouchListener(new View.OnTouchListener() { 
-        		@Override
-        		public boolean onTouch(View v, MotionEvent event) {
-        		           switch (event.getAction()) { 
-        		               case MotionEvent.ACTION_DOWN: 
-        		               case MotionEvent.ACTION_UP: 
-        		                   if (!v.hasFocus()) {
-        		                       v.requestFocus(); 
-        		                   } 
-        		                   break;
-        		           } 
-        		           return false; 
-        		}
-        	});
-        	wv.getSettings().setJavaScriptEnabled(true); // enable ecmascript
-        	wv.getSettings().setSupportZoom(true);
-        	wv.getSettings().setUseWideViewPort(true);
-        	wv.getSettings().setBuiltInZoomControls(true);
-        	wv.getSettings().setDisplayZoomControls(true);
-        	wv.getSettings().setDefaultFontSize(fontsize);
-        	chromeclient = newchromeclient;
-        	wv.setWebChromeClient(chromeclient);
-        	wv.setWebViewClient(new WebViewClient());
-        	wv.loadUrl(url);
-        	firsttime = false;
+        	mWebView.requestFocus(View.FOCUS_DOWN);
+        	mWebView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                        case MotionEvent.ACTION_UP:
+                            if (!v.hasFocus()) {
+                                v.requestFocus();
+                            }
+                            break;
+                    }
+                    return false;
+                }
+            });
+        	mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript
+        	mWebView.getSettings().setSupportZoom(true);
+        	mWebView.getSettings().setUseWideViewPort(true);
+        	mWebView.getSettings().setBuiltInZoomControls(true);
+        	mWebView.getSettings().setDisplayZoomControls(true);
+        	mWebView.getSettings().setDefaultFontSize(fontsize);
+        	mChromeClient = newchromeclient;
+        	mWebView.setWebChromeClient(mChromeClient);
+        	mWebView.setWebViewClient(new WebViewClient());
+        	mWebView.loadUrl(url);
+        	mFirstTime = false;
         	//System.out.println("Created fragment");
         } else {
         	((ViewGroup) ll.getParent()).removeView(ll);
@@ -124,69 +124,67 @@ public class TabWebFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
        super.onSaveInstanceState(outState);
-       //wv.saveState(outState);
+       //mWebView.saveState(outState);
     }
     @Override
     public void onPause(){
     	super.onPause();
-    	//wv.saveState(WVState);
+    	//mWebView.saveState(WVState);
     }
     // web chrome client
     WebChromeClient newchromeclient = new WebChromeClient(){
         public void onProgressChanged(WebView view, int progress){
         	//Make the bar disappear after URL is loaded, and changes string to Loading...
-        	act.setTitle("Loading...");
-        	act.setProgress(progress * 100); //Make the bar disappear after URL is loaded
+        	mActivity.setTitle("Loading...");
+        	mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
         	// Return the app name after finish loading
             if(progress == 100){
-            	act.setTitle(R.string.app_name);
+            	mActivity.setTitle(R.string.app_name);
           	}
         }
         FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
             // if a view already exists then immediately terminate the new one
-            if (fullsview != null) {
+            if (mFullSView != null) {
                 callback.onCustomViewHidden();
                 return;
             }
             // get main view and hide
-            tabcontainer = (LinearLayout) ((Activity) context).findViewById(R.id.redditview);
-            tabcontainer.setVisibility(View.GONE);
+            mTabcontainer = (LinearLayout) ((Activity) mContext).findViewById(R.id.redditview);
+            mTabcontainer.setVisibility(View.GONE);
             // create custom view to show
-            videoframe = new FrameLayout(context);
-            videoframe.setLayoutParams(LayoutParameters);
-            videoframe.setBackgroundResource(android.R.color.black);
-            videoframe.addView(view);
+            mVideoFrame = new FrameLayout(mContext);
+            mVideoFrame.setLayoutParams(LayoutParameters);
+            mVideoFrame.setBackgroundResource(android.R.color.black);
+            mVideoFrame.addView(view);
             view.setLayoutParams(LayoutParameters);
-            fullsview = view;
-            fullscallback = callback;
+            mFullSView = view;
+            mFullSCallback = callback;
             // hide actionbar
-            act.getActionBar().hide();
+            mActivity.getActionBar().hide();
             // set fullscreen
-            ((Activity) context).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            videoframe.setVisibility(View.VISIBLE);
-            ((Activity) context).setContentView(videoframe);
+            ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            mVideoFrame.setVisibility(View.VISIBLE);
+            ((Activity) mContext).setContentView(mVideoFrame);
         }
 
         @Override
         public void onHideCustomView() {
-            if (fullsview == null) {
-                return;
-            } else {
-                // Hide the custom view.  
-                fullsview.setVisibility(View.GONE);
+            if (mFullSView != null) {
+                // Hide the custom view.
+                mFullSView.setVisibility(View.GONE);
                 // Remove the custom view from its container.  
-                videoframe.removeView(fullsview);
-                fullsview = null;
-                videoframe.setVisibility(View.GONE);
-                fullscallback.onCustomViewHidden();
+                mVideoFrame.removeView(mFullSView);
+                mFullSView = null;
+                mVideoFrame.setVisibility(View.GONE);
+                mFullSCallback.onCustomViewHidden();
                 // Show the content view.
-                act.getActionBar().show();
+                mActivity.getActionBar().show();
                 // remove fullscreen
-                ((Activity) context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                tabcontainer.setVisibility(View.VISIBLE);
-                ((Activity) context).setContentView(tabcontainer);
+                ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                mTabcontainer.setVisibility(View.VISIBLE);
+                ((Activity) mContext).setContentView(mTabcontainer);
             }
         }
     };

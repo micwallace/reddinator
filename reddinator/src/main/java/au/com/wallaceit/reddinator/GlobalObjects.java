@@ -21,33 +21,33 @@ import java.util.ArrayList;
 import android.app.Application;
 
 public class GlobalObjects extends Application {
-	private ArrayList<String> srlist;
+	private ArrayList<String> mSubredditList;
 	static int LOADTYPE_LOAD = 0;
 	static int LOADTYPE_LOADMORE = 1;
 	static int LOADTYPE_REFRESH_VIEW = 3;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
 	private boolean bypasscache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
-	public RedditData rdata;
+	public RedditData mRedditData;
 	//public RedditData redditdata;
 	public GlobalObjects(){
-		if (srlist == null){
-			srlist = new ArrayList<String>();
+		if (mSubredditList == null){
+			mSubredditList = new ArrayList<String>();
 		}
-		rdata = new RedditData();
+		mRedditData = new RedditData();
 	}
 	// cached data
 	public boolean isSrlistCached(){
-		if (!srlist.isEmpty()){
+		if (!mSubredditList.isEmpty()){
 			return true;
 		}
 		return false;
 	}
 	public void putSrList(ArrayList<String> list){
-		srlist.clear();
-		srlist.addAll(list);
+		mSubredditList.clear();
+		mSubredditList.addAll(list);
 	}
 	public ArrayList<String> getSrList(){
-		return srlist;
+		return mSubredditList;
 	}
 	// data loadtype functions
 	public int getLoadType(){

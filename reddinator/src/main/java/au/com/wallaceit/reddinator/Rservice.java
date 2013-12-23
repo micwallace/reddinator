@@ -310,7 +310,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		// Load more or initial load/reload?
 		if (loadmore){
 			// fetch 25 more after current last item and append to the list
-			JSONArray tempdata = global.rdata.getRedditFeed(curfeed, sort, 25, lastitemid);
+			JSONArray tempdata = global.mRedditData.getRedditFeed(curfeed, sort, 25, lastitemid);
 			if (!isError(tempdata)){
 				if (tempdata.length() == 0){
 					endoffeed = true;
@@ -337,7 +337,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			endoffeed = false;
 			// reloading
 			int limit = Integer.valueOf(prefs.getString("numitemloadpref", "25"));
-			JSONArray temparray = global.rdata.getRedditFeed(curfeed, sort, limit, "0");
+			JSONArray temparray = global.mRedditData.getRedditFeed(curfeed, sort, limit, "0");
 			// check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
 			if (!isError(temparray)){
 				data = temparray;

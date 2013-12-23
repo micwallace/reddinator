@@ -271,7 +271,7 @@ public class SubredditSelect extends ListActivity {
 		Thread t = new Thread() {
 				public void run() {
 					
-					final ArrayList<String> list = global.rdata.getMySubreddits(username, password);
+					final ArrayList<String> list = global.mRedditData.getMySubreddits(username, password);
 					// copy into current personal list if not empty or error
 					if (!list.isEmpty() && !list.get(0).contains("Error:")){
 						if (clearlist){

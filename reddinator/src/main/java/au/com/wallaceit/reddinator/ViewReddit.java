@@ -107,13 +107,13 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
     
     public void onBackPressed(){
     	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
-    	if (webview.fullsview != null){
-            webview.chromeclient.onHideCustomView();
-    	} else if (webview.wv.canGoBack()){
-        	webview.wv.goBack();
+    	if (webview.mFullSView != null){
+            webview.mChromeClient.onHideCustomView();
+    	} else if (webview.mWebView.canGoBack()){
+        	webview.mWebView.goBack();
         } else {
-        	webview.wv.stopLoading();
-        	webview.wv.loadData("", "text/html", "utf-8");
+        	webview.mWebView.stopLoading();
+        	webview.mWebView.loadData("", "text/html", "utf-8");
         	this.finish();
         }
     }
@@ -151,8 +151,8 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         switch (item.getItemId()) {
             case android.R.id.home:
             	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
-            	webview.wv.stopLoading();
-                webview.wv.loadData("", "text/html", "utf-8");
+            	webview.mWebView.stopLoading();
+                webview.mWebView.loadData("", "text/html", "utf-8");
                 this.finish();
             	return true;
             default:

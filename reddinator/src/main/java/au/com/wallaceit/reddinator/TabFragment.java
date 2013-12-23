@@ -17,8 +17,6 @@
  */
 package au.com.wallaceit.reddinator;
 
-import au.com.wallaceit.reddinator.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,7 +30,7 @@ public class TabFragment extends Fragment {
     /** (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
-	private boolean firsttime = true;
+	private boolean mFirstTime = true;
 	private LinearLayout ll;
 	private static GlobalObjects global;
 	private static String redditid;
@@ -40,7 +38,7 @@ public class TabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	this.setRetainInstance(true);
-    	if (firsttime){
+    	if (mFirstTime){
     		// Get global objects
             global = ((GlobalObjects) getActivity().getApplicationContext());
     		Bundle actbundle = getActivity().getIntent().getExtras();
@@ -61,7 +59,7 @@ public class TabFragment extends Fragment {
 					//global.redditdata.vote(redditid, "-1");
 				}
 			});
-    		firsttime = false;
+    		mFirstTime = false;
     	} else {
         	((ViewGroup) ll.getParent()).removeView(ll);
         }
