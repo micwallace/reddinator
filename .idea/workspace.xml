@@ -11,61 +11,7 @@
     </shared>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/.classpath" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/.project" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/.settings/org.eclipse.jdt.core.prefs" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/AndroidManifest.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/COPYING" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/AndroidManifest.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/Reddinator.apk" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/classes.dex" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/dexedLibs/android-support-v4-370b25b2154c708bb4246622495ef973.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/res/drawable-hdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/res/drawable-hdpi/reddit_icon_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/res/drawable-mdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/res/drawable-xhdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/bin/resources.ap_" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/libs/android-support-v4.jar" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/proguard-project.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/project.properties" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/drawable-hdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/drawable-hdpi/reddit_icon_small.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/drawable-mdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/drawable-xhdpi/ic_launcher.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/importdialog.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/listrow.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/listrowbigthumb.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/listrowload.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/listrowloadmore.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/myredditlistitem.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/subredditselect.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/tab1.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/viewallsubreddit.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/viewreddit.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/widgetdark.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/widgetdarkholo.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/widgetholo.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/layout/widgetmain.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/menu/sharemenu.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/values-v11/styles.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/values-v14/styles.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/values/array.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/values/strings.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/values/styles.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/xml/app_widget_provider_info.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/res/xml/preferences.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/GlobalObjects.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/PrefsActivity.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/RedditData.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/Rservice.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/SubredditSelect.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/TabFragment.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/TabWebFragment.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/ViewAllSubreddits.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/ViewReddit.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Reddinator/src/au/com/wallaceit/reddinator/WidgetProvider.java" afterPath="" />
-    </list>
+    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="" />
     <ignored path="reddinator.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
