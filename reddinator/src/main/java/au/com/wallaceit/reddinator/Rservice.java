@@ -48,7 +48,7 @@ public class Rservice extends RemoteViewsService {
 }
 
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-	private Context ctxt = null;
+	private Context mContext = null;
 	private int appWidgetId;
 	private JSONArray data;
 	private GlobalObjects global;
@@ -62,7 +62,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	private boolean hideinf = false;
 	
 	public ListRemoteViewsFactory(Context context, Intent intent) {
-		this.ctxt = context;
+		this.mContext = context;
 		appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 		global = ((GlobalObjects) context.getApplicationContext());
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -130,7 +130,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 		if (position == data.length()) {
 			// build load more item
 			//System.out.println("load more getViewAt("+position+") firing"); 
-			RemoteViews loadmorerow = new RemoteViews(ctxt.getPackageName(), R.layout.listrowloadmore);
+			RemoteViews loadmorerow = new RemoteViews(mContext.getPackageName(), R.layout.listrowloadmore);
 			if (endoffeed){ 
 				loadmorerow.setTextViewText(R.id.loadmoretxt, "There's nothing more here");
 			} else {
@@ -169,9 +169,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 			}
 			// create remote view from specified layout
 			if (bigthumbs){
-				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrowbigthumb);
+				row = new RemoteViews(mContext.getPackageName(), R.layout.listrowbigthumb);
 			} else {
-				row = new RemoteViews(ctxt.getPackageName(), R.layout.listrow);
+				row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
 			}
 			// build view
 			row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
@@ -244,7 +244,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
 	@Override
 	public RemoteViews getLoadingView() {
-		RemoteViews rowload = new RemoteViews(ctxt.getPackageName(), R.layout.listrowload);
+		RemoteViews rowload = new RemoteViews(mContext.getPackageName(), R.layout.listrowload);
 		if (themecolors==null){
 			getThemeColors(); // prevents null pointer
 		}
@@ -386,7 +386,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 	}
 	// hide appwidget loader
 	private void hideWidgetLoader(boolean gototopoflist, boolean showerror){
-		AppWidgetManager mgr = AppWidgetManager.getInstance(ctxt);
+		AppWidgetManager mgr = AppWidgetManager.getInstance(mContext);
 		// get theme layout id
      	int layout = 1;
      	switch(Integer.valueOf(prefs.getString("widgetthemepref", "1"))){
@@ -395,7 +395,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
      		case 3: layout = R.layout.widgetholo; break;
      		case 4: layout = R.layout.widgetdarkholo; break;
      	}
-		RemoteViews views = new RemoteViews(ctxt.getPackageName(), layout);
+		RemoteViews views = new RemoteViews(mContext.getPackageName(), layout);
 		views.setViewVisibility(R.id.srloader, View.INVISIBLE);
 		// go to the top of the list view
 		if (gototopoflist){
