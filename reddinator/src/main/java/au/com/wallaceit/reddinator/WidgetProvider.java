@@ -17,8 +17,6 @@
  */
 package au.com.wallaceit.reddinator;
 
-import au.com.wallaceit.reddinator.R;
-
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -48,7 +46,7 @@ public class WidgetProvider extends AppWidgetProvider {
 	public static String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
 	public static String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
 	public static String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
-	private PendingIntent updateintent = null;
+	private PendingIntent updateIntent = null;
 	public WidgetProvider() {
 	}
 
@@ -152,9 +150,9 @@ public class WidgetProvider extends AppWidgetProvider {
         intent.setAction(APPWIDGET_AUTO_UPDATE);
         intent.setPackage(context.getPackageName());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
 		final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		m.cancel(updateintent);
+		m.cancel(updateIntent);
 		//System.out.println("onDisabled();");
 		super.onDisabled(context);
 	}
@@ -167,14 +165,14 @@ public class WidgetProvider extends AppWidgetProvider {
         intent.setAction(APPWIDGET_AUTO_UPDATE);
         intent.setPackage(context.getPackageName());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        updateintent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
         final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		int refreshrate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
 		if (refreshrate!=0){
-        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
+        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateIntent);
 		} else {
-			m.cancel(updateintent); // auto update disabled
+			m.cancel(updateIntent); // auto update disabled
 		}
 		// System.out.println("onEnabled();");
         super.onEnabled(context);

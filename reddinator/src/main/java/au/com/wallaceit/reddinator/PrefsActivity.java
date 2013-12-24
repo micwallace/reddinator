@@ -80,13 +80,13 @@ public class PrefsActivity extends PreferenceActivity {
 	        intent.setAction(WidgetProvider.APPWIDGET_AUTO_UPDATE);
 	        intent.setPackage(getApplicationContext().getPackageName());
 	        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-	        PendingIntent updateintent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-	        final AlarmManager m = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-			int refreshrate = Integer.valueOf(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"));
-			if (refreshrate!=0){
-	        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateintent);
+	        PendingIntent updateIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+	        final AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+			int refreshRate = Integer.valueOf(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"));
+			if (refreshRate!=0){
+	        	alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
 			} else {
-				m.cancel(updateintent); // just incase theres a rougue alarm
+				alarmManager.cancel(updateIntent); // just incase theres a rougue alarm
 			}
 		}
 		

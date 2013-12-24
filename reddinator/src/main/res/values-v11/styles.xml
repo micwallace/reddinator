@@ -6,7 +6,7 @@
     -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
     <style name="Reddit" parent="android:Theme.Light">

@@ -26,47 +26,54 @@ public class GlobalObjects extends Application {
 	static int LOADTYPE_LOADMORE = 1;
 	static int LOADTYPE_REFRESH_VIEW = 3;
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
-	private boolean bypasscache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
+	private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData mRedditData;
 	//public RedditData redditdata;
+
 	public GlobalObjects(){
 		if (mSubredditList == null){
 			mSubredditList = new ArrayList<String>();
 		}
 		mRedditData = new RedditData();
 	}
+
 	// cached data
 	public boolean isSrlistCached(){
-		if (!mSubredditList.isEmpty()){
-			return true;
-		}
-		return false;
-	}
+        return !mSubredditList.isEmpty();
+    }
+
 	public void putSrList(ArrayList<String> list){
 		mSubredditList.clear();
 		mSubredditList.addAll(list);
 	}
+
 	public ArrayList<String> getSrList(){
 		return mSubredditList;
 	}
+
 	// data loadtype functions
 	public int getLoadType(){
 		return loadtype;
 	}
+
 	public void setLoadMore(){
-		loadtype = 1;
+		loadtype = LOADTYPE_LOADMORE;
 	}
-	public void SetLoad(){
-		loadtype = 0;
+
+	public void setLoad(){
+		loadtype = LOADTYPE_LOAD;
 	}
+
 	public void setRefreshView(){
-		loadtype = 3;
+		loadtype = LOADTYPE_REFRESH_VIEW;
 	}
+
 	// data cache functions
 	public boolean getBypassCache(){
-		return bypasscache;
+		return bypassCache;
 	}
+
 	public void setBypassCache(boolean bypassed){
-		bypasscache = bypassed;
+		bypassCache = bypassed;
 	}
 }

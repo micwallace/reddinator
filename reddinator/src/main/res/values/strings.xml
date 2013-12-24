@@ -33,4 +33,5 @@
     <string name="comments_first_pref">commentsfirstpref</string>
     <string name="comment_font_pref">commentfontpref</string>
     <string name="content_font_pref">contentfontpref</string>
+    <string name="entries_not_empty">Entries cannot be empty!</string>
 </resources>
