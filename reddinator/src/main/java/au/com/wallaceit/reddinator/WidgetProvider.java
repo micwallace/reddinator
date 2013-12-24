@@ -59,12 +59,12 @@ public class WidgetProvider extends AppWidgetProvider {
 	
 	@SuppressWarnings("deprecation")
 	public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop){
-		final int N = appWidgetIds.length;
+		final int numOfWidgetIds = appWidgetIds.length;
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i=0; i<N; i++) {
-        	int appWidgetId = appWidgetIds[i];
-        	// CONFIG BUTTON
+        for (int appWidgetId : appWidgetIds) {
+            // CONFIG BUTTON
             Intent intent = new Intent(context, PrefsActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.putExtra("firsttimeconfig", 0); // not first time config
@@ -72,61 +72,76 @@ public class WidgetProvider extends AppWidgetProvider {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             // PICK Subreddit BUTTON
-            Intent srintent = new Intent(context, SubredditSelect.class);
-            srintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
-            srintent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            srintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            srintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent srpendIntent = PendingIntent.getActivity(context, 0, srintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent subredditIntent = new Intent(context, SubredditSelect.class);
+            subredditIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
+            subredditIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            subredditIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            subredditIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent subredditPendingIntent = PendingIntent.getActivity(context, 0, subredditIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             // REMOTE DATA
-            Intent servintent = new Intent(context, Rservice.class);
-            servintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId); // Add the app widget ID to the intent extras.
-            servintent.setData(Uri.parse(servintent.toUri(Intent.URI_INTENT_SCHEME)));
+            Intent serviceIntent = new Intent(context, Rservice.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId); // Add the app widget ID to the intent extras.
+            serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
+
             // REFRESH BUTTON
-            Intent irefresh = new Intent(context, WidgetProvider.class);
-            irefresh.setAction(APPWIDGET_UPDATE_FEED);
-            irefresh.setPackage(context.getPackageName());
-            irefresh.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            irefresh.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent rpIntent = PendingIntent.getBroadcast(context, 0, irefresh, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent refreshIntent = new Intent(context, WidgetProvider.class);
+            refreshIntent.setAction(APPWIDGET_UPDATE_FEED);
+            refreshIntent.setPackage(context.getPackageName());
+            refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            refreshIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             // ITEM CLICK
-            Intent clickintent = new Intent(context, WidgetProvider.class);
-            clickintent.setAction(ITEM_CLICK);
-            clickintent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            clickintent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent clickPI = PendingIntent.getBroadcast(context, 0, clickintent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent clickIntent = new Intent(context, WidgetProvider.class);
+            clickIntent.setAction(ITEM_CLICK);
+            clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            clickIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             // get theme layout id
-         	int layout = R.layout.widgetmain;
-         	switch(Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))){
-         		case 1: layout = R.layout.widgetmain; break;
-         		case 2: layout = R.layout.widgetdark; break;
-         		case 3: layout = R.layout.widgetholo; break;
-         		case 4: layout = R.layout.widgetdarkholo; break;
-         	}
+            int layout = R.layout.widgetmain;
+            switch (Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))) {
+                case 1:
+                    layout = R.layout.widgetmain;
+                    break;
+                case 2:
+                    layout = R.layout.widgetdark;
+                    break;
+                case 3:
+                    layout = R.layout.widgetholo;
+                    break;
+                case 4:
+                    layout = R.layout.widgetdarkholo;
+                    break;
+            }
+
             // ADD ALL TO REMOTE VIEWS
             RemoteViews views = new RemoteViews(context.getPackageName(), layout);
-            views.setPendingIntentTemplate(R.id.listview, clickPI);
-            views.setOnClickPendingIntent(R.id.subreddittxt, srpendIntent);
-            views.setOnClickPendingIntent(R.id.widget_logo, srpendIntent);
-            views.setOnClickPendingIntent(R.id.refreshbutton, rpIntent);
+            views.setPendingIntentTemplate(R.id.listview, clickPendingIntent);
+            views.setOnClickPendingIntent(R.id.subreddittxt, subredditPendingIntent);
+            views.setOnClickPendingIntent(R.id.widget_logo, subredditPendingIntent);
+            views.setOnClickPendingIntent(R.id.refreshbutton, refreshPendingIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop is displaying on screen rotation) so we need to show it when updating.
             // set current feed title
-    		String curfeed = prefs.getString("currentfeed-"+appWidgetId, "technology");
-    		views.setTextViewText(R.id.subreddittxt, curfeed);
-    		// Set remote adapter for widget.
-    		if (android.os.Build.VERSION.SDK_INT >= 14){
-    			views.setRemoteAdapter(R.id.listview, servintent); // API 14 and above
-    		} else {
-    			views.setRemoteAdapter(appWidgetId, R.id.listview, servintent); // older version compatibility
-    		}
-    		if (scrolltotop){
-    			views.setScrollPosition(R.id.listview, 0); // in-case an auto update
-    		}
-    		// Tell the AppWidgetManager to perform an update on the current app widget
-    		appWidgetManager.updateAppWidget(appWidgetId , views);
+            String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
+            views.setTextViewText(R.id.subreddittxt, curFeed);
+
+            // Set remote adapter for widget.
+            if (Build.VERSION.SDK_INT >= 14) {
+                views.setRemoteAdapter(R.id.listview, serviceIntent); // API 14 and above
+            } else {
+                views.setRemoteAdapter(appWidgetId, R.id.listview, serviceIntent); // older version compatibility
+            }
+            if (scrolltotop) {
+                views.setScrollPosition(R.id.listview, 0); // in-case an auto update
+            }
+            // Tell the AppWidgetManager to perform an update on the current app widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
 	}
 	
@@ -166,13 +181,15 @@ public class WidgetProvider extends AppWidgetProvider {
         intent.setPackage(context.getPackageName());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
         updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
-        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE); 
+
+        final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		int refreshrate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
-		if (refreshrate!=0){
-        	m.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+refreshrate, refreshrate, updateIntent);
+		int refreshRate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
+
+		if (refreshRate!=0){
+        	alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
 		} else {
-			m.cancel(updateIntent); // auto update disabled
+			alarmManager.cancel(updateIntent); // auto update disabled
 		}
 		// System.out.println("onEnabled();");
         super.onEnabled(context);
@@ -183,8 +200,8 @@ public class WidgetProvider extends AppWidgetProvider {
 		String action = intent.getAction();
 		if (action.equals(ITEM_CLICK)) {
 			// check if its the load more button being clicked
-			String redditid = intent.getExtras().getString(WidgetProvider.ITEM_ID);
-			if ("0".equals(redditid)){
+			String redditId = intent.getExtras().getString(WidgetProvider.ITEM_ID);
+			if ("0".equals(redditId)){
 				// LOAD MORE FEED ITEM CLICKED
 				//System.out.println("loading more feed items...");
 				int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
@@ -195,42 +212,44 @@ public class WidgetProvider extends AppWidgetProvider {
 			} else {
 				// NORMAL FEED ITEM CLICK
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-				String clickprefst = prefs.getString(context.getString(R.string.on_click_pref), "1");
-				int clickpref = Integer.valueOf(clickprefst);
-				switch (clickpref){
+				String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
+				int clickPref = Integer.valueOf(clickPrefString);
+				switch (clickPref){
 					case 1:
 						// open in the reddinator view
-						Intent clickintent1 = new Intent(context, ViewReddit.class);
-						clickintent1.putExtras(intent.getExtras());
-						clickintent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						clickintent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-						context.startActivity(clickintent1);
+						Intent clickIntent1 = new Intent(context, ViewReddit.class);
+						clickIntent1.putExtras(intent.getExtras());
+						clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+						context.startActivity(clickIntent1);
 						break;
 					case 2:
 						// open link in browser
 						String url = intent.getStringExtra(ITEM_URL);
-						Intent clickintent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-						clickintent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						context.startActivity(clickintent2);
+						Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+						clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(clickIntent2);
 						break;
 					case 3:
 						// open reddit comments page in browser
-						String plink = intent.getStringExtra(ITEM_PERMALINK);
-						Intent clickintent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+plink));
-						clickintent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						context.startActivity(clickintent3);
+						String permalink = intent.getStringExtra(ITEM_PERMALINK);
+						Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+permalink));
+						clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(clickIntent3);
 						break;
 				}
 			}
 		}
+
 		if (action.equals(APPWIDGET_UPDATE_FEED)) {
 			// get widget id
-			int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+			int widgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
 			// set cache bypass incase widget needs new view factory
 			setNoCache(context);
 			// show loader and update data
-			showLoaderAndUpdate(context, intent, new int[]{widgetid});
+			showLoaderAndUpdate(context, intent, new int[]{widgetId});
 		}
+
 		if (action.equals(APPWIDGET_AUTO_UPDATE)) {
 			AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 			int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
@@ -241,6 +260,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			// request update from service
 			mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
 		}
+
 		if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED")){
 			AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
 			int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
@@ -279,13 +299,13 @@ public class WidgetProvider extends AppWidgetProvider {
 	private int getThemeLayoutId(Context context){
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		// get theme layout id
-     	int layoutid = 1;
+     	int layoutId = 1;
      	switch(Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))){
-     		case 1: layoutid = R.layout.widgetmain; break;
-     		case 2: layoutid = R.layout.widgetdark; break;
-     		case 3: layoutid = R.layout.widgetholo; break;
-     		case 4: layoutid = R.layout.widgetdarkholo; break;
+     		case 1: layoutId = R.layout.widgetmain; break;
+     		case 2: layoutId = R.layout.widgetdark; break;
+     		case 3: layoutId = R.layout.widgetholo; break;
+     		case 4: layoutId = R.layout.widgetdarkholo; break;
      	}
-     	return layoutid;
+     	return layoutId;
 	}
 }

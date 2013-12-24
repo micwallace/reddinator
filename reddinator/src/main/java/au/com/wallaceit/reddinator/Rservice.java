@@ -84,9 +84,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (data.length() != 0) {
                 titleFontSize = mSharedPreferences.getString(context.getString(R.string.widget_theme_pref), "16");
                 try {
-                    lastitemid = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
+                    lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
                 } catch (JSONException e) {
-                    lastitemid = "0"; // Could not get last item ID; perform a reload next time and show error view :(
+                    lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
                     e.printStackTrace();
                 }
                 if (loadType == GlobalObjects.LOADTYPE_LOAD) {
@@ -284,7 +284,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         //System.out.println("Loading type "+loadtype);
         if (!loadCached) {
             // refresh data
-            if (loadType == GlobalObjects.LOADTYPE_LOADMORE && !lastitemid.equals("0")) { // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
+            if (loadType == GlobalObjects.LOADTYPE_LOADMORE && !lastItemId.equals("0")) { // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
                 global.setLoad();
                 loadMoreReddits();
             } else {
@@ -301,7 +301,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     }
 
-    private String lastitemid = "0";
+    private String lastItemId = "0";
     private boolean endOfFeed = false;
 
     private void loadMoreReddits() {
@@ -309,22 +309,22 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         loadReddits(true);
     }
 
-    private void loadReddits(boolean loadmore) {
-        String curfeed = mSharedPreferences.getString("currentfeed-" + appWidgetId, "technology");
+    private void loadReddits(boolean loadMore) {
+        String curFeed = mSharedPreferences.getString("currentfeed-" + appWidgetId, "technology");
         String sort = mSharedPreferences.getString("sort-" + appWidgetId, "hot");
         // Load more or initial load/reload?
-        if (loadmore) {
+        if (loadMore) {
             // fetch 25 more after current last item and append to the list
-            JSONArray tempdata = global.mRedditData.getRedditFeed(curfeed, sort, 25, lastitemid);
-            if (!isError(tempdata)) {
-                if (tempdata.length() == 0) {
+            JSONArray tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+            if (!isError(tempData)) {
+                if (tempData.length() == 0) {
                     endOfFeed = true;
                 } else {
                     endOfFeed = false;
                     int i = 0;
-                    while (i < tempdata.length()) {
+                    while (i < tempData.length()) {
                         try {
-                            data.put(tempdata.get(i));
+                            data.put(tempData.get(i));
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -342,10 +342,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             endOfFeed = false;
             // reloading
             int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-            JSONArray temparray = global.mRedditData.getRedditFeed(curfeed, sort, limit, "0");
+            JSONArray tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
             // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-            if (!isError(temparray)) {
-                data = temparray;
+            if (!isError(tempArray)) {
+                data = tempArray;
                 if (data.length() == 0) {
                     endOfFeed = true;
                 }
@@ -359,14 +359,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // set last item id for "loadmore use"
         // Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
         try {
-            lastitemid = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+            lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
         } catch (JSONException e) {
-            lastitemid = "0"; // Could not get last item ID; perform a reload next time and show error view :(
+            lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
             e.printStackTrace();
         }
         ;
         // hide loader
-        if (loadmore) {
+        if (loadMore) {
             hideWidgetLoader(false, false); // don't go to top of list
         } else {
             hideWidgetLoader(true, false); // go to top
@@ -374,14 +374,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     // check if the array is an error array
-    private boolean isError(JSONArray temparray) {
+    private boolean isError(JSONArray tempArray) {
         boolean error;
-        if (temparray == null) {
+        if (tempArray == null) {
             return true; // null error
         }
-        if (temparray.length() > 0) {
+        if (tempArray.length() > 0) {
             try {
-                error = temparray.getString(0).equals("-1");
+                error = tempArray.getString(0).equals("-1");
             } catch (JSONException e) {
                 error = true;
                 e.printStackTrace();
@@ -393,7 +393,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     // hide appwidget loader
-    private void hideWidgetLoader(boolean gototopoflist, boolean showerror) {
+    private void hideWidgetLoader(boolean goToTopOfList, boolean showError) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(mContext);
         // get theme layout id
         int layout = 1;
@@ -414,10 +414,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         RemoteViews views = new RemoteViews(mContext.getPackageName(), layout);
         views.setViewVisibility(R.id.srloader, View.INVISIBLE);
         // go to the top of the list view
-        if (gototopoflist) {
+        if (goToTopOfList) {
             views.setScrollPosition(R.id.listview, 0);
         }
-        if (showerror) {
+        if (showError) {
             views.setViewVisibility(R.id.erroricon, View.VISIBLE);
         }
         mgr.partiallyUpdateAppWidget(appWidgetId, views);
