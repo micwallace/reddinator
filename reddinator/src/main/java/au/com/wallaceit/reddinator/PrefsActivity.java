@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class PrefsActivity extends PreferenceActivity {
@@ -71,6 +72,8 @@ public class PrefsActivity extends PreferenceActivity {
 		mWidgetTheme = mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1");
 		mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
 		mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
+
+        Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_LONG).show();
 	}
 	public void onBackPressed(){
 		// check if refresh rate has changed and update if needed

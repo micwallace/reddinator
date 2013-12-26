@@ -14,7 +14,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
     </list>
     <ignored path="reddinator.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -102,6 +102,15 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="PrefsActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="75" column="96" selection-start="3006" selection-end="3006" vertical-scroll-proportion="0.77253217" vertical-offset="432" max-vertical-offset="1890">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="GlobalObjects.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -139,15 +148,6 @@
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state line="5" column="0" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1296">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SubredditSelectActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="170" column="84" selection-start="8213" selection-end="8213" vertical-scroll-proportion="0.57939917" vertical-offset="1728" max-vertical-offset="5256">
               <folding />
             </state>
           </provider>
@@ -560,7 +560,6 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/importdialog.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/values-v11/styles.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/values-v14/styles.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/myredditlistitem.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
@@ -571,6 +570,7 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
       </list>
     </option>
   </component>
@@ -1262,13 +1262,6 @@
         <state line="536" column="16" selection-start="22338" selection-end="22338" vertical-scroll-proportion="0.0" vertical-offset="8848" max-vertical-offset="14292" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="118" column="23" selection-start="5586" selection-end="5586" vertical-scroll-proportion="0.0" vertical-offset="1128" max-vertical-offset="1854">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widgetdarkholo.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="68" column="24" selection-start="2821" selection-end="2821" vertical-scroll-proportion="0.0" vertical-offset="1224" max-vertical-offset="2448">
@@ -1347,6 +1340,13 @@
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="170" column="84" selection-start="8213" selection-end="8213" vertical-scroll-proportion="0.57939917" vertical-offset="1728" max-vertical-offset="5256">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="96" selection-start="3006" selection-end="3006" vertical-scroll-proportion="0.77253217" vertical-offset="432" max-vertical-offset="1890">
           <folding />
         </state>
       </provider>
