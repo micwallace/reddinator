@@ -55,3 +55,16 @@ Global options:
 - Default font size in Reddinator view Reddit page.
 
 If you have a feature that you would like to see added, or any bugs to report please send us an email and we will look into it.
+
+How to build and deploy
+----
+
+####Command Line:
+
+````
+	./gradlew installDebug
+````
+
+####Intellij IDEA 13:
+
+Open the project in Intellij, it should recognize it as a gradle project and build accordingly.
