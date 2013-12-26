@@ -37,7 +37,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.*;
 
-public class SubredditSelect extends ListActivity {
+public class SubredditSelectActivity extends ListActivity {
     ArrayAdapter<String> mListAdapter;
     private ArrayList<String> personalList;
     SharedPreferences mSharedPreferences;
@@ -55,7 +55,7 @@ public class SubredditSelect extends ListActivity {
         setContentView(R.layout.subredditselect);
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        global = ((GlobalObjects) SubredditSelect.this.getApplicationContext());
+        global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
         Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
         if (feeds.isEmpty()) {
             // first time setup
@@ -80,12 +80,12 @@ public class SubredditSelect extends ListActivity {
                 // save list
                 savePersonalList();
                 // save preference
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelect.this);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
                 Editor editor = prefs.edit();
                 editor.putString("currentfeed-" + mAppWidgetId, subreddit);
                 editor.commit();
                 // refresh widget and close activity (NOTE: put in function)
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                 RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
                 views.setTextViewText(R.id.subreddittxt, subreddit);
                 views.setViewVisibility(R.id.srloader, View.VISIBLE);
@@ -103,7 +103,7 @@ public class SubredditSelect extends ListActivity {
         addBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                Intent intent = new Intent(SubredditSelect.this, ViewAllSubreddits.class);
+                Intent intent = new Intent(SubredditSelectActivity.this, ViewAllSubredditsActivity.class);
                 startActivityForResult(intent, 0);
             }
         });
@@ -132,7 +132,7 @@ public class SubredditSelect extends ListActivity {
             public void onClick(View v) {
                 final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
                 final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false), mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false)};
-                AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelect.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
                 builder.setTitle("Widget Options");
                 builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
                     public void onClick(DialogInterface dialogInterface, int item, boolean state) {
@@ -166,6 +166,12 @@ public class SubredditSelect extends ListActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "Press back to save changes", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 1) {
             String subreddit = data.getStringExtra("subreddit");
@@ -179,7 +185,7 @@ public class SubredditSelect extends ListActivity {
         savePersonalList();
         // check if sort has changed
         if (!curSort.equals(mSharedPreferences.getString("sort-" + mAppWidgetId, "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false)) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelect.this);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
             RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
             views.setViewVisibility(R.id.srloader, View.VISIBLE);
             views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
@@ -207,7 +213,7 @@ public class SubredditSelect extends ListActivity {
 
     // show sort select dialog
     private void showSortDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelect.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         builder.setTitle("Pick a sort, any sort");
         builder.setItems(R.array.reddit_sorts, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -245,7 +251,7 @@ public class SubredditSelect extends ListActivity {
 
     // show the import/login dialog
     private void showImportDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelect.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         // Get the layout inflater
         LayoutInflater inflater = getLayoutInflater();
         final View v = inflater.inflate(R.layout.importdialog, null);
@@ -275,7 +281,7 @@ public class SubredditSelect extends ListActivity {
     // import personal subreddits
     private void importSubreddits(final String username, final String password, final boolean clearlist) {
         // use a thread for searching
-        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelect.this, "", ("Importing..."), true);
+        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "", ("Importing..."), true);
         Thread t = new Thread() {
             public void run() {
 
@@ -291,7 +297,7 @@ public class SubredditSelect extends ListActivity {
                     public void run() {
                         sdialog.dismiss();
                         if (list.isEmpty() || list.get(0).contains("Error:")) {
-                            new AlertDialog.Builder(SubredditSelect.this).setMessage(list.isEmpty() ? "No subreddits to import!" : list.get(0))
+                            new AlertDialog.Builder(SubredditSelectActivity.this).setMessage(list.isEmpty() ? "No subreddits to import!" : list.get(0))
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();

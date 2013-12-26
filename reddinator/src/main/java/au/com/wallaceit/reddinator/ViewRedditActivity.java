@@ -38,7 +38,7 @@ import android.widget.ShareActionProvider;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
-public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeListener {
+public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
  
     private TabHost mTabHost;
     private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
@@ -178,9 +178,9 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
         mTabHost.setup();
         // add tabs
         TabInfo tabInfo = null;
-        ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), ( tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
+        ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
-        ViewReddit.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), ( tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
+        ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
         // get shared preferences
@@ -202,7 +202,7 @@ public class ViewReddit extends FragmentActivity implements TabHost.OnTabChangeL
      * @param clss
      * @param args
      */
-    private static void addTab(ViewReddit activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
+    private static void addTab(ViewRedditActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
         // Attach a Tab view factory to the spec
         tabSpec.setContent(activity.new TabFactory(activity));
         String tag = tabSpec.getTag();

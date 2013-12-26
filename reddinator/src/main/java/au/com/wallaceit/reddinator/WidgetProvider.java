@@ -74,7 +74,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // PICK Subreddit BUTTON
-            Intent subredditIntent = new Intent(context, SubredditSelect.class);
+            Intent subredditIntent = new Intent(context, SubredditSelectActivity.class);
             subredditIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             subredditIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             subredditIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -217,7 +217,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				switch (clickPref){
 					case 1:
 						// open in the reddinator view
-						Intent clickIntent1 = new Intent(context, ViewReddit.class);
+						Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
 						clickIntent1.putExtras(intent.getExtras());
 						clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

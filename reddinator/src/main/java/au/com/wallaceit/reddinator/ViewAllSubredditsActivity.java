@@ -21,8 +21,6 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import au.com.wallaceit.reddinator.R;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -41,7 +39,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class ViewAllSubreddits extends ListActivity {
+public class ViewAllSubredditsActivity extends ListActivity {
 	private GlobalObjects global;
 	private ArrayList<String> sreddits;
 	private RedditData rdata;
@@ -92,7 +90,7 @@ public class ViewAllSubreddits extends ListActivity {
 				if (!query.equals("")){
 					search(query);
 				} else {
-					new AlertDialog.Builder(ViewAllSubreddits.this).setTitle("No Query").setMessage("Please enter something to search for").show();
+					new AlertDialog.Builder(ViewAllSubredditsActivity.this).setTitle("No Query").setMessage("Please enter something to search for").show();
 				}
 			}
 		});
@@ -143,7 +141,7 @@ public class ViewAllSubreddits extends ListActivity {
 			dlpopulartask.cancel(true);
 		}
 		// use a thread for searching
-		final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubreddits.this, "", ("Searching..."), true);
+		final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubredditsActivity.this, "", ("Searching..."), true);
 		Thread t = new Thread() {
 				public void run() {
 					// get all popular subreddits

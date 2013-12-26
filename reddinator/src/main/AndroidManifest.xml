@@ -24,17 +24,17 @@
     		</intent-filter>
         </activity>
 		<activity
-            android:name="au.com.wallaceit.reddinator.SubredditSelect"
+            android:name=".SubredditSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="au.com.wallaceit.reddinator.ViewAllSubreddits"
+            android:name=".ViewAllSubredditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="au.com.wallaceit.reddinator.ViewReddit"
+            android:name=".ViewRedditActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>
