@@ -28,7 +28,6 @@ public class GlobalObjects extends Application {
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
 	private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData mRedditData;
-	//public RedditData redditdata;
 
 	public GlobalObjects(){
 		if (mSubredditList == null){

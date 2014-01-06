@@ -208,7 +208,7 @@ public class WidgetProvider extends AppWidgetProvider {
 				// set loadmore indicator so the notifydatasetchanged function knows what to do
 				setLoadMore(context);
 				// show loader
-				showLoaderAndUpdate(context, intent, new int[]{widgetid});
+				showLoaderAndUpdate(context, intent, new int[]{widgetid}, true);
 			} else {
 				// NORMAL FEED ITEM CLICK
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -247,7 +247,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			// set cache bypass incase widget needs new view factory
 			setNoCache(context);
 			// show loader and update data
-			showLoaderAndUpdate(context, intent, new int[]{widgetId});
+			showLoaderAndUpdate(context, intent, new int[]{widgetId}, false);
 		}
 
 		if (action.equals(APPWIDGET_AUTO_UPDATE)) {
@@ -271,12 +271,16 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
 	}
 	
-	private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid){
+	private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid, boolean loadmore){
 		AppWidgetManager mgr = AppWidgetManager.getInstance(context);
 		// show loader
 		RemoteViews views = new RemoteViews(intent.getPackage(), getThemeLayoutId(context));
 		views.setViewVisibility(R.id.srloader, View.VISIBLE);
 		views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
+        // load more text
+        if (loadmore){
+            views.setTextViewText(R.id.loadmoretxt, "Loading...");
+        }
 		// update view
 		mgr.partiallyUpdateAppWidget(widgetid, views);
 		// request update of listview data
