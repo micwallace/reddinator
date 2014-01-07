@@ -72,6 +72,11 @@ public class SubredditSelectActivity extends ListActivity {
         Bundle extras = intent.getExtras();
         if (extras != null) {
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            if (mAppWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
+                mAppWidgetId = 0000; // Id of 4 zeros indicates its the app view, not a widget, that is being updated
+            }
+        } else {
+            mAppWidgetId = 0000;
         }
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -82,21 +87,27 @@ public class SubredditSelectActivity extends ListActivity {
                 // save preference
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
                 Editor editor = prefs.edit();
-                editor.putString("currentfeed-" + mAppWidgetId, subreddit);
+
+                if (mAppWidgetId!=0000){
+                    editor.putString("currentfeed-" + mAppWidgetId, subreddit);
+                    // refresh widget and close activity (NOTE: put in function)
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
+                    RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
+                    views.setTextViewText(R.id.subreddittxt, subreddit);
+                    views.setViewVisibility(R.id.srloader, View.VISIBLE);
+                    views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
+                    // bypass cache if service not loaded
+                    global.setBypassCache(true);
+                    appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
+                    appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+                } else {
+                    editor.putString("currentfeed-app", subreddit);
+                    setResult(1);
+                }
+                // save the preference
                 editor.commit();
-                // refresh widget and close activity (NOTE: put in function)
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-                RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
-                views.setTextViewText(R.id.subreddittxt, subreddit);
-                views.setViewVisibility(R.id.srloader, View.VISIBLE);
-                views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
-                // bypass cache if service not loaded
-                global.setBypassCache(true);
-                appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
-                appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
                 finish();
                 //System.out.println(sreddit+" selected");
-
             }
         });
         Button addBtn = (Button) findViewById(R.id.addsrbutton);
@@ -133,19 +144,19 @@ public class SubredditSelectActivity extends ListActivity {
                 final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
                 final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false), mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-                builder.setTitle("Widget Options");
+                builder.setTitle("Feed Options");
                 builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
                     public void onClick(DialogInterface dialogInterface, int item, boolean state) {
                         Editor prefsedit = mSharedPreferences.edit();
                         switch (item) {
                             case 0:
-                                prefsedit.putBoolean("thumbnails-" + mAppWidgetId, state);
+                                prefsedit.putBoolean("thumbnails-" +(mAppWidgetId==0000?"app":mAppWidgetId), state);
                                 break;
                             case 1:
-                                prefsedit.putBoolean("bigthumbs-" + mAppWidgetId, state);
+                                prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), state);
                                 break;
                             case 2:
-                                prefsedit.putBoolean("hideinf-" + mAppWidgetId, state);
+                                prefsedit.putBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), state);
                                 break;
                         }
                         prefsedit.commit();
@@ -160,9 +171,9 @@ public class SubredditSelectActivity extends ListActivity {
             }
         });
         // load initial values for comparison
-        curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true);
-        curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false);
-        curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false);
+        curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true);
+        curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false);
+        curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false);
     }
 
     @Override
@@ -184,19 +195,25 @@ public class SubredditSelectActivity extends ListActivity {
     public void onBackPressed() {
         savePersonalList();
         // check if sort has changed
-        if (!curSort.equals(mSharedPreferences.getString("sort-" + mAppWidgetId, "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false)) {
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-            RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
-            views.setViewVisibility(R.id.srloader, View.VISIBLE);
-            views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
-            // bypass the cached entrys only if the sorting preference has changed
-            if (!curSort.equals(mSharedPreferences.getString("sort-" + mAppWidgetId, "hot"))) {
-                global.setBypassCache(true);
+        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false)) {
+            if (mAppWidgetId!=0000){
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
+                RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
+                views.setViewVisibility(R.id.srloader, View.VISIBLE);
+                views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
+                // bypass the cached entrys only if the sorting preference has changed
+                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot"))) {
+                    global.setBypassCache(true);
+                } else {
+                    global.setRefreshView();
+                }
+                appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
+                appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
             } else {
-                global.setRefreshView();
+                setResult(1); // tells main activity to update the feed
             }
-            appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
-            appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+        } else {
+            setResult(0); // feed doesn't need updating
         }
         finish();
     }
@@ -237,7 +254,7 @@ public class SubredditSelectActivity extends ListActivity {
                         sort = "top";
                         break;
                 }
-                prefsedit.putString("sort-" + mAppWidgetId, sort);
+                prefsedit.putString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), sort);
                 prefsedit.commit();
                 // set new text in button
                 String sorttxt = "Sort:  " + sort;
