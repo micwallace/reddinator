@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appheader"
+    android:layout_width="match_parent"
+    android:layout_gravity="fill_horizontal"
+    android:layout_height="35dp"
+    android:paddingRight="5dp"
+    android:layout_alignParentTop="true"
+    android:clickable="false" >
+
+    <ImageButton
+        android:id="@+id/appprefsbutton"
+        android:layout_width="wrap_content"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:contentDescription="@string/configure"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="#CEE3F8"
+        android:src="@android:drawable/ic_menu_preferences" />
+
+    <ImageButton
+        android:id="@+id/apprefreshbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/refresh"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:layout_toLeftOf="@+id/appprefsbutton"
+        android:layout_centerVertical="true"
+        android:background="#CEE3F8"
+        android:visibility="visible"
+        android:src="@android:drawable/ic_menu_rotate" />
+
+    <ProgressBar
+        android:id="@+id/appsrloader"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@+id/apprefreshbutton"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/apperroricon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_toLeftOf="@+id/apprefreshbutton"
+        android:contentDescription="@string/error"
+        android:src="@android:drawable/stat_notify_error"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/appsubreddittxt"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:paddingLeft="8dp"
+        android:layout_toRightOf="@+id/app_logo"
+        android:drawablePadding="5dp"
+        android:drawableRight="@android:drawable/arrow_down_float"
+        android:gravity="center_vertical"
+        android:text="@string/app_name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#000000" />
+
+    <ImageView
+        android:id="@+id/app_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
+        android:contentDescription="@string/logo"
+        android:src="@drawable/reddit_icon_small" />
+
+</RelativeLayout>

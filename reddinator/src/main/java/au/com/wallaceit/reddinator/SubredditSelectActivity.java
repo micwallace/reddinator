@@ -52,6 +52,7 @@ public class SubredditSelectActivity extends ListActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.subredditselect);
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

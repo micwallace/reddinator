@@ -43,6 +43,7 @@ public class PrefsActivity extends PreferenceActivity {
 	private String mTitleFontColor = "";
 	private String mWidgetTheme = "";
 	int mFirstTimeSetup = 1;
+    int isfromappview = 0;
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,12 @@ public class PrefsActivity extends PreferenceActivity {
 		    mAppWidgetId = extras.getInt(
 		            AppWidgetManager.EXTRA_APPWIDGET_ID, 
 		            AppWidgetManager.INVALID_APPWIDGET_ID);
-		    mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
+            if (mAppWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
+                isfromappview = 1;
+            } else{
+		        mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
+            }
+
 		}
 		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
 		mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
@@ -92,6 +98,12 @@ public class PrefsActivity extends PreferenceActivity {
 				alarmManager.cancel(updateIntent); // just incase theres a rougue alarm
 			}
 		}
+
+        // TODO: Intergrate with the below check for preference changes, only trigger a reload when they change
+        if (isfromappview==1){
+            setResult(0);
+            finish();
+        }
 		
 		// check if theme or style has changed and update if needed
 		if (!mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))

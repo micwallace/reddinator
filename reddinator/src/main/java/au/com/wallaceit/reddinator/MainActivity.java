@@ -1,8 +1,28 @@
+/*
+ * Copyright 2013 Michael Boyde Wallace (http://wallaceit.com.au)
+ * This file is part of Reddinator.
+ *
+ * Reddinator is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Reddinator is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -15,6 +35,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -30,6 +51,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,6 +79,9 @@ public class MainActivity extends Activity {
         View appView = findViewById(R.id.appview);
         ActionBar actionBar = getActionBar();
         View actionView = this.getLayoutInflater().inflate(R.layout.appheader, null);
+        actionBar.setCustomView(actionView);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(false);
         loader = (ProgressBar) actionView.findViewById(R.id.appsrloader);
         errorIcon = (ImageView) actionView.findViewById(R.id.apperroricon);
         refreshbutton = (ImageButton) actionView.findViewById(R.id.apprefreshbutton);
@@ -66,6 +92,7 @@ public class MainActivity extends Activity {
         switch (themenum) {
             case 1:
                 actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CEE3F8")));
+                appView.setBackgroundColor(Color.WHITE);
                 configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
                 refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
                 errorIcon.setBackgroundColor(Color.parseColor("#CEE3F8"));
@@ -87,9 +114,6 @@ public class MainActivity extends Activity {
                 errorIcon.setBackgroundColor(Color.parseColor("#5F99CF"));
                 break;
         }
-        actionBar.setCustomView(actionView);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(false);
 
         // setup button onclicks
         refreshbutton.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +123,8 @@ public class MainActivity extends Activity {
             }
         });
 
+
+
         View.OnClickListener srclick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,7 +133,16 @@ public class MainActivity extends Activity {
             }
         };
 
+        View.OnClickListener configclick = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent prefsintent = new Intent(MainActivity.this, PrefsActivity.class);
+                startActivityForResult(prefsintent, 0);
+            }
+        };
+
         srtext.setOnClickListener(srclick);
+        configbutton.setOnClickListener(configclick);
         findViewById(R.id.app_logo).setOnClickListener(srclick);
 
         // Setup list adapter
@@ -118,7 +153,31 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                openLink(position);
+                openLink(position, 1);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final int position = i;
+                AlertDialog linkDialog = new AlertDialog.Builder(MainActivity.this).create(); //Read Update
+                linkDialog.setTitle("Open in browser");
+
+                linkDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Comments", new DialogInterface.OnClickListener(){
+                    public void onClick (DialogInterface dialog, int which){
+                        openLink(position, 3);
+                    }
+                });
+
+                linkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Content", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        openLink(position, 2);
+                    }
+                });
+
+                linkDialog.show();
+                return true;
             }
         });
 
@@ -126,12 +185,7 @@ public class MainActivity extends Activity {
         srtext.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("currentfeed-app", "technology"));
 
         // Trigger reload?
-        /*Thread t = new Thread(){
-            public void run(){
-                listAdapter.reloadReddits();
-            }
-        };
-        t.run();*/
+        //listAdapter.reloadReddits();
 
     }
 
@@ -143,15 +197,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void openLink(int position){
+    public void openLink(int position, int openType){
         // get the item
         JSONObject item = listAdapter.getItem(position);
-
-        // NORMAL FEED ITEM CLICK
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
-        int clickPref = Integer.valueOf(clickPrefString);
-        switch (clickPref){
+        switch (openType){
             case 1:
                 // open in the reddinator view
                 Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
@@ -247,8 +296,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            View row;
+        public View getView(int position, View row, ViewGroup parent) {
             if (position > data.length()) {
                 return null; //  prevent errornous views
             }
@@ -273,7 +321,24 @@ public class MainActivity extends Activity {
                 });
                 return loadmorerow;
             } else {
-                // build normal item
+                // inflate new view or load view holder if existing
+                ViewHolder viewHolder = new ViewHolder();
+                if (row==null || row.getTag()==null){
+                    // create remote view from specified layout
+                    if (bigThumbs) {
+                        row = getLayoutInflater().inflate(R.layout.listrowbigthumb, parent, false);
+                    } else {
+                        row = getLayoutInflater().inflate(R.layout.listrow, parent, false);
+                    }
+                    viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
+                    viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
+                    viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
+                    viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
+                    viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
+                } else {
+                    viewHolder = (ViewHolder) row.getTag();
+                }
+                // collect data
                 String name = "";
                 String url = "";
                 String permalink = "";
@@ -285,6 +350,7 @@ public class MainActivity extends Activity {
                 try {
                     JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                     name = tempobj.getString("title");
+                    id = tempobj.getString("name");
                     domain = tempobj.getString("domain");
                     thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
                     score = tempobj.getInt("score");
@@ -293,48 +359,43 @@ public class MainActivity extends Activity {
                     e.printStackTrace();
                     // return null; // The view is invalid;
                 }
-                // create remote view from specified layout
-                if (bigThumbs) {
-                    row = getLayoutInflater().inflate(R.layout.listrowbigthumb, parent, false);
-                } else {
-                    row = getLayoutInflater().inflate(R.layout.listrow, parent, false);
-                }
-                TextView listheading = (TextView) row.findViewById(R.id.listheading);
-                TextView sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
-                TextView votestxt = (TextView) row.findViewById(R.id.votestxt);
-                TextView commentstxt = (TextView) row.findViewById(R.id.commentstxt);
-                // build view
-                listheading.setText(Html.fromHtml(name).toString());
-                listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
-                listheading.setTextColor(themeColors[0]);
-                sourcetxt.setText(domain);
-                sourcetxt.setTextColor(themeColors[3]);
-                votestxt.setText(String.valueOf(score));
-                votestxt.setTextColor(themeColors[4]);
-                commentstxt.setText(String.valueOf(numcomments));
-                commentstxt.setTextColor(themeColors[4]);
+                // Update view
+                viewHolder.listheading.setText(Html.fromHtml(name).toString());
+                viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
+                viewHolder.listheading.setTextColor(themeColors[0]);
+                viewHolder.sourcetxt.setText(domain);
+                viewHolder.sourcetxt.setTextColor(themeColors[3]);
+                viewHolder.votestxt.setText(String.valueOf(score));
+                viewHolder.votestxt.setTextColor(themeColors[4]);
+                viewHolder.commentstxt.setText(String.valueOf(numcomments));
+                viewHolder.commentstxt.setTextColor(themeColors[4]);
                 row.findViewById(R.id.listdivider).setBackgroundColor(themeColors[2]);
-
                 // load thumbnail if they are enabled for this widget
-                ImageView thumbview = (ImageView) row.findViewById(R.id.thumbnail);
                 if (loadThumbnails) {
                     // load big image if preference is set
                     if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
-                        // start the image load
-                        loadImage(position, thumbnail);
-                        thumbview.setVisibility(View.VISIBLE);
+                        // check if the image is in cache
+                        if (new File(getCacheDir()+"/thumbcache-app/"+id+".png").exists()){
+                            Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir()+"/thumbcache-app/"+id+".png");
+                            viewHolder.thumbview.setImageBitmap(bitmap);
+                        } else {
+                            // start the image load
+                            loadImage(position, thumbnail, id);
+                        }
+                        viewHolder.thumbview.setVisibility(View.VISIBLE);
                     } else {
-                        thumbview.setVisibility(View.GONE);
+                        viewHolder.thumbview.setVisibility(View.GONE);
                     }
                 } else {
-                    thumbview.setVisibility(View.GONE);
+                    viewHolder.thumbview.setVisibility(View.GONE);
                 }
                 // hide info bar if options set
                 if (hideInf) {
-                    thumbview.setVisibility(View.GONE);
+                    viewHolder.thumbview.setVisibility(View.GONE);
                 } else {
                     row.setVisibility(View.VISIBLE);
                 }
+                row.setTag(viewHolder);
             }
             //System.out.println("getViewAt("+position+");");
             return row;
@@ -350,16 +411,57 @@ public class MainActivity extends Activity {
             }
         }
 
-        private void loadImage(final int itempos, final String urlstr) {
-            new ImageLoader(itempos, urlstr).execute();
+        private void loadImage(final int itempos, final String urlstr, final String redditid) {
+            new ImageLoader(itempos, urlstr, redditid).execute();
+        }
+
+        private void clearImageCache(){
+            // delete all images in the cache folder.
+            DeleteRecursive(new File(getCacheDir()+"/thumbcache-app"));
+        }
+
+        void DeleteRecursive(File fileOrDirectory) {
+
+            if (fileOrDirectory.isDirectory())
+                for (File child : fileOrDirectory.listFiles())
+                    DeleteRecursive(child);
+
+            fileOrDirectory.delete();
+
+        }
+
+        private boolean saveImageToStorage(Bitmap image, String redditid){
+                try {
+                    File file = new File(context.getCacheDir().getPath()+"/thumbcache-app/", redditid+".png");
+                    if (! file.getParentFile().exists()){
+                        file.getParentFile().mkdirs();
+                    }
+                    FileOutputStream fos = new FileOutputStream(file);
+                    image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                    // 100 means no compression, the lower you go, the stronger the compression
+                    fos.close();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+        }
+
+        class ViewHolder {
+            TextView listheading;
+            TextView sourcetxt;
+            TextView votestxt;
+            TextView commentstxt;
+            ImageView thumbview;
         }
 
         class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {
             int itempos;
             String urlstr;
-            ImageLoader(int position, String url){
+            String redditid;
+            ImageLoader(int position, String url, String id){
                 itempos = position;
                 urlstr = url;
+                redditid = id;
             }
             @Override
             protected Bitmap doInBackground(Void... voids) {
@@ -386,6 +488,9 @@ public class MainActivity extends Activity {
                 if (v==null){
                     return;
                 }
+                // save bitmap to cache, the item name will be the reddit id
+                saveImageToStorage(result, redditid);
+                // update view if it's being shown
                 ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
                 if (img!=null){
                     if (result!=null){
@@ -421,6 +526,7 @@ public class MainActivity extends Activity {
         }
 
         public void reloadReddits() {
+            clearImageCache();
             loadReddits(false);
         }
 
@@ -529,8 +635,6 @@ public class MainActivity extends Activity {
                 return error;
             }
         }
-
-
 
         // hide loader
         private void hideAppLoader(boolean goToTopOfList, boolean showError) {
