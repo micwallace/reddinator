@@ -40,8 +40,8 @@ public class GlobalObjects extends Application {
 	}
     // account control
     public void loadSavedAccn(SharedPreferences prefs){
-        String user =  prefs.getString("user", "");
-        String pass =  prefs.getString("user", "");
+        String user =  prefs.getString("uname", "");
+        String pass =  prefs.getString("pword", "");
         mRedditData.loadAccn(user, pass);
     }
 
