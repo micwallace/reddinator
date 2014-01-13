@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.widget.Button;
@@ -56,6 +57,23 @@ public class PrefsActivity extends PreferenceActivity {
 		}
 		addPreferencesFromResource(R.xml.preferences);
 		getListView().setBackgroundColor(Color.WHITE);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
+        if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")){
+            getPreferenceManager().findPreference("logout").setEnabled(false);
+        } else {
+            getPreferenceManager().findPreference("logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString("uname", "");
+                    editor.putString("pword", "");
+                    editor.commit();
+                    getPreferenceManager().findPreference("logout").setEnabled(false);
+                    Toast.makeText(PrefsActivity.this, "Saved account has been cleared", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            });
+        }
 	}
 	@Override
 	protected void onResume(){
@@ -67,13 +85,12 @@ public class PrefsActivity extends PreferenceActivity {
                 mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
             }
 		}
-		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
 		mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
 		mWidgetTheme = mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1");
 		mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
 		mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
 
-        Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
 	}
 	public void onBackPressed(){
 		// check if refresh rate has changed and update if needed

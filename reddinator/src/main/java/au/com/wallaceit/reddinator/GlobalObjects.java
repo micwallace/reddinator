@@ -19,6 +19,8 @@ package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class GlobalObjects extends Application {
 	private ArrayList<String> mSubredditList;
@@ -33,8 +35,27 @@ public class GlobalObjects extends Application {
 		if (mSubredditList == null){
 			mSubredditList = new ArrayList<String>();
 		}
+
 		mRedditData = new RedditData();
 	}
+    // account control
+    public void loadSavedAccn(SharedPreferences prefs){
+        String user =  prefs.getString("user", "");
+        String pass =  prefs.getString("user", "");
+        mRedditData.loadAccn(user, pass);
+    }
+
+    public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember){
+        // set in reddit data
+        mRedditData.loadAccn(uname, pword);
+        // save to prefs
+        if (remember){
+            SharedPreferences.Editor prefsedit = prefs.edit();
+            prefsedit.putString("uname", uname);
+            prefsedit.putString("pword", pword);
+            prefsedit.commit();
+        }
+    }
 
 	// cached data
 	public boolean isSrlistCached(){
@@ -50,7 +71,7 @@ public class GlobalObjects extends Application {
 		return mSubredditList;
 	}
 
-	// data loadtype functions
+	// widget data loadtype functions; a bypass for androids restrictive widget api
 	public int getLoadType(){
 		return loadtype;
 	}

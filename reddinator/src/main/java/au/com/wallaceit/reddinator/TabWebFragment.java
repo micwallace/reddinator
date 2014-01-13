@@ -30,11 +30,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import java.net.CookieManager;
 
 public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
@@ -51,6 +54,7 @@ public class TabWebFragment extends Fragment {
     private WebChromeClient.CustomViewCallback mFullSCallback;
     public WebChromeClient mChromeClient;
     private Activity mActivity;
+
 
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -69,8 +73,10 @@ public class TabWebFragment extends Fragment {
         	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
         	// work out the url this instance should load
         	boolean commentswv = false;
+            String cookiestr = "";
         	if (this.getArguments() != null){
         		commentswv = this.getArguments().getBoolean("loadcom", false);
+                cookiestr = this.getArguments().getString("cookie", "");
         	}
 
             int fontsize;
@@ -78,6 +84,8 @@ public class TabWebFragment extends Fragment {
         	if (commentswv){
         		url = "http://reddit.com"+getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK)+".compact";
         		fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
+                // load cookie
+
         	} else {
         		url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
         		fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
@@ -109,6 +117,13 @@ public class TabWebFragment extends Fragment {
         	mWebView.getSettings().setBuiltInZoomControls(true);
         	mWebView.getSettings().setDisplayZoomControls(true);
         	mWebView.getSettings().setDefaultFontSize(fontsize);
+            // set cookie if provided
+            if (cookiestr!=""){
+                CookieSyncManager.createInstance(mWebView.getContext());
+                android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
+                cookieManager.setCookie(".reddit.com", "reddit_session=" + cookiestr);
+                CookieSyncManager.getInstance().sync();
+            }
         	mChromeClient = newchromeclient;
         	mWebView.setWebChromeClient(mChromeClient);
         	mWebView.setWebViewClient(new WebViewClient());

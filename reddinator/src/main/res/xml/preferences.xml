@@ -95,4 +95,13 @@
                 android:dialogTitle="Content Font Size" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Account">
+
+        <Preference android:title="Logout"
+            android:key="logout"
+            android:summary="Remove my saved account"/>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

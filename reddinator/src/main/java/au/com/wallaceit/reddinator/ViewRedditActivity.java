@@ -18,57 +18,74 @@
 package au.com.wallaceit.reddinator;
 
 import java.util.HashMap;
+
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 
 public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
- 
+
     private TabHost mTabHost;
     private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
     private TabInfo mLastTab = null;
+    private GlobalObjects global;
+    private SharedPreferences prefs;
+    private MenuItem upvote;
+    private MenuItem downvote;
+
+    private String redditItemId;
+    private int curvote = 0;
 
     private class TabInfo {
-         private String tag;
-         private Class<TabWebFragment> clss;
-         private Bundle args;
-         private Fragment fragment;
-         TabInfo(String tag, Class<TabWebFragment> clazz, Bundle args) {
-             this.tag = tag;
-             this.clss = clazz;
-             this.args = args;
-         }
- 
+        private String tag;
+        private Class<TabWebFragment> clss;
+        private Bundle args;
+        private Fragment fragment;
+
+        TabInfo(String tag, Class<TabWebFragment> clazz, Bundle args) {
+            this.tag = tag;
+            this.clss = clazz;
+            this.args = args;
+        }
+
     }
- 
+
     class TabFactory implements TabContentFactory {
- 
+
         private final Context mContext;
- 
+
         /**
          * @param context
          */
         public TabFactory(Context context) {
             mContext = context;
         }
- 
-        /** (non-Javadoc)
+
+        /**
+         * (non-Javadoc)
+         *
          * @see android.widget.TabHost.TabContentFactory#createTabContent(java.lang.String)
          */
         public View createTabContent(String tag) {
@@ -77,27 +94,30 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             v.setMinimumHeight(0);
             return v;
         }
- 
+
     }
-    /** (non-Javadoc)
+
+    /**
+     * (non-Javadoc)
+     *
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-     // set window flags
-   		getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-   		getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        global = ((GlobalObjects) ViewRedditActivity.this.getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        global.loadSavedAccn(prefs);
+        // set window flags
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(R.layout.viewredditheader);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(true);
-        ImageView view = (ImageView)findViewById(android.R.id.home);
-        if (view != null){
-        	view.setPadding(5, 0, 5, 0);
+        ImageView view = (ImageView) findViewById(android.R.id.home);
+        if (view != null) {
+            view.setPadding(5, 0, 5, 0);
         }
         // set content view
         setContentView(R.layout.viewreddit);
@@ -106,78 +126,166 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
         }
+        redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
     }
-    
-    public void onBackPressed(){
-    	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
-    	if (webview.mFullSView != null){
+
+    public void onBackPressed() {
+        TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+        if (webview.mFullSView != null) {
             webview.mChromeClient.onHideCustomView();
-    	} else if (webview.mWebView.canGoBack()){
-        	webview.mWebView.goBack();
+        } else if (webview.mWebView.canGoBack()) {
+            webview.mWebView.goBack();
         } else {
-        	webview.mWebView.stopLoading();
-        	webview.mWebView.loadData("", "text/html", "utf-8");
-        	this.finish();
+            webview.mWebView.stopLoading();
+            webview.mWebView.loadData("", "text/html", "utf-8");
+            this.finish();
         }
     }
-    
+
     private ShareActionProvider shareActionProvider;
+
     @SuppressLint("NewApi")
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu){
-    	MenuInflater inflater = getMenuInflater();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sharemenu, menu);
-    	if (android.os.Build.VERSION.SDK_INT >= 14){
-    		// Get the menu item.
-    	    MenuItem menuItem = menu.findItem(R.id.menu_share);
-    	    // Get the provider and hold onto it to set/change the share intent.
-    	    shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
-    		// Set the default share intent
-    	    shareActionProvider.setShareIntent(getCurrentShareIntent());
-    	    shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-    	}
-    	return true;
+        if (android.os.Build.VERSION.SDK_INT >= 14) {
+            // Get the menu item.
+            MenuItem menuItem = menu.findItem(R.id.menu_share);
+            // Get the provider and hold onto it to set/change the share intent.
+            shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
+            // Set the default share intent
+            shareActionProvider.setShareIntent(getCurrentShareIntent());
+            shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+        }
+        upvote = menu.findItem(R.id.menu_upvote);
+        downvote = menu.findItem(R.id.menu_downvote);
+        return super.onCreateOptionsMenu(menu);
     }
-    
+
     @SuppressLint("InlinedApi")
-	public Intent getCurrentShareIntent(){
-    	Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    	shareIntent.setType("text/plain");
-    	String contenturl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-    	String redditurl = "http://reddit.com"+getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-    	shareIntent.putExtra(Intent.EXTRA_TEXT, "Content: "+contenturl+" \nReddit: "+redditurl);
-    	return shareIntent;
+    public Intent getCurrentShareIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        String contenturl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+        String redditurl = "http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Content: " + contenturl + " \nReddit: " + redditurl);
+        return shareIntent;
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
-            	TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
-            	webview.mWebView.stopLoading();
+                TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+                webview.mWebView.stopLoading();
                 webview.mWebView.loadData("", "text/html", "utf-8");
                 this.finish();
-            	return true;
+                return true;
+
+            case R.id.menu_upvote:
+                upVote();
+                break;
+
+            case R.id.menu_downvote:
+                downVote();
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
- 
-    /** (non-Javadoc)
+
+    // VOTING STUFF
+    private void upVote() {
+        VoteTask task;
+        if (curvote == 1) {
+            task = new VoteTask(redditItemId, 0);
+            System.out.println("Neutral Vote");
+        } else {
+            task = new VoteTask(redditItemId, 1);
+            System.out.println("Upvote");
+        }
+        task.execute();
+    }
+
+    private void downVote() {
+        VoteTask task;
+        if (curvote == -1) {
+            task = new VoteTask(redditItemId, 0);
+            System.out.println("Neutral Vote");
+        } else {
+            task = new VoteTask(redditItemId, -1);
+            System.out.println("Downvote");
+
+        }
+        task.execute();
+    }
+
+    class VoteTask extends AsyncTask<String, Integer, String> {
+        private String redditid;
+        private int direction;
+
+        public VoteTask(String id, int dir) {
+            redditid = id;
+            direction = dir;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String result = global.mRedditData.vote(redditid, direction);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result == "OK") {
+                curvote = direction;
+                switch (direction) {
+                    case -1:
+                        upvote.setIcon(R.drawable.upvote);
+                        downvote.setIcon(R.drawable.downvote_active);
+                        break;
+
+                    case 0:
+                        upvote.setIcon(R.drawable.upvote);
+                        downvote.setIcon(R.drawable.downvote);
+                        break;
+
+                    case 1:
+                        upvote.setIcon(R.drawable.upvote_active);
+                        downvote.setIcon(R.drawable.downvote);
+                        break;
+                }
+            } else if (result == "LOGIN") {
+                showLoginDialog();
+            } else {
+                // error
+                System.out.println(result);
+            }
+        }
+    }
+
+    /**
+     * (non-Javadoc)
+     *
      * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
      */
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
         super.onSaveInstanceState(outState);
     }
- 
+
     /**
      * Step 2: Setup TabHost
      */
     private void initialiseTabHost(Bundle args) {
-    	Bundle rargs = new Bundle();
-    	rargs.putBoolean("loadcom", true);
-        mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+        Bundle rargs = new Bundle();
+        rargs.putBoolean("loadcom", true);
+        rargs.putString("cookie", "");
+        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
         // add tabs
         TabInfo tabInfo = null;
@@ -187,17 +295,17 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
         // get shared preferences
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-    	if (prefs.getBoolean("commentsfirstpref", false)){
-    		this.mTabHost.setCurrentTab(1);
-    		this.onTabChanged("Tab2"); // load comments tab first
-    	} else {
-    		this.onTabChanged("Tab1");
-    	}
-    	// set change listener
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        if (prefs.getBoolean("commentsfirstpref", false)) {
+            this.mTabHost.setCurrentTab(1);
+            this.onTabChanged("Tab2"); // load comments tab first
+        } else {
+            this.onTabChanged("Tab1");
+        }
+        // set change listener
         mTabHost.setOnTabChangedListener(this);
     }
- 
+
     /**
      * @param activity
      * @param tabHost
@@ -217,11 +325,13 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             ft.commit();
             activity.getSupportFragmentManager().executePendingTransactions();
         }
- 
+
         tabHost.addTab(tabSpec);
     }
- 
-    /** (non-Javadoc)
+
+    /**
+     * (non-Javadoc)
+     *
      * @see android.widget.TabHost.OnTabChangeListener#onTabChanged(java.lang.String)
      */
     public void onTabChanged(String tag) {
@@ -242,11 +352,39 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                     ft.attach(newTab.fragment);
                 }
             }
- 
+
             mLastTab = newTab;
             ft.commit();
             this.getSupportFragmentManager().executePendingTransactions();
         }
     }
- 
+
+    // Login stuff
+    private void showLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        final View v = inflater.inflate(R.layout.logindialog, null);
+
+        builder.setView(v)
+                // Add action buttons
+                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
+                        String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
+                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
+                        global.setAccount(prefs, username, password, rememberaccn);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .setTitle("Login to Reddit");
+        builder.create().show();
+    }
+
 }

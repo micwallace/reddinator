@@ -22,32 +22,48 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class RedditData {
     private DefaultHttpClient httpclient;
     static JSONObject jObj = null;
     static String json = "";
+    private String uname;
+    private String pword;
 
     RedditData() {
+
+    }
+
+    public void loadAccn(String user, String pass){
+        uname = user;
+        pword = pass;
     }
 
     // data fetch calls
@@ -89,7 +105,8 @@ public class RedditData {
 
     // GLOBAL FUNCTIONS
     // Create Http/s client
-    private DefaultHttpClient createHttpClient() {
+    private boolean createHttpClient() {
+        // Initialize client
         HttpParams params = new BasicHttpParams();
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
         HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
@@ -100,7 +117,9 @@ public class RedditData {
         schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schReg.register(new Scheme("https", org.apache.http.conn.ssl.SSLSocketFactory.getSocketFactory(), 443));
         ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
-        return new DefaultHttpClient(conMgr, params);
+        httpclient = new DefaultHttpClient(conMgr, params);
+
+        return true;
     }
 
     // HTTP Get Request
@@ -109,7 +128,7 @@ public class RedditData {
         jObj = new JSONObject();
         // create client if null
         if (httpclient == null) {
-            httpclient = createHttpClient();
+            createHttpClient();
         }
         InputStream is;
         // Making HTTP request
@@ -163,16 +182,22 @@ public class RedditData {
 
     // Post calls
     private String modhash = "";
+    private String cookie = "";
 
-    public String vote(String id, String direction){
+    public String vote(String id, int direction){
 			String result="";
-			String url="https://ssl.reddit.com/api/vote.json?id="+id+"&dir="+direction+"&uh="+modhash+"&api_type=json";		
-			JSONObject resultjson = new JSONObject();
-			// if modhash is blank, try to login
-			if (modhash==""){
-
-			}
+            JSONObject resultjson = null;
+            // if modhash is blank, try to login
+            if (modhash==""){
+                if (uname!="" || pword!=""){
+                    // Get account and authenticate
+                    result = login(uname, pword, true);
+                }
+            }
 			if (modhash!=""){
+                resultjson = new JSONObject();
+                String url="https://ssl.reddit.com/api/vote?id="+id+"&dir="+String.valueOf(direction)+"&uh="+modhash+"&api_type=json";
+                System.out.println(url);
 				try {
 				resultjson = getJSONFromPost(url).getJSONObject("json");
 				JSONArray errors = resultjson.getJSONArray("errors");
@@ -182,24 +207,35 @@ public class RedditData {
 					if (firsterror.get(0).equals("USER_REQUIRED")){
 						// check for details and login or prompt user
 						System.out.println("Vote failed: USER_REQUIRED");
+                        result = "LOGIN";
 					}
+                    result = errors.toString();
 				} else {
-					
+                    result = "OK";
 				}
 				} catch (JSONException e) {
-					e.printStackTrace();	
+                    if (resultjson.toString().equals("{}")){
+                        result = "OK";
+                    }
+					e.printStackTrace();
+                    //System.out.println("vote result: " + resultjson.toString());
 				}
 			} else {
-				
+                result = "LOGIN";
 			}
-			System.out.println("vote result: "+resultjson.toString());
+
 			return result;
 	}
 
-    public ArrayList<String> getMySubreddits(String username, String password) {
+    public ArrayList<String> getMySubreddits() {
         ArrayList<String> mysrlist = new ArrayList<String>();
         String logresult = "1";
-        logresult = login(username, password, false);
+        if (modhash==""){
+            if (uname!="" || pword!=""){
+                logresult = login(uname, pword, false);
+            }
+        }
+
         if (logresult == "1") {
             String url = "https://ssl.reddit.com/subreddits/mine.json";
             JSONArray resultjson = new JSONArray();
@@ -232,6 +268,7 @@ public class RedditData {
             resultjson = getJSONFromPost(url).getJSONObject("json");
             if (resultjson.getJSONArray("errors").isNull(0)) {
                 modhash = resultjson.getJSONObject("data").getString("modhash");
+                cookie = resultjson.getJSONObject("data").getString("cookie");
                 result = "1";
             } else {
                 result = resultjson.getJSONArray("errors").getJSONArray(0).getString(1);
@@ -249,13 +286,17 @@ public class RedditData {
         InputStream is = null;
         // create client if null
         if (httpclient == null) {
-            httpclient = createHttpClient();
+            createHttpClient();
         }
         try {
             HttpPost httppost = new HttpPost(url);
+            if (cookie!=""){
+                httppost.setHeader("reddit_session", cookie);
+            }
             HttpResponse httpResponse = httpclient.execute(httppost);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
@@ -275,6 +316,7 @@ public class RedditData {
         } catch (Exception e) {
             System.out.println("Error converting result " + e.toString());
         }
+        System.out.println("HTTP response:"+json);
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);

@@ -57,6 +57,7 @@ public class SubredditSelectActivity extends ListActivity {
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
+        global.loadSavedAccn(mSharedPreferences);
         Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
         if (feeds.isEmpty()) {
             // first time setup
@@ -123,7 +124,11 @@ public class SubredditSelectActivity extends ListActivity {
         importBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                showImportDialog();
+                if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")){
+                    showLoginDialog();
+                } else {
+                    showImportDialog();
+                }
             }
         });
         // sort button
@@ -180,7 +185,7 @@ public class SubredditSelectActivity extends ListActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(this, "Press back to save changes", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Press back to save changes", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -272,11 +277,12 @@ public class SubredditSelectActivity extends ListActivity {
     }
 
     // show the import/login dialog
-    private void showImportDialog() {
+    private void showLoginDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         // Get the layout inflater
         LayoutInflater inflater = getLayoutInflater();
-        final View v = inflater.inflate(R.layout.importdialog, null);
+        final View v = inflater.inflate(R.layout.logindialog, null);
+        v.findViewById(R.id.clearlist).setVisibility(View.VISIBLE);
         builder.setView(v)
                 // Add action buttons
                 .setPositiveButton("Import", new DialogInterface.OnClickListener() {
@@ -285,10 +291,11 @@ public class SubredditSelectActivity extends ListActivity {
                         String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
                         String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
                         boolean clearlist = ((CheckBox) v.findViewById(R.id.clearlist)).isChecked();
-
+                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
+                        global.setAccount(mSharedPreferences, username, password, rememberaccn);
                         dialog.cancel();
                         // import
-                        importSubreddits(username, password, clearlist);
+                        importSubreddits(clearlist);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -300,14 +307,33 @@ public class SubredditSelectActivity extends ListActivity {
         builder.create().show();
     }
 
+    private void showImportDialog(){
+        AlertDialog importDialog = new AlertDialog.Builder(SubredditSelectActivity.this).create(); //Read Update
+        importDialog.setTitle("Replace current list?");
+
+        importDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importSubreddits(true);
+            }
+        });
+
+        importDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importSubreddits(false);
+            }
+        });
+
+        importDialog.show();
+    }
+
     // import personal subreddits
-    private void importSubreddits(final String username, final String password, final boolean clearlist) {
+    private void importSubreddits(final boolean clearlist) {
         // use a thread for searching
         final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "", ("Importing..."), true);
         Thread t = new Thread() {
             public void run() {
 
-                final ArrayList<String> list = global.mRedditData.getMySubreddits(username, password);
+                final ArrayList<String> list = global.mRedditData.getMySubreddits();
                 // copy into current personal list if not empty or error
                 if (!list.isEmpty() && !list.get(0).contains("Error:")) {
                     if (clearlist) {

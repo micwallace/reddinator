@@ -230,7 +230,7 @@ public class MainActivity extends Activity {
                 Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
                 Bundle extras = new Bundle();
                 try {
-                    extras.putString(WidgetProvider.ITEM_ID, item.getString("id"));
+                    extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
                     extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
                     extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
                     extras.putString(WidgetProvider.ITEM_TXT, item.getString("title"));
