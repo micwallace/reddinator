@@ -1,17 +1,35 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-            android:title="All Widgets">
+    <PreferenceCategory android:title="Widgets">
+
 			<ListPreference
                 android:key="@string/on_click_pref"
-                android:title="On-Click Action"
+                android:title="Click Action"
                 android:defaultValue="1"
-                android:summary="When I click on a post.."
+                android:summary="When I click on a widget post.."
                 android:entries="@array/onclick_list_preference"
                 android:entryValues="@array/onclick_values_list_preference"
-                android:dialogTitle="When I click on a post.." />
-			
+                android:dialogTitle="When I click on a widget post.." />
+            <ListPreference
+                android:key="@string/refresh_rate_pref"
+                android:title="Auto Refresh"
+                android:defaultValue="43200000"
+                android:summary="Refresh the widget feed every.."
+                android:entries="@array/widget_refresh_list"
+                android:entryValues="@array/widget_refresh_values"
+                android:dialogTitle="Refresh the widget feed every.." />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Feeds">
+
+            <CheckBoxPreference
+                android:key="@string/app_reload_pref"
+                android:title="App Feed Refresh"
+                android:defaultValue="false"
+                android:summary="Refresh the App feed when opening" />
+
 			<ListPreference
                 android:key="@string/num_item_load_pref"
                 android:title="Initial Items"
@@ -20,25 +38,19 @@
                 android:entries="@array/reddit_item_load"
                 android:entryValues="@array/reddit_item_load"
                 android:dialogTitle="Initially load this many items.." />
-			
-			<ListPreference
-                android:key="@string/refresh_rate_pref"
-                android:title="Auto Refresh"
-                android:defaultValue="43200000"
-                android:summary="Refresh the widget feed every.."
-                android:entries="@array/widget_refresh_list"
-                android:entryValues="@array/widget_refresh_values"
-                android:dialogTitle="Refresh the widget feed every.." />
-			
-			<ListPreference
-                android:key="@string/widget_theme_pref"
-                android:title="Widget Theme"
-                android:defaultValue="1"
-                android:summary="Choose the widget theme"
-                android:entries="@array/widget_theme_preference"
-                android:entryValues="@array/widget_theme_values"
-                android:dialogTitle="Choose the widget theme" />
-			
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Appearance">
+        <ListPreference
+            android:key="@string/widget_theme_pref"
+            android:title="Widget Theme"
+            android:defaultValue="1"
+            android:summary="Choose the app theme"
+            android:entries="@array/widget_theme_preference"
+            android:entryValues="@array/widget_theme_values"
+            android:dialogTitle="Choose the app theme" />
+
 			<ListPreference
                 android:key="@string/title_font_pref"
                 android:title="Item Title Size"

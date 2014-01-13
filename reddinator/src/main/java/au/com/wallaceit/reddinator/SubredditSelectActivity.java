@@ -103,7 +103,7 @@ public class SubredditSelectActivity extends ListActivity {
                     appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
                 } else {
                     editor.putString("currentfeed-app", subreddit);
-                    setResult(1);
+                    setResult(2); // update feed prefs + reload feed
                 }
                 // save the preference
                 editor.commit();
@@ -128,7 +128,7 @@ public class SubredditSelectActivity extends ListActivity {
         });
         // sort button
         sortBtn = (Button) findViewById(R.id.sortselect);
-        curSort = mSharedPreferences.getString("sort-" + mAppWidgetId, "hot");
+        curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot");
         String sortTxt = "Sort:  " + curSort;
         sortBtn.setText(sortTxt);
         sortBtn.setOnClickListener(new OnClickListener() {
@@ -143,7 +143,7 @@ public class SubredditSelectActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
-                final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + mAppWidgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + mAppWidgetId, false), mSharedPreferences.getBoolean("hideinf-" + mAppWidgetId, false)};
+                final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
                 builder.setTitle("Feed Options");
                 builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
@@ -211,7 +211,11 @@ public class SubredditSelectActivity extends ListActivity {
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
                 appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
             } else {
-                setResult(1); // tells main activity to update the feed
+                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot"))){
+                    setResult(2); // reload feed and prefs
+                } else {
+                    setResult(1); // tells main activity to update feed prefs
+                }
             }
         } else {
             setResult(0); // feed doesn't need updating

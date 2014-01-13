@@ -61,8 +61,11 @@ import java.net.URLConnection;
 public class MainActivity extends Activity {
 
     private Context context;
+    private SharedPreferences prefs;
     private ReddinatorListAdapter listAdapter;
     private AbsListView listView;
+    private View appView;
+    private ActionBar actionBar;
     private ProgressBar loader;
     private TextView srtext;
     private ImageView errorIcon;
@@ -73,11 +76,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = MainActivity.this;
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         setContentView(R.layout.activity_main);
-
-        // Setup actionbar, set theme colors
-        View appView = findViewById(R.id.appview);
-        ActionBar actionBar = getActionBar();
+        // Setup actionbar
+        appView = findViewById(R.id.appview);
+        actionBar = getActionBar();
         View actionView = this.getLayoutInflater().inflate(R.layout.appheader, null);
         actionBar.setCustomView(actionView);
         actionBar.setDisplayShowCustomEnabled(true);
@@ -88,32 +91,8 @@ public class MainActivity extends Activity {
         configbutton = (ImageButton) actionView.findViewById(R.id.appprefsbutton);
         srtext = (TextView) actionView.findViewById(R.id.appsubreddittxt);
 
-        int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
-        switch (themenum) {
-            case 1:
-                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CEE3F8")));
-                appView.setBackgroundColor(Color.WHITE);
-                configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                errorIcon.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                break;
-            case 3:
-                Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
-                actionBar.setBackgroundDrawable(header);
-                appView.setBackgroundColor(Color.BLACK);
-                configbutton.setBackgroundDrawable(header);
-                refreshbutton.setBackgroundDrawable(header);
-                errorIcon.setBackgroundDrawable(header);
-                break;
-            case 4:
-            case 2:
-                actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#5F99CF")));
-                appView.setBackgroundColor(Color.BLACK);
-                configbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
-                refreshbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
-                errorIcon.setBackgroundColor(Color.parseColor("#5F99CF"));
-                break;
-        }
+        // set theme colors
+        setThemeColors();
 
         // setup button onclicks
         refreshbutton.setOnClickListener(new View.OnClickListener() {
@@ -122,8 +101,6 @@ public class MainActivity extends Activity {
                 listAdapter.reloadReddits();
             }
         });
-
-
 
         View.OnClickListener srclick = new View.OnClickListener() {
             @Override
@@ -137,6 +114,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent prefsintent = new Intent(MainActivity.this, PrefsActivity.class);
+                prefsintent.putExtra("fromapp", true);
                 startActivityForResult(prefsintent, 0);
             }
         };
@@ -164,13 +142,13 @@ public class MainActivity extends Activity {
                 AlertDialog linkDialog = new AlertDialog.Builder(MainActivity.this).create(); //Read Update
                 linkDialog.setTitle("Open in browser");
 
-                linkDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Comments", new DialogInterface.OnClickListener(){
+                linkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Comments", new DialogInterface.OnClickListener(){
                     public void onClick (DialogInterface dialog, int which){
                         openLink(position, 3);
                     }
                 });
 
-                linkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Content", new DialogInterface.OnClickListener() {
+                linkDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Content", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         openLink(position, 2);
                     }
@@ -182,18 +160,64 @@ public class MainActivity extends Activity {
         });
 
         // set the current subreddit
-        srtext.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("currentfeed-app", "technology"));
+        srtext.setText(prefs.getString("currentfeed-app", "technology"));
 
         // Trigger reload?
-        //listAdapter.reloadReddits();
+        if (prefs.getBoolean("appreloadpref", false)) listAdapter.reloadReddits();
 
+    }
+
+    private void setThemeColors(){
+        int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
+        switch (themenum) {
+            case 1:
+                actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CEE3F8")));
+                appView.setBackgroundColor(Color.WHITE);
+                configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
+                refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
+                errorIcon.setBackgroundColor(Color.parseColor("#CEE3F8"));
+                srtext.setTextColor(Color.parseColor("#000000"));
+                break;
+            case 3:
+                Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
+                actionBar.getCustomView().setBackgroundDrawable(header);
+                appView.setBackgroundColor(Color.BLACK);
+                configbutton.setBackgroundDrawable(header);
+                refreshbutton.setBackgroundDrawable(header);
+                errorIcon.setBackgroundDrawable(header);
+                srtext.setTextColor(Color.parseColor("#FFFFFF"));
+                break;
+            case 4:
+            case 2:
+                actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#5F99CF")));
+                appView.setBackgroundColor(Color.BLACK);
+                configbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
+                refreshbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
+                errorIcon.setBackgroundColor(Color.parseColor("#5F99CF"));
+                srtext.setTextColor(Color.parseColor("#000000"));
+                break;
+        }
     }
 
     @Override
     protected void onActivityResult(int reqcode, int resultcode, Intent data){
-        if (resultcode==1){
-            srtext.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("currentfeed-app", "technology"));
-            listAdapter.reloadReddits();
+        switch(resultcode){
+            case 1: // reload feed prefs
+                listAdapter.loadFeedPrefs();
+                listView.invalidateViews();
+                break;
+
+            case 2: // reload feed prefs and update feed, subreddit has changed
+                srtext.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("currentfeed-app", "technology"));
+                listAdapter.loadFeedPrefs();
+                listAdapter.reloadReddits();
+                break;
+
+            case 3: // reload theme
+                setThemeColors();
+                listAdapter.loadAppPrefs();
+                listView.invalidateViews();
+                break;
         }
     }
 
@@ -263,7 +287,6 @@ public class MainActivity extends Activity {
             global = ((GlobalObjects) context.getApplicationContext());
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             mEditor = mSharedPreferences.edit();
-            getThemeColors();
             // load the caches items
             try {
                 data = new JSONArray(mSharedPreferences.getString("feeddata-app", "[]"));
@@ -282,12 +305,38 @@ public class MainActivity extends Activity {
                 }
 
             }
+            // load preferences
+            loadAppPrefs();
+            loadFeedPrefs();
+        }
 
+        private void loadAppPrefs() {
+            switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
+                // set colors array: healine text, load more text, divider, domain text, vote & comments
+                case 1:
+                    themeColors = new int[]{Color.BLACK, Color.BLACK, Color.parseColor("#D7D7D7"), Color.parseColor("#336699"), Color.parseColor("#FF4500")};
+                    break;
+                case 2:
+                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#5F99CF"), Color.parseColor("#FF8B60")};
+                    break;
+                case 3:
+                case 4:
+                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
+                    break;
+            }
+            // user title color override
+            if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
+                themeColors[0] = Color.parseColor(mSharedPreferences.getString("titlecolorpref", "#000"));
+            }
+            // get font size preference
+            titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
+        }
+
+        private void loadFeedPrefs(){
             // get thumbnail load preference for the widget
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
-            titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         }
 
         @Override
@@ -335,6 +384,7 @@ public class MainActivity extends Activity {
                     viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
                     viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
                     viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
+                    viewHolder.infview = row.findViewById(R.id.infbox);
                 } else {
                     viewHolder = (ViewHolder) row.getTag();
                 }
@@ -391,9 +441,9 @@ public class MainActivity extends Activity {
                 }
                 // hide info bar if options set
                 if (hideInf) {
-                    viewHolder.thumbview.setVisibility(View.GONE);
+                    viewHolder.infview.setVisibility(View.GONE);
                 } else {
-                    row.setVisibility(View.VISIBLE);
+                    viewHolder.infview.setVisibility(View.VISIBLE);
                 }
                 row.setTag(viewHolder);
             }
@@ -452,6 +502,7 @@ public class MainActivity extends Activity {
             TextView votestxt;
             TextView commentstxt;
             ImageView thumbview;
+            View infview;
         }
 
         class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {
@@ -653,26 +704,6 @@ public class MainActivity extends Activity {
         private void showAppLoader(){
             errorIcon.setVisibility(View.GONE);
             loader.setVisibility(View.VISIBLE);
-        }
-
-        private void getThemeColors() {
-            switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
-                // set colors array: healine text, load more text, divider, domain text, vote & comments
-                case 1:
-                    themeColors = new int[]{Color.BLACK, Color.BLACK, Color.parseColor("#D7D7D7"), Color.parseColor("#336699"), Color.parseColor("#FF4500")};
-                    break;
-                case 2:
-                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#5F99CF"), Color.parseColor("#FF8B60")};
-                    break;
-                case 3:
-                case 4:
-                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
-                    break;
-            }
-            // user title color override
-            if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
-                themeColors[0] = Color.parseColor(mSharedPreferences.getString("titlecolorpref", "#000"));
-            }
         }
     }
 }

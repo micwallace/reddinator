@@ -164,14 +164,13 @@ public class RedditData {
     // Post calls
     private String modhash = "";
 
-    // unused
-        /*public String vote(String id, String direction){
+    public String vote(String id, String direction){
 			String result="";
 			String url="https://ssl.reddit.com/api/vote.json?id="+id+"&dir="+direction+"&uh="+modhash+"&api_type=json";		
 			JSONObject resultjson = new JSONObject();
 			// if modhash is blank, try to login
 			if (modhash==""){
-				String logresult = login("micwallace", "#Gromit11", false);
+
 			}
 			if (modhash!=""){
 				try {
@@ -195,7 +194,8 @@ public class RedditData {
 			}
 			System.out.println("vote result: "+resultjson.toString());
 			return result;
-		}*/
+	}
+
     public ArrayList<String> getMySubreddits(String username, String password) {
         ArrayList<String> mysrlist = new ArrayList<String>();
         String logresult = "1";

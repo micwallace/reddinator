@@ -27,6 +27,7 @@
     <string name="widget_prefs">Widget Prefs</string>
     <string name="on_click_pref">onclickpref</string>
     <string name="num_item_load_pref">numitemloadpref</string>
+    <string name="app_reload_pref">appreloadpref</string>
     <string name="refresh_rate_pref">refreshrate</string>
     <string name="widget_theme_pref">widgetthemepref</string>
     <string name="title_font_pref">titlefontpref</string>

@@ -43,6 +43,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private TabHost mTabHost;
     private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
     private TabInfo mLastTab = null;
+
     private class TabInfo {
          private String tag;
          private Class<TabWebFragment> clss;
@@ -90,8 +91,10 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
-        //actionBar.setCustomView(R.layout.sharemenu);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setCustomView(R.layout.viewredditheader);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
         ImageView view = (ImageView)findViewById(android.R.id.home);
         if (view != null){
         	view.setPadding(5, 0, 5, 0);
@@ -199,8 +202,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
      * @param activity
      * @param tabHost
      * @param tabSpec
-     * @param clss
-     * @param args
      */
     private static void addTab(ViewRedditActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
         // Attach a Tab view factory to the spec
