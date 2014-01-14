@@ -40,14 +40,12 @@ public class GlobalObjects extends Application {
 	}
     // account control
     public void loadSavedAccn(SharedPreferences prefs){
-        String user =  prefs.getString("uname", "");
-        String pass =  prefs.getString("pword", "");
-        mRedditData.loadAccn(user, pass);
+        mRedditData.loadAccn(prefs);
     }
 
     public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember){
         // set in reddit data
-        mRedditData.loadAccn(uname, pword);
+        mRedditData.loadAccn(prefs);
         // save to prefs
         if (remember){
             SharedPreferences.Editor prefsedit = prefs.edit();

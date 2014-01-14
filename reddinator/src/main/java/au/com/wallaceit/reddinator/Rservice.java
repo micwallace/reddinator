@@ -146,7 +146,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             return loadmorerow;
         } else {
             // build normal item
-            String name = "";
+            String title = "";
+            String userlikes = "";
             String url = "";
             String permalink = "";
             String thumbnail = "";
@@ -156,9 +157,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             int numcomments = 0;
             try {
                 JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
-                name = tempobj.getString("title");
+                title = tempobj.getString("title");
+                userlikes = tempobj.getString("likes");
                 domain = tempobj.getString("domain");
-                id = tempobj.getString("id");
+                id = tempobj.getString("name");
                 url = tempobj.getString("url");
                 permalink = tempobj.getString("permalink");
                 thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
@@ -175,7 +177,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
             }
             // build view
-            row.setTextViewText(R.id.listheading, Html.fromHtml(name).toString());
+            row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors[0]);
             row.setTextViewText(R.id.sourcetxt, domain);
@@ -189,9 +191,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Intent i = new Intent();
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, id);
+            extras.putString("userlikes", userlikes);
             extras.putString(WidgetProvider.ITEM_URL, url);
             extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
-            extras.putString(WidgetProvider.ITEM_TXT, name);
+            extras.putString(WidgetProvider.ITEM_TXT, title);
             extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
             extras.putInt(WidgetProvider.ITEM_VOTES, score);
             i.putExtras(extras);

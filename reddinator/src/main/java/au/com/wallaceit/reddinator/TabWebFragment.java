@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -36,8 +37,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import java.net.CookieManager;
 
 public class TabWebFragment extends Fragment {
     /** (non-Javadoc)
@@ -76,7 +75,7 @@ public class TabWebFragment extends Fragment {
             String cookiestr = "";
         	if (this.getArguments() != null){
         		commentswv = this.getArguments().getBoolean("loadcom", false);
-                cookiestr = this.getArguments().getString("cookie", "");
+                cookiestr = this.getArguments().getString("cookie");
         	}
 
             int fontsize;
@@ -84,7 +83,6 @@ public class TabWebFragment extends Fragment {
         	if (commentswv){
         		url = "http://reddit.com"+getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK)+".compact";
         		fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
-                // load cookie
 
         	} else {
         		url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
@@ -117,14 +115,20 @@ public class TabWebFragment extends Fragment {
         	mWebView.getSettings().setBuiltInZoomControls(true);
         	mWebView.getSettings().setDisplayZoomControls(true);
         	mWebView.getSettings().setDefaultFontSize(fontsize);
+            mChromeClient = newchromeclient;
+            cookiestr = Uri.encode(cookiestr);
+            System.out.println("check if Cookie, add to webview from RedditData; cookiedata= "+cookiestr);
             // set cookie if provided
             if (cookiestr!=""){
+
                 CookieSyncManager.createInstance(mWebView.getContext());
                 android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
+                cookieManager.setAcceptCookie(true);
                 cookieManager.setCookie(".reddit.com", "reddit_session=" + cookiestr);
                 CookieSyncManager.getInstance().sync();
+                CookieSyncManager.getInstance().startSync();
             }
-        	mChromeClient = newchromeclient;
+
         	mWebView.setWebChromeClient(mChromeClient);
         	mWebView.setWebViewClient(new WebViewClient());
         	mWebView.loadUrl(url);

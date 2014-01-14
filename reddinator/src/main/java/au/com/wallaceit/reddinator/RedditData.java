@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,12 +26,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -39,31 +38,44 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class RedditData {
+    private SharedPreferences sharedPrefs;
     private DefaultHttpClient httpclient;
+    private CookieStore cookieStore;
     static JSONObject jObj = null;
     static String json = "";
     private String uname;
     private String pword;
+    private String modhash = "";
+    private String cookieStr = "";
 
     RedditData() {
 
     }
 
-    public void loadAccn(String user, String pass){
-        uname = user;
-        pword = pass;
+    public void loadAccn(SharedPreferences prefs){
+        uname =  prefs.getString("uname", "");
+        pword =  prefs.getString("pword", "");
+        cookieStr = prefs.getString("cook", "");
+        modhash = prefs.getString("modhash", "");
+        setClientCookie();
+        // store shared prefs editor to commit any new cookies & modhashes
+        sharedPrefs = prefs;
+    }
+
+    public void saveCookieData(){
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putString("cook", cookieStr);
+        edit.putString("modhash", modhash);
+        edit.commit();
     }
 
     // data fetch calls
@@ -117,9 +129,20 @@ public class RedditData {
         schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schReg.register(new Scheme("https", org.apache.http.conn.ssl.SSLSocketFactory.getSocketFactory(), 443));
         ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
+        cookieStore = new BasicCookieStore();
         httpclient = new DefaultHttpClient(conMgr, params);
-
+        httpclient.setCookieStore(cookieStore);
         return true;
+    }
+
+    private void setClientCookie(){
+        if (httpclient==null){
+            createHttpClient();
+        }
+        BasicClientCookie cookieobj = new BasicClientCookie("reddit_session", Uri.encode(cookieStr));
+        cookieobj.setDomain(".reddit.com");
+        cookieobj.setPath("/");
+        cookieStore.addCookie(cookieobj);
     }
 
     // HTTP Get Request
@@ -180,9 +203,11 @@ public class RedditData {
 
     }
 
+    public String getSessionCookie(){
+        return cookieStr;
+    }
+
     // Post calls
-    private String modhash = "";
-    private String cookie = "";
 
     public String vote(String id, int direction){
 			String result="";
@@ -233,6 +258,8 @@ public class RedditData {
         if (modhash==""){
             if (uname!="" || pword!=""){
                 logresult = login(uname, pword, false);
+            } else {
+                logresult = "Stored credentials have not been loaded";
             }
         }
 
@@ -267,8 +294,12 @@ public class RedditData {
         try {
             resultjson = getJSONFromPost(url).getJSONObject("json");
             if (resultjson.getJSONArray("errors").isNull(0)) {
+                // login successful, set session vars
                 modhash = resultjson.getJSONObject("data").getString("modhash");
-                cookie = resultjson.getJSONObject("data").getString("cookie");
+                cookieStr = resultjson.getJSONObject("data").getString("cookie");
+                // save session data and add cookie to client
+                saveCookieData();
+                setClientCookie();
                 result = "1";
             } else {
                 result = resultjson.getJSONArray("errors").getJSONArray(0).getString(1);
@@ -290,9 +321,6 @@ public class RedditData {
         }
         try {
             HttpPost httppost = new HttpPost(url);
-            if (cookie!=""){
-                httppost.setHeader("reddit_session", cookie);
-            }
             HttpResponse httpResponse = httpclient.execute(httppost);
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();

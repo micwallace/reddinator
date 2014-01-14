@@ -57,6 +57,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
     private String redditItemId;
     private int curvote = 0;
+    private String userLikes = null; // string version of curvote, parsed when options menu generated.
 
     private class TabInfo {
         private String tag;
@@ -127,6 +128,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
         }
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+        userLikes = getIntent().getStringExtra("userlikes");
+        System.out.println("User likes post: "+userLikes);
     }
 
     public void onBackPressed() {
@@ -160,6 +163,13 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         }
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
+        if (userLikes.equals("true")){
+            upvote.setIcon(R.drawable.upvote_active);
+            curvote = 1;
+        } else if (userLikes.equals("false")){
+            downvote.setIcon(R.drawable.downvote_active);
+            curvote = -1;
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -284,7 +294,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private void initialiseTabHost(Bundle args) {
         Bundle rargs = new Bundle();
         rargs.putBoolean("loadcom", true);
-        rargs.putString("cookie", "");
+        rargs.putString("cookie", global.mRedditData.getSessionCookie());
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
         // add tabs
