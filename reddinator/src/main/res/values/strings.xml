@@ -24,7 +24,7 @@
     <string name="password">password</string>
     <string name="replace_current_list">Replace current list</string>
     <string name="share">Share</string>
-    <string name="widget_prefs">Widget Prefs</string>
+    <string name="widget_prefs">Feed Prefs</string>
     <string name="on_click_pref">onclickpref</string>
     <string name="num_item_load_pref">numitemloadpref</string>
     <string name="app_reload_pref">appreloadpref</string>

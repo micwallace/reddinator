@@ -58,7 +58,7 @@ public class PrefsActivity extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.preferences);
 		getListView().setBackgroundColor(Color.WHITE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-        if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")){
+        if ((mSharedPreferences.getString("uname", "").equals("") && mSharedPreferences.getString("pword", "").equals("")) && (mSharedPreferences.getString("cook", "").equals("") && mSharedPreferences.getString("modhash", "").equals(""))){
             getPreferenceManager().findPreference("logout").setEnabled(false);
         } else {
             getPreferenceManager().findPreference("logout").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -67,6 +67,8 @@ public class PrefsActivity extends PreferenceActivity {
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putString("uname", "");
                     editor.putString("pword", "");
+                    editor.putString("cook", "");
+                    editor.putString("modhash", "");
                     editor.commit();
                     getPreferenceManager().findPreference("logout").setEnabled(false);
                     Toast.makeText(PrefsActivity.this, "Saved account has been cleared", Toast.LENGTH_LONG).show();
@@ -98,7 +100,7 @@ public class PrefsActivity extends PreferenceActivity {
 			//System.out.println("Refresh preference changed, updating alarm");
 			Intent intent =  new Intent(getApplicationContext(), WidgetProvider.class);
 	        intent.setAction(WidgetProvider.APPWIDGET_AUTO_UPDATE);
-	        intent.setPackage(getApplicationContext().getPackageName());
+	        intent.setPackage(PrefsActivity.this.getPackageName());
 	        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 	        PendingIntent updateIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
 	        final AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);

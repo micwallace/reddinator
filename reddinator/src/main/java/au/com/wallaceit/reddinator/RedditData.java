@@ -177,9 +177,9 @@ public class RedditData {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     is, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
             is.close();
             json = sb.toString();
@@ -213,13 +213,13 @@ public class RedditData {
 			String result="";
             JSONObject resultjson = null;
             // if modhash is blank, try to login
-            if (modhash==""){
-                if (uname!="" || pword!=""){
+            if (modhash.equals("")){
+                if (!uname.equals("") || !pword.equals("")){
                     // Get account and authenticate
                     result = login(uname, pword, true);
                 }
             }
-			if (modhash!=""){
+			if (!modhash.equals("")){
                 resultjson = new JSONObject();
                 String url="https://ssl.reddit.com/api/vote?id="+id+"&dir="+String.valueOf(direction)+"&uh="+modhash+"&api_type=json";
                 System.out.println(url);
@@ -256,7 +256,7 @@ public class RedditData {
         ArrayList<String> mysrlist = new ArrayList<String>();
         String logresult = "1";
         if (modhash==""){
-            if (uname!="" || pword!=""){
+            if (!uname.equals("") || !pword.equals("")){
                 logresult = login(uname, pword, false);
             } else {
                 logresult = "Stored credentials have not been loaded";
@@ -288,7 +288,7 @@ public class RedditData {
     }
 
     public String login(String username, String passwd, boolean remember) {
-        String result = "";
+        String result;
         String url = "https://ssl.reddit.com/api/login.json?user=" + Uri.encode(username) + "&passwd=" + Uri.encode(passwd) + "&rem=" + String.valueOf(remember) + "&api_type=json";
         JSONObject resultjson = new JSONObject();
         try {
@@ -337,7 +337,7 @@ public class RedditData {
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+                sb.append(line).append("\n");
             }
             is.close();
             json = sb.toString();

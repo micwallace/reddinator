@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -78,7 +79,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         private final Context mContext;
 
         /**
-         * @param context
+         *
+         * @param context; activity context
          */
         public TabFactory(Context context) {
             mContext = context;
@@ -106,7 +108,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         global = ((GlobalObjects) ViewRedditActivity.this.getApplicationContext());
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
         global.loadSavedAccn(prefs);
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -115,7 +117,9 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         ImageView view = (ImageView) findViewById(android.R.id.home);
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
@@ -145,8 +149,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         }
     }
 
-    private ShareActionProvider shareActionProvider;
-
     @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,13 +158,19 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             // Get the menu item.
             MenuItem menuItem = menu.findItem(R.id.menu_share);
             // Get the provider and hold onto it to set/change the share intent.
-            shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
+            ShareActionProvider shareActionProvider = null;
+            if (menuItem != null) {
+                shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
+            }
             // Set the default share intent
-            shareActionProvider.setShareIntent(getCurrentShareIntent());
-            shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+            if (shareActionProvider != null) {
+                shareActionProvider.setShareIntent(getCurrentShareIntent());
+                shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
+            }
         }
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
+
         if (userLikes.equals("true")){
             upvote.setIcon(R.drawable.upvote_active);
             curvote = 1;
@@ -245,13 +253,12 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         @Override
         protected String doInBackground(String... strings) {
-            String result = global.mRedditData.vote(redditid, direction);
-            return result;
+            return global.mRedditData.vote(redditid, direction);
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if (result == "OK") {
+            if (result.equals("OK")) {
                 curvote = direction;
                 switch (direction) {
                     case -1:
@@ -269,10 +276,10 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                         downvote.setIcon(R.drawable.downvote);
                         break;
                 }
-            } else if (result == "LOGIN") {
+            } else if (result.equals("LOGIN")) {
                 showLoginDialog();
             } else {
-                // error
+                // TODO: Cmon a toast at least
                 System.out.println(result);
             }
         }
@@ -297,15 +304,16 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         rargs.putString("cookie", global.mRedditData.getSessionCookie());
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
+        if (!prefs.getString("widgetthemepref", "1").equals("1")) mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
         // add tabs
-        TabInfo tabInfo = null;
+        TabInfo tabInfo;
         ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
         // get shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
         if (prefs.getBoolean("commentsfirstpref", false)) {
             this.mTabHost.setCurrentTab(1);
             this.onTabChanged("Tab2"); // load comments tab first
@@ -317,9 +325,9 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     }
 
     /**
-     * @param activity
-     * @param tabHost
-     * @param tabSpec
+     * @param activity;
+     * @param tabHost;
+     * @param tabSpec;
      */
     private static void addTab(ViewRedditActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
         // Attach a Tab view factory to the spec

@@ -100,7 +100,7 @@
 
         <Preference android:title="Logout"
             android:key="logout"
-            android:summary="Remove my saved account"/>
+            android:summary="Remove my saved account and session data"/>
 
     </PreferenceCategory>
 

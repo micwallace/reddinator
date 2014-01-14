@@ -35,12 +35,14 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -62,6 +64,7 @@ public class MainActivity extends Activity {
 
     private Context context;
     private SharedPreferences prefs;
+    private GlobalObjects global;
     private ReddinatorListAdapter listAdapter;
     private AbsListView listView;
     private View appView;
@@ -76,7 +79,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = MainActivity.this;
+        global = ((GlobalObjects) context.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        global.loadSavedAccn(prefs);
         setContentView(R.layout.activity_main);
         // Setup actionbar
         appView = findViewById(R.id.appview);
@@ -105,7 +110,7 @@ public class MainActivity extends Activity {
         View.OnClickListener srclick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent srintent = new Intent(MainActivity.this, SubredditSelectActivity.class);
+                Intent srintent = new Intent(context, SubredditSelectActivity.class);
                 startActivityForResult(srintent, 0);
             }
         };
@@ -113,7 +118,7 @@ public class MainActivity extends Activity {
         View.OnClickListener configclick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent prefsintent = new Intent(MainActivity.this, PrefsActivity.class);
+                Intent prefsintent = new Intent(context, PrefsActivity.class);
                 prefsintent.putExtra("fromapp", true);
                 startActivityForResult(prefsintent, 0);
             }
@@ -125,7 +130,7 @@ public class MainActivity extends Activity {
 
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
-        listAdapter = new ReddinatorListAdapter(context);
+        listAdapter = new ReddinatorListAdapter(global, prefs);
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,11 +144,11 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final int position = i;
-                AlertDialog linkDialog = new AlertDialog.Builder(MainActivity.this).create(); //Read Update
+                AlertDialog linkDialog = new AlertDialog.Builder(context).create(); //Read Update
                 linkDialog.setTitle("Open in browser");
 
-                linkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Comments", new DialogInterface.OnClickListener(){
-                    public void onClick (DialogInterface dialog, int which){
+                linkDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Comments", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
                         openLink(position, 3);
                     }
                 });
@@ -167,7 +172,8 @@ public class MainActivity extends Activity {
 
     }
 
-    private void setThemeColors(){
+    @SuppressWarnings("deprecation")
+    private void setThemeColors() {
         int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
         switch (themenum) {
             case 1:
@@ -200,8 +206,8 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onActivityResult(int reqcode, int resultcode, Intent data){
-        switch(resultcode){
+    protected void onActivityResult(int reqcode, int resultcode, Intent data) {
+        switch (resultcode) {
             case 1: // reload feed prefs
                 listAdapter.loadFeedPrefs();
                 listView.invalidateViews();
@@ -221,10 +227,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void openLink(int position, int openType){
+    public void openLink(int position, int openType) {
         // get the item
         JSONObject item = listAdapter.getItem(position);
-        switch (openType){
+        switch (openType) {
             case 1:
                 // open in the reddinator view
                 Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
@@ -262,7 +268,7 @@ public class MainActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com"+permalink));
+                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com" + permalink));
                 context.startActivity(clickIntent3);
                 break;
         }
@@ -270,7 +276,6 @@ public class MainActivity extends Activity {
 
     public class ReddinatorListAdapter extends BaseAdapter {
 
-        private Context mContext = null;
         private JSONArray data;
         private GlobalObjects global;
         private SharedPreferences mSharedPreferences;
@@ -281,12 +286,10 @@ public class MainActivity extends Activity {
         private boolean bigThumbs = false;
         private boolean hideInf = false;
 
+        protected ReddinatorListAdapter(GlobalObjects gobjects, SharedPreferences prefs) {
 
-        protected ReddinatorListAdapter(Context context) {
-
-            this.mContext = context;
-            global = ((GlobalObjects) context.getApplicationContext());
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            global = gobjects;
+            mSharedPreferences = prefs;
             mEditor = mSharedPreferences.edit();
             // load the caches items
             try {
@@ -333,7 +336,7 @@ public class MainActivity extends Activity {
             titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         }
 
-        private void loadFeedPrefs(){
+        private void loadFeedPrefs() {
             // get thumbnail load preference for the widget
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
@@ -346,7 +349,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public View getView(int position, View row, ViewGroup parent) {
+        public View getView(final int position, View row, ViewGroup parent) {
             if (position > data.length()) {
                 return null; //  prevent errornous views
             }
@@ -373,12 +376,12 @@ public class MainActivity extends Activity {
             } else {
                 // inflate new view or load view holder if existing
                 ViewHolder viewHolder = new ViewHolder();
-                if (row==null || row.getTag()==null){
+                if (row == null || row.getTag() == null) {
                     // create remote view from specified layout
                     if (bigThumbs) {
-                        row = getLayoutInflater().inflate(R.layout.listrowbigthumb, parent, false);
+                        row = getLayoutInflater().inflate(R.layout.applistrowbigthumb, parent, false);
                     } else {
-                        row = getLayoutInflater().inflate(R.layout.listrow, parent, false);
+                        row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
                     }
                     viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
                     viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
@@ -386,16 +389,20 @@ public class MainActivity extends Activity {
                     viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
                     viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
                     viewHolder.infview = row.findViewById(R.id.infbox);
+                    viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
+                    viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
+
                 } else {
                     viewHolder = (ViewHolder) row.getTag();
                 }
                 // collect data
                 String name = "";
-                String url = "";
-                String permalink = "";
+                //String url = "";
+                //String permalink = ""; // gets this data straight from JSON
                 String thumbnail = "";
                 String domain = "";
                 String id = "";
+                String userLikes = "false";
                 int score = 0;
                 int numcomments = 0;
                 try {
@@ -406,6 +413,7 @@ public class MainActivity extends Activity {
                     thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
                     score = tempobj.getInt("score");
                     numcomments = tempobj.getInt("num_comments");
+                    userLikes = tempobj.getString("likes");
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // return null; // The view is invalid;
@@ -421,19 +429,62 @@ public class MainActivity extends Activity {
                 viewHolder.commentstxt.setText(String.valueOf(numcomments));
                 viewHolder.commentstxt.setTextColor(themeColors[4]);
                 row.findViewById(R.id.listdivider).setBackgroundColor(themeColors[2]);
+
+                // set vote button
+                if (!userLikes.equals("null")) {
+                    if (userLikes.equals("true")) {
+                        viewHolder.upvotebtn.setImageResource(R.drawable.upvote_active);
+                        viewHolder.downvotebtn.setImageResource(R.drawable.downvote);
+                    } else {
+                        viewHolder.upvotebtn.setImageResource(R.drawable.upvote);
+                        viewHolder.downvotebtn.setImageResource(R.drawable.downvote_active);
+                    }
+                } else {
+                    viewHolder.upvotebtn.setImageResource(R.drawable.upvote);
+                    viewHolder.downvotebtn.setImageResource(R.drawable.downvote);
+                }
+                // Set vote onclick listeners
+                viewHolder.upvotebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        listAdapter.showAppLoader();
+                        view = (View) view.getParent().getParent();
+                        ListVoteTask listvote = new ListVoteTask(1, view, position);
+                        listvote.execute();
+                        System.out.println("Up Vote");
+                    }
+                });
+                viewHolder.downvotebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        listAdapter.showAppLoader();
+                        view = (View) view.getParent().getParent();
+                        ListVoteTask listvote = new ListVoteTask(-1, view, position);
+                        listvote.execute();
+                        System.out.println("Down Vote");
+                    }
+                });
+
                 // load thumbnail if they are enabled for this widget
                 if (loadThumbnails) {
                     // load big image if preference is set
                     if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
                         // check if the image is in cache
-                        if (new File(getCacheDir()+"/thumbcache-app/"+id+".png").exists()){
-                            Bitmap bitmap = BitmapFactory.decodeFile(getCacheDir()+"/thumbcache-app/"+id+".png");
-                            viewHolder.thumbview.setImageBitmap(bitmap);
+                        if (new File(getCacheDir() + "/thumbcache-app/" + id + ".png").exists()) {
+                            String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
+                            Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
+                            if (bitmap==null){
+                                viewHolder.thumbview.setVisibility(View.GONE);
+                            } else {
+                                viewHolder.thumbview.setImageBitmap(bitmap);
+                                viewHolder.thumbview.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             // start the image load
                             loadImage(position, thumbnail, id);
+                            viewHolder.thumbview.setVisibility(View.VISIBLE);
                         }
-                        viewHolder.thumbview.setVisibility(View.VISIBLE);
+
                     } else {
                         viewHolder.thumbview.setVisibility(View.GONE);
                     }
@@ -446,6 +497,7 @@ public class MainActivity extends Activity {
                 } else {
                     viewHolder.infview.setVisibility(View.VISIBLE);
                 }
+
                 row.setTag(viewHolder);
             }
             //System.out.println("getViewAt("+position+");");
@@ -462,13 +514,21 @@ public class MainActivity extends Activity {
             }
         }
 
+        public void updateVoteStat(int position, String val) {
+            try {
+                data.getJSONObject(position).getJSONObject("data").put("likes", val);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
         private void loadImage(final int itempos, final String urlstr, final String redditid) {
             new ImageLoader(itempos, urlstr, redditid).execute();
         }
 
-        private void clearImageCache(){
+        private void clearImageCache() {
             // delete all images in the cache folder.
-            DeleteRecursive(new File(getCacheDir()+"/thumbcache-app"));
+            DeleteRecursive(new File(getCacheDir() + "/thumbcache-app"));
         }
 
         void DeleteRecursive(File fileOrDirectory) {
@@ -481,20 +541,21 @@ public class MainActivity extends Activity {
 
         }
 
-        private boolean saveImageToStorage(Bitmap image, String redditid){
-                try {
-                    File file = new File(context.getCacheDir().getPath()+"/thumbcache-app/", redditid+".png");
-                    if (! file.getParentFile().exists()){
-                        file.getParentFile().mkdirs();
-                    }
-                    FileOutputStream fos = new FileOutputStream(file);
-                    image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                    // 100 means no compression, the lower you go, the stronger the compression
-                    fos.close();
-                    return true;
-                } catch (Exception e) {
-                    return false;
+        @SuppressWarnings("ResultOfMethodCallIgnored")
+        private boolean saveImageToStorage(Bitmap image, String redditid) {
+            try {
+                File file = new File(context.getCacheDir().getPath() + "/thumbcache-app/", redditid + ".png");
+                if (!file.getParentFile().exists()) {
+                    file.getParentFile().mkdirs();
                 }
+                FileOutputStream fos = new FileOutputStream(file);
+                image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                // 100 means no compression, the lower you go, the stronger the compression
+                fos.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
         }
 
         class ViewHolder {
@@ -503,6 +564,8 @@ public class MainActivity extends Activity {
             TextView votestxt;
             TextView commentstxt;
             ImageView thumbview;
+            ImageButton upvotebtn;
+            ImageButton downvotebtn;
             View infview;
         }
 
@@ -510,11 +573,13 @@ public class MainActivity extends Activity {
             int itempos;
             String urlstr;
             String redditid;
-            ImageLoader(int position, String url, String id){
+
+            ImageLoader(int position, String url, String id) {
                 itempos = position;
                 urlstr = url;
                 redditid = id;
             }
+
             @Override
             protected Bitmap doInBackground(Void... voids) {
                 URL url = null;
@@ -523,8 +588,7 @@ public class MainActivity extends Activity {
                     URLConnection con = url.openConnection();
                     con.setConnectTimeout(8000);
                     con.setReadTimeout(8000);
-                    final Bitmap bmp = BitmapFactory.decodeStream(con.getInputStream());
-                    return bmp;
+                    return BitmapFactory.decodeStream(con.getInputStream());
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                     return null;
@@ -535,17 +599,17 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            protected void onPostExecute(Bitmap result){
+            protected void onPostExecute(Bitmap result) {
                 View v = listView.getChildAt(itempos - listView.getFirstVisiblePosition());
-                if (v==null){
+                if (v == null) {
                     return;
                 }
                 // save bitmap to cache, the item name will be the reddit id
                 saveImageToStorage(result, redditid);
                 // update view if it's being shown
                 ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
-                if (img!=null){
-                    if (result!=null){
+                if (img != null) {
+                    if (result != null) {
                         img.setImageBitmap(result);
                     } else {
                         listView.getChildAt(itempos - listView.getFirstVisiblePosition()).findViewById(R.id.thumbnail).setVisibility(View.GONE);
@@ -591,7 +655,7 @@ public class MainActivity extends Activity {
 
             private Boolean loadMore;
 
-            public  FeedLoader(Boolean loadmore){
+            public FeedLoader(Boolean loadmore) {
                 loadMore = loadmore;
             }
 
@@ -623,7 +687,7 @@ public class MainActivity extends Activity {
                             mEditor.commit();
                         }
                     } else {
-                        return Long.valueOf(0);
+                        return (long) 0;
                     }
                 } else {
                     endOfFeed = false;
@@ -640,7 +704,7 @@ public class MainActivity extends Activity {
                         mEditor.commit();
 
                     } else {
-                        return Long.valueOf(0);
+                        return (long) 0;
                     }
                 }
 
@@ -650,12 +714,12 @@ public class MainActivity extends Activity {
                     lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
                     e.printStackTrace();
                 }
-                return Long.valueOf(1);
+                return (long) 1;
             }
 
             @Override
-            protected void onPostExecute(Long result){
-                if (result>0){
+            protected void onPostExecute(Long result) {
+                if (result > 0) {
                     // hide loader
                     if (loadMore) {
                         hideAppLoader(false, false); // don't go to top of list
@@ -688,6 +752,80 @@ public class MainActivity extends Activity {
             }
         }
 
+        class ListVoteTask extends AsyncTask<String, Integer, String> {
+            JSONObject item;
+            private String redditid;
+            private int direction;
+            private String curVote;
+            private int listposition;
+            private ImageButton upvotebtn;
+            private ImageButton downvotebtn;
+
+            public ListVoteTask(int dir, View view, int position) {
+                direction = dir;
+                upvotebtn = (ImageButton) view.findViewById(R.id.app_upvote);
+                downvotebtn = (ImageButton) view.findViewById(R.id.app_downvote);
+                // Get data by position in list
+                listposition = position;
+                item = listAdapter.getItem(listposition);
+                try {
+                    redditid = item.getString("name");
+                    curVote = item.getString("likes");
+                } catch (JSONException e) {
+                    redditid = "null";
+                    curVote = "null";
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... strings) {
+                // enumerate current vote and clicked direction
+                if (direction == 1) {
+                    if (curVote.equals("true")) { // if already upvoted, neutralize.
+                        direction = 0;
+                    }
+                } else { // downvote
+                    if (curVote.equals("false")) {
+                        direction = 0;
+                    }
+                }
+                // Do the vote
+                return global.mRedditData.vote(redditid, direction);
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (result.equals("OK")) {
+                    // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
+                    switch (direction) {
+                        case -1:
+                            upvotebtn.setImageResource(R.drawable.upvote);
+                            downvotebtn.setImageResource(R.drawable.downvote_active);
+                            listAdapter.updateVoteStat(listposition, "false");
+                            break;
+
+                        case 0:
+                            upvotebtn.setImageResource(R.drawable.upvote);
+                            downvotebtn.setImageResource(R.drawable.downvote);
+                            listAdapter.updateVoteStat(listposition, "null");
+                            break;
+
+                        case 1:
+                            upvotebtn.setImageResource(R.drawable.upvote_active);
+                            downvotebtn.setImageResource(R.drawable.downvote);
+                            listAdapter.updateVoteStat(listposition, "true");
+                            break;
+                    }
+                } else if (result.equals("LOGIN")) {
+                    showLoginDialog();
+                } else {
+                    // TODO: Cmon a toast at least
+                    System.out.println(result);
+                }
+                listAdapter.hideAppLoader(false, false);
+            }
+        }
+
         // hide loader
         private void hideAppLoader(boolean goToTopOfList, boolean showError) {
             // get theme layout id
@@ -702,10 +840,38 @@ public class MainActivity extends Activity {
             }
         }
 
-        private void showAppLoader(){
+        private void showAppLoader() {
             errorIcon.setVisibility(View.GONE);
             loader.setVisibility(View.VISIBLE);
         }
+    }
+
+    // Login stuff
+    private void showLoginDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
+        final View v = inflater.inflate(R.layout.logindialog, null);
+
+        builder.setView(v)
+                // Add action buttons
+                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
+                        String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
+                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
+                        global.setAccount(prefs, username, password, rememberaccn);
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                })
+                .setTitle("Login to Reddit");
+        builder.create().show();
     }
 }
 

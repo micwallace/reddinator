@@ -20,7 +20,6 @@ package au.com.wallaceit.reddinator;
 import java.util.ArrayList;
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class GlobalObjects extends Application {
 	private ArrayList<String> mSubredditList;
@@ -30,6 +29,7 @@ public class GlobalObjects extends Application {
 	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
 	private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
 	public RedditData mRedditData;
+    private boolean accnLoaded = false;
 
 	public GlobalObjects(){
 		if (mSubredditList == null){
@@ -40,12 +40,13 @@ public class GlobalObjects extends Application {
 	}
     // account control
     public void loadSavedAccn(SharedPreferences prefs){
-        mRedditData.loadAccn(prefs);
+        if (!accnLoaded){
+            mRedditData.loadAccn(prefs);
+            accnLoaded = true;
+        }
     }
 
     public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember){
-        // set in reddit data
-        mRedditData.loadAccn(prefs);
         // save to prefs
         if (remember){
             SharedPreferences.Editor prefsedit = prefs.edit();
@@ -53,6 +54,8 @@ public class GlobalObjects extends Application {
             prefsedit.putString("pword", pword);
             prefsedit.commit();
         }
+        // set in reddit data
+        mRedditData.loadAccn(prefs);
     }
 
 	// cached data
