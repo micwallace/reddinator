@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.wallaceit.reddinator"
     android:versionCode="7"
-    android:versionName="1.2" >
+    android:versionName="2.0">
 
-    <uses-sdk
+<uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="19" />
 
