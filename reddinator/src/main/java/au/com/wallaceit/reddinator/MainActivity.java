@@ -180,7 +180,7 @@ public class MainActivity extends Activity {
         super.onResume();
         Bundle update = global.getItemUpdate();
         if (update != null) {
-            System.out.print("Update not null, passing to adapter");
+            System.out.print("Update not null, passing to list adapter");
             listAdapter.updateVoteStatWithIdCheck(update.getInt("position", 0), update.getString("id"), update.getString("val"));
         } else System.out.print("Checked for item update, none found");
     }
@@ -201,8 +201,8 @@ public class MainActivity extends Activity {
                 Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
                 actionBar.getCustomView().setBackgroundDrawable(header);
                 appView.setBackgroundColor(Color.BLACK);
-                configbutton.setBackgroundDrawable(header);
-                refreshbutton.setBackgroundDrawable(header);
+                configbutton.setBackgroundDrawable(null);
+                refreshbutton.setBackgroundDrawable(null);
                 errorIcon.setBackgroundDrawable(header);
                 srtext.setTextColor(Color.parseColor("#FFFFFF"));
                 break;

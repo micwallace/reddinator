@@ -328,8 +328,11 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         rargs.putString("cookie", global.mRedditData.getSessionCookie());
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
-        if (!prefs.getString("widgetthemepref", "1").equals("1"))
+        if (prefs.getString("widgetthemepref", "1").equals("1")) {
+            mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
+        } else {
             mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
+        }
         // add tabs
         TabInfo tabInfo;
         ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));

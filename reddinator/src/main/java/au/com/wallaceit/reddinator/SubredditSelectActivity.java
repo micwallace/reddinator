@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -54,10 +55,18 @@ public class SubredditSelectActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.subredditselect);
+
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
         global.loadSavedAccn(mSharedPreferences);
+        // set theme colors
+        if (mSharedPreferences.getString("widgetthemepref", "1").equals("1")) {
+            findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
+        } else {
+            findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
+        }
+        // get subreddit list and set adapter
         Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
         if (feeds.isEmpty()) {
             // first time setup
