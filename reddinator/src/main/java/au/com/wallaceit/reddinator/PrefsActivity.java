@@ -94,6 +94,7 @@ public class PrefsActivity extends PreferenceActivity {
         if (extras != null) {
             if (!(isfromappview = extras.getBoolean("fromapp", false))) {
                 mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
+                mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             }
         }
         mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
