@@ -100,7 +100,6 @@ public class RedditData {
         try {
             subreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return subreddits;
@@ -112,7 +111,6 @@ public class RedditData {
         try {
             subreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return subreddits;

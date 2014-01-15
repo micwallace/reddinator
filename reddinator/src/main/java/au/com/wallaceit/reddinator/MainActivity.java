@@ -712,7 +712,6 @@ public class MainActivity extends Activity {
                                 try {
                                     data.put(tempData.get(i));
                                 } catch (JSONException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
                                 i++;

@@ -330,7 +330,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         try {
                             data.put(tempData.get(i));
                         } catch (JSONException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                         i++;
