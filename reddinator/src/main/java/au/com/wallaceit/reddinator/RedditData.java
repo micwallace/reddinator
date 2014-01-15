@@ -19,6 +19,7 @@ package au.com.wallaceit.reddinator;
 
 import android.content.SharedPreferences;
 import android.net.Uri;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -61,9 +62,9 @@ public class RedditData {
 
     }
 
-    public void loadAccn(SharedPreferences prefs){
-        uname =  prefs.getString("uname", "");
-        pword =  prefs.getString("pword", "");
+    public void loadAccn(SharedPreferences prefs) {
+        uname = prefs.getString("uname", "");
+        pword = prefs.getString("pword", "");
         cookieStr = prefs.getString("cook", "");
         modhash = prefs.getString("modhash", "");
         setClientCookie();
@@ -71,11 +72,25 @@ public class RedditData {
         sharedPrefs = prefs;
     }
 
-    public void saveCookieData(){
+    public void loadTempAccn(String user, String pass) {
+        // load temp user and pass
+        uname = user;
+        pword = pass;
+    }
+
+    public void saveCookieData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString("cook", cookieStr);
         edit.putString("modhash", modhash);
         edit.commit();
+    }
+
+    public void purgeAccountData() {
+        modhash = "";
+        cookieStr = "";
+        uname = "";
+        pword = "";
+        cookieStore.clear();
     }
 
     // data fetch calls
@@ -135,8 +150,8 @@ public class RedditData {
         return true;
     }
 
-    private void setClientCookie(){
-        if (httpclient==null){
+    private void setClientCookie() {
+        if (httpclient == null) {
             createHttpClient();
         }
         BasicClientCookie cookieobj = new BasicClientCookie("reddit_session", Uri.encode(cookieStr));
@@ -197,73 +212,74 @@ public class RedditData {
             e.printStackTrace();
             return jObj;
         }
-        //System.out.println("Download complete");
         // return JSON String
         return jObj;
 
     }
 
-    public String getSessionCookie(){
+    public String getSessionCookie() {
         return cookieStr;
     }
 
     // Post calls
 
-    public String vote(String id, int direction){
-			String result="";
-            JSONObject resultjson = null;
-            // if modhash is blank, try to login
-            if (modhash.equals("")){
-                if (!uname.equals("") || !pword.equals("")){
-                    // Get account and authenticate
-                    result = login(uname, pword, true);
+    public String vote(String id, int direction) {
+        String result = "";
+        JSONObject resultjson;
+        // if modhash is blank, try to login
+        if (modhash.equals("")) {
+            if (!uname.equals("") || !pword.equals("")) {
+                // Get account and authenticate
+                result = login(true);
+            }
+        }
+        if (!modhash.equals("")) {
+            resultjson = new JSONObject();
+            String url = "https://ssl.reddit.com/api/vote?id=" + id + "&dir=" + String.valueOf(direction) + "&uh=" + modhash + "&api_type=json";
+            try {
+                resultjson = getJSONFromPost(url).getJSONObject("json");
+                JSONArray errors = resultjson.getJSONArray("errors");
+                if (resultjson.getJSONArray("errors").get(0) != null) {
+                    JSONArray firsterror = (JSONArray) errors.get(0);
+                    if (firsterror.get(0).equals("USER_REQUIRED")) {
+                        // check if creds exist to reauthenticate
+                        if (!uname.equals("") && !pword.equals("")) {
+                            if (login(true).equals("1")) { // try getting new session, if it fails show login prompt otherwise try voting again.
+                                return vote(id, direction);
+                            }
+                        }
+                        result = "LOGIN"; // no creds stored or login failed.
+                    }
+                    result = errors.toString();
+                } else {
+                    result = "OK";
+                }
+            } catch (JSONException e) {
+                if (resultjson.toString().equals("{}")) {
+                    result = "OK";
+                } else {
+                    e.printStackTrace();
                 }
             }
-			if (!modhash.equals("")){
-                resultjson = new JSONObject();
-                String url="https://ssl.reddit.com/api/vote?id="+id+"&dir="+String.valueOf(direction)+"&uh="+modhash+"&api_type=json";
-                System.out.println(url);
-				try {
-				resultjson = getJSONFromPost(url).getJSONObject("json");
-				JSONArray errors = resultjson.getJSONArray("errors");
-				if (resultjson.getJSONArray("errors").get(0) != null){
-					JSONArray firsterror = (JSONArray) errors.get(0);
-					System.out.println();
-					if (firsterror.get(0).equals("USER_REQUIRED")){
-						// check for details and login or prompt user
-						System.out.println("Vote failed: USER_REQUIRED");
-                        result = "LOGIN";
-					}
-                    result = errors.toString();
-				} else {
-                    result = "OK";
-				}
-				} catch (JSONException e) {
-                    if (resultjson.toString().equals("{}")){
-                        result = "OK";
-                    }
-					e.printStackTrace();
-                    //System.out.println("vote result: " + resultjson.toString());
-				}
-			} else {
-                result = "LOGIN";
-			}
+        } else {
+            result = "LOGIN";
+        }
 
-			return result;
-	}
+        return result;
+    }
 
     public ArrayList<String> getMySubreddits() {
         ArrayList<String> mysrlist = new ArrayList<String>();
         String logresult = "1";
-        if (modhash==""){
-            if (!uname.equals("") || !pword.equals("")){
-                logresult = login(uname, pword, false);
+        if (modhash.equals("")) {
+            if (!uname.equals("") || !pword.equals("")) {
+                logresult = login(false);
             } else {
                 logresult = "Stored credentials have not been loaded";
             }
         }
 
-        if (logresult == "1") {
+        if (logresult.equals("1")) {
             String url = "https://ssl.reddit.com/subreddits/mine.json";
             JSONArray resultjson = new JSONArray();
             try {
@@ -280,16 +296,27 @@ public class RedditData {
                 }
                 i++;
             }
-            System.out.println("Import Subred Output: " + mysrlist.toString());
+            // System.out.println("Import Subreddit Output: " + mysrlist.toString());
         } else {
             mysrlist.add("Error: " + logresult);
         }
         return mysrlist;
     }
 
-    public String login(String username, String passwd, boolean remember) {
+    public String checkLogin(SharedPreferences prefs, String user, String pass, boolean remember) {
+        // set prefs for cookie storage
+        sharedPrefs = prefs;
+        // set creds
+        uname = user;
+        pword = pass;
+        // try to authenticate, return error and clear account vars on failure
+        return login(remember);
+    }
+
+    // authenticate with the given credentials and sa
+    private String login(boolean remember) {
         String result;
-        String url = "https://ssl.reddit.com/api/login.json?user=" + Uri.encode(username) + "&passwd=" + Uri.encode(passwd) + "&rem=" + String.valueOf(remember) + "&api_type=json";
+        String url = "https://ssl.reddit.com/api/login.json?user=" + Uri.encode(uname) + "&passwd=" + Uri.encode(pword) + "&rem=" + String.valueOf(remember) + "&api_type=json";
         JSONObject resultjson = new JSONObject();
         try {
             resultjson = getJSONFromPost(url).getJSONObject("json");
@@ -302,7 +329,11 @@ public class RedditData {
                 setClientCookie();
                 result = "1";
             } else {
+                // set error result
                 result = resultjson.getJSONArray("errors").getJSONArray(0).getString(1);
+                // unset account to prompt login
+                uname = "";
+                pword = "";
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -335,16 +366,16 @@ public class RedditData {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            is.close();
+            if (is != null) is.close();
             json = sb.toString();
         } catch (Exception e) {
             System.out.println("Error converting result " + e.toString());
         }
-        System.out.println("HTTP response:"+json);
+        // System.out.println("HTTP response:"+json);
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);

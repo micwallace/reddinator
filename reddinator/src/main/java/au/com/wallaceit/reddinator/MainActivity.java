@@ -21,6 +21,7 @@ package au.com.wallaceit.reddinator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,6 +92,7 @@ public class MainActivity extends Activity {
         actionBar.setCustomView(actionView);
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowHomeEnabled(false);
+        // get actionBar Views
         loader = (ProgressBar) actionView.findViewById(R.id.appsrloader);
         errorIcon = (ImageView) actionView.findViewById(R.id.apperroricon);
         refreshbutton = (ImageButton) actionView.findViewById(R.id.apprefreshbutton);
@@ -172,6 +175,16 @@ public class MainActivity extends Activity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle update = global.getItemUpdate();
+        if (update != null) {
+            System.out.print("Update not null, passing to adapter");
+            listAdapter.updateVoteStatWithIdCheck(update.getInt("position", 0), update.getString("id"), update.getString("val"));
+        } else System.out.print("Checked for item update, none found");
+    }
+
     @SuppressWarnings("deprecation")
     private void setThemeColors() {
         int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
@@ -243,6 +256,7 @@ public class MainActivity extends Activity {
                     extras.putString(WidgetProvider.ITEM_TXT, item.getString("title"));
                     extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
                     extras.putInt(WidgetProvider.ITEM_VOTES, item.getInt("score"));
+                    extras.putInt("itemposition", position);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -473,7 +487,7 @@ public class MainActivity extends Activity {
                         if (new File(getCacheDir() + "/thumbcache-app/" + id + ".png").exists()) {
                             String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
                             Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
-                            if (bitmap==null){
+                            if (bitmap == null) {
                                 viewHolder.thumbview.setVisibility(View.GONE);
                             } else {
                                 viewHolder.thumbview.setImageBitmap(bitmap);
@@ -517,6 +531,26 @@ public class MainActivity extends Activity {
         public void updateVoteStat(int position, String val) {
             try {
                 data.getJSONObject(position).getJSONObject("data").put("likes", val);
+                // commit to shared prefs
+                mEditor.putString("feeddata-app", data.toString());
+                mEditor.commit();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void updateVoteStatWithIdCheck(int position, String id, String val) {
+            try {
+                // Incase the feed updated after opening reddinator view, check that the id's match to update the correct view.
+                boolean recordexists = data.getJSONObject(position).getJSONObject("data").getString("name").equals(id);
+                if (recordexists) {
+                    data.getJSONObject(position).getJSONObject("data").put("likes", val);
+                    // commit to shared prefs
+                    mEditor.putString("feeddata-app", data.toString());
+                    mEditor.commit();
+                    // refresh view; unfortunately we have to refresh them all :( invalidateViewAtPosition(); please android?
+                    listView.invalidateViews();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -582,7 +616,7 @@ public class MainActivity extends Activity {
 
             @Override
             protected Bitmap doInBackground(Void... voids) {
-                URL url = null;
+                URL url;
                 try {
                     url = new URL(urlstr);
                     URLConnection con = url.openConnection();
@@ -612,7 +646,7 @@ public class MainActivity extends Activity {
                     if (result != null) {
                         img.setImageBitmap(result);
                     } else {
-                        listView.getChildAt(itempos - listView.getFirstVisiblePosition()).findViewById(R.id.thumbnail).setVisibility(View.GONE);
+                        img.setVisibility(View.GONE);
                     }
                 }
             }
@@ -819,8 +853,8 @@ public class MainActivity extends Activity {
                 } else if (result.equals("LOGIN")) {
                     showLoginDialog();
                 } else {
-                    // TODO: Cmon a toast at least
-                    System.out.println(result);
+                    // show error
+                    Toast.makeText(MainActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
                 }
                 listAdapter.hideAppLoader(false, false);
             }
@@ -829,7 +863,6 @@ public class MainActivity extends Activity {
         // hide loader
         private void hideAppLoader(boolean goToTopOfList, boolean showError) {
             // get theme layout id
-            int layout = 1;
             loader.setVisibility(View.GONE);
             // go to the top of the list view
             if (goToTopOfList) {
@@ -858,11 +891,33 @@ public class MainActivity extends Activity {
                 .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
-                        String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
-                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        global.setAccount(prefs, username, password, rememberaccn);
+                        final String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
+                        final String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
+                        final boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
                         dialog.cancel();
+                        // run login procedure
+                        final ProgressDialog logindialog = android.app.ProgressDialog.show(MainActivity.this, "", ("Logging in..."), true);
+                        Thread t = new Thread() {
+                            public void run() {
+                                // login
+                                final String result = global.mRedditData.checkLogin(prefs, username, password, rememberaccn); // request "remember" cookie if account is being saved
+
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        logindialog.dismiss();
+                                        if (result.equals("1")) {
+                                            if (rememberaccn) { // store account if requested & login result is OK
+                                                global.setAccount(prefs, username, password, true);
+                                            }
+                                        } else {
+                                            // show error
+                                            Toast.makeText(MainActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
+                        };
+                        t.start();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

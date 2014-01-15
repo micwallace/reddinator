@@ -32,6 +32,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -229,8 +230,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     private Bitmap loadImage(String urlstr) {
-        URL url = null;
-        Bitmap bmp = null;
+        URL url;
+        Bitmap bmp;
         try {
             url = new URL(urlstr);
             URLConnection con = url.openConnection();
@@ -367,7 +368,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
             e.printStackTrace();
         }
-        ;
+
         // hide loader
         if (loadMore) {
             hideWidgetLoader(false, false); // don't go to top of list

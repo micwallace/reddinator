@@ -22,6 +22,7 @@ import java.util.HashMap;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.Toast;
 
 public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
 
@@ -59,6 +61,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private String redditItemId;
     private int curvote = 0;
     private String userLikes = null; // string version of curvote, parsed when options menu generated.
+    private int feedposition = 0;
 
     private class TabInfo {
         private String tag;
@@ -79,7 +82,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         private final Context mContext;
 
         /**
-         *
          * @param context; activity context
          */
         public TabFactory(Context context) {
@@ -133,7 +135,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         }
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         userLikes = getIntent().getStringExtra("userlikes");
-        System.out.println("User likes post: "+userLikes);
+        feedposition = getIntent().getIntExtra("itemposition", 0);
+        System.out.println("User likes post: " + userLikes);
     }
 
     public void onBackPressed() {
@@ -171,10 +174,10 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
 
-        if (userLikes.equals("true")){
+        if (userLikes.equals("true")) {
             upvote.setIcon(R.drawable.upvote_active);
             curvote = 1;
-        } else if (userLikes.equals("false")){
+        } else if (userLikes.equals("false")) {
             downvote.setIcon(R.drawable.downvote_active);
             curvote = -1;
         }
@@ -217,38 +220,49 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     }
 
     // VOTING STUFF
+    private boolean voteinprogress = false;
+
+    public boolean voteInProgress() {
+        return voteinprogress;
+    }
+
     private void upVote() {
         VoteTask task;
         if (curvote == 1) {
-            task = new VoteTask(redditItemId, 0);
+            task = new VoteTask(feedposition, redditItemId, 0);
             System.out.println("Neutral Vote");
         } else {
-            task = new VoteTask(redditItemId, 1);
+            task = new VoteTask(feedposition, redditItemId, 1);
             System.out.println("Upvote");
         }
+        voteinprogress = true;
+        ViewRedditActivity.this.setTitle("Voting...");
         task.execute();
     }
 
     private void downVote() {
         VoteTask task;
         if (curvote == -1) {
-            task = new VoteTask(redditItemId, 0);
+            task = new VoteTask(feedposition, redditItemId, 0);
             System.out.println("Neutral Vote");
         } else {
-            task = new VoteTask(redditItemId, -1);
+            task = new VoteTask(feedposition, redditItemId, -1);
             System.out.println("Downvote");
-
         }
+        voteinprogress = true;
+        ViewRedditActivity.this.setTitle("Voting...");
         task.execute();
     }
 
     class VoteTask extends AsyncTask<String, Integer, String> {
         private String redditid;
         private int direction;
+        private int feedposition;
 
-        public VoteTask(String id, int dir) {
+        public VoteTask(int position, String id, int dir) {
             redditid = id;
             direction = dir;
+            feedposition = position;
         }
 
         @Override
@@ -258,30 +272,40 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         @Override
         protected void onPostExecute(String result) {
+            ViewRedditActivity.this.setTitle("Reddinator"); // reset title
+            voteinprogress = false;
             if (result.equals("OK")) {
                 curvote = direction;
                 switch (direction) {
                     case -1:
                         upvote.setIcon(R.drawable.upvote);
                         downvote.setIcon(R.drawable.downvote_active);
+                        setUpdateRecord("false");
                         break;
 
                     case 0:
                         upvote.setIcon(R.drawable.upvote);
                         downvote.setIcon(R.drawable.downvote);
+                        setUpdateRecord("null");
                         break;
 
                     case 1:
                         upvote.setIcon(R.drawable.upvote_active);
                         downvote.setIcon(R.drawable.downvote);
+                        setUpdateRecord("true");
                         break;
                 }
             } else if (result.equals("LOGIN")) {
                 showLoginDialog();
             } else {
-                // TODO: Cmon a toast at least
-                System.out.println(result);
+                // show error
+                Toast.makeText(ViewRedditActivity.this, "Voting error: " + result, Toast.LENGTH_LONG).show();
             }
+
+        }
+
+        private void setUpdateRecord(String val) {
+            global.setItemUpdate(feedposition, redditid, val);
         }
     }
 
@@ -304,7 +328,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         rargs.putString("cookie", global.mRedditData.getSessionCookie());
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
-        if (!prefs.getString("widgetthemepref", "1").equals("1")) mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
+        if (!prefs.getString("widgetthemepref", "1").equals("1"))
+            mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
         // add tabs
         TabInfo tabInfo;
         ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
@@ -389,11 +414,33 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 .setPositiveButton("Login", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
-                        String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
-                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        global.setAccount(prefs, username, password, rememberaccn);
+                        final String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
+                        final String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
+                        final boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
                         dialog.cancel();
+                        // run login procedure
+                        final ProgressDialog logindialog = android.app.ProgressDialog.show(ViewRedditActivity.this, "", ("Logging in..."), true);
+                        Thread t = new Thread() {
+                            public void run() {
+                                // login
+                                final String result = global.mRedditData.checkLogin(prefs, username, password, rememberaccn); // request "remember" cookie if account is being saved
+
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        logindialog.dismiss();
+                                        if (result.equals("1")) {
+                                            if (rememberaccn) { // store account if requested & login result is OK
+                                                global.setAccount(prefs, username, password, true);
+                                            }
+                                        } else {
+                                            // show error
+                                            Toast.makeText(ViewRedditActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                            }
+                        };
+                        t.start();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

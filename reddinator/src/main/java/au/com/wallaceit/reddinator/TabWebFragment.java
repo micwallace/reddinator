@@ -39,13 +39,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class TabWebFragment extends Fragment {
-    /** (non-Javadoc)
+    /**
+     * (non-Javadoc)
+     *
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
-	private Context mContext;
-	public WebView mWebView;
-	private boolean mFirstTime = true;
-	private LinearLayout ll;
+    private Context mContext;
+    public WebView mWebView;
+    private boolean mFirstTime = true;
+    private LinearLayout ll;
     //private Bundle WVState;
     public View mFullSView;
     private LinearLayout mTabcontainer;
@@ -55,47 +57,47 @@ public class TabWebFragment extends Fragment {
     private Activity mActivity;
 
 
-	@Override
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-       	//mWebView.restoreState(savedInstanceState);
+        super.onActivityCreated(savedInstanceState);
+        //mWebView.restoreState(savedInstanceState);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    	mContext = this.getActivity();
-    	if (container == null) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mContext = this.getActivity();
+        if (container == null) {
             return null;
         }
-        if (mFirstTime){
-        	// get shared preferences
-        	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getApplicationContext());
-        	// work out the url this instance should load
-        	boolean commentswv = false;
+        if (mFirstTime) {
+            // get shared preferences
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+            // work out the url this instance should load
+            boolean commentswv = false;
             String cookiestr = "";
-        	if (this.getArguments() != null){
-        		commentswv = this.getArguments().getBoolean("loadcom", false);
+            if (this.getArguments() != null) {
+                commentswv = this.getArguments().getBoolean("loadcom", false);
                 cookiestr = this.getArguments().getString("cookie");
-        	}
+            }
 
             int fontsize;
             String url;
-        	if (commentswv){
-        		url = "http://reddit.com"+getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK)+".compact";
-        		fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
+            if (commentswv) {
+                url = "http://reddit.com" + getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
+                fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
 
-        	} else {
-        		url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-        		fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
-        	}
-        	// setup progressbar
-        	mActivity = this.getActivity();
-        	mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
-        	ll = (LinearLayout)inflater.inflate(R.layout.tab1, container, false);
-        	mWebView = (WebView) ll.findViewById(R.id.webView1);
-        	// fixes for webview not taking keyboard input on some devices
-        	mWebView.requestFocus(View.FOCUS_DOWN);
-        	mWebView.setOnTouchListener(new View.OnTouchListener() {
+            } else {
+                url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+                fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
+            }
+            // setup progressbar
+            mActivity = this.getActivity();
+            mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
+            ll = (LinearLayout) inflater.inflate(R.layout.tab1, container, false);
+            mWebView = (WebView) ll.findViewById(R.id.webView1);
+            // fixes for webview not taking keyboard input on some devices
+            mWebView.requestFocus(View.FOCUS_DOWN);
+            mWebView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     switch (event.getAction()) {
@@ -109,17 +111,17 @@ public class TabWebFragment extends Fragment {
                     return false;
                 }
             });
-        	mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript
-        	mWebView.getSettings().setSupportZoom(true);
-        	mWebView.getSettings().setUseWideViewPort(true);
-        	mWebView.getSettings().setBuiltInZoomControls(true);
-        	mWebView.getSettings().setDisplayZoomControls(true);
-        	mWebView.getSettings().setDefaultFontSize(fontsize);
+            mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript
+            mWebView.getSettings().setSupportZoom(true);
+            mWebView.getSettings().setUseWideViewPort(true);
+            mWebView.getSettings().setBuiltInZoomControls(true);
+            mWebView.getSettings().setDisplayZoomControls(true);
+            mWebView.getSettings().setDefaultFontSize(fontsize);
             mChromeClient = newchromeclient;
             cookiestr = Uri.encode(cookiestr);
-            System.out.println("check if Cookie, add to webview from RedditData; cookiedata= "+cookiestr);
+            System.out.println("check if Cookie, add to webview from RedditData; cookiedata= " + cookiestr);
             // set cookie if provided
-            if (cookiestr!=""){
+            if (!cookiestr.equals("")) {
 
                 CookieSyncManager.createInstance(mWebView.getContext());
                 android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
@@ -129,39 +131,46 @@ public class TabWebFragment extends Fragment {
                 CookieSyncManager.getInstance().startSync();
             }
 
-        	mWebView.setWebChromeClient(mChromeClient);
-        	mWebView.setWebViewClient(new WebViewClient());
-        	mWebView.loadUrl(url);
-        	mFirstTime = false;
-        	//System.out.println("Created fragment");
+            mWebView.setWebChromeClient(mChromeClient);
+            mWebView.setWebViewClient(new WebViewClient());
+            mWebView.loadUrl(url);
+            mFirstTime = false;
+            //System.out.println("Created fragment");
         } else {
-        	((ViewGroup) ll.getParent()).removeView(ll);
+            ((ViewGroup) ll.getParent()).removeView(ll);
         }
-        
+
         return ll;
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
-       super.onSaveInstanceState(outState);
-       //mWebView.saveState(outState);
+        super.onSaveInstanceState(outState);
+        //mWebView.saveState(outState);
     }
+
     @Override
-    public void onPause(){
-    	super.onPause();
-    	//mWebView.saveState(WVState);
+    public void onPause() {
+        super.onPause();
+        //mWebView.saveState(WVState);
     }
+
     // web chrome client
-    WebChromeClient newchromeclient = new WebChromeClient(){
-        public void onProgressChanged(WebView view, int progress){
-        	//Make the bar disappear after URL is loaded, and changes string to Loading...
-        	mActivity.setTitle("Loading...");
-        	mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
-        	// Return the app name after finish loading
-            if(progress == 100){
-            	mActivity.setTitle(R.string.app_name);
-          	}
+    WebChromeClient newchromeclient = new WebChromeClient() {
+        public void onProgressChanged(WebView view, int progress) {
+            boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
+            //Make the bar disappear after URL is loaded, and changes string to Loading...
+            if (!voteinprogress) mActivity.setTitle("Loading..."); // supress if vote in progress
+            mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
+            // Return the app name after finish loading
+            if (progress == 100) {
+                if (!voteinprogress)
+                    mActivity.setTitle(R.string.app_name); // dont reset title if vote in prog. voting function will do that.
+            }
         }
+
         FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
             // if a view already exists then immediately terminate the new one

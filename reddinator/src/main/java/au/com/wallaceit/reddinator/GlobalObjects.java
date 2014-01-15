@@ -18,83 +18,105 @@
 package au.com.wallaceit.reddinator;
 
 import java.util.ArrayList;
+
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 public class GlobalObjects extends Application {
-	private ArrayList<String> mSubredditList;
-	static int LOADTYPE_LOAD = 0;
-	static int LOADTYPE_LOADMORE = 1;
-	static int LOADTYPE_REFRESH_VIEW = 3;
-	private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
-	private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
-	public RedditData mRedditData;
+    private ArrayList<String> mSubredditList;
+    static int LOADTYPE_LOAD = 0;
+    static int LOADTYPE_LOADMORE = 1;
+    static int LOADTYPE_REFRESH_VIEW = 3;
+    private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
+    private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
+    public RedditData mRedditData;
     private boolean accnLoaded = false;
 
-	public GlobalObjects(){
-		if (mSubredditList == null){
-			mSubredditList = new ArrayList<String>();
-		}
+    public GlobalObjects() {
+        if (mSubredditList == null) {
+            mSubredditList = new ArrayList<String>();
+        }
 
-		mRedditData = new RedditData();
-	}
+        mRedditData = new RedditData();
+    }
+
     // account control
-    public void loadSavedAccn(SharedPreferences prefs){
-        if (!accnLoaded){
+    public void loadSavedAccn(SharedPreferences prefs) {
+        if (!accnLoaded) {
             mRedditData.loadAccn(prefs);
             accnLoaded = true;
         }
     }
 
-    public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember){
+    public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember) {
         // save to prefs
-        if (remember){
+        if (remember) {
             SharedPreferences.Editor prefsedit = prefs.edit();
             prefsedit.putString("uname", uname);
             prefsedit.putString("pword", pword);
             prefsedit.commit();
         }
         // set in reddit data
-        mRedditData.loadAccn(prefs);
+        mRedditData.loadTempAccn(uname, pword);
     }
 
-	// cached data
-	public boolean isSrlistCached(){
+    // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume
+    Bundle itemupdate;
+
+    public Bundle getItemUpdate() {
+        if (itemupdate == null) {
+            return null;
+        }
+        Bundle tempdata = itemupdate;
+        itemupdate = null; // prevent duplicate updates
+        return tempdata;
+    }
+
+    public void setItemUpdate(int position, String id, String val) {
+        itemupdate = new Bundle();
+        itemupdate.putInt("position", position);
+        itemupdate.putString("id", id);
+        itemupdate.putString("val", val);
+    }
+
+    // cached data
+    public boolean isSrlistCached() {
         return !mSubredditList.isEmpty();
     }
 
-	public void putSrList(ArrayList<String> list){
-		mSubredditList.clear();
-		mSubredditList.addAll(list);
-	}
+    public void putSrList(ArrayList<String> list) {
+        mSubredditList.clear();
+        mSubredditList.addAll(list);
+    }
 
-	public ArrayList<String> getSrList(){
-		return mSubredditList;
-	}
+    public ArrayList<String> getSrList() {
+        return mSubredditList;
+    }
 
-	// widget data loadtype functions; a bypass for androids restrictive widget api
-	public int getLoadType(){
-		return loadtype;
-	}
+    // widget data loadtype functions; a bypass for androids restrictive widget api
+    public int getLoadType() {
+        return loadtype;
+    }
 
-	public void setLoadMore(){
-		loadtype = LOADTYPE_LOADMORE;
-	}
+    public void setLoadMore() {
+        loadtype = LOADTYPE_LOADMORE;
+    }
 
-	public void setLoad(){
-		loadtype = LOADTYPE_LOAD;
-	}
+    public void setLoad() {
+        loadtype = LOADTYPE_LOAD;
+    }
 
-	public void setRefreshView(){
-		loadtype = LOADTYPE_REFRESH_VIEW;
-	}
+    public void setRefreshView() {
+        loadtype = LOADTYPE_REFRESH_VIEW;
+    }
 
-	// data cache functions
-	public boolean getBypassCache(){
-		return bypassCache;
-	}
+    // data cache functions
+    public boolean getBypassCache() {
+        return bypassCache;
+    }
 
-	public void setBypassCache(boolean bypassed){
-		bypassCache = bypassed;
-	}
+    public void setBypassCache(boolean bypassed) {
+        bypassCache = bypassed;
+    }
 }

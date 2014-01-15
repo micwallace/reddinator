@@ -55,7 +55,7 @@ public class SubredditSelectActivity extends ListActivity {
 
         setContentView(R.layout.subredditselect);
         // load personal list from saved prefereces, if null use default and save
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
         global.loadSavedAccn(mSharedPreferences);
         Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
@@ -74,11 +74,11 @@ public class SubredditSelectActivity extends ListActivity {
         Bundle extras = intent.getExtras();
         if (extras != null) {
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            if (mAppWidgetId==AppWidgetManager.INVALID_APPWIDGET_ID){
-                mAppWidgetId = 0000; // Id of 4 zeros indicates its the app view, not a widget, that is being updated
+            if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                mAppWidgetId = 0; // Id of 4 zeros indicates its the app view, not a widget, that is being updated
             }
         } else {
-            mAppWidgetId = 0000;
+            mAppWidgetId = 0;
         }
         listView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -90,7 +90,7 @@ public class SubredditSelectActivity extends ListActivity {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
                 Editor editor = prefs.edit();
 
-                if (mAppWidgetId!=0000){
+                if (mAppWidgetId != 0) {
                     editor.putString("currentfeed-" + mAppWidgetId, subreddit);
                     // refresh widget and close activity (NOTE: put in function)
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
@@ -124,7 +124,7 @@ public class SubredditSelectActivity extends ListActivity {
         importBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")){
+                if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")) {
                     showLoginDialog();
                 } else {
                     showImportDialog();
@@ -133,7 +133,7 @@ public class SubredditSelectActivity extends ListActivity {
         });
         // sort button
         sortBtn = (Button) findViewById(R.id.sortselect);
-        curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot");
+        curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
         String sortTxt = "Sort:  " + curSort;
         sortBtn.setText(sortTxt);
         sortBtn.setOnClickListener(new OnClickListener() {
@@ -148,7 +148,7 @@ public class SubredditSelectActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
-                final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false)};
+                final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)};
                 AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
                 builder.setTitle("Feed Options");
                 builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
@@ -156,13 +156,13 @@ public class SubredditSelectActivity extends ListActivity {
                         Editor prefsedit = mSharedPreferences.edit();
                         switch (item) {
                             case 0:
-                                prefsedit.putBoolean("thumbnails-" +(mAppWidgetId==0000?"app":mAppWidgetId), state);
+                                prefsedit.putBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
                                 break;
                             case 1:
-                                prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), state);
+                                prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
                                 break;
                             case 2:
-                                prefsedit.putBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), state);
+                                prefsedit.putBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
                                 break;
                         }
                         prefsedit.commit();
@@ -177,9 +177,9 @@ public class SubredditSelectActivity extends ListActivity {
             }
         });
         // load initial values for comparison
-        curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true);
-        curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false);
-        curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false);
+        curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true);
+        curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
+        curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
     }
 
     @Override
@@ -201,14 +201,14 @@ public class SubredditSelectActivity extends ListActivity {
     public void onBackPressed() {
         savePersonalList();
         // check if sort has changed
-        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId==0000?"app":mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId==0000?"app":mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId==0000?"app":mAppWidgetId), false)) {
-            if (mAppWidgetId!=0000){
+        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)) {
+            if (mAppWidgetId != 0) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                 RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
                 views.setViewVisibility(R.id.srloader, View.VISIBLE);
                 views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
                 // bypass the cached entrys only if the sorting preference has changed
-                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot"))) {
+                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
                     global.setBypassCache(true);
                 } else {
                     global.setRefreshView();
@@ -216,7 +216,7 @@ public class SubredditSelectActivity extends ListActivity {
                 appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
                 appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
             } else {
-                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), "hot"))){
+                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
                     setResult(2); // reload feed and prefs
                 } else {
                     setResult(1); // tells main activity to update feed prefs
@@ -230,7 +230,7 @@ public class SubredditSelectActivity extends ListActivity {
 
     // save/restore personal list
     private void savePersonalList() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         Editor editor = prefs.edit();
         Set<String> set = new HashSet<String>();
         set.addAll(personalList);
@@ -264,7 +264,7 @@ public class SubredditSelectActivity extends ListActivity {
                         sort = "top";
                         break;
                 }
-                prefsedit.putString("sort-" + (mAppWidgetId==0000?"app":mAppWidgetId), sort);
+                prefsedit.putString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), sort);
                 prefsedit.commit();
                 // set new text in button
                 String sorttxt = "Sort:  " + sort;
@@ -292,10 +292,10 @@ public class SubredditSelectActivity extends ListActivity {
                         String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
                         boolean clearlist = ((CheckBox) v.findViewById(R.id.clearlist)).isChecked();
                         boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        global.setAccount(mSharedPreferences, username, password, rememberaccn);
+                        global.setAccount(mSharedPreferences, username, password, false); // load temp account
                         dialog.cancel();
                         // import
-                        importSubreddits(clearlist);
+                        importSubreddits(clearlist, rememberaccn, username, password); // remember accn for first time import
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -307,19 +307,19 @@ public class SubredditSelectActivity extends ListActivity {
         builder.create().show();
     }
 
-    private void showImportDialog(){
+    private void showImportDialog() {
         AlertDialog importDialog = new AlertDialog.Builder(SubredditSelectActivity.this).create(); //Read Update
         importDialog.setTitle("Replace current list?");
 
         importDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                importSubreddits(true);
+                importSubreddits(true, false, null, null);
             }
         });
 
         importDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                importSubreddits(false);
+                importSubreddits(false, false, null, null);
             }
         });
 
@@ -327,7 +327,7 @@ public class SubredditSelectActivity extends ListActivity {
     }
 
     // import personal subreddits
-    private void importSubreddits(final boolean clearlist) {
+    private void importSubreddits(final boolean clearlist, final boolean rememberaccn, final String username, final String password) {
         // use a thread for searching
         final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "", ("Importing..."), true);
         Thread t = new Thread() {
@@ -352,6 +352,10 @@ public class SubredditSelectActivity extends ListActivity {
                                         }
                                     }).show();
                         } else {
+                            // save account to prefs if selected
+                            if (rememberaccn) {
+                                global.setAccount(mSharedPreferences, username, password, true); // true saves a persistent account
+                            }
                             mListAdapter.notifyDataSetChanged();
                         }
                     }
