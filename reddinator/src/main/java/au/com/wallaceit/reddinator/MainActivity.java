@@ -171,7 +171,8 @@ public class MainActivity extends Activity {
         srtext.setText(prefs.getString("currentfeed-app", "technology"));
 
         // Trigger reload?
-        if (prefs.getBoolean("appreloadpref", false)) listAdapter.reloadReddits();
+        if (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2)
+            listAdapter.reloadReddits();
 
     }
 

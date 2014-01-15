@@ -44,7 +44,7 @@
     <PreferenceCategory android:title="Appearance">
         <ListPreference
             android:key="@string/widget_theme_pref"
-            android:title="Widget Theme"
+            android:title="App Theme"
             android:defaultValue="1"
             android:summary="Choose the app theme"
             android:entries="@array/widget_theme_preference"

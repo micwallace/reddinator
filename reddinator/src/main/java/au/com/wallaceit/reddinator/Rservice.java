@@ -94,6 +94,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     loadCached = true; // this isn't a loadmore request, the cache is loaded and we're done
                     //System.out.println("Cache loaded, no user request received.");
                 }
+            } else {
+                loadReddits(false); // No feed items; do a reload.
             }
         } else {
             data = new JSONArray(); // set empty data to prevent any NPE
