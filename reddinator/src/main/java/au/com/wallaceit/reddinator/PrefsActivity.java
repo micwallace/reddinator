@@ -76,7 +76,10 @@ public class PrefsActivity extends PreferenceActivity {
                     editor.putString("modhash", "");
                     editor.commit();
                     // clear current purge from active objects
-                    ((GlobalObjects) PrefsActivity.this.getApplicationContext()).mRedditData.purgeAccountData();
+                    GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
+                    if (global != null) {
+                        global.mRedditData.purgeAccountData();
+                    }
                     // disable button and notify user
                     logoutbtn.setEnabled(false);
                     Toast.makeText(PrefsActivity.this, "Saved account and session cleared", Toast.LENGTH_LONG).show();
@@ -160,7 +163,9 @@ public class PrefsActivity extends PreferenceActivity {
         int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
         WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds, false);
         GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
-        global.setRefreshView();
+        if (global != null) {
+            global.setRefreshView();
+        }
         mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
     }
 
