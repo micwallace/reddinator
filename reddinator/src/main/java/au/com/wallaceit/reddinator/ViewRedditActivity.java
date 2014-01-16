@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -427,7 +428,9 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                             public void run() {
                                 // login
                                 final String result = global.mRedditData.checkLogin(prefs, username, password, rememberaccn); // request "remember" cookie if account is being saved
-
+                                // Set thread network policy to prevent network on main thread exceptions.
+                                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                                StrictMode.setThreadPolicy(policy);
                                 runOnUiThread(new Runnable() {
                                     public void run() {
                                         logindialog.dismiss();

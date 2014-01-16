@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -337,7 +338,10 @@ public class SubredditSelectActivity extends ListActivity {
 
     // import personal subreddits
     private void importSubreddits(final boolean clearlist, final boolean rememberaccn, final String username, final String password) {
-        // use a thread for searching
+        // use a thread for searching; show dialog
+        // Set thread network policy to prevent network on main thread exceptions.
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "", ("Importing..."), true);
         Thread t = new Thread() {
             public void run() {

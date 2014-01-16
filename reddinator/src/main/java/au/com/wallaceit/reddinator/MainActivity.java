@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -897,6 +898,9 @@ public class MainActivity extends Activity {
                         dialog.cancel();
                         // run login procedure
                         final ProgressDialog logindialog = android.app.ProgressDialog.show(MainActivity.this, "", ("Logging in..."), true);
+                        // Set thread network policy to prevent network on main thread exceptions.
+                        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                        StrictMode.setThreadPolicy(policy);
                         Thread t = new Thread() {
                             public void run() {
                                 // login

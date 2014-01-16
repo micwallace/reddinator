@@ -70,6 +70,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         mEditor = mSharedPreferences.edit();
         //System.out.println("New view factory created for widget ID:"+appWidgetId);
+        // Set thread network policy to prevent network on main thread exceptions.
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         // if this is a user request (apart from 'loadmore') or an auto update, do not attempt to load cache.
         // when a user clicks load more and a new view factory needs to be created we don't want to bypass cache, we want to load the cached items
         int loadType = global.getLoadType();
