@@ -90,7 +90,9 @@ public class RedditData {
         cookieStr = "";
         uname = "";
         pword = "";
-        cookieStore.clear();
+        if (cookieStore != null) {
+            cookieStore.clear();
+        }
     }
 
     // data fetch calls
