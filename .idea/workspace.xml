@@ -17,8 +17,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/AccountWebView.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__support_v4_19_0_0.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_19_0_0.xml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/reddinator.apk" afterPath="$PROJECT_DIR$/reddinator/reddinator.apk" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/build.gradle" afterPath="$PROJECT_DIR$/reddinator/build.gradle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/reddinator-reddinator.iml" afterPath="$PROJECT_DIR$/reddinator/reddinator-reddinator.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="reddinator.iws" />
@@ -83,19 +94,30 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PrefsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
+      <file leaf-file-name="Rservice.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="80" column="42" selection-start="3565" selection-end="3565" vertical-scroll-proportion="0.0" vertical-offset="467" max-vertical-offset="2205">
+            <state line="216" column="53" selection-start="10531" selection-end="10531" vertical-scroll-proportion="0.0" vertical-offset="2299" max-vertical-offset="6945">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RedditData.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
+      <file leaf-file-name="AccountWebView.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/AccountWebView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="95" column="5" selection-start="3259" selection-end="3259" vertical-scroll-proportion="0.74535316" vertical-offset="364" max-vertical-offset="5220">
+            <state line="22" column="5" selection-start="686" selection-end="686" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ViewRedditActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="218" column="42" selection-start="8153" selection-end="8153" vertical-scroll-proportion="0.6997042" vertical-offset="2107" max-vertical-offset="6255">
               <folding />
             </state>
           </provider>
@@ -111,6 +133,7 @@
   <component name="GenerateSignedApkSettings">
     <option name="KEY_STORE_PATH" value="$USER_HOME$/Android-Play/Keys/redditnator.key" />
     <option name="KEY_ALIAS" value="au.com.wallaceit.reddinator" />
+    <option name="REMEMBER_PASSWORDS" value="true" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -133,7 +156,7 @@
           <value>
             <list>
               <ExternalProjectPojo>
-                <option name="name" value="reddinator-reddinator" />
+                <option name="name" value=":reddinator" />
                 <option name="path" value="$PROJECT_DIR$/reddinator" />
               </ExternalProjectPojo>
               <ExternalProjectPojo>
@@ -495,6 +518,156 @@
         <entry key="$PROJECT_DIR$" value="1388894953167" />
       </map>
     </option>
+    <option name="projectBuildClasspath">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <ExternalProjectBuildClasspathPojo>
+              <option name="modulesBuildClasspath">
+                <map>
+                  <entry key="$PROJECT_DIR$">
+                    <value>
+                      <ExternalModuleBuildClasspathPojo>
+                        <option name="path" value="$PROJECT_DIR$" />
+                      </ExternalModuleBuildClasspathPojo>
+                    </value>
+                  </entry>
+                  <entry key="$PROJECT_DIR$/reddinator">
+                    <value>
+                      <ExternalModuleBuildClasspathPojo>
+                        <option name="entries">
+                          <list>
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/javawriter/2.2.1/9476a897088c64437ddba17bedbbdb2272499d63/javawriter-2.2.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpmime/4.1/3ac83213baeab2b21fde6c0bf47ed68ea3e6a8da/httpmime-4.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/4.0/4a33d6206d6d442446a8edbd2b0798ecfaebc229/asm-4.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.layoutlib/layoutlib-api/22.4.2/52a12d51ce8c4bd8f395651e3834b443416b9285/layoutlib-api-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder/0.7.3/289242a2214bfa60babe6c639f034d7b5ed78c55/builder-0.7.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/4.0/4a33d6206d6d442446a8edbd2b0798ecfaebc229/asm-analysis-4.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder-model/0.7.3/dac5cbdbd72260b0f2f1d24fdbdab71110262b78/builder-model-0.7.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/manifest-merger/22.4.2/3bbf098e164f442f821bade730748bf482acbe7b/manifest-merger-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.kxml/kxml2/2.3.0/309cd2cff7260e465792fda3dcbb063b730d8050/kxml2-2.3.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-compress/1.0/913e9963c558d36bdfdc19bab739a282999d08eb/commons-compress-1.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools/sdklib/22.4.2/676c6931eb985e09231612c18f0822afd3aa005e/sdklib-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.lint/lint-api/22.4.2/f9cb9234a8beae2b9ac33518cd7a7c4a6e9810f3/lint-api-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools/dvlib/22.4.2/616f97f8aa1b52b134288d88a43daaf26dbeb265/dvlib-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcpkix-jdk15on/1.48/8cff777fce5ef53cc35fa569faa8d12faaf34a78/bcpkix-jdk15on-1.48-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.1/1fdf61e5ba87e0e4676c22677e0b2fe3a05c2fd8/httpcore-4.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.ddms/ddmlib/22.4.2/7c242977e71ece9f415926f1768bb60c561e70bc/ddmlib-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools/sdk-common/22.4.2/dff0f97e2cf6fa04587444a606daf9a304388b90/sdk-common-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.proguard/proguard-gradle/4.10/9ed4b7b34d522f36aa61b5142576fa5e8cc733b8/proguard-gradle-4.10-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/net.sf.proguard/proguard-base/4.10/2e69a382547b042b3d2d03440687fb1e2ac06af2/proguard-base-4.10-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/4.0/4a33d6206d6d442446a8edbd2b0798ecfaebc229/asm-tree-4.0-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.lint/lint-checks/22.4.2/21178e280903a1bb0e1746cd23c87602b671de5d/lint-checks-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.1.1/42f6189003f355107f53b937770092517de69710/httpclient-4.1.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools/common/22.4.2/7c54a5e08fe0fad64303f3e87ce121ff909ee3a9/common-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/13.0.1/ea42e17f75a65e72d12cd311b7d1e7d6356bbb3f/guava-13.0.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder-test-api/0.7.3/7002cc52bea65458a9ffe074694174fd0f7d3ba3/builder-test-api-0.7.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.lint/lint/22.4.2/d612b2431911f41838866abf38d4b9bea903ee7d/lint-22.4.2-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.1.1/f3f156cbff0e0fb0d64bfce31a352cce4a33bc19/commons-logging-1.1.1-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.4/5310da9f90e843883309e9e0bf5950faa79882a0/commons-codec-1.4-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/gradle/0.7.3/63f1e5d99614a1b0366722c707a8c032590aeb94/gradle-0.7.3-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.bouncycastle/bcprov-jdk15on/1.48/3824866f059053c43b118eb5a067ea1800d8c913/bcprov-jdk15on-1.48-sources.jar" />
+                            <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.external.lombok/lombok-ast/0.2.1/8e6ec06358f2e937000921cabc8a83a981ce0696/lombok-ast-0.2.1-sources.jar" />
+                          </list>
+                        </option>
+                        <option name="path" value="$PROJECT_DIR$/reddinator" />
+                      </ExternalModuleBuildClasspathPojo>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="name" value="reddinator-reddinator" />
+              <option name="projectBuildClasspath">
+                <list>
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ant-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-scala-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/language-jvm" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-build-comparison-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ui" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ide-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ivy-2.2.0.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-build-init-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-language-base-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/core-impl" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/base-services-groovy" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/base-services" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/native" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-language-jvm-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/tooling-api" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-core-impl-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ear" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-sonar-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/launcher" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/antlr" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-cpp-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/core" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/messaging" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/javascript" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/ant-antlr-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-native-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-wrapper-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/wrapper" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/reporting" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/resources" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/scala" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/internal-testing" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ear-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/maven" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/jetty" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-base-services-groovy-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ide" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-jetty-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-docs-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-plugins-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/jacoco" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-ui-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/build-init" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-jacoco-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-code-quality-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-javascript-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-messaging-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/osgi" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/plugins" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/cpp" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-publish-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/cli" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/announce" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-announce-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/open-api" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/sonar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/ivy" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-ivy-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-cli-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/diagnostics" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-tooling-api-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/groovy-all-1.8.6.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/signing" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-base-services-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/internal-integ-testing" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/language-base" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/publish" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/build-comparison" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-signing-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/src/code-quality" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-diagnostics-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-reporting-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-open-api-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-core-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-osgi-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/ant-launcher-1.9.2.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-launcher-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-antlr-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/gradle-resources-1.9.jar" />
+                  <option value="$USER_HOME$/.gradle/wrapper/dists/gradle-1.9-all/3jdgemv0iv8uqohg3kcp2o88r1/gradle-1.9/lib/plugins/gradle-maven-1.9.jar" />
+                  <option value="$PROJECT_DIR$/buildSrc/src/main/java" />
+                  <option value="$PROJECT_DIR$/buildSrc/src/main/groovy" />
+                </list>
+              </option>
+            </ExternalProjectBuildClasspathPojo>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
@@ -509,7 +682,6 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelect.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubreddits.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewReddit.java" />
-        <option value="$PROJECT_DIR$/reddinator/build.gradle" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/widgetmain.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/activity_main.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/values/styles.xml" />
@@ -519,7 +691,6 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/VoteTask.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ReddinatorListAdapter.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/logindialog.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/LoginThread.java" />
@@ -529,13 +700,17 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/webview.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/AccountWebView.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
+        <option value="$PROJECT_DIR$/reddinator/build.gradle" />
       </list>
     </option>
   </component>
@@ -597,15 +772,15 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="android.dex.compiler" />
+    <property name="options.lastSelected" value="preferences.fileTypes" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
@@ -617,7 +792,7 @@
     <property name="LayoutCode.rearrangeEntriesJava" value="false" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="4df123be354a5f91" />
     <property name="LayoutCode.rearrangeEntriesXML" value="false" />
-    <property name="project.structure.last.edited" value="Android SDK" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Emudroid" />
@@ -676,17 +851,19 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
+    <configuration default="true" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="externalProjectPath" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list />
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -714,6 +891,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -900,7 +1090,11 @@
       <created>1389837140315</created>
       <updated>1389837140315</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Fix of NPE, account deletion, again. this should hopefully be final version 2.0&#10;">
+      <created>1389839945322</created>
+      <updated>1389839945322</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -930,29 +1124,29 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39979655" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.50026953" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21401617" sideWeight="0.5017301" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21401617" sideWeight="0.50089765" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32858595" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41200408" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32848233" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26923078" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960325" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959569" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21401617" sideWeight="0.4982699" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960325" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21401617" sideWeight="0.49910232" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952183" sideWeight="0.49973047" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947233" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960325" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -961,14 +1155,14 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="7" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -981,13 +1175,13 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994923" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
-    <option name="RECENTLY_FILTERED_USERS">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
       <collection />
     </option>
   </component>
@@ -1015,7 +1209,8 @@
     <MESSAGE value="created non-debugable APK" />
     <MESSAGE value="added patches for networkonmainthread exception" />
     <MESSAGE value="Fix of NPE, account deletion." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix of NPE, account deletion." />
+    <MESSAGE value="Fix of NPE, account deletion, again. this should hopefully be final version 2.0&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix of NPE, account deletion, again. this should hopefully be final version 2.0&#10;" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1026,36 +1221,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/util/Pair.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="15" selection-start="370" selection-end="370" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/view/Window.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="48" selection-start="1550" selection-end="1550" vertical-scroll-proportion="0.0" vertical-offset="293" max-vertical-offset="3615" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/app/Instrumentation.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="112" column="16" selection-start="5963" selection-end="5963" vertical-scroll-proportion="0.0" vertical-offset="1482" max-vertical-offset="2400" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/res/TypedArray.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="19" selection-start="716" selection-end="716" vertical-scroll-proportion="0.3321492" vertical-offset="143" max-vertical-offset="1035" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/widget/ListView.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="16" selection-start="1391" selection-end="1391" vertical-scroll-proportion="0.87921846" vertical-offset="0" max-vertical-offset="2010" />
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/Intent.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="531" column="19" selection-start="35640" selection-end="35640" vertical-scroll-proportion="0.39086294" vertical-offset="7719" max-vertical-offset="8310" />
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/widget/ArrayAdapter.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="13" selection-start="157" selection-end="157" vertical-scroll-proportion="-0.24834438" vertical-offset="225" max-vertical-offset="915" />
@@ -1068,9 +1233,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widgetdark.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="33" selection-start="519" selection-end="519" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="2055">
-          <folding />
-        </state>
+        <state line="13" column="33" selection-start="519" selection-end="519" vertical-scroll-proportion="-7.5" vertical-offset="0" max-vertical-offset="2055" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1078,9 +1241,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widgetholo.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="24" selection-start="219" selection-end="219" vertical-scroll-proportion="-2.3076923" vertical-offset="0" max-vertical-offset="2040">
-          <folding />
-        </state>
+        <state line="4" column="24" selection-start="219" selection-end="219" vertical-scroll-proportion="-2.3076923" vertical-offset="0" max-vertical-offset="2040" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1088,9 +1249,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widgetdarkholo.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="29" selection-start="525" selection-end="525" vertical-scroll-proportion="0.31141868" vertical-offset="0" max-vertical-offset="2040">
-          <folding />
-        </state>
+        <state line="12" column="29" selection-start="525" selection-end="525" vertical-scroll-proportion="0.31141868" vertical-offset="0" max-vertical-offset="2040" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1098,9 +1257,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widgetmain.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="31" selection-start="1495" selection-end="1504" vertical-scroll-proportion="0.57093424" vertical-offset="225" max-vertical-offset="2040">
-          <folding />
-        </state>
+        <state line="37" column="31" selection-start="1495" selection-end="1504" vertical-scroll-proportion="0.57093424" vertical-offset="225" max-vertical-offset="2040" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1118,16 +1275,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="16" selection-start="215" selection-end="215" vertical-scroll-proportion="0.12711865" vertical-offset="0" max-vertical-offset="590">
-          <folding />
-        </state>
+        <state line="5" column="16" selection-start="215" selection-end="215" vertical-scroll-proportion="0.12711865" vertical-offset="0" max-vertical-offset="590" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/styles.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="12" selection-start="882" selection-end="882" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
-          <folding />
-        </state>
+        <state line="19" column="12" selection-start="882" selection-end="882" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405" />
       </provider>
     </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/android/content/Context.class">
@@ -1145,16 +1298,9 @@
         <state line="33" column="39" selection-start="882" selection-end="882" vertical-scroll-proportion="0.3327616" vertical-offset="286" max-vertical-offset="1635" />
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/java/util/ArrayList.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="16" selection-start="825" selection-end="825" vertical-scroll-proportion="0.3327616" vertical-offset="106" max-vertical-offset="945" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/tab1.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="557">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="557" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1167,16 +1313,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="51" selection-start="1199" selection-end="1199" vertical-scroll-proportion="0.6878307" vertical-offset="0" max-vertical-offset="720">
-          <folding />
-        </state>
+        <state line="26" column="51" selection-start="1199" selection-end="1199" vertical-scroll-proportion="0.6878307" vertical-offset="0" max-vertical-offset="720" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowloadmore.xml">
       <provider editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="570">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="570" />
       </provider>
       <provider selected="true" editor-type-id="android-designer">
         <state />
@@ -1184,9 +1326,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml">
       <provider editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540" />
       </provider>
       <provider selected="true" editor-type-id="android-designer">
         <state />
@@ -1194,9 +1334,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1860">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1860" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1204,9 +1342,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/activity_main.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="74" selection-start="113" selection-end="113" vertical-scroll-proportion="0.027726432" vertical-offset="0" max-vertical-offset="541">
-          <folding />
-        </state>
+        <state line="1" column="74" selection-start="113" selection-end="113" vertical-scroll-proportion="0.027726432" vertical-offset="0" max-vertical-offset="541" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1214,9 +1350,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/appheader.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="14" selection-start="2902" selection-end="2902" vertical-scroll-proportion="0.5859519" vertical-offset="793" max-vertical-offset="1350">
-          <folding />
-        </state>
+        <state line="74" column="14" selection-start="2902" selection-end="2902" vertical-scroll-proportion="0.5859519" vertical-offset="793" max-vertical-offset="1350" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1227,22 +1361,9 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="39" selection-start="215" selection-end="215" vertical-scroll-proportion="0.105820104" vertical-offset="0" max-vertical-offset="567">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/logindialog.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="30" selection-start="1684" selection-end="1684" vertical-scroll-proportion="0.8403846" vertical-offset="223" max-vertical-offset="810">
-          <folding>
-            <element signature="e#614#632#0" expanded="false" />
-            <element signature="e#1037#1055#0" expanded="false" />
-            <element signature="e#1740#1770#0" expanded="false" />
-          </folding>
-        </state>
+        <state line="44" column="30" selection-start="1684" selection-end="1684" vertical-scroll-proportion="0.8403846" vertical-offset="223" max-vertical-offset="810" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1250,37 +1371,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="40" selection-start="1044" selection-end="1044" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="1905">
-          <folding />
-        </state>
+        <state line="31" column="40" selection-start="1044" selection-end="1044" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="1905" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="13" selection-start="1081" selection-end="1081" vertical-scroll-proportion="0.060822897" vertical-offset="41" max-vertical-offset="915">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="202" column="48" selection-start="8846" selection-end="8846" vertical-scroll-proportion="0.59749556" vertical-offset="2411" max-vertical-offset="2970">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="47" selection-start="2172" selection-end="2172" vertical-scroll-proportion="0.94633275" vertical-offset="86" max-vertical-offset="1470">
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubredditsActivity.java">
@@ -1306,14 +1400,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="54" selection-start="279" selection-end="279" vertical-scroll-proportion="0.14071295" vertical-offset="0" max-vertical-offset="2325">
-          <folding>
-            <element signature="e#838#851#0" expanded="false" />
-            <element signature="e#3538#3561#0" expanded="false" />
-            <element signature="e#3700#3714#0" expanded="false" />
-            <element signature="e#4520#4534#0" expanded="false" />
-          </folding>
-        </state>
+        <state line="5" column="54" selection-start="279" selection-end="279" vertical-scroll-proportion="0.14071295" vertical-offset="0" max-vertical-offset="2325" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1321,9 +1408,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="17" selection-start="436" selection-end="436" vertical-scroll-proportion="0.3095685" vertical-offset="0" max-vertical-offset="2325">
-          <folding />
-        </state>
+        <state line="11" column="17" selection-start="436" selection-end="436" vertical-scroll-proportion="0.3095685" vertical-offset="0" max-vertical-offset="2325" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1331,9 +1416,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/subredditselect.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="28" selection-start="2069" selection-end="2076" vertical-scroll-proportion="-4.6153846" vertical-offset="720" max-vertical-offset="1395">
-          <folding />
-        </state>
+        <state line="56" column="28" selection-start="2069" selection-end="2076" vertical-scroll-proportion="-4.6153846" vertical-offset="720" max-vertical-offset="1395" />
       </provider>
       <provider editor-type-id="android-designer">
         <state />
@@ -1346,18 +1429,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="29" selection-start="289" selection-end="289" vertical-scroll-proportion="0.13416816" vertical-offset="0" max-vertical-offset="559">
-          <folding />
-        </state>
+        <state line="5" column="29" selection-start="289" selection-end="289" vertical-scroll-proportion="0.13416816" vertical-offset="0" max-vertical-offset="559" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="92" selection-start="8007" selection-end="8007" vertical-scroll-proportion="0.38282648" vertical-offset="1586" max-vertical-offset="4350">
-          <folding>
-            <element signature="e#2476#2508#0" expanded="false" />
-          </folding>
-        </state>
+        <state line="150" column="92" selection-start="8007" selection-end="8007" vertical-scroll-proportion="0.38282648" vertical-offset="1586" max-vertical-offset="4350" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
@@ -1365,63 +1442,146 @@
         <state line="47" column="36" selection-start="2001" selection-end="2001" vertical-scroll-proportion="0.3452594" vertical-offset="512" max-vertical-offset="1680" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="343" column="43" selection-start="16912" selection-end="16912" vertical-scroll-proportion="0.0" vertical-offset="3904" max-vertical-offset="5355">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="422" column="112" selection-start="16012" selection-end="16012" vertical-scroll-proportion="0.0" vertical-offset="5371" max-vertical-offset="6180">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="92" selection-start="3052" selection-end="3052" vertical-scroll-proportion="0.0" vertical-offset="347" max-vertical-offset="6300">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="26" selection-start="176" selection-end="176" vertical-scroll-proportion="0.07803993" vertical-offset="2" max-vertical-offset="1275">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="902" column="59" selection-start="39211" selection-end="39211" vertical-scroll-proportion="0.47368422" vertical-offset="11934" max-vertical-offset="12705">
-          <folding>
-            <element signature="e#7131#7163#0" expanded="false" />
-            <element signature="e#7305#7350#0" expanded="false" />
-            <element signature="e#13089#13134#0" expanded="false" />
-            <element signature="e#26096#26142#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/org/apache/http/client/CookieStore.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="9" selection-start="364" selection-end="364" vertical-scroll-proportion="0.32667875" vertical-offset="0" max-vertical-offset="551">
-          <folding />
-        </state>
+        <state line="13" column="9" selection-start="364" selection-end="364" vertical-scroll-proportion="0.32667875" vertical-offset="0" max-vertical-offset="551" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/PrefsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="80" column="42" selection-start="3565" selection-end="3565" vertical-scroll-proportion="0.0" vertical-offset="467" max-vertical-offset="2205">
+        <state line="80" column="42" selection-start="3565" selection-end="3565" vertical-scroll-proportion="-0.97363085" vertical-offset="1200" max-vertical-offset="2250">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="5" selection-start="3259" selection-end="3259" vertical-scroll-proportion="0.74535316" vertical-offset="364" max-vertical-offset="5220">
+        <state line="165" column="32" selection-start="6254" selection-end="6254" vertical-scroll-proportion="-0.53488374" vertical-offset="2160" max-vertical-offset="5220">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="57" column="31" selection-start="2147" selection-end="2147" vertical-scroll-proportion="0.8125915" vertical-offset="0" max-vertical-offset="1500">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/reddinator-reddinator.iml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1170" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/settings.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="683">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="683">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-19/android.jar!/java/util/ArrayList.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="16" selection-start="554" selection-end="554" vertical-scroll-proportion="0.3106509" vertical-offset="0" max-vertical-offset="945">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="356" column="39" selection-start="17565" selection-end="17565" vertical-scroll-proportion="0.43438914" vertical-offset="4017" max-vertical-offset="5400">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="13" selection-start="1081" selection-end="1081" vertical-scroll-proportion="0.05029586" vertical-offset="41" max-vertical-offset="915">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/webview.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="12" selection-start="239" selection-end="239" vertical-scroll-proportion="0.13846155" vertical-offset="0" max-vertical-offset="650">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="110" column="33" selection-start="4564" selection-end="4564" vertical-scroll-proportion="0.0" vertical-offset="450" max-vertical-offset="2805">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="496" column="29" selection-start="22905" selection-end="22905" vertical-scroll-proportion="8.384615" vertical-offset="467" max-vertical-offset="12735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="19" selection-start="2242" selection-end="2242" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1365">
+          <folding>
+            <element signature="e#589#607#0" expanded="true" />
+            <element signature="e#821#839#0" expanded="true" />
+            <element signature="e#1178#1196#0" expanded="true" />
+            <element signature="e#1545#1563#0" expanded="true" />
+            <element signature="e#1770#1788#0" expanded="true" />
+            <element signature="e#1988#2006#0" expanded="true" />
+            <element signature="e#2202#2220#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/menu/sharemenu.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="37" selection-start="706" selection-end="706" vertical-scroll-proportion="0.42159763" vertical-offset="0" max-vertical-offset="676">
+          <folding>
+            <element signature="e#653#668#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/AccountWebView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="5" selection-start="686" selection-end="686" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="216" column="53" selection-start="10531" selection-end="10531" vertical-scroll-proportion="0.0" vertical-offset="2299" max-vertical-offset="6945">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="27" column="9" selection-start="397" selection-end="397" vertical-scroll-proportion="0.59911245" vertical-offset="0" max-vertical-offset="676">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="218" column="42" selection-start="8153" selection-end="8153" vertical-scroll-proportion="0.6997042" vertical-offset="2107" max-vertical-offset="6255">
           <folding />
         </state>
       </provider>
@@ -1432,6 +1592,17 @@
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="Copyright.UI">
+        <settings>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1502,7 +1673,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>Gradle: support-v4-19.0.0</last-edited>
+          <last-edited>appcompat-v7-19.0.1</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

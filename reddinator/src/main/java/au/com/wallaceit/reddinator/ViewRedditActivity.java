@@ -214,6 +214,11 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 downVote();
                 break;
 
+            case R.id.menu_account:
+                Intent accnIntent = new Intent(ViewRedditActivity.this, AccountWebView.class);
+                startActivity(accnIntent);
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

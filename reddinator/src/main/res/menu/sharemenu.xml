@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_upvote"
+    <item
+        android:id="@+id/menu_upvote"
         android:title="Upvote"
         android:icon="@drawable/upvote"
         android:showAsAction="always" />
 
-    <item android:id="@+id/menu_downvote"
+    <item
+        android:id="@+id/menu_downvote"
         android:title="Downvote"
         android:icon="@drawable/downvote"
         android:showAsAction="always" />
 
-    <item android:id="@+id/menu_share"
+    <item
+        android:id="@+id/menu_account"
+        android:title="My Reddit"
+        android:icon="@android:drawable/sym_action_email"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_share"
         android:title="@string/share"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:actionProviderClass="android.widget.ShareActionProvider" />
 
 </menu>

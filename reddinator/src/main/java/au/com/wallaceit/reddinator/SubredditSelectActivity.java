@@ -352,6 +352,9 @@ public class SubredditSelectActivity extends ListActivity {
                     if (clearlist) {
                         personalList.clear();
                     }
+                    // Add Front Page & all
+                    list.add(0, "Front Page");
+                    list.add(1, "all");
                     personalList.addAll(list);
                 }
                 runOnUiThread(new Runnable() {

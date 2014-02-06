@@ -486,8 +486,8 @@ public class MainActivity extends Activity {
                     // load big image if preference is set
                     if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
                         // check if the image is in cache
-                        if (new File(getCacheDir() + "/thumbcache-app/" + id + ".png").exists()) {
-                            String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
+                        String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
+                        if (new File(fileurl).exists()) {
                             Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
                             if (bitmap == null) {
                                 viewHolder.thumbview.setVisibility(View.GONE);
@@ -499,6 +499,8 @@ public class MainActivity extends Activity {
                             // start the image load
                             loadImage(position, thumbnail, id);
                             viewHolder.thumbview.setVisibility(View.VISIBLE);
+                            // set image source as null to prevent an image from a previous view being used
+                            viewHolder.thumbview.setImageResource(0);
                         }
 
                     } else {
@@ -567,7 +569,7 @@ public class MainActivity extends Activity {
             DeleteRecursive(new File(getCacheDir() + "/thumbcache-app"));
         }
 
-        void DeleteRecursive(File fileOrDirectory) {
+        private void DeleteRecursive(File fileOrDirectory) {
 
             if (fileOrDirectory.isDirectory())
                 for (File child : fileOrDirectory.listFiles())

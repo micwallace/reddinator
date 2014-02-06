@@ -37,6 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -209,7 +211,16 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (loadThumbnails) {
                 // load big image if preference is set
                 if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
-                    Bitmap bitmap = loadImage(thumbnail);
+                    Bitmap bitmap;
+                    String fileurl = mContext.getCacheDir() + "/thumbcache-" + appWidgetId + "/" + id + ".png";
+                    // check if the image is in cache
+                    if (new File(fileurl).exists()) {
+                        bitmap = BitmapFactory.decodeFile(fileurl);
+                        saveImageToStorage(bitmap, id);
+                    } else {
+                        // download the image
+                        bitmap = loadImage(thumbnail);
+                    }
                     if (bitmap != null) {
                         row.setImageViewBitmap(R.id.thumbnail, bitmap);
                         row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
@@ -251,6 +262,38 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             return null;
         }
         return bmp;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean saveImageToStorage(Bitmap image, String redditid) {
+        try {
+            File file = new File(mContext.getCacheDir().getPath() + "/thumbcache-" + appWidgetId + "/", redditid + ".png");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            // 100 means no compression, the lower you go, the stronger the compression
+            fos.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void clearImageCache() {
+        // delete all images in the cache folder.
+        DeleteRecursive(new File(mContext.getCacheDir() + "/thumbcache-app"));
+    }
+
+    private void DeleteRecursive(File fileOrDirectory) {
+
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                DeleteRecursive(child);
+
+        fileOrDirectory.delete();
+
     }
 
     @Override
@@ -348,7 +391,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             }
         } else {
             endOfFeed = false;
-            // reloading
+            // clear image cache
+            clearImageCache();
+            // reload feed
             int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
             JSONArray tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
             // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
