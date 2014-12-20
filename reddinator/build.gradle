@@ -3,11 +3,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "18.0.1"
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 11
@@ -24,7 +24,13 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("debug.keystore")
+            storeFile file("~/.android/debug.keystore")
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
         }
     }
 }
