@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -31,6 +32,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -56,7 +58,10 @@ public class SubredditSelectActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.subredditselect);
-
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
@@ -117,7 +122,7 @@ public class SubredditSelectActivity extends ListActivity {
                     setResult(2); // update feed prefs + reload feed
                 }
                 // save the preference
-                editor.commit();
+                editor.apply();
                 finish();
                 //System.out.println(sreddit+" selected");
             }
@@ -175,7 +180,7 @@ public class SubredditSelectActivity extends ListActivity {
                                 prefsedit.putBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
                                 break;
                         }
-                        prefsedit.commit();
+                        prefsedit.apply();
                     }
                 });
                 builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
@@ -236,6 +241,16 @@ public class SubredditSelectActivity extends ListActivity {
             setResult(0); // feed doesn't need updating
         }
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return false;
     }
 
     // save/restore personal list
@@ -392,8 +407,7 @@ public class SubredditSelectActivity extends ListActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = inflater.inflate(R.layout.myredditlistitem, parent,
-                    false);
+            convertView = inflater.inflate(R.layout.myredditlistitem, parent, false);
             super.getView(position, convertView, parent);
             // setup the row
             ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(personalList.get(position).toString());

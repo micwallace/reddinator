@@ -16,12 +16,18 @@
         android:id="@+id/menu_account"
         android:title="My Reddit"
         android:icon="@android:drawable/sym_action_email"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_open"
+        android:title="Open Link"
+        android:icon="@android:drawable/ic_media_play"
+        android:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_share"
         android:title="@string/share"
-        android:showAsAction="always"
-        android:actionProviderClass="android.widget.ShareActionProvider" />
+        android:icon="@android:drawable/ic_menu_share"
+        android:showAsAction="ifRoom" />
 
 </menu>

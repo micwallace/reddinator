@@ -19,7 +19,6 @@ package au.com.wallaceit.reddinator;
 
 import java.util.HashMap;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -28,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -153,25 +153,12 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         }
     }
 
-    @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sharemenu, menu);
-        if (android.os.Build.VERSION.SDK_INT >= 14) {
-            // Get the menu item.
-            MenuItem menuItem = menu.findItem(R.id.menu_share);
-            // Get the provider and hold onto it to set/change the share intent.
-            ShareActionProvider shareActionProvider = null;
-            if (menuItem != null) {
-                shareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
-            }
-            // Set the default share intent
-            if (shareActionProvider != null) {
-                shareActionProvider.setShareIntent(getCurrentShareIntent());
-                shareActionProvider.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME);
-            }
-        }
+        // set options menu view
+        MenuItem menuItem = menu.findItem(R.id.menu_share);
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
 
@@ -183,16 +170,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             curvote = -1;
         }
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @SuppressLint("InlinedApi")
-    public Intent getCurrentShareIntent() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        String contenturl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-        String redditurl = "http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "Content: " + contenturl + " \nReddit: " + redditurl);
-        return shareIntent;
     }
 
     @Override
@@ -219,10 +196,66 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 startActivity(accnIntent);
                 break;
 
+            case R.id.menu_open:
+                showOpenDialog();
+                break;
+
+            case R.id.menu_share:
+                showShareDialog();
+                break;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    // Open stuff
+    public void openUrlExternally(String url) {
+        Intent openintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(openintent);
+    }
+
+    public void shareText(String txt) {
+        Intent sendintent = new Intent(Intent.ACTION_SEND);
+        sendintent.setAction(Intent.ACTION_SEND);
+        sendintent.putExtra(Intent.EXTRA_TEXT, txt);
+        sendintent.setType("text/plain");
+        startActivity(Intent.createChooser(sendintent, "Share Url to..."));
+    }
+
+    public void showOpenDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
+        builder.setMessage("Open Url")
+                .setNegativeButton("Content", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        openUrlExternally(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
+                    }
+                })
+                .setPositiveButton("Reddit Page", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        openUrlExternally("http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                    }
+                });
+        // Create the AlertDialog
+        builder.create().show();
+    }
+
+    public void showShareDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
+        builder.setMessage("Share Url")
+                .setNegativeButton("Content", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
+                    }
+                })
+                .setPositiveButton("Reddit Page", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        shareText("http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                    }
+                });
+        // Create the AlertDialog
+        builder.create().show();
     }
 
     // VOTING STUFF

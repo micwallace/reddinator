@@ -3,16 +3,17 @@
     style="@style/Reddit"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/widgetheader"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:paddingRight="5dp"
+        android:paddingRight="2dp"
+        android:paddingLeft="2dp"
         android:layout_alignParentTop="true"
         android:background="#CEE3F8"
-        android:clickable="false" >
+        android:clickable="false">
 
         <ImageButton
             android:id="@+id/prefsbutton"
@@ -50,7 +51,7 @@
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:visibility="visible" />
-        
+
         <ImageButton
             android:id="@+id/erroricon"
             android:layout_width="wrap_content"
@@ -70,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
-            android:paddingLeft="8dp"
+            android:paddingLeft="2dp"
             android:layout_toRightOf="@+id/widget_logo"
             android:drawablePadding="5dp"
             android:drawableRight="@android:drawable/arrow_down_float"
@@ -85,12 +86,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
             android:contentDescription="@string/logo"
             android:src="@drawable/reddit_icon_small" />
 
     </RelativeLayout>
-    
+
     <LinearLayout
         android:id="@+id/empty_list_view"
         android:visibility="gone"
@@ -99,33 +99,33 @@
         android:layout_below="@+id/widgetheader"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:gravity="center" >
+        android:gravity="center">
 
-	    <ImageView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-	        android:contentDescription="@string/loading_img"
-	        android:scaleType="center"
-	        android:src="@drawable/reddit_icon_small" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/loading_img"
+            android:scaleType="center"
+            android:src="@drawable/reddit_icon_small" />
 
-	    <TextView
-	        android:id="@+id/initloadtxt"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="center"
-	        android:layout_marginLeft="10dp"
-	        android:text="@string/loading"
-	        android:textAppearance="?android:attr/textAppearanceMedium"
-	        android:textColor="#000" />
-	</LinearLayout>
+        <TextView
+            android:id="@+id/initloadtxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:text="@string/loading"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/widgetheader" >
+        android:layout_below="@+id/widgetheader">
 
     </ListView>
-    
+
 </RelativeLayout>

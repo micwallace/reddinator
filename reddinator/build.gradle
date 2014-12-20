@@ -16,22 +16,25 @@ repositories {
 android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
-
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 19
     }
-
     signingConfigs {
         debug {
-            storeFile file("~/.android/debug.keystore")
+            storeFile file('/home/michael/.android/debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
         }
     }
-
     buildTypes {
         debug {
             debuggable true
+            signingConfig signingConfigs.debug
         }
+    }
+    productFlavors {
     }
 }
 

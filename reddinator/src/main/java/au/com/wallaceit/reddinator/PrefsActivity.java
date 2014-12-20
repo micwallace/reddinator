@@ -18,6 +18,7 @@
 package au.com.wallaceit.reddinator;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,11 +52,9 @@ public class PrefsActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add a button to the header list.
-        if (hasHeaders()) {
-            Button button = new Button(this);
-            button.setText("Some action");
-            setListFooter(button);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
         addPreferencesFromResource(R.xml.preferences);
         getListView().setBackgroundColor(Color.WHITE);
@@ -74,7 +74,7 @@ public class PrefsActivity extends PreferenceActivity {
                     editor.putString("pword", "");
                     editor.putString("cook", "");
                     editor.putString("modhash", "");
-                    editor.commit();
+                    editor.apply();
                     // clear current purge from active objects
                     GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
                     if (global != null) {
@@ -109,6 +109,21 @@ public class PrefsActivity extends PreferenceActivity {
     }
 
     public void onBackPressed() {
+        saveSettingsAndFinish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                saveSettingsAndFinish();
+                return true;
+        }
+        return false;
+    }
+
+    private void saveSettingsAndFinish() {
         // check if refresh rate has changed and update if needed
         if (!mRefreshrate.equals(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"))) {
             //System.out.println("Refresh preference changed, updating alarm");
@@ -147,6 +162,7 @@ public class PrefsActivity extends PreferenceActivity {
             }
 
         }
+
         if (isfromappview) {
             setResult(0); // no update needed
             finish();
@@ -170,7 +186,7 @@ public class PrefsActivity extends PreferenceActivity {
     }
 
     private void setUseThemeColor() {
-        mSharedPreferences.edit().putString(getString(R.string.title_color_pref), "0").commit();
+        mSharedPreferences.edit().putString(getString(R.string.title_color_pref), "0").apply();
     }
 
 }

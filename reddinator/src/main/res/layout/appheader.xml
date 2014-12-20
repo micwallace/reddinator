@@ -3,10 +3,10 @@
     android:id="@+id/appheader"
     android:layout_width="match_parent"
     android:layout_gravity="fill_horizontal"
-    android:layout_height="35dp"
+    android:layout_height="fill_parent"
     android:paddingRight="5dp"
     android:layout_alignParentTop="true"
-    android:clickable="false" >
+    android:clickable="false">
 
     <ImageButton
         android:id="@+id/appprefsbutton"
@@ -77,8 +77,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="6dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/reddit_icon_small" />
 

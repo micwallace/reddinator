@@ -85,7 +85,6 @@ public class TabWebFragment extends Fragment {
             if (commentswv) {
                 url = "http://reddit.com" + getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
                 fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
-
             } else {
                 url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
                 fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));

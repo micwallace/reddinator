@@ -89,16 +89,18 @@ public class MainActivity extends Activity {
         // Setup actionbar
         appView = findViewById(R.id.appview);
         actionBar = getActionBar();
-        View actionView = this.getLayoutInflater().inflate(R.layout.appheader, null);
-        actionBar.setCustomView(actionView);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(false);
+        if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setCustomView(R.layout.appheader);
+        }
         // get actionBar Views
-        loader = (ProgressBar) actionView.findViewById(R.id.appsrloader);
-        errorIcon = (ImageView) actionView.findViewById(R.id.apperroricon);
-        refreshbutton = (ImageButton) actionView.findViewById(R.id.apprefreshbutton);
-        configbutton = (ImageButton) actionView.findViewById(R.id.appprefsbutton);
-        srtext = (TextView) actionView.findViewById(R.id.appsubreddittxt);
+        loader = (ProgressBar) findViewById(R.id.appsrloader);
+        errorIcon = (ImageView) findViewById(R.id.apperroricon);
+        refreshbutton = (ImageButton) findViewById(R.id.apprefreshbutton);
+        configbutton = (ImageButton) findViewById(R.id.appprefsbutton);
+        srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
         // set theme colors
         setThemeColors();

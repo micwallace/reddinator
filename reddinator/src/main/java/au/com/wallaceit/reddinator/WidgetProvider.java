@@ -261,13 +261,13 @@ public class WidgetProvider extends AppWidgetProvider {
             mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
         }
 
-        if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED")) {
+        if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_CHANGED")) {
             AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
             // perform full widget update
             onUpdate(context, mgr2, appWidgetIds);
         }
-        //System.out.println("broadcast received: "+intent.getAction().toString());
+        System.out.println("broadcast received: " + action);
         super.onReceive(context, intent);
     }
 
