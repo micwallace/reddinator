@@ -19,9 +19,11 @@ package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -30,10 +32,12 @@ public class AccountWebView extends Activity {
     WebView wv;
     WebViewClient wvclient;
     Activity mActivity;
+    GlobalObjects global;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        global = ((GlobalObjects) AccountWebView.this.getApplicationContext());
         // request loading bar
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -48,8 +52,6 @@ public class AccountWebView extends Activity {
         wv = (WebView) findViewById(R.id.webView);
         wvclient = new WebViewClient();
         wv.setWebViewClient(wvclient);
-        wv.getSettings().setJavaScriptEnabled(true);
-        wv.loadUrl("http://www.reddit.com/message/inbox.compact");
         wv.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
@@ -59,6 +61,30 @@ public class AccountWebView extends Activity {
                 }
             }
         });
+        wv.getSettings().setJavaScriptEnabled(true);
+        wv.getSettings().setDefaultFontSize(22);
+        // set session cookie
+        String cookie = Uri.encode(global.mRedditData.getSessionCookie());
+        System.out.println("CookieString: " + cookie);
+        if (!cookie.equals("")) {
+            CookieSyncManager.createInstance(wv.getContext());
+            android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
+            cookieManager.setAcceptCookie(true);
+            cookieManager.setCookie(".reddit.com", "reddit_session=" + cookie);
+            CookieSyncManager.getInstance().sync();
+            CookieSyncManager.getInstance().startSync();
+        }
+        wv.loadUrl("http://www.reddit.com/message/inbox.compact");
+    }
+
+    public void onBackPressed() {
+        if (wv.canGoBack()) {
+            wv.goBack();
+        } else {
+            wv.stopLoading();
+            wv.loadData("", "text/html", "utf-8");
+            this.finish();
+        }
     }
 
     @Override
