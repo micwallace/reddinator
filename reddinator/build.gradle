@@ -33,6 +33,9 @@ android {
             debuggable true
             signingConfig signingConfigs.debug
         }
+        release {
+            debuggable false
+        }
     }
     productFlavors {
     }
