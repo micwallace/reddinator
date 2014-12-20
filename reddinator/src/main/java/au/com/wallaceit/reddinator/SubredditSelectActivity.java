@@ -260,7 +260,7 @@ public class SubredditSelectActivity extends ListActivity {
         Set<String> set = new HashSet<String>();
         set.addAll(personalList);
         editor.putStringSet("personalsr", set);
-        editor.commit();
+        editor.apply();
     }
 
     // show sort select dialog
@@ -290,7 +290,7 @@ public class SubredditSelectActivity extends ListActivity {
                         break;
                 }
                 prefsedit.putString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), sort);
-                prefsedit.commit();
+                prefsedit.apply();
                 // set new text in button
                 String sorttxt = "Sort:  " + sort;
                 sortBtn.setText(sorttxt);
@@ -410,7 +410,7 @@ public class SubredditSelectActivity extends ListActivity {
             convertView = inflater.inflate(R.layout.myredditlistitem, parent, false);
             super.getView(position, convertView, parent);
             // setup the row
-            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(personalList.get(position).toString());
+            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(personalList.get(position));
             convertView.findViewById(R.id.subreddit_delete_btn).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,116 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-   <string-array name="onclick_list_preference">
-     <item>Open Reddinator View</item>
-     <item>Open Content Page</item>
-     <item>Open Reddit Page</item>
-     </string-array>
- 
-   <string-array name="onclick_values_list_preference">
-     <item>1</item>
-     <item>2</item>
-     <item>3</item>
-   </string-array>
-   
-   <string-array name="fontsize_list_preference">
-     <item>26</item>
-     <item>24</item>
-     <item>22</item>
-     <item>20</item>
-     <item>18</item>
-     <item>16</item>
-     <item>14</item>
-     <item>12</item>
-     <item>10</item>
+    <string-array name="onclick_list_preference">
+        <item>Open Reddinator View</item>
+        <item>Open Content Page</item>
+        <item>Open Reddit Page</item>
     </string-array>
-    
-   <string-array name="widget_fontsize_preference">
-     <item>24</item>
-     <item>22</item>
-     <item>20</item>
-     <item>18</item>
-     <item>16</item>
-     <item>14</item>
-     <item>12</item>
+
+    <string-array name="onclick_values_list_preference">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
     </string-array>
-    
-   <string-array name="reddit_sorts">
-       	<item>hot</item>
-     	<item>new</item>
-     	<item>rising</item>
-     	<item>controversial</item>
-     	<item>top</item>
-   </string-array>
-   
-   <string-array name="reddit_item_load">
-       	<item>25</item>
-     	<item>40</item>
-     	<item>50</item>
-     	<item>75</item>
-     	<item>100</item>
-   </string-array>
-   
-   <string-array name="widget_refresh_list">
-       	<item>1 Hour</item>
-     	<item>2 Hours</item>
-     	<item>4 Hours</item>
-     	<item>6 Hours</item>
-     	<item>12 Hours</item>
-     	<item>24 Hours</item>
-     	<item>48 Hours</item>
-     	<item>Never</item>
-   </string-array>
-   <string-array name="widget_refresh_values">
-     	<item>3600000</item>
-     	<item>7200000</item>
-     	<item>14400000</item>
-     	<item>21600000</item>
-     	<item>43200000</item>
-     	<item>86400000</item>
-     	<item>172800000</item>
-     	<item>0</item>
-   </string-array>
-   
-   <string-array name="widget_theme_preference">
-       	<item>Reddit Classic</item>
-     	<item>Reddit Dark</item>
-     	<item>Android Holo</item>
-     	<item>Dark Holo</item>
-   </string-array>
-   <string-array name="widget_theme_values">
-     	<item>1</item>
-     	<item>2</item>
-     	<item>3</item>
-     	<item>4</item>
-   </string-array>
-   
-   <string-array name="widget_fontcolor_preference">
-       	<item>Theme Selected</item>
-     	<item>Reddit Blue</item>
-     	<item>Reddit Dark Blue</item>
-     	<item>Reddit Orange</item>
-     	<item>Reddit Light Orange</item>
-     	<item>Red</item>
-     	<item>Orange</item>
-     	<item>Yellow</item>
-     	<item>Green</item>
-     	<item>Blue</item>
-     	<item>Indigo</item>
-     	<item>Violet</item>
-     	
-   </string-array>
-   <string-array name="widget_fontcolor_values">
-     	<item>0</item>
-     	<item>#CEE3F8</item>
-     	<item>#5F99CF</item>
-     	<item>#FF4500</item>
-     	<item>#FF8B60</item>
-     	<item>#FF0000</item>
-     	<item>#FF7F00</item>
-     	<item>#FFFF00</item>
-     	<item>#00FF00</item>
-     	<item>#0000FF</item>
-     	<item>#6600FF</item>
-     	<item>#8B00FF</item>
-   </string-array>
+
+    <string-array name="fontsize_list_preference">
+        <item>26</item>
+        <item>24</item>
+        <item>22</item>
+        <item>20</item>
+        <item>18</item>
+        <item>16</item>
+        <item>14</item>
+        <item>12</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="widget_fontsize_preference">
+        <item>24</item>
+        <item>22</item>
+        <item>20</item>
+        <item>18</item>
+        <item>16</item>
+        <item>14</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="reddit_sorts">
+        <item>hot</item>
+        <item>new</item>
+        <item>rising</item>
+        <item>controversial</item>
+        <item>top</item>
+    </string-array>
+
+    <string-array name="reddit_item_load">
+        <item>25</item>
+        <item>40</item>
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+    </string-array>
+
+    <string-array name="widget_refresh_list">
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+        <item>4 Hours</item>
+        <item>6 Hours</item>
+        <item>12 Hours</item>
+        <item>24 Hours</item>
+        <item>48 Hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="widget_refresh_values">
+        <item>3600000</item>
+        <item>7200000</item>
+        <item>14400000</item>
+        <item>21600000</item>
+        <item>43200000</item>
+        <item>86400000</item>
+        <item>172800000</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="widget_theme_preference">
+        <item>Reddit Classic</item>
+        <item>Reddit Dark</item>
+        <item>Android Holo</item>
+        <item>Dark Holo</item>
+        <item>Transparent</item>
+    </string-array>
+    <string-array name="widget_theme_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="widget_fontcolor_preference">
+        <item>Theme Selected</item>
+        <item>Reddit Blue</item>
+        <item>Reddit Dark Blue</item>
+        <item>Reddit Orange</item>
+        <item>Reddit Light Orange</item>
+        <item>Red</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Indigo</item>
+        <item>Violet</item>
+
+    </string-array>
+    <string-array name="widget_fontcolor_values">
+        <item>0</item>
+        <item>#CEE3F8</item>
+        <item>#5F99CF</item>
+        <item>#FF4500</item>
+        <item>#FF8B60</item>
+        <item>#FF0000</item>
+        <item>#FF7F00</item>
+        <item>#FFFF00</item>
+        <item>#00FF00</item>
+        <item>#0000FF</item>
+        <item>#6600FF</item>
+        <item>#8B00FF</item>
+    </string-array>
 </resources>

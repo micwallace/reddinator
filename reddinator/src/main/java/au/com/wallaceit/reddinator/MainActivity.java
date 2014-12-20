@@ -184,9 +184,9 @@ public class MainActivity extends Activity {
         super.onResume();
         Bundle update = global.getItemUpdate();
         if (update != null) {
-            System.out.print("Update not null, passing to list adapter");
-            listAdapter.updateVoteStatWithIdCheck(update.getInt("position", 0), update.getString("id"), update.getString("val"));
-        } else System.out.print("Checked for item update, none found");
+            System.out.println("Vote update found, passing to list adapter");
+            listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"));
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -202,6 +202,7 @@ public class MainActivity extends Activity {
                 srtext.setTextColor(Color.parseColor("#000000"));
                 break;
             case 3:
+            case 5:
                 Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
                 actionBar.getCustomView().setBackgroundDrawable(header);
                 appView.setBackgroundColor(Color.BLACK);
@@ -254,13 +255,9 @@ public class MainActivity extends Activity {
                 Bundle extras = new Bundle();
                 try {
                     extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
-                    extras.putString("userlikes", item.getString("likes"));
+                    extras.putInt("itemposition", position);
                     extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
                     extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
-                    extras.putString(WidgetProvider.ITEM_TXT, item.getString("title"));
-                    extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
-                    extras.putInt(WidgetProvider.ITEM_VOTES, item.getInt("score"));
-                    extras.putInt("itemposition", position);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -297,7 +294,6 @@ public class MainActivity extends Activity {
         private JSONArray data;
         private GlobalObjects global;
         private SharedPreferences mSharedPreferences;
-        private SharedPreferences.Editor mEditor;
         private String titleFontSize = "16";
         private int[] themeColors;
         private boolean loadThumbnails = false;
@@ -308,17 +304,11 @@ public class MainActivity extends Activity {
 
             global = gobjects;
             mSharedPreferences = prefs;
-            mEditor = mSharedPreferences.edit();
             // load the caches items
-            try {
-                data = new JSONArray(mSharedPreferences.getString("feeddata-app", "[]"));
-            } catch (JSONException e) {
-                data = new JSONArray();
-                e.printStackTrace();
-            }
+            data = global.getFeed(mSharedPreferences, 0);
             //System.out.println("cached Data length: "+data.length());
             if (data.length() != 0) {
-                titleFontSize = mSharedPreferences.getString(context.getString(R.string.widget_theme_pref), "16");
+                titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
                 try {
                     lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
                 } catch (JSONException e) {
@@ -343,6 +333,7 @@ public class MainActivity extends Activity {
                     break;
                 case 3:
                 case 4:
+                case 5:
                     themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
                     break;
             }
@@ -415,12 +406,10 @@ public class MainActivity extends Activity {
                 }
                 // collect data
                 String name = "";
-                //String url = "";
-                //String permalink = ""; // gets this data straight from JSON
                 String thumbnail = "";
                 String domain = "";
                 String id = "";
-                String userLikes = "false";
+                String userLikes = "null";
                 int score = 0;
                 int numcomments = 0;
                 try {
@@ -534,26 +523,13 @@ public class MainActivity extends Activity {
             }
         }
 
-        public void updateVoteStat(int position, String val) {
-            try {
-                data.getJSONObject(position).getJSONObject("data").put("likes", val);
-                // commit to shared prefs
-                mEditor.putString("feeddata-app", data.toString());
-                mEditor.commit();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void updateVoteStatWithIdCheck(int position, String id, String val) {
+        public void updateUiVote(int position, String id, String val) {
             try {
                 // Incase the feed updated after opening reddinator view, check that the id's match to update the correct view.
                 boolean recordexists = data.getJSONObject(position).getJSONObject("data").getString("name").equals(id);
                 if (recordexists) {
+                    // update in current data (already updated in saved feed)
                     data.getJSONObject(position).getJSONObject("data").put("likes", val);
-                    // commit to shared prefs
-                    mEditor.putString("feeddata-app", data.toString());
-                    mEditor.commit();
                     // refresh view; unfortunately we have to refresh them all :( invalidateViewAtPosition(); please android?
                     listView.invalidateViews();
                 }
@@ -571,6 +547,7 @@ public class MainActivity extends Activity {
             DeleteRecursive(new File(getCacheDir() + "/thumbcache-app"));
         }
 
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         private void DeleteRecursive(File fileOrDirectory) {
 
             if (fileOrDirectory.isDirectory())
@@ -722,8 +699,8 @@ public class MainActivity extends Activity {
                                 }
                                 i++;
                             }
-                            mEditor.putString("feeddata-app", data.toString());
-                            mEditor.commit();
+                            // save feed
+                            global.setFeed(prefs, 0, data);
                         }
                     } else {
                         return (long) 0;
@@ -739,9 +716,8 @@ public class MainActivity extends Activity {
                         if (data.length() == 0) {
                             endOfFeed = true;
                         }
-                        mEditor.putString("feeddata-app", data.toString());
-                        mEditor.commit();
-
+                        // save feed
+                        global.setFeed(prefs, 0, data);
                     } else {
                         return (long) 0;
                     }
@@ -836,25 +812,28 @@ public class MainActivity extends Activity {
             protected void onPostExecute(String result) {
                 if (result.equals("OK")) {
                     // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
+                    String value = "null";
                     switch (direction) {
                         case -1:
                             upvotebtn.setImageResource(R.drawable.upvote);
                             downvotebtn.setImageResource(R.drawable.downvote_active);
-                            listAdapter.updateVoteStat(listposition, "false");
+                            value = "false";
                             break;
 
                         case 0:
                             upvotebtn.setImageResource(R.drawable.upvote);
                             downvotebtn.setImageResource(R.drawable.downvote);
-                            listAdapter.updateVoteStat(listposition, "null");
+                            value = "null";
                             break;
 
                         case 1:
                             upvotebtn.setImageResource(R.drawable.upvote_active);
                             downvotebtn.setImageResource(R.drawable.downvote);
-                            listAdapter.updateVoteStat(listposition, "true");
+                            value = "true";
                             break;
                     }
+                    listAdapter.updateUiVote(listposition, redditid, value);
+                    global.setItemVote(prefs, 0, listposition, redditid, value);
                 } else if (result.equals("LOGIN")) {
                     showLoginDialog();
                 } else {

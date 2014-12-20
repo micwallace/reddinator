@@ -21,7 +21,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -57,7 +56,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private JSONArray data;
     private GlobalObjects global;
     private SharedPreferences mSharedPreferences;
-    private Editor mEditor;
     private String titleFontSize = "16";
     private int[] themeColors;
     private boolean loadCached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
@@ -70,7 +68,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         global = ((GlobalObjects) context.getApplicationContext());
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        mEditor = mSharedPreferences.edit();
         //System.out.println("New view factory created for widget ID:"+appWidgetId);
         // Set thread network policy to prevent network on main thread exceptions.
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -79,14 +76,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // when a user clicks load more and a new view factory needs to be created we don't want to bypass cache, we want to load the cached items
         int loadType = global.getLoadType();
         if (!global.getBypassCache() || loadType == GlobalObjects.LOADTYPE_LOADMORE) {
-            //System.out.println("This is not a standard user request or auto update, checking for cache");
-            try {
-                data = new JSONArray(mSharedPreferences.getString("feeddata-" + appWidgetId, "[]"));
-            } catch (JSONException e) {
-                data = new JSONArray();
-                e.printStackTrace();
-            }
-            //System.out.println("cached Data length: "+data.length());
+            // load cached data
+            data = global.getFeed(mSharedPreferences, appWidgetId);
             if (data.length() != 0) {
                 titleFontSize = mSharedPreferences.getString(context.getString(R.string.widget_theme_pref), "16");
                 try {
@@ -155,7 +146,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             // build normal item
             String title = "";
-            String userlikes = "";
             String url = "";
             String permalink = "";
             String thumbnail = "";
@@ -166,7 +156,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             try {
                 JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                 title = tempobj.getString("title");
-                userlikes = tempobj.getString("likes");
+                //userlikes = tempobj.getString("likes");
                 domain = tempobj.getString("domain");
                 id = tempobj.getString("name");
                 url = tempobj.getString("url");
@@ -199,12 +189,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Intent i = new Intent();
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, id);
-            extras.putString("userlikes", userlikes);
+            extras.putInt("itemposition", position);
             extras.putString(WidgetProvider.ITEM_URL, url);
             extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
-            extras.putString(WidgetProvider.ITEM_TXT, title);
-            extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
-            extras.putInt(WidgetProvider.ITEM_VOTES, score);
             i.putExtras(extras);
             row.setOnClickFillInIntent(R.id.listrow, i);
             // load thumbnail if they are enabled for this widget
@@ -286,6 +273,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         DeleteRecursive(new File(mContext.getCacheDir() + "/thumbcache-app"));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void DeleteRecursive(File fileOrDirectory) {
 
         if (fileOrDirectory.isDirectory())
@@ -382,8 +370,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         }
                         i++;
                     }
-                    mEditor.putString("feeddata-" + appWidgetId, data.toString());
-                    mEditor.commit();
+                    // Save feed data
+                    global.setFeed(mSharedPreferences, appWidgetId, data);
                 }
             } else {
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
@@ -402,8 +390,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 if (data.length() == 0) {
                     endOfFeed = true;
                 }
-                mEditor.putString("feeddata-" + appWidgetId, data.toString());
-                mEditor.commit();
+                // Save feed data
+                global.setFeed(mSharedPreferences, appWidgetId, data);
             } else {
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
                 return;
@@ -463,6 +451,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             case 4:
                 layout = R.layout.widgetdarkholo;
                 break;
+            case 5:
+                layout = R.layout.widgettrans;
+                break;
         }
         RemoteViews views = new RemoteViews(mContext.getPackageName(), layout);
         views.setViewVisibility(R.id.srloader, View.INVISIBLE);
@@ -487,6 +478,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 break;
             case 3:
             case 4:
+            case 5:
                 themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
                 break;
         }

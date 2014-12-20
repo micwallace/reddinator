@@ -37,13 +37,8 @@ import android.widget.RemoteViews;
 public class WidgetProvider extends AppWidgetProvider {
     public static String ITEM_URL = "ITEM_URL";
     public static String ITEM_PERMALINK = "ITEM_PERMALINK";
-    public static String ITEM_TXT = "ITEM_TXT";
     public static String ITEM_ID = "ITEM_ID";
-    public static String ITEM_VOTES = "ITEM_VOTES";
-    public static String ITEM_DOMAIN = "ITEM_DOMAIN";
     public static String ITEM_CLICK = "ITEM_CLICK";
-    public static String ACTION_WIDGET_CLICK_PREFS = "Action_prefs";
-    public static String APPWIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
     public static String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
     public static String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
     private PendingIntent updateIntent = null;
@@ -60,7 +55,6 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @SuppressWarnings("deprecation")
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop) {
-        final int numOfWidgetIds = appWidgetIds.length;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Perform this loop procedure for each App Widget that belongs to this provider
@@ -116,6 +110,9 @@ public class WidgetProvider extends AppWidgetProvider {
                     break;
                 case 4:
                     layout = R.layout.widgetdarkholo;
+                    break;
+                case 5:
+                    layout = R.layout.widgettrans;
                     break;
             }
 
@@ -195,6 +192,7 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onEnabled(context);
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -316,6 +314,9 @@ public class WidgetProvider extends AppWidgetProvider {
                 break;
             case 4:
                 layoutId = R.layout.widgetdarkholo;
+                break;
+            case 5:
+                layoutId = R.layout.widgettrans;
                 break;
         }
         return layoutId;

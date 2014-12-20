@@ -23,6 +23,10 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GlobalObjects extends Application {
     private ArrayList<String> mSubredditList;
     static int LOADTYPE_LOAD = 0;
@@ -78,6 +82,54 @@ public class GlobalObjects extends Application {
         itemupdate.putInt("position", position);
         itemupdate.putString("id", id);
         itemupdate.putString("val", val);
+    }
+
+    // methods for setting/getting vote statuses, this keeps vote status persistent accross apps and widgets
+    public void setItemVote(SharedPreferences prefs, int widgetId, int position, String id, String val) {
+        try {
+            JSONArray data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
+            JSONObject record = data.getJSONObject(position).getJSONObject("data");
+            if (record.getString("name").equals(id)) {
+                data.getJSONObject(position).getJSONObject("data").put("likes", val);
+                // commit to shared prefs
+                SharedPreferences.Editor mEditor = prefs.edit();
+                mEditor.putString("feeddata-" + (widgetId == 0 ? "app" : widgetId), data.toString());
+                mEditor.apply();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // set get current feeds from cache
+    public void setFeed(SharedPreferences prefs, int widgetId, JSONArray feeddata) {
+        SharedPreferences.Editor mEditor = prefs.edit();
+        mEditor.putString("feeddata-" + (widgetId == 0 ? "app" : widgetId), feeddata.toString());
+        mEditor.apply();
+    }
+
+    public JSONArray getFeed(SharedPreferences prefs, int widgetId) {
+        JSONArray data;
+        try {
+            data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
+        } catch (JSONException e) {
+            data = new JSONArray();
+            e.printStackTrace();
+        }
+        return data;
+    }
+
+    public JSONObject getFeedObject(SharedPreferences prefs, int widgetId, int position, String redditId) {
+        try {
+            JSONArray data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
+            JSONObject item = data.getJSONObject(position).getJSONObject("data");
+            if (item.getString("name").equals(redditId)) {
+                return item;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // cached data

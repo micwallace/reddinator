@@ -22,6 +22,7 @@ import java.util.HashMap;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,10 +45,12 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
 
@@ -59,10 +62,11 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private MenuItem upvote;
     private MenuItem downvote;
 
+    private String userLikes = null; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
     private int curvote = 0;
-    private String userLikes = null; // string version of curvote, parsed when options menu generated.
     private int feedposition = 0;
+    private int widgetId = 0;
 
     private class TabInfo {
         private String tag;
@@ -135,8 +139,15 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
         }
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-        userLikes = getIntent().getStringExtra("userlikes");
+        widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         feedposition = getIntent().getIntExtra("itemposition", 0);
+        // Get selected item from feed and user vote preference
+        JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
+        try {
+            userLikes = currentFeedItem.getString("likes");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         System.out.println("User likes post: " + userLikes);
     }
 
@@ -158,7 +169,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sharemenu, menu);
         // set options menu view
-        MenuItem menuItem = menu.findItem(R.id.menu_share);
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
 
@@ -345,6 +355,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         private void setUpdateRecord(String val) {
             global.setItemUpdate(feedposition, redditid, val);
+            // save in feed preferences
+            global.setItemVote(prefs, widgetId, feedposition, redditid, val);
         }
     }
 

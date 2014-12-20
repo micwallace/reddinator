@@ -18,10 +18,12 @@
 package au.com.wallaceit.reddinator;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -118,10 +120,8 @@ public class TabWebFragment extends Fragment {
             mWebView.getSettings().setDefaultFontSize(fontsize);
             mChromeClient = newchromeclient;
             cookiestr = Uri.encode(cookiestr);
-            System.out.println("check if Cookie, add to webview from RedditData; cookiedata= " + cookiestr);
             // set cookie if provided
-            if (!cookiestr.equals("")) {
-
+            if (commentswv && !cookiestr.equals("")) {
                 CookieSyncManager.createInstance(mWebView.getContext());
                 android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
                 cookieManager.setAcceptCookie(true);
@@ -131,7 +131,18 @@ public class TabWebFragment extends Fragment {
             }
 
             mWebView.setWebChromeClient(mChromeClient);
-            mWebView.setWebViewClient(new WebViewClient());
+            mWebView.setWebViewClient(new WebViewClient() {
+                boolean clearhistory = true;
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    if (clearhistory) {
+                        clearhistory = false;
+                        mWebView.clearHistory();
+                    }
+                    super.onPageFinished(view, url);
+                }
+            });
             mWebView.loadUrl(url);
             mFirstTime = false;
             //System.out.println("Created fragment");
@@ -170,6 +181,7 @@ public class TabWebFragment extends Fragment {
 
         FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 
+        @TargetApi(Build.VERSION_CODES.KITKAT)
         @Override
         public void onShowCustomView(View view, CustomViewCallback callback) {
             // if a view already exists then immediately terminate the new one
@@ -185,14 +197,15 @@ public class TabWebFragment extends Fragment {
             mVideoFrame.setLayoutParams(LayoutParameters);
             mVideoFrame.setBackgroundResource(android.R.color.black);
             mVideoFrame.addView(view);
+            mVideoFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             view.setLayoutParams(LayoutParameters);
             mFullSView = view;
             mFullSCallback = callback;
-            // hide actionbar
-            mActivity.getActionBar().hide();
             // set fullscreen
-            ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mVideoFrame.setVisibility(View.VISIBLE);
+
             ((Activity) mContext).setContentView(mVideoFrame);
         }
 
@@ -206,10 +219,8 @@ public class TabWebFragment extends Fragment {
                 mFullSView = null;
                 mVideoFrame.setVisibility(View.GONE);
                 mFullSCallback.onCustomViewHidden();
-                // Show the content view.
-                mActivity.getActionBar().show();
                 // remove fullscreen
-                ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 mTabcontainer.setVisibility(View.VISIBLE);
                 ((Activity) mContext).setContentView(mTabcontainer);
             }
