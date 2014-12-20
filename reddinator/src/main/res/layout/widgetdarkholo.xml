@@ -13,7 +13,7 @@
         android:background="#5F99CF"
         android:clickable="false"
         android:paddingRight="2dp"
-        android:paddingLeft="2dp">
+        android:paddingLeft="5dp">
 
         <ImageButton
             android:id="@+id/prefsbutton"

@@ -272,7 +272,7 @@ public class RedditData {
         ArrayList<String> mysrlist = new ArrayList<String>();
         String logresult = "1";
         if (modhash.equals("")) {
-            if (!uname.equals("") || !pword.equals("")) {
+            if (!uname.equals("") && !pword.equals("")) {
                 logresult = login(false);
             } else {
                 logresult = "Stored credentials have not been loaded";
@@ -283,7 +283,7 @@ public class RedditData {
             String url = "https://ssl.reddit.com/subreddits/mine.json";
             JSONArray resultjson = new JSONArray();
             try {
-                resultjson = getJSONFromPost(url).getJSONObject("data").getJSONArray("children");
+                resultjson = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -363,6 +363,8 @@ public class RedditData {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (is == null)
+            return null;
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
@@ -370,7 +372,7 @@ public class RedditData {
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
-            if (is != null) is.close();
+            is.close();
             json = sb.toString();
         } catch (Exception e) {
             System.out.println("Error converting result " + e.toString());
