@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -76,10 +77,8 @@ public class TabWebFragment extends Fragment {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
             // work out the url this instance should load
             boolean commentswv = false;
-            String cookiestr = "";
             if (this.getArguments() != null) {
                 commentswv = this.getArguments().getBoolean("loadcom", false);
-                cookiestr = this.getArguments().getString("cookie");
             }
 
             int fontsize;
@@ -118,17 +117,9 @@ public class TabWebFragment extends Fragment {
             mWebView.getSettings().setBuiltInZoomControls(true);
             mWebView.getSettings().setDisplayZoomControls(true);
             mWebView.getSettings().setDefaultFontSize(fontsize);
+            // enable cookies
+            CookieManager.getInstance().setAcceptCookie(true);
             mChromeClient = newchromeclient;
-            cookiestr = Uri.encode(cookiestr);
-            // set cookie if provided
-            if (commentswv && !cookiestr.equals("")) {
-                CookieSyncManager.createInstance(mWebView.getContext());
-                android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
-                cookieManager.setAcceptCookie(true);
-                cookieManager.setCookie(".reddit.com", "reddit_session=" + cookiestr);
-                CookieSyncManager.getInstance().sync();
-                CookieSyncManager.getInstance().startSync();
-            }
 
             mWebView.setWebChromeClient(mChromeClient);
             mWebView.setWebViewClient(new WebViewClient() {

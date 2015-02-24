@@ -835,7 +835,7 @@ public class MainActivity extends Activity {
                     listAdapter.updateUiVote(listposition, redditid, value);
                     global.setItemVote(prefs, 0, listposition, redditid, value);
                 } else if (result.equals("LOGIN")) {
-                    showLoginDialog();
+                    global.mRedditData.initiateLogin(MainActivity.this);
                 } else {
                     // show error
                     Toast.makeText(MainActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
@@ -863,58 +863,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    // Login stuff
-    private void showLoginDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // Get the layout inflater
-        LayoutInflater inflater = getLayoutInflater();
-        final View v = inflater.inflate(R.layout.logindialog, null);
-
-        builder.setView(v)
-                // Add action buttons
-                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        final String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
-                        final String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
-                        final boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        dialog.cancel();
-                        // run login procedure
-                        final ProgressDialog logindialog = android.app.ProgressDialog.show(MainActivity.this, "", ("Logging in..."), true);
-                        // Set thread network policy to prevent network on main thread exceptions.
-                        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                        StrictMode.setThreadPolicy(policy);
-                        Thread t = new Thread() {
-                            public void run() {
-                                // login
-                                final String result = global.mRedditData.checkLogin(prefs, username, password, rememberaccn); // request "remember" cookie if account is being saved
-
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        logindialog.dismiss();
-                                        if (result.equals("1")) {
-                                            if (rememberaccn) { // store account if requested & login result is OK
-                                                global.setAccount(prefs, username, password, true);
-                                            }
-                                        } else {
-                                            // show error
-                                            Toast.makeText(MainActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                            }
-                        };
-                        t.start();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .setTitle("Login to Reddit");
-        builder.create().show();
-    }
 }
 
 

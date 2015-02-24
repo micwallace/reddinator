@@ -63,16 +63,14 @@ public class PrefsActivity extends PreferenceActivity {
         if (logoutbtn == null) {
             return;
         }
-        if ((mSharedPreferences.getString("uname", "").equals("") && mSharedPreferences.getString("pword", "").equals("")) && (mSharedPreferences.getString("cook", "").equals("") && mSharedPreferences.getString("modhash", "").equals(""))) {
+        if (mSharedPreferences.getString("oauthtoken", "").equals("")) {
             logoutbtn.setEnabled(false);
         } else {
             logoutbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putString("uname", "");
-                    editor.putString("pword", "");
-                    editor.putString("cook", "");
+                    editor.putString("oauthtoken", "");
                     editor.putString("modhash", "");
                     editor.apply();
                     // clear current purge from active objects

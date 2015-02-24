@@ -345,7 +345,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                         break;
                 }
             } else if (result.equals("LOGIN")) {
-                showLoginDialog();
+                global.mRedditData.initiateLogin(ViewRedditActivity.this);
             } else {
                 // show error
                 Toast.makeText(ViewRedditActivity.this, "Voting error: " + result, Toast.LENGTH_LONG).show();
@@ -376,7 +376,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private void initialiseTabHost(Bundle args) {
         Bundle rargs = new Bundle();
         rargs.putBoolean("loadcom", true);
-        rargs.putString("cookie", global.mRedditData.getSessionCookie());
+        //rargs.putString("cookie", global.mRedditData.getSessionCookie());
         mTabHost = (TabHost) findViewById(android.R.id.tabhost);
         mTabHost.setup();
         if (prefs.getString("widgetthemepref", "1").equals("1")) {
@@ -454,58 +454,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             ft.commit();
             this.getSupportFragmentManager().executePendingTransactions();
         }
-    }
-
-    // Login stuff
-    private void showLoginDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
-        // Get the layout inflater
-        LayoutInflater inflater = getLayoutInflater();
-        final View v = inflater.inflate(R.layout.logindialog, null);
-
-        builder.setView(v)
-                // Add action buttons
-                .setPositiveButton("Login", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        final String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
-                        final String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
-                        final boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        dialog.cancel();
-                        // run login procedure
-                        final ProgressDialog logindialog = android.app.ProgressDialog.show(ViewRedditActivity.this, "", ("Logging in..."), true);
-                        Thread t = new Thread() {
-                            public void run() {
-                                // login
-                                final String result = global.mRedditData.checkLogin(prefs, username, password, rememberaccn); // request "remember" cookie if account is being saved
-                                // Set thread network policy to prevent network on main thread exceptions.
-                                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                                StrictMode.setThreadPolicy(policy);
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        logindialog.dismiss();
-                                        if (result.equals("1")) {
-                                            if (rememberaccn) { // store account if requested & login result is OK
-                                                global.setAccount(prefs, username, password, true);
-                                            }
-                                        } else {
-                                            // show error
-                                            Toast.makeText(ViewRedditActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-                            }
-                        };
-                        t.start();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .setTitle("Login to Reddit");
-        builder.create().show();
     }
 
 }

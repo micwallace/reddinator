@@ -44,6 +44,10 @@
             android:name="au.com.wallaceit.reddinator.AccountWebView"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
+        <activity
+            android:name="au.com.wallaceit.reddinator.OAuthView"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"></activity>
 
         <service
             android:name="au.com.wallaceit.reddinator.Rservice"

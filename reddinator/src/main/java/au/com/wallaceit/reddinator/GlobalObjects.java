@@ -53,18 +53,6 @@ public class GlobalObjects extends Application {
         }
     }
 
-    public void setAccount(SharedPreferences prefs, String uname, String pword, boolean remember) {
-        // save to prefs
-        if (remember) {
-            SharedPreferences.Editor prefsedit = prefs.edit();
-            prefsedit.putString("uname", uname);
-            prefsedit.putString("pword", pword);
-            prefsedit.commit();
-        }
-        // set in reddit data
-        mRedditData.loadTempAccn(uname, pword);
-    }
-
     // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume
     Bundle itemupdate;
 

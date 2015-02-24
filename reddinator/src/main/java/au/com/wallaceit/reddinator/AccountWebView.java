@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
+import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -63,17 +64,8 @@ public class AccountWebView extends Activity {
         });
         wv.getSettings().setJavaScriptEnabled(true);
         wv.getSettings().setDefaultFontSize(22);
-        // set session cookie
-        String cookie = Uri.encode(global.mRedditData.getSessionCookie());
-        System.out.println("CookieString: " + cookie);
-        if (!cookie.equals("")) {
-            CookieSyncManager.createInstance(wv.getContext());
-            android.webkit.CookieManager cookieManager = android.webkit.CookieManager.getInstance();
-            cookieManager.setAcceptCookie(true);
-            cookieManager.setCookie(".reddit.com", "reddit_session=" + cookie);
-            CookieSyncManager.getInstance().sync();
-            CookieSyncManager.getInstance().startSync();
-        }
+        // enable cookies
+        CookieManager.getInstance().setAcceptCookie(true);
         wv.loadUrl("http://www.reddit.com/message/inbox.compact");
     }
 

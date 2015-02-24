@@ -139,10 +139,10 @@ public class SubredditSelectActivity extends ListActivity {
         importBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if (mSharedPreferences.getString("uname", "").equals("") || mSharedPreferences.getString("pword", "").equals("")) {
-                    showLoginDialog();
-                } else {
+                if (global.mRedditData.isLoggedIn()) {
                     showImportDialog();
+                } else {
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this);
                 }
             }
         });
@@ -301,50 +301,19 @@ public class SubredditSelectActivity extends ListActivity {
         builder.show();
     }
 
-    // show the import/login dialog
-    private void showLoginDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        // Get the layout inflater
-        LayoutInflater inflater = getLayoutInflater();
-        final View v = inflater.inflate(R.layout.logindialog, null);
-        v.findViewById(R.id.clearlist).setVisibility(View.VISIBLE);
-        builder.setView(v)
-                // Add action buttons
-                .setPositiveButton("Import", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        String username = ((EditText) v.findViewById(R.id.username)).getText().toString();
-                        String password = ((EditText) v.findViewById(R.id.password)).getText().toString();
-                        boolean clearlist = ((CheckBox) v.findViewById(R.id.clearlist)).isChecked();
-                        boolean rememberaccn = ((CheckBox) v.findViewById(R.id.rememberaccn)).isChecked();
-                        global.setAccount(mSharedPreferences, username, password, false); // load temp account
-                        dialog.cancel();
-                        // import
-                        importSubreddits(clearlist, rememberaccn, username, password); // remember accn for first time import
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                })
-                .setTitle("Login to Reddit");
-        builder.create().show();
-    }
-
     private void showImportDialog() {
         AlertDialog importDialog = new AlertDialog.Builder(SubredditSelectActivity.this).create(); //Read Update
         importDialog.setTitle("Replace current list?");
 
         importDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                importSubreddits(true, false, null, null);
+                importSubreddits(true);
             }
         });
 
         importDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                importSubreddits(false, false, null, null);
+                importSubreddits(false);
             }
         });
 
@@ -352,7 +321,7 @@ public class SubredditSelectActivity extends ListActivity {
     }
 
     // import personal subreddits
-    private void importSubreddits(final boolean clearlist, final boolean rememberaccn, final String username, final String password) {
+    private void importSubreddits(final boolean clearlist) {
         // use a thread for searching; show dialog
         // Set thread network policy to prevent network on main thread exceptions.
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -383,10 +352,6 @@ public class SubredditSelectActivity extends ListActivity {
                                         }
                                     }).show();
                         } else {
-                            // save account to prefs if selected
-                            if (rememberaccn) {
-                                global.setAccount(mSharedPreferences, username, password, true); // true saves a persistent account
-                            }
                             mListAdapter.notifyDataSetChanged();
                         }
                     }
