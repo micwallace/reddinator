@@ -65,7 +65,6 @@ public class SubredditSelectActivity extends ListActivity {
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
-        global.loadSavedAccn(mSharedPreferences);
         // set theme colors
         if (mSharedPreferences.getString("widgetthemepref", "1").equals("1")) {
             findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme

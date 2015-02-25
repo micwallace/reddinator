@@ -45,7 +45,6 @@ import android.widget.TextView.OnEditorActionListener;
 public class ViewAllSubredditsActivity extends ListActivity {
     private GlobalObjects global;
     private ArrayList<String> sreddits;
-    private RedditData rdata;
     private JSONArray srjson;
     private ArrayAdapter<String> listadapter;
     private EditText searchbox;
@@ -168,8 +167,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         Thread t = new Thread() {
             public void run() {
                 // get all popular subreddits
-                rdata = new RedditData();
-                srjson = rdata.getSubredditSearch(query);
+                srjson = global.mRedditData.getSubredditSearch(query);
                 // put into arraylist
                 sreddits = new ArrayList<String>();
                 int i = 0;
@@ -213,8 +211,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         @Override
         protected ArrayList<String> doInBackground(String... string) {
             // load popular subreddits
-            rdata = new RedditData();
-            srjson = rdata.getSubreddits();
+            srjson = global.mRedditData.getSubreddits();
             // put into arraylist
             ArrayList<String> popreddits = new ArrayList<String>();
             int i = 0;

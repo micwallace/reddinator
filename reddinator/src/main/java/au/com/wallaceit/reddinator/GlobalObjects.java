@@ -20,6 +20,7 @@ package au.com.wallaceit.reddinator;
 import java.util.ArrayList;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -35,22 +36,14 @@ public class GlobalObjects extends Application {
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
-    private boolean accnLoaded = false;
 
-    public GlobalObjects() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
         if (mSubredditList == null) {
-            mSubredditList = new ArrayList<String>();
+            mSubredditList = new ArrayList<>();
         }
-
-        mRedditData = new RedditData();
-    }
-
-    // account control
-    public void loadSavedAccn(SharedPreferences prefs) {
-        if (!accnLoaded) {
-            mRedditData.loadAccn(prefs);
-            accnLoaded = true;
-        }
+        mRedditData = new RedditData(GlobalObjects.this.getApplicationContext());
     }
 
     // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume

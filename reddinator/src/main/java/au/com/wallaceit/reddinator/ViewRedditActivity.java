@@ -116,7 +116,6 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         super.onCreate(savedInstanceState);
         global = ((GlobalObjects) ViewRedditActivity.this.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
-        global.loadSavedAccn(prefs);
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);

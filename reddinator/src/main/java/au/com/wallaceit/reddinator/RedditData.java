@@ -20,11 +20,15 @@ package au.com.wallaceit.reddinator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -39,10 +43,13 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,6 +60,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -60,18 +68,38 @@ public class RedditData {
     private SharedPreferences sharedPrefs;
     private DefaultHttpClient httpclient;
     static JSONObject jObj = null;
-    static String json = "";
     private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,subscribe";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
-    private String modhash = null;
+    private String userAgent;
+    private String modhash = "";
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
 
-    RedditData() {
-
+    RedditData(Context context) {
+        // set user agent
+        userAgent = "android:au.com.wallaceit.reddinator:v";
+        try {
+            PackageInfo manager = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            userAgent += manager.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        userAgent += " (by /u/micwallace)";
+        // load account
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        modhash = sharedPrefs.getString("modhash", "");
+        String tokenStr = sharedPrefs.getString("oauthtoken", "");
+        if (!tokenStr.equals("")) {
+            try {
+                oauthToken = new JSONObject(tokenStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                oauthToken = null;
+            }
+        }
     }
 
     // ACCOUNT CONTROL
@@ -82,24 +110,8 @@ public class RedditData {
         context.startActivity(loginintent);
     }
 
-    public void loadAccn(SharedPreferences prefs) {
-
-        modhash = prefs.getString("modhash", "");
-        String tokenStr = prefs.getString("oauthtoken", "");
-        if (!tokenStr.equals("")) {
-            try {
-                oauthToken = new JSONObject(tokenStr);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                oauthToken = null;
-            }
-        }
-        // store shared prefs editor to commit any new tokens & modhashes
-        sharedPrefs = prefs;
-    }
-
     public void purgeAccountData() {
-        modhash = null;
+        modhash = "";
         oauthToken = null;
     }
 
@@ -108,7 +120,7 @@ public class RedditData {
         JSONArray subreddits = new JSONArray();
         String url = STANDARD_ENDPOINT + "/subreddits/popular.json?limit=50";
         try {
-            subreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+            subreddits = getJSONFromUrl(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -119,7 +131,7 @@ public class RedditData {
         JSONArray subreddits = new JSONArray();
         String url = STANDARD_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
-            subreddits = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+            subreddits = getJSONFromUrl(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -129,14 +141,13 @@ public class RedditData {
     public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid) {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + (subreddit.equals("Front Page") ? "" : "/r/" + subreddit) + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        JSONObject result = new JSONObject();
         JSONArray feed = new JSONArray();
         try {
-            if (loggedIn) {
-                System.out.println(getJSONFromPost(url, null, false));
-                //feed = getJSONFromPost(url, null, false).getJSONObject("data").getJSONArray("children"); // oauth required post apparently
-            } else {
-                feed = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children"); // get the feed items
-            }
+            result = getJSONFromUrl(url, true); // use oauth if logged in
+
+            if (result != null)
+                feed = result.getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             feed.put("-1"); // error indicator
             e.printStackTrace();
@@ -157,9 +168,9 @@ public class RedditData {
         if (modhash.equals("")) {
             // TODO: Get new modhash
         }
+
         String result = "";
         JSONObject resultjson;
-        //if (!modhash.equals("")) {
         resultjson = new JSONObject();
         String url = OAUTH_ENDPOINT + "/api/vote?id=" + id + "&dir=" + String.valueOf(direction) + "&uh=" + modhash + "&api_type=json";
         try {
@@ -168,12 +179,6 @@ public class RedditData {
             if (resultjson.getJSONArray("errors").get(0) != null) {
                 JSONArray firsterror = (JSONArray) errors.get(0);
                 if (firsterror.get(0).equals("USER_REQUIRED")) {
-                    // check if creds exist to reauthenticate
-                        /*if (!uname.equals("") && !pword.equals("")) {
-                            if (login(true).equals("1")) { // try getting new session, if it fails show login prompt otherwise try voting again.
-                                return vote(id, direction);
-                            }
-                        }*/
                     oauthToken = null; // bearer token invalid, nullify
                     result = "LOGIN"; // no creds stored or login failed.
                 }
@@ -188,9 +193,6 @@ public class RedditData {
                 e.printStackTrace();
             }
         }
-        //} else {
-        //result = "LOGIN";
-        //}
 
         return result;
     }
@@ -204,12 +206,10 @@ public class RedditData {
         if (isTokenExpired()) {
             refreshToken();
         }
-
-        //if (logresult.equals("1")) {
         String url = OAUTH_ENDPOINT + "/subreddits/mine.json";
         JSONArray resultjson = new JSONArray();
         try {
-            resultjson = getJSONFromUrl(url).getJSONObject("data").getJSONArray("children");
+            resultjson = getJSONFromUrl(url, true).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -222,10 +222,7 @@ public class RedditData {
             }
             i++;
         }
-        // System.out.println("Import Subreddit Output: " + mysrlist.toString());
-        //} else {
-        //mysrlist.add("Error: " + logresult);
-        //}
+
         return mysrlist;
     }
 
@@ -245,14 +242,16 @@ public class RedditData {
         ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
         //cookieStore = new BasicCookieStore();
         httpclient = new DefaultHttpClient(conMgr, params);
+        httpclient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
         //httpclient.setCookieStore(cookieStore);
         return true;
     }
 
     // HTTP Get Request
-    private JSONObject getJSONFromUrl(String url) {
+    private JSONObject getJSONFromUrl(String url, boolean useAuth) {
         // create null object to return on errors
-        jObj = new JSONObject();
+        JSONObject jObj = new JSONObject();
+        String json;
         // create client if null
         if (httpclient == null) {
             createHttpClient();
@@ -261,11 +260,19 @@ public class RedditData {
         // Making HTTP request
         try {
             HttpGet httpget = new HttpGet(url);
-            if (isLoggedIn()) {
-                httpget.addHeader("Authorization", getTokenValue("token_type") + " " + getTokenValue("access_token"));
+            if (isLoggedIn() && useAuth) {
+                String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
+                System.out.println("Logged In, setting token header: " + tokenStr);
+                httpget.addHeader("Authorization", tokenStr);
             }
+
             HttpResponse httpResponse = httpclient.execute(httpget);
             HttpEntity httpEntity = httpResponse.getEntity();
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                //System.out.println("Http Status: " + httpResponse.getStatusLine());
+                //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
+                return null;
+            }
             is = httpEntity.getContent();
 
         } catch (UnsupportedEncodingException e) {
@@ -278,24 +285,22 @@ public class RedditData {
             e.printStackTrace();
             return jObj;
         }
-
         // read data
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 sb.append(line).append("\n");
             }
             is.close();
+            //System.out.println("Http Body: " + sb.toString());
             json = sb.toString();
         } catch (Exception e) {
             //Log.e("Buffer Error", "Error converting result " + e.toString());
             e.printStackTrace();
             return jObj;
         }
-
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
@@ -311,6 +316,8 @@ public class RedditData {
 
     // HTTPS POST Request
     private JSONObject getJSONFromPost(String url, ArrayList data, boolean addOauthHeaders) {
+        JSONObject jObj = new JSONObject();
+        String json = "";
         InputStream is = null;
         // create client if null
         if (httpclient == null) {
@@ -321,25 +328,27 @@ public class RedditData {
             if (addOauthHeaders) {
                 // For oauth token retrieval and refresh
                 httppost.addHeader("Authorization", "Basic " + Base64.encodeToString((OAUTH_CLIENTID + ":").getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
-            } else if (isLoggedIn()) {
-                httppost.addHeader("Authorization", getTokenValue("token_type") + " " + getTokenValue("access_token"));
+            }
+            if (isLoggedIn()) {
+                String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
+                System.out.println("Logged In, setting token header: " + tokenStr);
+                httppost.addHeader("Authorization", tokenStr);
             }
             if (data != null) httppost.setEntity(new UrlEncodedFormEntity(data));
+
             HttpResponse httpResponse = httpclient.execute(httppost);
             HttpEntity httpEntity = httpResponse.getEntity();
-            System.out.println("HTTP RESPONSE: " + httpResponse.getStatusLine().getReasonPhrase());
+            if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+                //System.out.println("Http Status: " + httpResponse.getStatusLine());
+                //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
+                return null;
+            }
             is = httpEntity.getContent();
 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
+        } catch (UnsupportedEncodingException | ClientProtocolException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (is == null) {
-            System.out.println("Input Stream is null");
-            return null;
         }
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
@@ -349,11 +358,11 @@ public class RedditData {
                 sb.append(line).append("\n");
             }
             is.close();
+            //System.out.println("Http Body: " + sb.toString());
             json = sb.toString();
         } catch (Exception e) {
             System.out.println("Error converting result " + e.toString());
         }
-        // System.out.println("HTTP response:"+json);
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
@@ -440,10 +449,13 @@ public class RedditData {
         params.add(new BasicNameValuePair("code", getTokenValue("refresh_token")));
         resultjson = getJSONFromPost(url, params, true);
         if (resultjson.has("access_token")) {
-            // login successful, set new token and save
-            oauthToken = resultjson;
+            // login successful, update token and save
             try {
-                oauthToken.put("expires_at", (new Date()).getTime() + oauthToken.getString("expires_in"));
+                oauthToken.put("access_token", resultjson.get("access_token"));
+                oauthToken.put("token_type", resultjson.get("token_type"));
+                Long expires_in = resultjson.getLong("expires_in");
+                oauthToken.put("expires_in", expires_in);
+                oauthToken.put("expires_at", (new Date()).getTime() + expires_in);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -465,36 +477,5 @@ public class RedditData {
         edit.putString("modhash", modhash);
         edit.apply();
     }
-
-    // authenticate with the given credentials and sa
-    /*private String login(boolean remember) {
-        String result;
-        String url = "https://ssl.reddit.com/api/login.json?user=" + Uri.encode(uname) + "&passwd=" + Uri.encode(pword) + "&rem=" + String.valueOf(remember) + "&api_type=json";
-        JSONObject resultjson = new JSONObject();
-        try {
-            resultjson = getJSONFromPost(url).getJSONObject("json");
-            if (resultjson.getJSONArray("errors").isNull(0)) {
-                // login successful, set session vars
-                modhash = resultjson.getJSONObject("data").getString("modhash");
-                cookieStr = resultjson.getJSONObject("data").getString("cookie");
-                // save session data and add cookie to client
-                saveCookieData();
-                setClientCookie();
-                result = "1";
-            } else {
-                // set error result
-                result = resultjson.getJSONArray("errors").getJSONArray(0).getString(1);
-                // unset account to prompt login
-                uname = "";
-                pword = "";
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            result = "JSON Parse exception";
-        }
-        System.out.println("login result: " + resultjson.toString());
-        return result;
-    }*/
-
 
 }

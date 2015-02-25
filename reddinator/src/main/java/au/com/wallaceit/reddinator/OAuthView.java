@@ -105,7 +105,6 @@ public class OAuthView extends Activity {
     }
 
     ProgressDialog loginDialog;
-
     class LoginTask extends AsyncTask<Uri, Void, Boolean> {
         @Override
         protected void onPreExecute() {

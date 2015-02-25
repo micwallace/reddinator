@@ -84,7 +84,6 @@ public class MainActivity extends Activity {
         context = MainActivity.this;
         global = ((GlobalObjects) context.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        global.loadSavedAccn(prefs);
         setContentView(R.layout.activity_main);
         // Setup actionbar
         appView = findViewById(R.id.appview);
