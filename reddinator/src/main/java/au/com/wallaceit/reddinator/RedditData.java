@@ -462,9 +462,10 @@ public class RedditData {
             try {
                 oauthToken.put("access_token", resultjson.get("access_token"));
                 oauthToken.put("token_type", resultjson.get("token_type"));
-                Long expires_in = resultjson.getLong("expires_in");
+                Long expires_in = resultjson.getLong("expires_in") - 30;
+                Long epoch = (System.currentTimeMillis() / 1000L);
                 oauthToken.put("expires_in", expires_in);
-                oauthToken.put("expires_at", (new Date()).getTime() + expires_in);
+                oauthToken.put("expires_at", (epoch + expires_in));
             } catch (JSONException e) {
                 e.printStackTrace();
                 System.out.println("oauth refresh result error: " + e.toString());

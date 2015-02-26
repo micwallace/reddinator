@@ -24,8 +24,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: au.com.wallaceit.reddinator" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="Fixing Oauth stuff.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
+    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="fixed oauth token refresh">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -103,12 +102,12 @@
       <file leaf-file-name="RedditData.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4679054" vertical-offset="5708" max-vertical-offset="7425">
-              <caret line="401" column="35" selection-start-line="401" selection-start-column="35" selection-end-line="401" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.5945946" vertical-offset="6608" max-vertical-offset="7440">
+              <caret line="466" column="57" selection-start-line="466" selection-start-column="57" selection-end-line="466" selection-end-column="57" />
               <folding>
-                <element signature="e#0#19159#0" expanded="true" />
+                <element signature="e#0#19217#0" expanded="true" />
                 <element signature="imports" expanded="true" />
-                <element signature="e#7871#7879#0" expanded="true" />
+                <element signature="e#7872#7880#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1319,7 +1318,11 @@
       <created>1424865796634</created>
       <updated>1424865796634</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="fixed oauth token refresh">
+      <created>1424939900456</created>
+      <updated>1424939900456</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1364,7 +1367,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24653888" sideWeight="0.49910232" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24653888" sideWeight="0.49910232" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3289183" sideWeight="0.49973047" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1421,7 +1424,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="quick fix of a pretty lame error" />
     <MESSAGE value="voting working really well now with account/session storage. About to add voting buttons to the app list view." />
     <MESSAGE value="Cleaning up for release, nearly there!" />
     <MESSAGE value="MainActivity listview now gets updated by reddinator if a user votes. Enhanced login/auth system. Added loading bar for ViewRedditActivity voting. Various other fixes&#10;" />
@@ -1446,7 +1448,8 @@
     <MESSAGE value="Fixed cookie problem. Most definitly final 2.1" />
     <MESSAGE value="Implemented OAUTH." />
     <MESSAGE value="Fixing Oauth stuff." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing Oauth stuff." />
+    <MESSAGE value="fixed oauth token refresh" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed oauth token refresh" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1478,9 +1481,9 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="1080" max-vertical-offset="6060">
           <caret line="72" column="5" selection-start-line="72" selection-start-column="5" selection-end-line="72" selection-end-column="5" />
           <folding>
-            <element signature="e#0#19159#0" expanded="true" />
+            <element signature="e#0#19217#0" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#7871#7879#0" expanded="true" />
+            <element signature="e#7872#7880#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1862,12 +1865,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4679054" vertical-offset="5708" max-vertical-offset="7425">
-          <caret line="401" column="35" selection-start-line="401" selection-start-column="35" selection-end-line="401" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.5945946" vertical-offset="6608" max-vertical-offset="7440">
+          <caret line="466" column="57" selection-start-line="466" selection-start-column="57" selection-end-line="466" selection-end-column="57" />
           <folding>
-            <element signature="e#0#19159#0" expanded="true" />
+            <element signature="e#0#19217#0" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#7871#7879#0" expanded="true" />
+            <element signature="e#7872#7880#0" expanded="true" />
           </folding>
         </state>
       </provider>
