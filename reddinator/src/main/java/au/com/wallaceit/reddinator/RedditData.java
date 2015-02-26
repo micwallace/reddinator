@@ -141,8 +141,13 @@ public class RedditData {
     public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid) {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + (subreddit.equals("Front Page") ? "" : "/r/" + subreddit) + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
-        JSONObject result = new JSONObject();
+        JSONObject result;
         JSONArray feed = new JSONArray();
+        if (loggedIn) {
+            if (isTokenExpired()) {
+                refreshToken();
+            }
+        }
         try {
             result = getJSONFromUrl(url, true); // use oauth if logged in
 
@@ -328,8 +333,7 @@ public class RedditData {
             if (addOauthHeaders) {
                 // For oauth token retrieval and refresh
                 httppost.addHeader("Authorization", "Basic " + Base64.encodeToString((OAUTH_CLIENTID + ":").getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
-            }
-            if (isLoggedIn()) {
+            } else if (isLoggedIn()) {
                 String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
                 System.out.println("Logged In, setting token header: " + tokenStr);
                 httppost.addHeader("Authorization", tokenStr);
@@ -339,8 +343,8 @@ public class RedditData {
             HttpResponse httpResponse = httpclient.execute(httppost);
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                //System.out.println("Http Status: " + httpResponse.getStatusLine());
-                //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
+                System.out.println("Http Status: " + httpResponse.getStatusLine());
+                System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
                 return null;
             }
             is = httpEntity.getContent();
@@ -390,14 +394,17 @@ public class RedditData {
     }
 
     private boolean isTokenExpired() {
-        Long now = (new Date()).getTime();
-        Long expiry = null;
+        Long now = (System.currentTimeMillis() / 1000L);
+        Long expiry = (long) 0;
         try {
             expiry = oauthToken.getLong("expires_at");
+            System.out.println("Token expiry timestamp: " + expiry);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return expiry < now;
+        boolean expired = expiry < now;
+        System.out.println("Token is " + (expired ? "expired" : "valid"));
+        return expired;
     }
 
     private String getTokenValue(String key) {
@@ -426,7 +433,9 @@ public class RedditData {
             // login successful, set new token and save
             oauthToken = resultjson;
             try {
-                oauthToken.put("expires_at", (new Date()).getTime() + oauthToken.getString("expires_in"));
+                Long epoch = (System.currentTimeMillis() / 1000L);
+                Long expires_at = epoch + Integer.parseInt(oauthToken.getString("expires_in"));
+                oauthToken.put("expires_at", expires_at);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -446,7 +455,7 @@ public class RedditData {
         JSONObject resultjson;
         ArrayList<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "refresh_token"));
-        params.add(new BasicNameValuePair("code", getTokenValue("refresh_token")));
+        params.add(new BasicNameValuePair("refresh_token", getTokenValue("refresh_token")));
         resultjson = getJSONFromPost(url, params, true);
         if (resultjson.has("access_token")) {
             // login successful, update token and save
@@ -458,6 +467,7 @@ public class RedditData {
                 oauthToken.put("expires_at", (new Date()).getTime() + expires_in);
             } catch (JSONException e) {
                 e.printStackTrace();
+                System.out.println("oauth refresh result error: " + e.toString());
             }
             // save session data and add cookie to client
             saveUserData();
