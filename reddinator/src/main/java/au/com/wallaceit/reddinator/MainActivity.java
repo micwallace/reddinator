@@ -183,12 +183,10 @@ public class MainActivity extends Activity {
         super.onResume();
         Bundle update = global.getItemUpdate();
         if (update != null) {
-            System.out.println("Vote update found, passing to list adapter");
             listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"));
         }
     }
 
-    @SuppressWarnings("deprecation")
     private void setThemeColors() {
         int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
         switch (themenum) {
@@ -364,7 +362,6 @@ public class MainActivity extends Activity {
             // check if its the last view and return loading view instead of normal row
             if (position == data.length()) {
                 // build load more item
-                //System.out.println("load more getViewAt("+position+") firing");
                 View loadmorerow = getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
                 TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
                 if (endOfFeed) {
@@ -457,7 +454,6 @@ public class MainActivity extends Activity {
                         view = (View) view.getParent().getParent();
                         ListVoteTask listvote = new ListVoteTask(1, view, position);
                         listvote.execute();
-                        System.out.println("Up Vote");
                     }
                 });
                 viewHolder.downvotebtn.setOnClickListener(new View.OnClickListener() {
@@ -467,32 +463,46 @@ public class MainActivity extends Activity {
                         view = (View) view.getParent().getParent();
                         ListVoteTask listvote = new ListVoteTask(-1, view, position);
                         listvote.execute();
-                        System.out.println("Down Vote");
                     }
                 });
 
                 // load thumbnail if they are enabled for this widget
                 if (loadThumbnails) {
                     // load big image if preference is set
-                    if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
-                        // check if the image is in cache
-                        String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
-                        if (new File(fileurl).exists()) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
-                            if (bitmap == null) {
-                                viewHolder.thumbview.setVisibility(View.GONE);
-                            } else {
-                                viewHolder.thumbview.setImageBitmap(bitmap);
-                                viewHolder.thumbview.setVisibility(View.VISIBLE);
+                    if (!thumbnail.equals("")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
+                        if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
+                            int resource = 0;
+                            switch (thumbnail) {
+                                case "nsfw":
+                                    resource = R.drawable.nsfw;
+                                    break;
+                                case "default":
+                                case "self":
+                                    resource = R.drawable.self_default;
+                                    break;
                             }
-                        } else {
-                            // start the image load
-                            loadImage(position, thumbnail, id);
+                            viewHolder.thumbview.setImageResource(resource);
                             viewHolder.thumbview.setVisibility(View.VISIBLE);
-                            // set image source as null to prevent an image from a previous view being used
-                            viewHolder.thumbview.setImageResource(0);
+                            //System.out.println("Loading default image: "+thumbnail);
+                        } else {
+                            // check if the image is in cache
+                            String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
+                            if (new File(fileurl).exists()) {
+                                Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
+                                if (bitmap == null) {
+                                    viewHolder.thumbview.setVisibility(View.GONE);
+                                } else {
+                                    viewHolder.thumbview.setImageBitmap(bitmap);
+                                    viewHolder.thumbview.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                // start the image load
+                                loadImage(position, thumbnail, id);
+                                viewHolder.thumbview.setVisibility(View.VISIBLE);
+                                // set image source as null to prevent an image from a previous view being used
+                                viewHolder.thumbview.setImageResource(0);
+                            }
                         }
-
                     } else {
                         viewHolder.thumbview.setVisibility(View.GONE);
                     }
@@ -653,7 +663,6 @@ public class MainActivity extends Activity {
         private boolean endOfFeed = false;
 
         public void loadMoreReddits() {
-            //System.out.println("loadMoreReddits();");
             loadReddits(true);
         }
 
@@ -678,7 +687,7 @@ public class MainActivity extends Activity {
             @Override
             protected Long doInBackground(Void... none) {
                 String curFeed = mSharedPreferences.getString("currentfeed-app", "technology");
-                System.out.println(curFeed);
+                // System.out.println("Current feed: " + curFeed);
                 String sort = mSharedPreferences.getString("sort-app", "hot");
 
                 if (loadMore) {

@@ -112,7 +112,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDestroy() {
         // no-op
-        System.out.println("Service detroyed");
+        //System.out.println("Service detroyed");
     }
 
     @Override
@@ -197,23 +197,39 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // load thumbnail if they are enabled for this widget
             if (loadThumbnails) {
                 // load big image if preference is set
-                if (!thumbnail.equals("") && !thumbnail.equals("self")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
-                    Bitmap bitmap;
-                    String fileurl = mContext.getCacheDir() + "/thumbcache-" + appWidgetId + "/" + id + ".png";
-                    // check if the image is in cache
-                    if (new File(fileurl).exists()) {
-                        bitmap = BitmapFactory.decodeFile(fileurl);
-                        saveImageToStorage(bitmap, id);
-                    } else {
-                        // download the image
-                        bitmap = loadImage(thumbnail);
-                    }
-                    if (bitmap != null) {
-                        row.setImageViewBitmap(R.id.thumbnail, bitmap);
+                if (!thumbnail.equals("")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
+                    if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
+                        int resource = 0;
+                        switch (thumbnail) {
+                            case "nsfw":
+                                resource = R.drawable.nsfw;
+                                break;
+                            case "default":
+                            case "self":
+                                resource = R.drawable.self_default;
+                                break;
+                        }
+                        row.setImageViewResource(R.id.thumbnail, resource);
                         row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
+                        //System.out.println("Loading default image: "+thumbnail);
                     } else {
-                        // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
-                        row.setViewVisibility(R.id.thumbnail, View.GONE);
+                        Bitmap bitmap;
+                        String fileurl = mContext.getCacheDir() + "/thumbcache-" + appWidgetId + "/" + id + ".png";
+                        // check if the image is in cache
+                        if (new File(fileurl).exists()) {
+                            bitmap = BitmapFactory.decodeFile(fileurl);
+                            saveImageToStorage(bitmap, id);
+                        } else {
+                            // download the image
+                            bitmap = loadImage(thumbnail);
+                        }
+                        if (bitmap != null) {
+                            row.setImageViewBitmap(R.id.thumbnail, bitmap);
+                            row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
+                        } else {
+                            // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
+                            row.setViewVisibility(R.id.thumbnail, View.GONE);
+                        }
                     }
                 } else {
                     row.setViewVisibility(R.id.thumbnail, View.GONE);

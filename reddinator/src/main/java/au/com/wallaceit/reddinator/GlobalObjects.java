@@ -17,10 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
-import java.util.ArrayList;
-
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -28,7 +25,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class GlobalObjects extends Application {
+    static final boolean DEBUG_LOGGING = true;
     private ArrayList<String> mSubredditList;
     static int LOADTYPE_LOAD = 0;
     static int LOADTYPE_LOADMORE = 1;
@@ -152,4 +152,5 @@ public class GlobalObjects extends Application {
     public void setBypassCache(boolean bypassed) {
         bypassCache = bypassed;
     }
+
 }

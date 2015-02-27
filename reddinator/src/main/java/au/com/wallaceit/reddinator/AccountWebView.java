@@ -19,12 +19,10 @@ package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

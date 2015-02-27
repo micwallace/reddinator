@@ -49,7 +49,7 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         updateAppWidgets(context, appWidgetManager, appWidgetIds, true);
-        //System.out.println("onUpdate();");
+        // System.out.println("onUpdate();");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
@@ -265,7 +265,7 @@ public class WidgetProvider extends AppWidgetProvider {
             // perform full widget update
             onUpdate(context, mgr2, appWidgetIds);
         }
-        System.out.println("broadcast received: " + action);
+        // System.out.println("broadcast received: " + action);
         super.onReceive(context, intent);
     }
 

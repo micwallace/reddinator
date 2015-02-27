@@ -158,7 +158,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
     }
 
     private void search(final String query) {
-        System.out.println("Searching: " + query);
+        //System.out.println("Searching: " + query);
         if (dlpopulartask != null) {
             dlpopulartask.cancel(true);
         }

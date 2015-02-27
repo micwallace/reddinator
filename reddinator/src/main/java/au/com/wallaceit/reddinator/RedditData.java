@@ -47,9 +47,7 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +59,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.UUID;
 
 public class RedditData {
@@ -74,7 +71,6 @@ public class RedditData {
     public static final String OAUTH_SCOPES = "mysubreddits,vote,read";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
-    private String modhash = "";
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
 
@@ -90,7 +86,6 @@ public class RedditData {
         userAgent += " (by /u/micwallace)";
         // load account
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        modhash = sharedPrefs.getString("modhash", "");
         String tokenStr = sharedPrefs.getString("oauthtoken", "");
         if (!tokenStr.equals("")) {
             try {
@@ -111,8 +106,8 @@ public class RedditData {
     }
 
     public void purgeAccountData() {
-        modhash = "";
         oauthToken = null;
+        saveUserData();
     }
 
     // NON-AUTHED REQUESTS
@@ -143,11 +138,6 @@ public class RedditData {
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + (subreddit.equals("Front Page") ? "" : "/r/" + subreddit) + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed = new JSONArray();
-        if (loggedIn) {
-            if (isTokenExpired()) {
-                refreshToken();
-            }
-        }
         try {
             result = getJSONFromUrl(url, true); // use oauth if logged in
 
@@ -167,17 +157,11 @@ public class RedditData {
         if (!isLoggedIn()) {
             return "LOGIN";
         }
-        if (isTokenExpired()) {
-            refreshToken();
-        }
-        if (modhash.equals("")) {
-            // TODO: Get new modhash
-        }
 
         String result = "";
         JSONObject resultjson;
         resultjson = new JSONObject();
-        String url = OAUTH_ENDPOINT + "/api/vote?id=" + id + "&dir=" + String.valueOf(direction) + "&uh=" + modhash + "&api_type=json";
+        String url = OAUTH_ENDPOINT + "/api/vote?id=" + id + "&dir=" + String.valueOf(direction) + "&api_type=json";
         try {
             resultjson = getJSONFromPost(url, null, false).getJSONObject("json");
             JSONArray errors = resultjson.getJSONArray("errors");
@@ -208,9 +192,6 @@ public class RedditData {
             mysrlist.add("Something bad happened");
         }
 
-        if (isTokenExpired()) {
-            refreshToken();
-        }
         String url = OAUTH_ENDPOINT + "/subreddits/mine.json";
         JSONArray resultjson = new JSONArray();
         try {
@@ -266,8 +247,11 @@ public class RedditData {
         try {
             HttpGet httpget = new HttpGet(url);
             if (isLoggedIn() && useAuth) {
+                if (isTokenExpired()) {
+                    refreshToken();
+                }
                 String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
-                System.out.println("Logged In, setting token header: " + tokenStr);
+                //System.out.println("Logged In, setting token header: " + tokenStr);
                 httpget.addHeader("Authorization", tokenStr);
             }
 
@@ -334,8 +318,11 @@ public class RedditData {
                 // For oauth token retrieval and refresh
                 httppost.addHeader("Authorization", "Basic " + Base64.encodeToString((OAUTH_CLIENTID + ":").getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
             } else if (isLoggedIn()) {
+                if (isTokenExpired()) {
+                    refreshToken();
+                }
                 String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
-                System.out.println("Logged In, setting token header: " + tokenStr);
+                //System.out.println("Logged In, setting token header: " + tokenStr);
                 httppost.addHeader("Authorization", tokenStr);
             }
             if (data != null) httppost.setEntity(new UrlEncodedFormEntity(data));
@@ -343,8 +330,8 @@ public class RedditData {
             HttpResponse httpResponse = httpclient.execute(httppost);
             HttpEntity httpEntity = httpResponse.getEntity();
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                System.out.println("Http Status: " + httpResponse.getStatusLine());
-                System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
+                //System.out.println("Http Status: " + httpResponse.getStatusLine());
+                //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
                 return null;
             }
             is = httpEntity.getContent();
@@ -398,12 +385,12 @@ public class RedditData {
         Long expiry = (long) 0;
         try {
             expiry = oauthToken.getLong("expires_at");
-            System.out.println("Token expiry timestamp: " + expiry);
+            //System.out.println("Token expiry timestamp: " + expiry);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         boolean expired = expiry < now;
-        System.out.println("Token is " + (expired ? "expired" : "valid"));
+        //System.out.println("Token is " + (expired ? "expired" : "valid"));
         return expired;
     }
 
@@ -441,7 +428,7 @@ public class RedditData {
             }
             // save session data and add cookie to client
             saveUserData();
-            System.out.println("oauth request result: OK");
+            //System.out.println("oauth request result: OK");
             return true;
         }
         // set error result
@@ -472,7 +459,7 @@ public class RedditData {
             }
             // save session data and add cookie to client
             saveUserData();
-            System.out.println("oauth refresh result: OK");
+            //System.out.println("oauth refresh result: OK");
             return true;
         } else {
             // set error result
@@ -484,8 +471,7 @@ public class RedditData {
 
     public void saveUserData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
-        edit.putString("oauthtoken", oauthToken.toString());
-        edit.putString("modhash", modhash);
+        edit.putString("oauthtoken", oauthToken == null ? "" : oauthToken.toString());
         edit.apply();
     }
 

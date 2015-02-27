@@ -20,11 +20,8 @@ package au.com.wallaceit.reddinator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,14 +30,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-
-import java.net.URI;
 
 public class OAuthView extends Activity {
     WebView wv;
@@ -89,7 +81,7 @@ public class OAuthView extends Activity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             if (url != null && url.startsWith(RedditData.OAUTH_REDIRECT)) {
-                System.out.println("Processing incoming oauth request: " + url);
+                // System.out.println("Processing incoming oauth request: " + url);
                 Uri oauthUri = Uri.parse(url);
                 if (oauthUri.getQueryParameter("error") != null) {
                     if (oauthUri.getQueryParameter("error").equals("access_denied")) {
@@ -105,6 +97,7 @@ public class OAuthView extends Activity {
     }
 
     ProgressDialog loginDialog;
+
     class LoginTask extends AsyncTask<Uri, Void, Boolean> {
         @Override
         protected void onPreExecute() {

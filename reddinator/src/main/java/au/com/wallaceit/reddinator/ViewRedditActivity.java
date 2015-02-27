@@ -147,7 +147,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println("User likes post: " + userLikes);
+        //System.out.println("User likes post: " + userLikes);
     }
 
     public void onBackPressed() {
@@ -278,10 +278,10 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         VoteTask task;
         if (curvote == 1) {
             task = new VoteTask(feedposition, redditItemId, 0);
-            System.out.println("Neutral Vote");
+            //System.out.println("Neutral Vote");
         } else {
             task = new VoteTask(feedposition, redditItemId, 1);
-            System.out.println("Upvote");
+            //System.out.println("Upvote");
         }
         voteinprogress = true;
         ViewRedditActivity.this.setTitle("Voting...");
@@ -292,10 +292,10 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         VoteTask task;
         if (curvote == -1) {
             task = new VoteTask(feedposition, redditItemId, 0);
-            System.out.println("Neutral Vote");
+            //System.out.println("Neutral Vote");
         } else {
             task = new VoteTask(feedposition, redditItemId, -1);
-            System.out.println("Downvote");
+            //System.out.println("Downvote");
         }
         voteinprogress = true;
         ViewRedditActivity.this.setTitle("Voting...");

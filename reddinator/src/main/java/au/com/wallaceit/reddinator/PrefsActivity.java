@@ -34,7 +34,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -69,18 +68,12 @@ public class PrefsActivity extends PreferenceActivity {
             logoutbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putString("oauthtoken", "");
-                    editor.putString("modhash", "");
-                    editor.apply();
-                    // clear current purge from active objects
+                    // clear oauth token and save prefs
                     GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
-                    if (global != null) {
-                        global.mRedditData.purgeAccountData();
-                    }
+                    global.mRedditData.purgeAccountData();
                     // disable button and notify user
                     logoutbtn.setEnabled(false);
-                    Toast.makeText(PrefsActivity.this, "Saved account and session cleared", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PrefsActivity.this, "Account Disconnected", Toast.LENGTH_LONG).show();
                     return true;
                 }
             });
