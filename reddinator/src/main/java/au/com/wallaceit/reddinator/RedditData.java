@@ -193,7 +193,7 @@ public class RedditData {
             mysrlist.add("Something bad happened");
         }
 
-        String url = OAUTH_ENDPOINT + "/subreddits/mine.json";
+        String url = OAUTH_ENDPOINT + "/subreddits/mine/subscriber.json?limit=100&show=all";
         JSONArray resultjson = new JSONArray();
         try {
             resultjson = getJSONFromUrl(url, true).getJSONObject("data").getJSONArray("children");
@@ -201,7 +201,7 @@ public class RedditData {
             e.printStackTrace();
         }
         int i = 0;
-        while (i < resultjson.length() - 1) {
+        while (i < resultjson.length()) {
             try {
                 mysrlist.add(resultjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
             } catch (JSONException e) {

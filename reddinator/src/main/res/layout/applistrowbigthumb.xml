@@ -93,6 +93,17 @@
             android:text="@string/reddit_domain"
             android:textColor="#336699" />
 
+        <TextView
+            android:id="@+id/nsfwflag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/sourcetxt"
+            android:paddingLeft="6dip"
+            android:text="@string/nsfw_flag"
+            android:visibility="gone"
+            android:textColor="#ffff0000" />
+
         <ImageView
             android:id="@+id/icon1"
             android:contentDescription="@string/icon"

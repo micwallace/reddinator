@@ -396,7 +396,7 @@ public class MainActivity extends Activity {
                     viewHolder.infview = row.findViewById(R.id.infbox);
                     viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
                     viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
-
+                    viewHolder.nsfw = (TextView) row.findViewById(R.id.nsfwflag);
                 } else {
                     viewHolder = (ViewHolder) row.getTag();
                 }
@@ -408,6 +408,7 @@ public class MainActivity extends Activity {
                 String userLikes = "null";
                 int score = 0;
                 int numcomments = 0;
+                boolean nsfw = false;
                 try {
                     JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                     name = tempobj.getString("title");
@@ -417,6 +418,7 @@ public class MainActivity extends Activity {
                     score = tempobj.getInt("score");
                     numcomments = tempobj.getInt("num_comments");
                     userLikes = tempobj.getString("likes");
+                    nsfw = tempobj.getBoolean("over_18");
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // return null; // The view is invalid;
@@ -431,6 +433,7 @@ public class MainActivity extends Activity {
                 viewHolder.votestxt.setTextColor(themeColors[4]);
                 viewHolder.commentstxt.setText(String.valueOf(numcomments));
                 viewHolder.commentstxt.setTextColor(themeColors[4]);
+                viewHolder.nsfw.setVisibility((nsfw ? TextView.VISIBLE : TextView.GONE));
                 row.findViewById(R.id.listdivider).setBackgroundColor(themeColors[2]);
 
                 // set vote button
@@ -593,6 +596,7 @@ public class MainActivity extends Activity {
             ImageButton upvotebtn;
             ImageButton downvotebtn;
             View infview;
+            TextView nsfw;
         }
 
         class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {

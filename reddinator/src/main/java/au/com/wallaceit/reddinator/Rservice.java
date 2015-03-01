@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -31,6 +32,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,7 +138,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             } else {
                 loadmorerow.setTextViewText(R.id.loadmoretxt, "Load more...");
             }
-            loadmorerow.setTextColor(R.id.loadmoretxt, themeColors[1]);
+            loadmorerow.setTextColor(R.id.loadmoretxt, themeColors[0]);
             Intent i = new Intent();
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
@@ -153,6 +155,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             String id = "";
             int score = 0;
             int numcomments = 0;
+            boolean nsfw = false;
             try {
                 JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                 title = tempobj.getString("title");
@@ -164,6 +167,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
                 score = tempobj.getInt("score");
                 numcomments = tempobj.getInt("num_comments");
+                nsfw = tempobj.getBoolean("over_18");
             } catch (JSONException e) {
                 e.printStackTrace();
                 // return null; // The view is invalid;
@@ -185,6 +189,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextViewText(R.id.votestxt, String.valueOf(score));
             row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
             row.setInt(R.id.listdivider, "setBackgroundColor", themeColors[2]);
+            row.setViewVisibility(R.id.nsfwflag, nsfw ? TextView.VISIBLE : TextView.GONE);
             // add extras and set click intent
             Intent i = new Intent();
             Bundle extras = new Bundle();
