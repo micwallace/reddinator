@@ -108,7 +108,13 @@ public class OAuthView extends Activity {
         protected Boolean doInBackground(Uri... uris) {
             String code = uris[0].getQueryParameter("code");
             String state = uris[0].getQueryParameter("state");
-            return global.mRedditData.retrieveToken(code, state);
+            try {
+                return global.mRedditData.retrieveToken(code, state);
+            } catch (RedditData.RedditApiException e) {
+                global.showAlertDialog("API Error", e.getMessage());
+                e.printStackTrace();
+                return false;
+            }
         }
 
         protected void onPostExecute(Boolean success) {

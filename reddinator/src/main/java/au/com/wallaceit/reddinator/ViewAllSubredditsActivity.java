@@ -167,7 +167,11 @@ public class ViewAllSubredditsActivity extends ListActivity {
         Thread t = new Thread() {
             public void run() {
                 // get all popular subreddits
-                srjson = global.mRedditData.getSubredditSearch(query);
+                try {
+                    srjson = global.mRedditData.getSubredditSearch(query);
+                } catch (RedditData.RedditApiException e) {
+                    e.printStackTrace();
+                }
                 // put into arraylist
                 sreddits = new ArrayList<String>();
                 int i = 0;
@@ -211,7 +215,11 @@ public class ViewAllSubredditsActivity extends ListActivity {
         @Override
         protected ArrayList<String> doInBackground(String... string) {
             // load popular subreddits
-            srjson = global.mRedditData.getSubreddits();
+            try {
+                srjson = global.mRedditData.getSubreddits();
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+            }
             // put into arraylist
             ArrayList<String> popreddits = new ArrayList<String>();
             int i = 0;

@@ -329,9 +329,18 @@ public class SubredditSelectActivity extends ListActivity {
         Thread t = new Thread() {
             public void run() {
 
-                final ArrayList<String> list = global.mRedditData.getMySubreddits();
+                final ArrayList<String> list;
+                try {
+                    list = global.mRedditData.getMySubreddits();
+                } catch (RedditData.RedditApiException e) {
+                    e.printStackTrace();
+                    global.showAlertDialog("API Error", e.getMessage());
+                    return;
+                }
+                if (list == null)
+                    return;
                 // copy into current personal list if not empty or error
-                if (!list.isEmpty() && !list.get(0).contains("Error:")) {
+                if (!list.isEmpty()) {
                     if (clearlist) {
                         personalList.clear();
                     }

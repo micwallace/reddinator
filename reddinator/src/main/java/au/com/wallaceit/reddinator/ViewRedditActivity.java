@@ -315,7 +315,12 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         @Override
         protected String doInBackground(String... strings) {
-            return global.mRedditData.vote(redditid, direction);
+            try {
+                return global.mRedditData.vote(redditid, direction);
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                return e.getMessage();
+            }
         }
 
         @Override
@@ -347,7 +352,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 global.mRedditData.initiateLogin(ViewRedditActivity.this);
             } else {
                 // show error
-                Toast.makeText(ViewRedditActivity.this, "Voting error: " + result, Toast.LENGTH_LONG).show();
+                Toast.makeText(ViewRedditActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
             }
 
         }

@@ -813,7 +813,12 @@ public class MainActivity extends Activity {
                     }
                 }
                 // Do the vote
-                return global.mRedditData.vote(redditid, direction);
+                try {
+                    return global.mRedditData.vote(redditid, direction);
+                } catch (RedditData.RedditApiException e) {
+                    e.printStackTrace();
+                    return e.getMessage();
+                }
             }
 
             @Override
@@ -846,7 +851,7 @@ public class MainActivity extends Activity {
                     global.mRedditData.initiateLogin(MainActivity.this);
                 } else {
                     // show error
-                    Toast.makeText(MainActivity.this, "Login error: " + result, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
                 }
                 listAdapter.hideAppLoader(false, false);
             }
