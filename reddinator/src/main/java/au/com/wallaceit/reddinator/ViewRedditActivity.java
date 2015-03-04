@@ -17,11 +17,8 @@
  */
 package au.com.wallaceit.reddinator;
 
-import java.util.HashMap;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -31,19 +28,15 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
@@ -51,6 +44,8 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
 
@@ -327,32 +322,36 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         protected void onPostExecute(String result) {
             ViewRedditActivity.this.setTitle("Reddinator"); // reset title
             voteinprogress = false;
-            if (result.equals("OK")) {
-                curvote = direction;
-                switch (direction) {
-                    case -1:
-                        upvote.setIcon(R.drawable.upvote);
-                        downvote.setIcon(R.drawable.downvote_active);
-                        setUpdateRecord("false");
-                        break;
+            switch (result) {
+                case "OK":
+                    curvote = direction;
+                    switch (direction) {
+                        case -1:
+                            upvote.setIcon(R.drawable.upvote);
+                            downvote.setIcon(R.drawable.downvote_active);
+                            setUpdateRecord("false");
+                            break;
 
-                    case 0:
-                        upvote.setIcon(R.drawable.upvote);
-                        downvote.setIcon(R.drawable.downvote);
-                        setUpdateRecord("null");
-                        break;
+                        case 0:
+                            upvote.setIcon(R.drawable.upvote);
+                            downvote.setIcon(R.drawable.downvote);
+                            setUpdateRecord("null");
+                            break;
 
-                    case 1:
-                        upvote.setIcon(R.drawable.upvote_active);
-                        downvote.setIcon(R.drawable.downvote);
-                        setUpdateRecord("true");
-                        break;
-                }
-            } else if (result.equals("LOGIN")) {
-                global.mRedditData.initiateLogin(ViewRedditActivity.this);
-            } else {
-                // show error
-                Toast.makeText(ViewRedditActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
+                        case 1:
+                            upvote.setIcon(R.drawable.upvote_active);
+                            downvote.setIcon(R.drawable.downvote);
+                            setUpdateRecord("true");
+                            break;
+                    }
+                    break;
+                case "LOGIN":
+                    global.mRedditData.initiateLogin(ViewRedditActivity.this);
+                    break;
+                default:
+                    // show error
+                    Toast.makeText(ViewRedditActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
+                    break;
             }
 
         }

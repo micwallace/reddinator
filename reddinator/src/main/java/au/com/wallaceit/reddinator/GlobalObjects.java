@@ -151,7 +151,7 @@ public class GlobalObjects extends Application {
 
     private void savePersonalList() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        Set<String> set = new HashSet<String>();
+        Set<String> set = new HashSet<>();
         set.addAll(personalList);
         editor.putStringSet("personalsr", set);
         editor.apply();

@@ -149,7 +149,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             sreddits = global.getSrList();
             setListAdaptor();
         } else {
-            sreddits = new ArrayList<String>();
+            sreddits = new ArrayList<>();
             setListAdaptor();
             loadPopularSubreddits();
         }
@@ -177,7 +177,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                     e.printStackTrace();
                 }
                 // put into arraylist
-                sreddits = new ArrayList<String>();
+                sreddits = new ArrayList<>();
                 int i = 0;
                 while (i < srjson.length()) {
                     try {
@@ -254,7 +254,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 e.printStackTrace();
             }
             // put into arraylist
-            ArrayList<String> popreddits = new ArrayList<String>();
+            ArrayList<String> popreddits = new ArrayList<>();
             int i = 0;
             popreddits.add("Front Page"); // slap the front page on there
             popreddits.add("all"); // and an all

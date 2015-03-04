@@ -58,7 +58,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,7 +65,6 @@ import java.util.regex.Pattern;
 public class RedditData {
     private SharedPreferences sharedPrefs;
     private DefaultHttpClient httpclient;
-    static JSONObject jObj = null;
     private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
@@ -299,7 +297,7 @@ public class RedditData {
     // HTTPS POST Request
     private JSONObject getJSONFromPost(String url, ArrayList<NameValuePair> data, boolean addOauthHeaders) throws RedditApiException {
         JSONObject jObj = new JSONObject();
-        String json = "";
+        String json;
         InputStream is = null;
         // create client if null
         if (httpclient == null) {
@@ -348,7 +346,7 @@ public class RedditData {
     }
 
     private String getStringFromStream(InputStream is) {
-        BufferedReader reader = null;
+        BufferedReader reader;
         try {
             reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
         } catch (UnsupportedEncodingException e) {
@@ -374,10 +372,6 @@ public class RedditData {
     }
 
     class RedditApiException extends Exception {
-        //Parameterless Constructor
-        public RedditApiException() {
-        }
-
         //Constructor that accepts a message
         public RedditApiException(String message) {
             super(message);
@@ -409,9 +403,8 @@ public class RedditData {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        boolean expired = expiry < now;
-        //System.out.println("Token is " + (expired ? "expired" : "valid"));
-        return expired;
+        //System.out.println("Token is " + (expiry < now ? "expired" : "valid"));
+        return expiry < now;
     }
 
     private String getTokenValue(String key) {
@@ -431,7 +424,7 @@ public class RedditData {
         }
         String url = "https://www.reddit.com/api/v1/access_token";
         JSONObject resultjson;
-        ArrayList params = new ArrayList<NameValuePair>();
+        ArrayList<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "authorization_code"));
         params.add(new BasicNameValuePair("code", code));
         params.add(new BasicNameValuePair("redirect_uri", OAUTH_REDIRECT));

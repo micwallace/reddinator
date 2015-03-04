@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/widgetpref"
@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:background="#EFF7FF"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/sortselect"
@@ -38,15 +38,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#336699" />
 
-	</LinearLayout>
+    </LinearLayout>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/srtoolbar"
-        android:background="#FFF" >
-    </ListView>
+        android:background="#FFF"></ListView>
 
     <RelativeLayout
         android:id="@+id/srtoolbar"
@@ -54,7 +53,7 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/widgetpref"
-        android:background="#CEE3F8" >
+        android:background="#CEE3F8">
 
         <Button
             android:id="@+id/addsrbutton"
@@ -62,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="@string/add"
+            android:text="@string/view_all"
             android:textSize="16sp" />
 
         <Button

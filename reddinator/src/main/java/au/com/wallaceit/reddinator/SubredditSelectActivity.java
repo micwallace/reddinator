@@ -72,7 +72,6 @@ public class SubredditSelectActivity extends ListActivity {
             findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
         }
         // get subreddit list and set adapter
-        Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
         personalList = global.getPersonalList();
         mListAdapter = new MyRedditsAdapter(this, personalList);
         setListAdapter(mListAdapter);
@@ -334,6 +333,7 @@ public class SubredditSelectActivity extends ListActivity {
                     list.add(0, "Front Page");
                     list.add(1, "all");
                     personalList.addAll(list);
+                    global.setPersonalList(personalList);
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -375,6 +375,7 @@ public class SubredditSelectActivity extends ListActivity {
                 public void onClick(View v) {
                     String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
                     personalList.remove(sreddit);
+                    global.removeFromPersonalList(sreddit);
                     mListAdapter.notifyDataSetChanged();
                 }
             });

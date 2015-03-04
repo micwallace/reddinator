@@ -403,7 +403,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             clearImageCache();
             // reload feed
             int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-            JSONArray tempArray = null;
+            JSONArray tempArray;
             tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
             // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
             if (!isError(tempArray)) {
