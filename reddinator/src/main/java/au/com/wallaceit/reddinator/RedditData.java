@@ -492,6 +492,11 @@ public class RedditData {
     public void saveUserData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString("oauthtoken", oauthToken == null ? "" : oauthToken.toString());
+        // TEMP: Flush out old storage
+        edit.remove("uname");
+        edit.remove("pword");
+        edit.remove("cook");
+        edit.remove("modhash");
         edit.apply();
     }
 

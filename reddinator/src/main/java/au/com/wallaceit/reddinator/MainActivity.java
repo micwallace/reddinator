@@ -497,8 +497,8 @@ public class MainActivity extends Activity {
                                 // start the image load
                                 loadImage(position, thumbnail, id);
                                 viewHolder.thumbview.setVisibility(View.VISIBLE);
-                                // set image source as null to prevent an image from a previous view being used
-                                viewHolder.thumbview.setImageResource(0);
+                                // set image source as default to prevent an image from a previous view being used
+                                viewHolder.thumbview.setImageResource(android.R.drawable.screen_background_dark_transparent);
                             }
                         }
                     } else {
