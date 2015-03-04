@@ -17,22 +17,20 @@
  */
 package au.com.wallaceit.reddinator;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -42,7 +40,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewAllSubredditsActivity extends ListActivity {
+    public static final int RESULT_SET_SUBREDDIT = 2;
+    public static final int RESULT_REFRESH_LIST = 1;
     private GlobalObjects global;
     private ArrayList<String> sreddits;
     private JSONArray srjson;
@@ -66,12 +72,10 @@ public class ViewAllSubredditsActivity extends ListActivity {
         listview.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                String sreddit = ((TextView) view).getText().toString();
-                Intent intent = new Intent();
-                intent.putExtra("subreddit", sreddit);
-                setResult(1, intent);
+                Intent intent = new Intent(); // update subreddit without adding to list
+                intent.putExtra("subreddit", sreddits.get(position));
+                setResult(RESULT_SET_SUBREDDIT, intent);
                 finish();
-                //System.out.println(sreddit+" selected");
             }
         });
         // get empty view text for easy access later
@@ -201,8 +205,37 @@ public class ViewAllSubredditsActivity extends ListActivity {
     }
 
     private void setListAdaptor() {
-        listadapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, sreddits);
+        listadapter = new SubredditsAdapter(this, sreddits);
         listview.setAdapter(listadapter);
+    }
+
+    class SubredditsAdapter extends ArrayAdapter<String> {
+        private LayoutInflater inflater;
+
+        public SubredditsAdapter(Context context, List<String> objects) {
+            super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            convertView = inflater.inflate(R.layout.subreddititem, parent, false);
+            super.getView(position, convertView, parent);
+            // setup the row
+            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(sreddits.get(position));
+            convertView.findViewById(R.id.subreddit_add_btn).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    global.addToPersonalList(sreddits.get(position));
+                    Intent intent = new Intent(); // Indicate that subreddit list has changed
+                    setResult(RESULT_REFRESH_LIST, intent);
+                    finish();
+                }
+            });
+            return convertView;
+        }
+
+
     }
 
     private void updateAdapter() {

@@ -24,7 +24,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;

@@ -73,13 +73,7 @@ public class SubredditSelectActivity extends ListActivity {
         }
         // get subreddit list and set adapter
         Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
-        if (feeds.isEmpty()) {
-            // first time setup
-            personalList = new ArrayList<String>(Arrays.asList("Front Page", "all", "arduino", "AskReddit", "pics", "technology", "science", "videos", "worldnews"));
-            savePersonalList();
-        } else {
-            personalList = new ArrayList<String>(feeds);
-        }
+        personalList = global.getPersonalList();
         mListAdapter = new MyRedditsAdapter(this, personalList);
         setListAdapter(mListAdapter);
         ListView listView = getListView();
@@ -98,31 +92,7 @@ public class SubredditSelectActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String subreddit = ((TextView) view.findViewById(R.id.subreddit_name)).getText().toString();
-                // save list
-                savePersonalList();
-                // save preference
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
-                Editor editor = prefs.edit();
-
-                if (mAppWidgetId != 0) {
-                    editor.putString("currentfeed-" + mAppWidgetId, subreddit);
-                    // refresh widget and close activity (NOTE: put in function)
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-                    RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
-                    views.setTextViewText(R.id.subreddittxt, subreddit);
-                    views.setViewVisibility(R.id.srloader, View.VISIBLE);
-                    views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
-                    // bypass cache if service not loaded
-                    global.setBypassCache(true);
-                    appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
-                    appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
-                } else {
-                    editor.putString("currentfeed-app", subreddit);
-                    setResult(2); // update feed prefs + reload feed
-                }
-                // save the preference
-                editor.apply();
-                finish();
+                setSubredditAndFinish(subreddit);
                 //System.out.println(sreddit+" selected");
             }
         });
@@ -204,16 +174,42 @@ public class SubredditSelectActivity extends ListActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 1) {
-            String subreddit = data.getStringExtra("subreddit");
-            personalList.add(subreddit);
+        if (resultCode == ViewAllSubredditsActivity.RESULT_REFRESH_LIST) {
+            personalList = global.getPersonalList();
             mListAdapter.notifyDataSetChanged();
+        } else if (resultCode == ViewAllSubredditsActivity.RESULT_SET_SUBREDDIT) {
+            setSubredditAndFinish(data.getStringExtra("subreddit"));
         }
+    }
+
+    private void setSubredditAndFinish(String subreddit) {
+        // save preference
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
+        Editor editor = prefs.edit();
+
+        if (mAppWidgetId != 0) {
+            editor.putString("currentfeed-" + mAppWidgetId, subreddit);
+            // refresh widget and close activity (NOTE: put in function)
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
+            RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
+            views.setTextViewText(R.id.subreddittxt, subreddit);
+            views.setViewVisibility(R.id.srloader, View.VISIBLE);
+            views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
+            // bypass cache if service not loaded
+            global.setBypassCache(true);
+            appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
+            appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+        } else {
+            editor.putString("currentfeed-app", subreddit);
+            setResult(2); // update feed prefs + reload feed
+        }
+        // save the preference
+        editor.apply();
+        finish();
     }
 
     // save changes on back press
     public void onBackPressed() {
-        savePersonalList();
         // check if sort has changed
         if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)) {
             if (mAppWidgetId != 0) {
@@ -250,16 +246,6 @@ public class SubredditSelectActivity extends ListActivity {
                 return true;
         }
         return false;
-    }
-
-    // save/restore personal list
-    private void savePersonalList() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
-        Editor editor = prefs.edit();
-        Set<String> set = new HashSet<String>();
-        set.addAll(personalList);
-        editor.putStringSet("personalsr", set);
-        editor.apply();
     }
 
     // show sort select dialog

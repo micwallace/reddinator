@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -44,6 +45,7 @@ public class OAuthView extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         global = ((GlobalObjects) OAuthView.this.getApplicationContext());
+
         String oauthstate = this.getIntent().getStringExtra("oauthstate");
         // request loading bar
         getWindow().requestFeature(Window.FEATURE_PROGRESS);

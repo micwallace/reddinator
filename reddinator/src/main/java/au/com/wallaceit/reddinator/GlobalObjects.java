@@ -22,12 +22,16 @@ import android.app.Application;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GlobalObjects extends Application {
     static final boolean DEBUG_LOGGING = true;
@@ -38,6 +42,7 @@ public class GlobalObjects extends Application {
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate() {
@@ -45,6 +50,7 @@ public class GlobalObjects extends Application {
         if (mSubredditList == null) {
             mSubredditList = new ArrayList<>();
         }
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(GlobalObjects.this.getApplicationContext());
         mRedditData = new RedditData(GlobalObjects.this.getApplicationContext());
     }
 
@@ -127,6 +133,50 @@ public class GlobalObjects extends Application {
 
     public ArrayList<String> getSrList() {
         return mSubredditList;
+    }
+
+    // personal sr list
+    private ArrayList<String> personalList;
+
+    private void loadPersonalList() {
+        Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
+        if (feeds.isEmpty()) {
+            // first time setup
+            personalList = new ArrayList<>(Arrays.asList("Front Page", "all", "arduino", "AskReddit", "pics", "technology", "science", "videos", "worldnews"));
+            savePersonalList();
+        } else {
+            personalList = new ArrayList<>(feeds);
+        }
+    }
+
+    private void savePersonalList() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        Set<String> set = new HashSet<String>();
+        set.addAll(personalList);
+        editor.putStringSet("personalsr", set);
+        editor.apply();
+    }
+
+    public ArrayList<String> getPersonalList() {
+        if (personalList == null) {
+            loadPersonalList();
+        }
+        return personalList;
+    }
+
+    public void setPersonalList(ArrayList<String> list) {
+        personalList = list;
+        savePersonalList();
+    }
+
+    public void removeFromPersonalList(String value) {
+        personalList.remove(value);
+        savePersonalList();
+    }
+
+    public void addToPersonalList(String value) {
+        personalList.add(value);
+        savePersonalList();
     }
 
     // widget data loadtype functions; a bypass for androids restrictive widget api
