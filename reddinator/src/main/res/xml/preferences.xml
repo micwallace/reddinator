@@ -77,6 +77,11 @@
                 android:title="Load Comments First"
                 android:defaultValue="false"
                 android:summary="Load the comments page first?" />
+        <CheckBoxPreference
+            android:key="@string/comments_webview"
+            android:title="Comments Web View"
+            android:defaultValue="false"
+            android:summary="View comments as seen at m.reddit.com" />
         <ListPreference
                 android:key="@string/comment_font_pref"
                 android:title="Reddit Font Size"

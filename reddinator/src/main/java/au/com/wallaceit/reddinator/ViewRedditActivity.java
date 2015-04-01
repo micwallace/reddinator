@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
@@ -27,6 +28,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -65,16 +67,15 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
     private class TabInfo {
         private String tag;
-        private Class<TabWebFragment> clss;
+        private Class<?> clss;
         private Bundle args;
         private Fragment fragment;
 
-        TabInfo(String tag, Class<TabWebFragment> clazz, Bundle args) {
+        TabInfo(String tag, Class<?> clazz, Bundle args) {
             this.tag = tag;
             this.clss = clazz;
             this.args = args;
         }
-
     }
 
     class TabFactory implements TabContentFactory {
@@ -107,6 +108,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
      *
      * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         global = ((GlobalObjects) ViewRedditActivity.this.getApplicationContext());
@@ -132,6 +134,18 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         if (savedInstanceState != null) {
             mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
         }
+        // hopefully a fix for webview typing problem on some devices
+        mTabHost.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+            }
+
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                mTabHost.getViewTreeObserver().removeOnTouchModeChangeListener(mTabHost);
+            }
+        });
+
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         feedposition = getIntent().getIntExtra("itemposition", 0);
@@ -387,15 +401,20 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         } else {
             mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
         }
+        // get shared preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
         // add tabs
         TabInfo tabInfo;
         ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
-        ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
+        if (prefs.getBoolean("commentswebviewpref", false)) {
+            ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
+        } else {
+            ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabCommentsFragment.class, rargs)));
+        }
         this.mapTabInfo.put(tabInfo.tag, tabInfo);
         // Default to first tab
-        // get shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
+
         if (prefs.getBoolean("commentsfirstpref", false)) {
             this.mTabHost.setCurrentTab(1);
             this.onTabChanged("Tab2"); // load comments tab first

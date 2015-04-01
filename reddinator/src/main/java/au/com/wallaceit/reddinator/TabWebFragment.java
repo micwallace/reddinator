@@ -19,10 +19,10 @@ package au.com.wallaceit.reddinator;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -34,8 +34,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -93,9 +93,11 @@ public class TabWebFragment extends Fragment {
             // setup progressbar
             mActivity = this.getActivity();
             mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
-            ll = (LinearLayout) inflater.inflate(R.layout.tab1, container, false);
+            ll = (LinearLayout) inflater.inflate(R.layout.webtab, container, false);
             mWebView = (WebView) ll.findViewById(R.id.webView1);
             // fixes for webview not taking keyboard input on some devices
+            mWebView.getSettings().setLoadWithOverviewMode(true);
+            mWebView.getSettings().setUseWideViewPort(true);
             mWebView.requestFocus(View.FOCUS_DOWN);
             mWebView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -112,6 +114,7 @@ public class TabWebFragment extends Fragment {
                 }
             });
             mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript
+            mWebView.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
             mWebView.getSettings().setSupportZoom(true);
             mWebView.getSettings().setUseWideViewPort(true);
             mWebView.getSettings().setBuiltInZoomControls(true);
@@ -158,6 +161,7 @@ public class TabWebFragment extends Fragment {
 
     // web chrome client
     WebChromeClient newchromeclient = new WebChromeClient() {
+        ActionBar actionBar;
         public void onProgressChanged(WebView view, int progress) {
             boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
             //Make the bar disappear after URL is loaded, and changes string to Loading...
@@ -168,6 +172,7 @@ public class TabWebFragment extends Fragment {
                 if (!voteinprogress)
                     mActivity.setTitle(R.string.app_name); // dont reset title if vote in prog. voting function will do that.
             }
+            actionBar = mActivity.getActionBar();
         }
 
         FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
@@ -188,12 +193,15 @@ public class TabWebFragment extends Fragment {
             mVideoFrame.setLayoutParams(LayoutParameters);
             mVideoFrame.setBackgroundResource(android.R.color.black);
             mVideoFrame.addView(view);
-            mVideoFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+            mVideoFrame.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             view.setLayoutParams(LayoutParameters);
             mFullSView = view;
             mFullSCallback = callback;
-            // set fullscreen
+            actionBar.hide();
             ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mVideoFrame.setVisibility(View.VISIBLE);
 
@@ -211,6 +219,7 @@ public class TabWebFragment extends Fragment {
                 mVideoFrame.setVisibility(View.GONE);
                 mFullSCallback.onCustomViewHidden();
                 // remove fullscreen
+                actionBar.show();
                 ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 mTabcontainer.setVisibility(View.VISIBLE);
                 ((Activity) mContext).setContentView(mTabcontainer);

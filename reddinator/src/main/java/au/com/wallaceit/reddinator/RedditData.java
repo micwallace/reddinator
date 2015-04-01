@@ -115,7 +115,7 @@ public class RedditData {
         JSONArray subreddits = new JSONArray();
         String url = STANDARD_ENDPOINT + "/subreddits/popular.json?limit=50";
         try {
-            subreddits = getJSONFromUrl(url, false).getJSONObject("data").getJSONArray("children");
+            subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -126,7 +126,7 @@ public class RedditData {
         JSONArray subreddits = new JSONArray();
         String url = STANDARD_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
-            subreddits = getJSONFromUrl(url, false).getJSONObject("data").getJSONArray("children");
+            subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -139,9 +139,26 @@ public class RedditData {
         JSONObject result;
         JSONArray feed = new JSONArray();
         try {
-            result = getJSONFromUrl(url, true); // use oauth if logged in
+            result = getRedditJsonObject(url, true); // use oauth if logged in
 
             if (result != null) feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException | RedditApiException e) {
+            feed.put("-1"); // error indicator
+            e.printStackTrace();
+        }
+        return feed;
+    }
+
+    public JSONArray getCommentsFeed(String permalink, String sort, int limit, String afterid) {
+        boolean loggedIn = isLoggedIn();
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        JSONArray result;
+        JSONArray feed = new JSONArray();
+        try {
+            result = getRedditJsonArray(url, true); // use oauth if logged in
+
+            if (result != null)
+                feed = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
         } catch (JSONException | RedditApiException e) {
             feed.put("-1"); // error indicator
             e.printStackTrace();
@@ -194,7 +211,7 @@ public class RedditData {
         String url = OAUTH_ENDPOINT + "/subreddits/mine/subscriber.json?limit=100&show=all";
         JSONArray resultjson = new JSONArray();
         try {
-            resultjson = getJSONFromUrl(url, true).getJSONObject("data").getJSONArray("children");
+            resultjson = getRedditJsonObject(url, true).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -232,11 +249,34 @@ public class RedditData {
         return true;
     }
 
+    private JSONObject getRedditJsonObject(String url, boolean useAuth) throws RedditApiException {
+        String json = getJSONFromUrl(url, useAuth);
+        JSONObject jObj = null;
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            //Log.e("JSON Parser", "Error parsing data " + e.toString());
+            e.printStackTrace();
+
+        }
+        return jObj;
+    }
+
+    private JSONArray getRedditJsonArray(String url, boolean useAuth) throws RedditApiException {
+        String json = getJSONFromUrl(url, useAuth);
+        JSONArray jArr = null;
+        try {
+            jArr = new JSONArray(json);
+        } catch (JSONException e) {
+            //Log.e("JSON Parser", "Error parsing data " + e.toString());
+            e.printStackTrace();
+        }
+        return jArr;
+    }
+
     // HTTP Get Request
-    private JSONObject getJSONFromUrl(String url, boolean useAuth) throws RedditApiException {
-        // create null object to return on errors
-        JSONObject jObj = new JSONObject();
-        String json;
+    private String getJSONFromUrl(String url, boolean useAuth) throws RedditApiException {
+        String json = null;
         // create client if null
         if (httpclient == null) {
             createHttpClient();
@@ -271,27 +311,18 @@ public class RedditData {
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return jObj;
+            return json;
         } catch (ClientProtocolException e) {
             e.printStackTrace();
-            return jObj;
+            return json;
         } catch (IOException e) {
             e.printStackTrace();
-            return jObj;
+            return json;
         }
         // read data
         json = getStringFromStream(is);
-        // try parse the string to a JSON object
-        try {
-            jObj = new JSONObject(json);
-        } catch (JSONException e) {
-            //Log.e("JSON Parser", "Error parsing data " + e.toString());
-            e.printStackTrace();
-            return jObj;
-        }
-        // return JSON String
-        return jObj;
-
+        // return JSON
+        return json;
     }
 
     // HTTPS POST Request
