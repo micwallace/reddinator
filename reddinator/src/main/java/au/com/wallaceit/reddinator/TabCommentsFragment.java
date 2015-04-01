@@ -26,11 +26,7 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +51,6 @@ public class TabCommentsFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mWebView.restoreState(savedInstanceState);
 
     }
 
@@ -154,7 +149,7 @@ public class TabCommentsFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
+            return data.length();
         }
 
         @Override
@@ -162,8 +157,14 @@ public class TabCommentsFragment extends Fragment {
             if (position > data.length()) {
                 return null; //  prevent errornous views
             }
-            // check if its the last view and return loading view instead of normal row
-            if (position == data.length()) {
+            // check if the last element is the "more" element returned by reddit, show load more view
+            boolean ismore = false;
+            try {
+                ismore = data.getJSONObject(position).getString("kind").equals("more");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if ((position == data.length() - 1) && ismore) {
                 // build load more item
                 View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
                 TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
@@ -208,20 +209,20 @@ public class TabCommentsFragment extends Fragment {
                 String userLikes = "null";
                 int score = 0;
                 int numreplies = 0;
+                JSONObject tempobj;
                 try {
-                    JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
+                    tempobj = data.getJSONObject(position).getJSONObject("data");
                     body = tempobj.getString("body_html");
                     id = tempobj.getString("name");
-                    user = "/r/" + tempobj.getString("author");
+                    user = "/u/" + tempobj.getString("author");
                     score = tempobj.getInt("score");
                     numreplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONObject("children").length();
                     userLikes = tempobj.getString("likes");
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    // return null; // The view is invalid;
                 }
                 // Update view
-                Spanned span = Html.fromHtml(body);
+                Spanned span = Html.fromHtml(Html.fromHtml(body).toString());
                 viewHolder.listheading.setText(span);
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors[0]);

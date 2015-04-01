@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Reddinator.iml" filepath="$PROJECT_DIR$/Reddinator.iml" />
       <module fileurl="file://$PROJECT_DIR$/reddinator.iml" filepath="$PROJECT_DIR$/reddinator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/reddinator/reddinator-reddinator.iml" filepath="$PROJECT_DIR$/reddinator/reddinator-reddinator.iml" />
     </modules>
   </component>
 </project>
