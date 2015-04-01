@@ -160,7 +160,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     }
 
     public void onBackPressed() {
-        TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+        TabWebFragment webview = (TabWebFragment) mapTabInfo.get("Tab1").fragment;
+        if (webview != null)
         if (webview.mFullSView != null) {
             webview.mChromeClient.onHideCustomView();
         } else if (webview.mWebView.canGoBack()) {

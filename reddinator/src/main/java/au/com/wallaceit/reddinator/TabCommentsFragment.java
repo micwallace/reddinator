@@ -26,6 +26,11 @@ import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,7 +221,8 @@ public class TabCommentsFragment extends Fragment {
                     // return null; // The view is invalid;
                 }
                 // Update view
-                viewHolder.listheading.setText(Html.fromHtml(body).toString());
+                Spanned span = Html.fromHtml(body);
+                viewHolder.listheading.setText(span);
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors[0]);
                 viewHolder.sourcetxt.setText(user);
