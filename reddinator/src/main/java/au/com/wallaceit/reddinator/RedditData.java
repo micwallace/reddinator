@@ -149,22 +149,94 @@ public class RedditData {
         return feed;
     }
 
-    public JSONArray getCommentsFeed(String permalink, String sort, int limit, String afterid) {
+    private String curPermalink;
+    private ArrayList<String> curChildren;
+
+    private void setCurrentChildren(JSONArray children) {
+        curChildren = new ArrayList<String>();
+        for (int i = 0; i < children.length(); i++) {
+            try {
+                curChildren.add(children.getString(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public JSONArray getCommentsFeed(String permalink, String sort, int limit) {
         boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?api_type=json&sort=" + sort + "&limit=" + String.valueOf(limit);
         JSONArray result;
         JSONArray feed = new JSONArray();
         try {
-            result = getRedditJsonArray(url, true); // use oauth if logged in
-
-            if (result != null)
+            result = getRedditJsonArray(url, loggedIn); // use oauth if logged in
+            if (result != null) {
                 feed = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
+
+                JSONObject moreObject = feed.getJSONObject(feed.length() - 1);
+                if (moreObject.getString("kind").equals("more")) {
+                    setCurrentChildren(moreObject.getJSONObject("data").getJSONArray("children"));
+                } else {
+                    curChildren = new ArrayList<String>();
+                }
+                curPermalink = permalink;
+            }
         } catch (JSONException | RedditApiException e) {
             feed.put("-1"); // error indicator
             e.printStackTrace();
         }
         return feed;
     }
+
+    public JSONArray getMoreComments() {
+        JSONArray feed = new JSONArray();
+
+        boolean loggedIn = isLoggedIn();
+
+        JSONArray tempResult = null;
+        String url;
+        for (int i = 0; (i < curChildren.size() && i < 5); i++) {
+            try {
+                url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + curPermalink + curChildren.get(i) + "/.json";
+                tempResult = getRedditJsonArray(url, loggedIn);
+                if (tempResult.length() != 0 && tempResult.getJSONObject(1).getJSONObject("data").getJSONArray("children").length() > 0)
+                    feed.put(tempResult.getJSONObject(1).getJSONObject("data").getJSONArray("children").getJSONObject(0));
+
+                curChildren.remove(i);
+            } catch (JSONException | RedditApiException e) {
+                e.printStackTrace();
+            }
+        }
+        // add more indicator if available
+        if (curChildren.size() > 0) {
+            JSONObject moreObj = new JSONObject();
+            try {
+                moreObj.put("kind", "more");
+                feed.put(moreObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return feed;
+    }
+
+    /*public JSONArray getChildComments(String moreId, String parentId, String children, String sort) {
+        boolean loggedIn = isLoggedIn();
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + parentId + "&children=" + children;
+        System.out.println(url);
+
+        JSONArray feed = new JSONArray();
+
+        try {
+            JSONObject result = getRedditJsonObject(url, true); // use oauth if logged in
+
+        } catch (JSONException | RedditApiException e) {
+            feed.put("-1"); // error indicator
+            e.printStackTrace();
+        }
+        return feed;
+    }*/
 
     // AUTHED CALLS
     public String vote(String id, int direction) throws RedditApiException {
@@ -264,7 +336,7 @@ public class RedditData {
 
     private JSONArray getRedditJsonArray(String url, boolean useAuth) throws RedditApiException {
         String json = getJSONFromUrl(url, useAuth);
-        JSONArray jArr = null;
+        JSONArray jArr = new JSONArray();
         try {
             jArr = new JSONArray(json);
         } catch (JSONException e) {
@@ -301,8 +373,8 @@ public class RedditData {
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 //System.out.println("Http Status: " + httpResponse.getStatusLine());
                 //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
-                Pattern p = Pattern.compile("<h2>(\\S+)</h2>");
-                Matcher m = p.matcher(getStringFromStream(is));
+                Pattern p = Pattern.compile("<title>(.*?)</title>");
+                Matcher m = p.matcher(getStringFromStream(is).replaceAll("\\s+", " "));
                 String details = "";
                 if (m.find()) {
                     details = m.group(1);
@@ -354,7 +426,7 @@ public class RedditData {
             is = httpEntity.getContent();
 
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Pattern p = Pattern.compile("<h2>(\\S+)</h2>");
+                Pattern p = Pattern.compile("<title>(\\S+)</title>");
                 Matcher m = p.matcher(getStringFromStream(is));
                 String details = "";
                 if (m.find()) {
@@ -379,7 +451,7 @@ public class RedditData {
     private String getStringFromStream(InputStream is) {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+            reader = new BufferedReader(new InputStreamReader(is, "UTF-8"), 8);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return "";

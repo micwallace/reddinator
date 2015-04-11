@@ -176,7 +176,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sharemenu, menu);
+        inflater.inflate(R.menu.viewmenu, menu);
         // set options menu view
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
@@ -221,6 +221,11 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
             case R.id.menu_share:
                 showShareDialog();
+                break;
+
+            case R.id.menu_prefs:
+                Intent intent = new Intent(ViewRedditActivity.this, PrefsActivity.class);
+                startActivity(intent);
                 break;
 
             default:

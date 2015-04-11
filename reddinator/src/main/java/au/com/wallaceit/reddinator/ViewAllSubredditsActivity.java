@@ -252,6 +252,12 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 srjson = global.mRedditData.getSubreddits();
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
+
+            }
+            if (srjson == null) {
+                ArrayList<String> errResult = new ArrayList<>();
+                errResult.add("Error Fetching Subreddits");
+                return errResult;
             }
             // put into arraylist
             ArrayList<String> popreddits = new ArrayList<>();

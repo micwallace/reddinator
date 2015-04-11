@@ -157,31 +157,34 @@ public class TabCommentsFragment extends Fragment {
             if (position > data.length()) {
                 return null; //  prevent errornous views
             }
-            // check if the last element is the "more" element returned by reddit, show load more view
-            boolean ismore = false;
-            try {
-                ismore = data.getJSONObject(position).getString("kind").equals("more");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if ((position == data.length() - 1) && ismore) {
-                // build load more item
-                View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
-                TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
-                if (endOfFeed) {
-                    loadtxtview.setText("There's nothing more here");
-                } else {
-                    loadtxtview.setText("Load more...");
+
+            if ((position == data.length() - 1)) {
+                // check if the last element is the "more" element returned by reddit, show load more view
+                boolean ismore = false;
+                try {
+                    ismore = data.getJSONObject(position).getString("kind").equals("more");
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                loadtxtview.setTextColor(themeColors[1]);
-                loadmorerow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ((TextView) view.findViewById(R.id.loadmoretxt)).setText("Loading...");
-                        loadMoreComments();
+                if (ismore) {
+                    // build load more item
+                    View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
+                    TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
+                    if (endOfFeed) {
+                        loadtxtview.setText("There's nothing more here");
+                    } else {
+                        loadtxtview.setText("Load more...");
                     }
-                });
-                return loadmorerow;
+                    loadtxtview.setTextColor(themeColors[1]);
+                    loadmorerow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ((TextView) view.findViewById(R.id.loadmoretxt)).setText("Loading...");
+                            loadMoreComments();
+                        }
+                    });
+                    return loadmorerow;
+                }
             } else {
                 // inflate new view or load view holder if existing
                 ViewHolder viewHolder = new ViewHolder();
@@ -216,7 +219,8 @@ public class TabCommentsFragment extends Fragment {
                     id = tempobj.getString("name");
                     user = "/u/" + tempobj.getString("author");
                     score = tempobj.getInt("score");
-                    numreplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONObject("children").length();
+                    if (!tempobj.isNull("replies") && !tempobj.get("replies").equals(""))
+                        numreplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONArray("children").length();
                     userLikes = tempobj.getString("likes");
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -360,17 +364,43 @@ public class TabCommentsFragment extends Fragment {
                 //String sort = mSharedPreferences.getString("sort-app", "hot");
                 String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                 if (loadMore) {
-                    // fetch 25 more after current last item and append to the list
-                    JSONArray tempData = global.mRedditData.getCommentsFeed(permalink, "hot", 25, lastItemId);
+                    //String id = "";
+                    //String link_id = "";
+                    /*JSONArray children = new JSONArray();
+                    try {
+                        JSONObject moreObject = data.getJSONObject(data.length()-1).getJSONObject("data");
+                        //id = moreObject.getString("name");
+                        //link_id = moreObject.getString("parent_id");
+                        children = moreObject.getJSONArray("children");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }*/
+                    // fetch 10 more after current last item and append to the list
+                    JSONArray tempData = global.mRedditData.getMoreComments();
                     if (!isError(tempData)) {
                         if (tempData.length() == 0) {
                             endOfFeed = true;
                         } else {
                             endOfFeed = false;
+
+                            JSONArray prevData = data;
+                            data = new JSONArray();
+
                             int i = 0;
+                            while (i < prevData.length() - 1) {
+                                try {
+                                    data.put(prevData.get(i));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                i++;
+                            }
+
+                            i = 0;
                             while (i < tempData.length()) {
                                 try {
-                                    data.put(tempData.get(i));
+                                    if (tempData.getJSONObject(i).getString("kind").equals("t1") || i == (tempData.length() - 1)) // for some reason reddits comment API is FUCKED
+                                        data.put(tempData.get(i));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -385,8 +415,9 @@ public class TabCommentsFragment extends Fragment {
                 } else {
                     endOfFeed = false;
                     // reloading
-                    int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                    JSONArray tempArray = global.mRedditData.getCommentsFeed(permalink, "hot", limit, "0");
+                    //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
+
+                    JSONArray tempArray = global.mRedditData.getCommentsFeed(permalink, "best", 25);
                     // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
                     if (!isError(tempArray)) {
                         data = tempArray;
@@ -400,12 +431,6 @@ public class TabCommentsFragment extends Fragment {
                     }
                 }
 
-                try {
-                    lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
-                } catch (JSONException e) {
-                    lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
-                    e.printStackTrace();
-                }
                 return (long) 1;
             }
 
