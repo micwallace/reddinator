@@ -188,24 +188,29 @@ public class RedditData {
         return feed;
     }
 
+    private JSONObject getCommentObject(String id, String articlePermalink) {
+        boolean loggedIn = isLoggedIn();
+        JSONArray result;
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + articlePermalink + id + "/.json";
+        try {
+            result = getRedditJsonArray(url, loggedIn);
+            if (result.length() != 0 && result.getJSONObject(1).getJSONObject("data").getJSONArray("children").length() > 0)
+                return result.getJSONObject(1).getJSONObject("data").getJSONArray("children").getJSONObject(0);
+
+        } catch (JSONException | RedditApiException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public JSONArray getMoreComments() {
         JSONArray feed = new JSONArray();
 
-        boolean loggedIn = isLoggedIn();
-
-        JSONArray tempResult = null;
-        String url;
         for (int i = 0; (i < curChildren.size() && i < 5); i++) {
-            try {
-                url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + curPermalink + curChildren.get(i) + "/.json";
-                tempResult = getRedditJsonArray(url, loggedIn);
-                if (tempResult.length() != 0 && tempResult.getJSONObject(1).getJSONObject("data").getJSONArray("children").length() > 0)
-                    feed.put(tempResult.getJSONObject(1).getJSONObject("data").getJSONArray("children").getJSONObject(0));
-
-                curChildren.remove(i);
-            } catch (JSONException | RedditApiException e) {
-                e.printStackTrace();
-            }
+            JSONObject commentObj = getCommentObject(curChildren.get(i), curPermalink);
+            if (commentObj != null)
+                feed.put(commentObj);
+            curChildren.remove(i);
         }
         // add more indicator if available
         if (curChildren.size() > 0) {
@@ -217,6 +222,33 @@ public class RedditData {
                 e.printStackTrace();
             }
         }
+
+        return feed;
+    }
+
+    public JSONArray getChildComments(JSONArray children) {
+        JSONArray feed = new JSONArray();
+
+        for (int i = 0; i < children.length(); i++) {
+            try {
+                String id = children.getString(i);
+                JSONObject commentObj = getCommentObject(id, curPermalink);
+                if (commentObj != null)
+                    feed.put(commentObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        // add more indicator if available
+        /*if (curChildren.size() > 0) {
+            JSONObject moreObj = new JSONObject();
+            try {
+                moreObj.put("kind", "more");
+                feed.put(moreObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }*/
 
         return feed;
     }

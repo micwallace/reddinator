@@ -43,5 +43,6 @@
     <string name="nsfw_flag">[NSFW]</string>
     <string name="view_all">View All</string>
     <string name="preferences">Preferences</string>
+    <string name="load_more_replies">Load more replies</string>
 
 </resources>

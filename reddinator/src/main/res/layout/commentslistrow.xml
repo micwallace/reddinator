@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/applistrow"
+    android:id="@+id/commentslistrow"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants">
+    android:background="@drawable/comment_border"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingTop="4dip"
+    android:paddingBottom="4dip">
 
     <RelativeLayout
         android:id="@+id/headcontainer"
@@ -41,6 +44,7 @@
 
         <TextView
             android:id="@+id/listheading"
+            android:includeFontPadding="false"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/votecontainer"
@@ -128,17 +132,34 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="10dp"
             android:textColor="#336699"
-            android:textIsSelectable="false" />
+            android:linksClickable="true"
+            android:autoLink="web"
+            android:textIsSelectable="true"
+            android:focusable="true" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/comment_replies"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/infbox"
+        android:layout_marginLeft="6dip"
+        android:layout_marginBottom="4dip"
+        android:layout_marginTop="4dip">
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/listdivider"
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/infbox"
-        android:background="#D7D7D7">
+        android:background="#D7D7D7"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:layout_below="@+id/comment_replies">
 
     </RelativeLayout>
 

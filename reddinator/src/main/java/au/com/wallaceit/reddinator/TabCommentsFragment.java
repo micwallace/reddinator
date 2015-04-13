@@ -27,6 +27,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Comment;
 
 public class TabCommentsFragment extends Fragment {
     private Context mContext;
@@ -152,6 +154,143 @@ public class TabCommentsFragment extends Fragment {
             return data.length();
         }
 
+
+        private View getNestedReplies(View parent, JSONArray replies) {
+
+            LinearLayout replyView = (LinearLayout) parent.findViewById(R.id.comment_replies);
+            //replyView.setBackgroundResource(R.drawable.comment_border);
+
+            for (int i = 0; i < replies.length(); i++) {
+
+                boolean ismore = false;
+                try {
+                    ismore = replies.getJSONObject(i).getString("kind").equals("more");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                if (ismore) {
+                    // build load more item
+                    View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadreplies, null, false);
+                    TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
+                    loadtxtview.setText(replies.length() == 1 ? "Load replies..." : "Load more replies...");
+
+                    loadtxtview.setTextColor(themeColors[1]);
+                    loadmorerow.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ((TextView) view.findViewById(R.id.loadmoretxt)).setText("Loading...");
+                            loadMoreComments();
+                        }
+                    });
+
+                    replyView.addView(loadmorerow, i);
+                    continue;
+                }
+
+                ViewHolder viewHolder = new ViewHolder();
+                // create remote view from specified layout
+                View row = getActivity().getLayoutInflater().inflate(R.layout.commentslistrow, null, false);
+                viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
+                viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
+                viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
+                viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
+                viewHolder.infview = row.findViewById(R.id.infbox);
+                viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
+                viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
+                // collect data
+                String body = "";
+                String user = "";
+                String id = "";
+                String userLikes = "null";
+                int score = 0;
+                int numreplies = 0;
+                JSONObject tempobj;
+                JSONArray subReplies = new JSONArray();
+                try {
+                    tempobj = replies.getJSONObject(i).getJSONObject("data");
+                    body = tempobj.getString("body_html");
+                    id = tempobj.getString("name");
+                    user = "/u/" + tempobj.getString("author");
+                    score = tempobj.getInt("score");
+                    if (!tempobj.isNull("replies") && !tempobj.get("replies").equals("")) {
+                        numreplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONArray("children").length();
+                        if (numreplies > 0)
+                            subReplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONArray("children");
+                    }
+                    userLikes = tempobj.getString("likes");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    tempobj = new JSONObject();
+                }
+                final JSONObject commentObj = tempobj;
+                // Update view
+                Spanned span = Html.fromHtml(Html.fromHtml(body).toString());
+                viewHolder.listheading.setText(span);
+                viewHolder.listheading.setMovementMethod(LinkMovementMethod.getInstance());
+                viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
+                viewHolder.listheading.setTextColor(themeColors[0]);
+                viewHolder.sourcetxt.setText(user);
+                viewHolder.sourcetxt.setTextColor(themeColors[3]);
+                viewHolder.votestxt.setText(String.valueOf(score));
+                viewHolder.votestxt.setTextColor(themeColors[4]);
+                viewHolder.commentstxt.setText(String.valueOf(numreplies));
+                viewHolder.commentstxt.setTextColor(themeColors[4]);
+                row.findViewById(R.id.listdivider).setBackgroundColor(themeColors[2]);
+
+                // set vote button
+                if (!userLikes.equals("null")) {
+                    if (userLikes.equals("true")) {
+                        viewHolder.upvotebtn.setImageResource(R.drawable.upvote_active);
+                        viewHolder.downvotebtn.setImageResource(R.drawable.downvote);
+                    } else {
+                        viewHolder.upvotebtn.setImageResource(R.drawable.upvote);
+                        viewHolder.downvotebtn.setImageResource(R.drawable.downvote_active);
+                    }
+                } else {
+                    viewHolder.upvotebtn.setImageResource(R.drawable.upvote);
+                    viewHolder.downvotebtn.setImageResource(R.drawable.downvote);
+                }
+                // Set vote onclick listeners
+                viewHolder.upvotebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //listAdapter.showAppLoader();
+                        view = (View) view.getParent().getParent();
+                        CommentsVoteTask listvote = new CommentsVoteTask(1, view, commentObj);
+                        listvote.execute();
+                    }
+                });
+                viewHolder.downvotebtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //listAdapter.showAppLoader();
+                        view = (View) view.getParent().getParent();
+                        CommentsVoteTask listvote = new CommentsVoteTask(-1, view, commentObj);
+                        listvote.execute();
+                    }
+                });
+
+                // check if comment has replies
+                if (subReplies.length() > 0) {
+                    row = getNestedReplies(row, subReplies);
+                }
+
+                // hide info bar if options set
+                /*if (hideInf) {
+                    viewHolder.infview.setVisibility(View.GONE);
+                } else {
+                    viewHolder.infview.setVisibility(View.VISIBLE);
+                }*/
+
+                //row.setTag(viewHolder);
+
+                replyView.addView(row, i);
+            }
+
+            return parent;
+        }
+
         @Override
         public View getView(final int position, View row, ViewGroup parent) {
             if (position > data.length()) {
@@ -190,11 +329,7 @@ public class TabCommentsFragment extends Fragment {
                 ViewHolder viewHolder = new ViewHolder();
                 if (row == null || row.getTag() == null) {
                     // create remote view from specified layout
-                    if (bigThumbs) {
-                        row = getActivity().getLayoutInflater().inflate(R.layout.applistrowbigthumb, parent, false);
-                    } else {
-                        row = getActivity().getLayoutInflater().inflate(R.layout.applistrow, parent, false);
-                    }
+                    row = getActivity().getLayoutInflater().inflate(R.layout.commentslistrow, parent, false);
                     viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
                     viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
                     viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
@@ -213,21 +348,28 @@ public class TabCommentsFragment extends Fragment {
                 int score = 0;
                 int numreplies = 0;
                 JSONObject tempobj;
+                JSONArray replies = new JSONArray();
                 try {
                     tempobj = data.getJSONObject(position).getJSONObject("data");
                     body = tempobj.getString("body_html");
                     id = tempobj.getString("name");
                     user = "/u/" + tempobj.getString("author");
                     score = tempobj.getInt("score");
-                    if (!tempobj.isNull("replies") && !tempobj.get("replies").equals(""))
+                    if (!tempobj.isNull("replies") && !tempobj.get("replies").equals("")) {
                         numreplies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONArray("children").length();
+                        if (numreplies > 0)
+                            replies = tempobj.getJSONObject("replies").getJSONObject("data").getJSONArray("children");
+                    }
                     userLikes = tempobj.getString("likes");
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    tempobj = new JSONObject();
                 }
+                final JSONObject commentObj = tempobj;
                 // Update view
                 Spanned span = Html.fromHtml(Html.fromHtml(body).toString());
                 viewHolder.listheading.setText(span);
+                viewHolder.listheading.setMovementMethod(LinkMovementMethod.getInstance());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors[0]);
                 viewHolder.sourcetxt.setText(user);
@@ -251,13 +393,14 @@ public class TabCommentsFragment extends Fragment {
                     viewHolder.upvotebtn.setImageResource(R.drawable.upvote);
                     viewHolder.downvotebtn.setImageResource(R.drawable.downvote);
                 }
+                viewHolder.upvotebtn.setTag(userLikes);
                 // Set vote onclick listeners
                 viewHolder.upvotebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //listAdapter.showAppLoader();
                         view = (View) view.getParent().getParent();
-                        CommentsVoteTask listvote = new CommentsVoteTask(1, view, position);
+                        CommentsVoteTask listvote = new CommentsVoteTask(1, view, commentObj);
                         listvote.execute();
                     }
                 });
@@ -266,7 +409,7 @@ public class TabCommentsFragment extends Fragment {
                     public void onClick(View view) {
                         //listAdapter.showAppLoader();
                         view = (View) view.getParent().getParent();
-                        CommentsVoteTask listvote = new CommentsVoteTask(-1, view, position);
+                        CommentsVoteTask listvote = new CommentsVoteTask(-1, view, commentObj);
                         listvote.execute();
                     }
                 });
@@ -277,6 +420,11 @@ public class TabCommentsFragment extends Fragment {
                 } else {
                     viewHolder.infview.setVisibility(View.VISIBLE);
                 }*/
+
+                // check if comment has replies
+                if (replies.length() > 0) {
+                    row = getNestedReplies(row, replies);
+                }
 
                 row.setTag(viewHolder);
             }
@@ -474,24 +622,22 @@ public class TabCommentsFragment extends Fragment {
             private String redditid;
             private int direction;
             private String curVote;
-            private int listposition;
+            private String commentId;
             private ImageButton upvotebtn;
             private ImageButton downvotebtn;
 
-            public CommentsVoteTask(int dir, View view, int position) {
+            public CommentsVoteTask(int dir, View view, JSONObject data) {
                 direction = dir;
+                item = data;
                 upvotebtn = (ImageButton) view.findViewById(R.id.app_upvote);
                 downvotebtn = (ImageButton) view.findViewById(R.id.app_downvote);
-                // Get data by position in list
-                listposition = position;
-                item = (JSONObject) listAdapter.getItem(listposition);
+
                 try {
                     redditid = item.getString("name");
-                    curVote = item.getString("likes");
                 } catch (JSONException e) {
                     redditid = "null";
-                    curVote = "null";
                 }
+                curVote = (String) upvotebtn.getTag();
             }
 
             @Override
@@ -539,7 +685,7 @@ public class TabCommentsFragment extends Fragment {
                             value = "true";
                             break;
                     }
-
+                    upvotebtn.setTag(value);
                     //listAdapter.updateUiVote(listposition, redditid, value);
                     //global.setItemVote(mSharedPreferences, 0, listposition, redditid, value);
                 } else if (result.equals("LOGIN")) {
