@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="jquery-2.1.3.min.js"></script>
+    <script>
+            function populateComments(json){
+                var data = JSON.parse(json);
+                recursivePopulate(data);
+            }
+
+            function recursivePopulate(data){
+                for (var i in data){
+                    if (data[i].kind!="more"){
+                        appendComment(data[i].data.parent_id, data[i].data.name, data[i].data);
+                        if (data[i].data.replies!="" && data[i].data.replies.data.children!=null)
+                            recursivePopulate(data[i].data.replies.data.children);
+                            console.log(data);
+                    } else {
+
+                    }
+                }
+            }
+
+            function clearComments(){
+                $("#base").html();
+            }
+
+            function addChildComments(moreId, json){
+
+            }
+
+            function getCommentDataFromHtml(json){
+
+            }
+
+            function appendComment(parentId, Id, commentData){
+                var commentElem = $("#comment_template").clone().show();
+
+                commentElem.attr("id", commentData.name);
+                commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
+                commentElem.find(".comment_text").text(htmlDecode(commentData.body_html));
+
+                if (parentId.indexOf("t3_")!==-1){
+                    commentElem.appendTo("#base");
+                } else {
+                    commentElem.appendTo("#"+parentId+"-replies");
+                }
+            }
+
+            function htmlDecode(input){
+                var e = document.createElement('div');
+                e.innerHTML = input;
+                return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+            }
+
+            function setStyles(json){
+
+            }
+
+            $(function(){
+                //alert("hello");
+            });
+
+    </script>
+    <style rel="stylesheet">
+
+        .comment_box {
+        border: 2px solid #D7D7D7;
+        border-right: 0;
+        border-radius: 4px;
+        margin: 10px 0 10px;
+        }
+        .comment_text {
+        font-size: 16px;
+        }
+        .comment_replies {
+        margin-left:6px;
+        }
+    </style>
+</head>
+<body>
+<div id="comment_template" class="comment_box" style="display: none;">
+    <div>
+                <span class="comment_text">
+                    TEST
+                </span>
+    </div>
+    <div class="comment_vote">
+
+    </div>
+    <div class="comment_info">
+
+    </div>
+    <div class="comment_replies">
+
+    </div>
+</div>
+<div id="base">
+
+</div>
+</body>
+</html>

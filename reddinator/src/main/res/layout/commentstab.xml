@@ -3,10 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <ListView
-        android:id="@+id/comments_list"
+    <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent" />
+        android:id="@+id/comments_web_view" />
 </LinearLayout>

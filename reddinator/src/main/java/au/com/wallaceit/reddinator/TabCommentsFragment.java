@@ -18,37 +18,40 @@
 
 package au.com.wallaceit.reddinator;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Comment;
 
 public class TabCommentsFragment extends Fragment {
     private Context mContext;
+    public WebView mWebView;
     private boolean mFirstTime = true;
     private LinearLayout ll;
-    private ListView listView;
-    private CommentsListAdapter listAdapter;
+    private GlobalObjects global;
+    private SharedPreferences mSharedPreferences;
+    private CommentsLoader commentsLoader;
+    public String articleId;
+    private String currentSort = "best";
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -57,21 +60,56 @@ public class TabCommentsFragment extends Fragment {
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = this.getActivity();
 
         if (container == null) {
             return null;
         }
         if (mFirstTime) {
+            mContext = this.getActivity();
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+            global = (GlobalObjects) mContext.getApplicationContext();
+            // get shared preferences
+            articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+            int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "22"));
+            // setup progressbar
             ll = (LinearLayout) inflater.inflate(R.layout.commentstab, container, false);
+            mWebView = (WebView) ll.findViewById(R.id.comments_web_view);
+            // fixes for webview not taking keyboard input on some devices
+            WebSettings webSettings = mWebView.getSettings();
+            webSettings.setLoadWithOverviewMode(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setJavaScriptEnabled(true); // enable ecmascript
+            webSettings.setDomStorageEnabled(true); // some video sites require dom storage
+            webSettings.setSupportZoom(true);
+            webSettings.setUseWideViewPort(true);
+            webSettings.setBuiltInZoomControls(true);
+            webSettings.setDisplayZoomControls(true);
+            webSettings.setDefaultFontSize(fontSize);
+            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+            webSettings.setDisplayZoomControls(false);
+
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(i);
+
+                    return false; // always override url
+                }
+
+                public void onPageFinished(WebView view, String url) {
+                    loadComments("best");
+                }
+            });
+
+            mWebView.requestFocus(View.FOCUS_DOWN);
+            WebInterface webInterface = new WebInterface(mContext);
+            mWebView.addJavascriptInterface(webInterface, "Reddinator");
+
+            mWebView.loadUrl("file:///android_asset/comments.html");
             mFirstTime = false;
 
-            listAdapter = new CommentsListAdapter();
-            listView = (ListView) ll.findViewById(R.id.comments_list);
-            listView.setAdapter(listAdapter);
-
-            listAdapter.reloadComments();
-            //System.out.println("Created fragment");
         } else {
             ((ViewGroup) ll.getParent()).removeView(ll);
         }
@@ -91,7 +129,204 @@ public class TabCommentsFragment extends Fragment {
         //mWebView.saveState(WVState);
     }
 
-    public class CommentsListAdapter extends BaseAdapter {
+    public class WebInterface {
+        Context mContext;
+
+        /**
+         * Instantiate the interface and set the context
+         */
+        WebInterface(Context c) {
+            mContext = c;
+        }
+
+        @JavascriptInterface
+        public void loadChildren(String children) {
+            //commentsLoader = new CommentsLoader(articleId, currentSort, children);
+            //commentsLoader.execute();
+            System.out.println("Javascript command received");
+        }
+    }
+
+    private void loadComments(String sort) {
+        if (sort != null)
+            currentSort = sort;
+        commentsLoader = new CommentsLoader(articleId, currentSort, null);
+        commentsLoader.execute();
+    }
+
+    class CommentsLoader extends AsyncTask<Void, Integer, String> {
+
+        private Boolean loadMore = false;
+
+        public CommentsLoader(String articleId, String sort, String children) {
+            if (children != null && !children.equals(""))
+                loadMore = true;
+        }
+
+        @Override
+        protected String doInBackground(Void... none) {
+            //String sort = mSharedPreferences.getString("sort-app", "hot");
+            JSONArray data;
+            String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+            if (loadMore) {
+                return "";
+            } else {
+                // reloading
+                //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
+
+                JSONArray tempArray = global.mRedditData.getCommentsFeed(permalink, "best", 25);
+                // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
+                if (!isError(tempArray)) {
+                    data = tempArray;
+                    if (data.length() == 0) {
+                        return "";
+                    }
+                    // save feed
+                    //global.setFeed(mSharedPreferences, 0, data);
+                } else {
+                    return "";
+                }
+            }
+
+            return data.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (!result.equals("")) {
+                // hide loader
+                /*if (loadMore) {
+                    //hideAppLoader(false, false); // don't go to top of list
+                } else {
+                    //hideAppLoader(true, false); // go to top
+                }*/
+                mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+            } else {
+                //hideAppLoader(false, true); // don't go to top of list and show error icon
+                // TODO: handle error
+            }
+
+        }
+
+        // check if the array is an error array
+        private boolean isError(JSONArray tempArray) {
+            boolean error;
+            if (tempArray == null) {
+                return true; // null error
+            }
+            if (tempArray.length() > 0) {
+                try {
+                    error = tempArray.getString(0).equals("-1");
+                } catch (JSONException e) {
+                    error = true;
+                    e.printStackTrace();
+                }
+            } else {
+                error = false; // empty array means no more feed items
+            }
+            return error;
+        }
+    }
+
+    class CommentsVoteTask extends AsyncTask<String, Integer, String> {
+        JSONObject item;
+        private String redditid;
+        private int direction;
+        private String curVote;
+        private ImageButton upvotebtn;
+        private ImageButton downvotebtn;
+
+        public CommentsVoteTask(int dir, View view, JSONObject data) {
+            direction = dir;
+            item = data;
+            upvotebtn = (ImageButton) view.findViewById(R.id.app_upvote);
+            downvotebtn = (ImageButton) view.findViewById(R.id.app_downvote);
+
+            try {
+                redditid = item.getString("name");
+            } catch (JSONException e) {
+                redditid = "null";
+            }
+            curVote = (String) upvotebtn.getTag();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            // enumerate current vote and clicked direction
+            if (direction == 1) {
+                if (curVote.equals("true")) { // if already upvoted, neutralize.
+                    direction = 0;
+                }
+            } else { // downvote
+                if (curVote.equals("false")) {
+                    direction = 0;
+                }
+            }
+            // Do the vote
+            try {
+                return global.mRedditData.vote(redditid, direction);
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.equals("OK")) {
+                // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
+                String value = "null";
+                switch (direction) {
+                    case -1:
+                        upvotebtn.setImageResource(R.drawable.upvote);
+                        downvotebtn.setImageResource(R.drawable.downvote_active);
+                        value = "false";
+                        break;
+
+                    case 0:
+                        upvotebtn.setImageResource(R.drawable.upvote);
+                        downvotebtn.setImageResource(R.drawable.downvote);
+                        value = "null";
+                        break;
+
+                    case 1:
+                        upvotebtn.setImageResource(R.drawable.upvote_active);
+                        downvotebtn.setImageResource(R.drawable.downvote);
+                        value = "true";
+                        break;
+                }
+                upvotebtn.setTag(value);
+                //listAdapter.updateUiVote(listposition, redditid, value);
+                //global.setItemVote(mSharedPreferences, 0, listposition, redditid, value);
+            } else if (result.equals("LOGIN")) {
+                global.mRedditData.initiateLogin(getActivity());
+            } else {
+                // show error
+                Toast.makeText(getActivity(), "API Error: " + result, Toast.LENGTH_LONG).show();
+            }
+            //listAdapter.hideAppLoader(false, false);
+        }
+    }
+
+    // hide loader
+        /*private void hideAppLoader(boolean goToTopOfList, boolean showError) {
+            // get theme layout id
+            loader.setVisibility(View.GONE);
+            // go to the top of the list view
+            if (goToTopOfList) {
+                listView.smoothScrollToPosition(0);
+            }
+            if (showError) {
+                errorIcon.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void showAppLoader() {
+            errorIcon.setVisibility(View.GONE);
+            loader.setVisibility(View.VISIBLE);
+        }*/
+
+    /*public class CommentsListAdapter extends BaseAdapter {
 
         private JSONArray data;
         private GlobalObjects global;
@@ -157,7 +392,7 @@ public class TabCommentsFragment extends Fragment {
 
         private View getNestedReplies(View parent, JSONArray replies) {
 
-            LinearLayout replyView = (LinearLayout) parent.findViewById(R.id.comment_replies);
+            final LinearLayout replyView = (LinearLayout) parent.findViewById(R.id.comment_replies);
             //replyView.setBackgroundResource(R.drawable.comment_border);
 
             for (int i = 0; i < replies.length(); i++) {
@@ -171,6 +406,12 @@ public class TabCommentsFragment extends Fragment {
                 }
                 if (ismore) {
                     // build load more item
+                    final JSONArray children;
+                    try {
+                        children = replies.getJSONObject(i).getJSONObject("data").getJSONArray("children");
+                    } catch (JSONException e) {
+                        continue;
+                    }
                     View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadreplies, null, false);
                     TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
                     loadtxtview.setText(replies.length() == 1 ? "Load replies..." : "Load more replies...");
@@ -180,7 +421,7 @@ public class TabCommentsFragment extends Fragment {
                         @Override
                         public void onClick(View view) {
                             ((TextView) view.findViewById(R.id.loadmoretxt)).setText("Loading...");
-                            loadMoreComments();
+                            addChildComments(replyView, children);
                         }
                     });
 
@@ -277,15 +518,15 @@ public class TabCommentsFragment extends Fragment {
                 }
 
                 // hide info bar if options set
-                /*if (hideInf) {
+                if (hideInf) {
                     viewHolder.infview.setVisibility(View.GONE);
                 } else {
                     viewHolder.infview.setVisibility(View.VISIBLE);
-                }*/
+                }
 
                 //row.setTag(viewHolder);
 
-                replyView.addView(row, i);
+                //replyView.addView(row, i);
             }
 
             return parent;
@@ -296,24 +537,20 @@ public class TabCommentsFragment extends Fragment {
             if (position > data.length()) {
                 return null; //  prevent errornous views
             }
-
+            boolean ismore = false;
             if ((position == data.length() - 1)) {
-                // check if the last element is the "more" element returned by reddit, show load more view
-                boolean ismore = false;
                 try {
                     ismore = data.getJSONObject(position).getString("kind").equals("more");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (ismore) {
+            }
+            // check if the last element is the "more" element returned by reddit, show load more view
+            if (ismore) {
                     // build load more item
                     View loadmorerow = getActivity().getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
                     TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
-                    if (endOfFeed) {
-                        loadtxtview.setText("There's nothing more here");
-                    } else {
-                        loadtxtview.setText("Load more...");
-                    }
+                    loadtxtview.setText("Load more...");
                     loadtxtview.setTextColor(themeColors[1]);
                     loadmorerow.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -323,7 +560,6 @@ public class TabCommentsFragment extends Fragment {
                         }
                     });
                     return loadmorerow;
-                }
             } else {
                 // inflate new view or load view holder if existing
                 ViewHolder viewHolder = new ViewHolder();
@@ -415,11 +651,11 @@ public class TabCommentsFragment extends Fragment {
                 });
 
                 // hide info bar if options set
-                /*if (hideInf) {
+                if (hideInf) {
                     viewHolder.infview.setVisibility(View.GONE);
                 } else {
                     viewHolder.infview.setVisibility(View.VISIBLE);
-                }*/
+                }
 
                 // check if comment has replies
                 if (replies.length() > 0) {
@@ -484,10 +720,16 @@ public class TabCommentsFragment extends Fragment {
         }
 
         private String lastItemId = "0";
-        private boolean endOfFeed = false;
 
         public void loadMoreComments() {
             loadReddits(true);
+        }
+
+        public void addChildComments(LinearLayout replyView, JSONArray children){
+            JSONArray feed = global.mRedditData.getChildComments(children);
+            for (int i = 0; i<feed.length(); i++){
+                getNestedReplies(replyView, children);
+            }
         }
 
         public void reloadComments() {
@@ -514,7 +756,7 @@ public class TabCommentsFragment extends Fragment {
                 if (loadMore) {
                     //String id = "";
                     //String link_id = "";
-                    /*JSONArray children = new JSONArray();
+                    JSONArray children = new JSONArray();
                     try {
                         JSONObject moreObject = data.getJSONObject(data.length()-1).getJSONObject("data");
                         //id = moreObject.getString("name");
@@ -522,14 +764,10 @@ public class TabCommentsFragment extends Fragment {
                         children = moreObject.getJSONArray("children");
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                     // fetch 10 more after current last item and append to the list
                     JSONArray tempData = global.mRedditData.getMoreComments();
                     if (!isError(tempData)) {
-                        if (tempData.length() == 0) {
-                            endOfFeed = true;
-                        } else {
-                            endOfFeed = false;
 
                             JSONArray prevData = data;
                             data = new JSONArray();
@@ -556,12 +794,10 @@ public class TabCommentsFragment extends Fragment {
                             }
                             // save feed
                             //global.setFeed(mSharedPreferences, 0, data);
-                        }
                     } else {
                         return (long) 0;
                     }
                 } else {
-                    endOfFeed = false;
                     // reloading
                     //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
 
@@ -570,7 +806,7 @@ public class TabCommentsFragment extends Fragment {
                     if (!isError(tempArray)) {
                         data = tempArray;
                         if (data.length() == 0) {
-                            endOfFeed = true;
+                            //endOfFeed = true;
                         }
                         // save feed
                         //global.setFeed(mSharedPreferences, 0, data);
@@ -616,104 +852,5 @@ public class TabCommentsFragment extends Fragment {
                 return error;
             }
         }
-
-        class CommentsVoteTask extends AsyncTask<String, Integer, String> {
-            JSONObject item;
-            private String redditid;
-            private int direction;
-            private String curVote;
-            private String commentId;
-            private ImageButton upvotebtn;
-            private ImageButton downvotebtn;
-
-            public CommentsVoteTask(int dir, View view, JSONObject data) {
-                direction = dir;
-                item = data;
-                upvotebtn = (ImageButton) view.findViewById(R.id.app_upvote);
-                downvotebtn = (ImageButton) view.findViewById(R.id.app_downvote);
-
-                try {
-                    redditid = item.getString("name");
-                } catch (JSONException e) {
-                    redditid = "null";
-                }
-                curVote = (String) upvotebtn.getTag();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                // enumerate current vote and clicked direction
-                if (direction == 1) {
-                    if (curVote.equals("true")) { // if already upvoted, neutralize.
-                        direction = 0;
-                    }
-                } else { // downvote
-                    if (curVote.equals("false")) {
-                        direction = 0;
-                    }
-                }
-                // Do the vote
-                try {
-                    return global.mRedditData.vote(redditid, direction);
-                } catch (RedditData.RedditApiException e) {
-                    e.printStackTrace();
-                    return e.getMessage();
-                }
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                if (result.equals("OK")) {
-                    // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
-                    String value = "null";
-                    switch (direction) {
-                        case -1:
-                            upvotebtn.setImageResource(R.drawable.upvote);
-                            downvotebtn.setImageResource(R.drawable.downvote_active);
-                            value = "false";
-                            break;
-
-                        case 0:
-                            upvotebtn.setImageResource(R.drawable.upvote);
-                            downvotebtn.setImageResource(R.drawable.downvote);
-                            value = "null";
-                            break;
-
-                        case 1:
-                            upvotebtn.setImageResource(R.drawable.upvote_active);
-                            downvotebtn.setImageResource(R.drawable.downvote);
-                            value = "true";
-                            break;
-                    }
-                    upvotebtn.setTag(value);
-                    //listAdapter.updateUiVote(listposition, redditid, value);
-                    //global.setItemVote(mSharedPreferences, 0, listposition, redditid, value);
-                } else if (result.equals("LOGIN")) {
-                    global.mRedditData.initiateLogin(getActivity());
-                } else {
-                    // show error
-                    Toast.makeText(getActivity(), "API Error: " + result, Toast.LENGTH_LONG).show();
-                }
-                //listAdapter.hideAppLoader(false, false);
-            }
-        }
-
-        // hide loader
-        /*private void hideAppLoader(boolean goToTopOfList, boolean showError) {
-            // get theme layout id
-            loader.setVisibility(View.GONE);
-            // go to the top of the list view
-            if (goToTopOfList) {
-                listView.smoothScrollToPosition(0);
-            }
-            if (showError) {
-                errorIcon.setVisibility(View.VISIBLE);
-            }
-        }
-
-        private void showAppLoader() {
-            errorIcon.setVisibility(View.GONE);
-            loader.setVisibility(View.VISIBLE);
-        }*/
-    }
+    }*/
 }

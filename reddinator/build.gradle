@@ -44,4 +44,5 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:+'
     compile 'com.android.support:appcompat-v7:+'
+    compile 'org.mod4j.org.apache.commons:lang:2.1.0'
 }
