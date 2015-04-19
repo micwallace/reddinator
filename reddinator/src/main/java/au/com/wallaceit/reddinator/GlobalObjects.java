@@ -21,6 +21,7 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
@@ -216,6 +217,38 @@ public class GlobalObjects extends Application {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    public String[] getThemeColorHex() {
+        String[] themeColors = new String[6];
+        switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
+            // set colors array: healine text, load more text, divider, domain text, vote & comments
+            case 1:
+                themeColors = new String[]{"#000000", "#000000", "#D7D7D7", "#336699", "#FF4500", "#FFFFFF"};
+                break;
+            case 2:
+                themeColors = new String[]{"#FFFFFF", "#FFFFFF", "#646464", "#5F99CF", "#FF8B60", "#000000"};
+                break;
+            case 3:
+            case 4:
+            case 5:
+                themeColors = new String[]{"#FFFFFF", "#FFFFFF", "#646464", "#CEE3F8", "#FF8B60", "#000000"};
+                break;
+        }
+        // user title color override
+        if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
+            themeColors[0] = mSharedPreferences.getString("titlecolorpref", "#000");
+        }
+        return themeColors;
+    }
+
+    public int[] getThemeColors(){
+        String[] srcColors = getThemeColorHex();
+        int[] themeColors = new int[6];
+        for (int i= 0; i<srcColors.length; i++){
+            themeColors[i] = Color.parseColor(srcColors[i]);
+        }
+        return themeColors;
     }
 
 }

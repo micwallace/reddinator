@@ -308,7 +308,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getLoadingView() {
         RemoteViews rowload = new RemoteViews(mContext.getPackageName(), R.layout.listrowload);
         if (themeColors == null) {
-            getThemeColors(); // prevents null pointer
+            themeColors = global.getThemeColors(); // prevents null pointer
         }
         rowload.setTextColor(R.id.listloadtxt, themeColors[0]);
         return rowload;
@@ -336,7 +336,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
-        getThemeColors(); // reset theme colors
+        themeColors = global.getThemeColors(); // reset theme colors
         int loadType = global.getLoadType();
         if (!loadCached) {
             loadCached = (loadType == GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly but only check it if load cached is not already set true in the above constructor
@@ -486,26 +486,5 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             views.setViewVisibility(R.id.erroricon, View.VISIBLE);
         }
         mgr.partiallyUpdateAppWidget(appWidgetId, views);
-    }
-
-    private void getThemeColors() {
-        switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
-            // set colors array: healine text, load more text, divider, domain text, vote & comments
-            case 1:
-                themeColors = new int[]{Color.BLACK, Color.BLACK, Color.parseColor("#D7D7D7"), Color.parseColor("#336699"), Color.parseColor("#FF4500")};
-                break;
-            case 2:
-                themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#5F99CF"), Color.parseColor("#FF8B60")};
-                break;
-            case 3:
-            case 4:
-            case 5:
-                themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
-                break;
-        }
-        // user title color override
-        if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
-            themeColors[0] = Color.parseColor(mSharedPreferences.getString("titlecolorpref", "#000"));
-        }
     }
 }

@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,24 +71,27 @@ public class TabCommentsFragment extends Fragment {
             global = (GlobalObjects) mContext.getApplicationContext();
             // get shared preferences
             articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-            int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "22"));
+
             // setup progressbar
             ll = (LinearLayout) inflater.inflate(R.layout.commentstab, container, false);
             mWebView = (WebView) ll.findViewById(R.id.comments_web_view);
             // fixes for webview not taking keyboard input on some devices
             WebSettings webSettings = mWebView.getSettings();
-            webSettings.setLoadWithOverviewMode(true);
-            webSettings.setUseWideViewPort(true);
             webSettings.setJavaScriptEnabled(true); // enable ecmascript
             webSettings.setDomStorageEnabled(true); // some video sites require dom storage
-            webSettings.setSupportZoom(true);
-            webSettings.setUseWideViewPort(true);
-            webSettings.setBuiltInZoomControls(true);
-            webSettings.setDisplayZoomControls(true);
+            webSettings.setSupportZoom(false);
+            webSettings.setBuiltInZoomControls(false);
+            webSettings.setDisplayZoomControls(false);
+            int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "22"));
             webSettings.setDefaultFontSize(fontSize);
             webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
             webSettings.setDisplayZoomControls(false);
 
+            String[] themeColors = global.getThemeColorHex();
+            mSharedPreferences.getString("titlefontpref", "16");
+
+
+            final String themeStr = StringUtils.join(themeColors, ",");
             mWebView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -99,6 +103,7 @@ public class TabCommentsFragment extends Fragment {
                 }
 
                 public void onPageFinished(WebView view, String url) {
+                    mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
                     loadComments("best");
                 }
             });
@@ -140,52 +145,71 @@ public class TabCommentsFragment extends Fragment {
         }
 
         @JavascriptInterface
-        public void loadChildren(String children) {
-            //commentsLoader = new CommentsLoader(articleId, currentSort, children);
+        public void loadChildren(String moreId, String children) {
+            System.out.println("Load more command received");
+            commentsLoader = new CommentsLoader(currentSort, moreId, children);
+            commentsLoader.execute();
+        }
+
+        @JavascriptInterface
+        public void vote(String thingId, String direction) {
+            System.out.println("Vote command received");
+            //commentsLoader = new CommentsLoader(currentSort, moreId, children);
             //commentsLoader.execute();
-            System.out.println("Javascript command received");
         }
     }
 
     private void loadComments(String sort) {
         if (sort != null)
             currentSort = sort;
-        commentsLoader = new CommentsLoader(articleId, currentSort, null);
+        commentsLoader = new CommentsLoader(currentSort);
         commentsLoader.execute();
     }
 
     class CommentsLoader extends AsyncTask<Void, Integer, String> {
 
-        private Boolean loadMore = false;
+        private boolean loadMore = false;
+        private String mSort = "best";
+        private String mMoreId;
+        private String mChildren;
 
-        public CommentsLoader(String articleId, String sort, String children) {
-            if (children != null && !children.equals(""))
+        public CommentsLoader(String sort){
+            mSort = sort;
+        }
+
+        public CommentsLoader(String sort, String moreId, String children) {
+            mSort = sort;
+            if (children != null && !children.equals("")) {
                 loadMore = true;
+                mMoreId = moreId;
+                mChildren = children;
+            }
         }
 
         @Override
         protected String doInBackground(Void... none) {
             //String sort = mSharedPreferences.getString("sort-app", "hot");
             JSONArray data;
-            String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+
+            JSONArray tempArray;
             if (loadMore) {
-                return "";
+                String articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                tempArray = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, mSort);
             } else {
+                String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                 // reloading
                 //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-
-                JSONArray tempArray = global.mRedditData.getCommentsFeed(permalink, "best", 25);
-                // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-                if (!isError(tempArray)) {
-                    data = tempArray;
-                    if (data.length() == 0) {
-                        return "";
-                    }
-                    // save feed
-                    //global.setFeed(mSharedPreferences, 0, data);
-                } else {
+                tempArray = global.mRedditData.getCommentsFeed(permalink, mSort, 25);
+            }
+            if (!isError(tempArray)) {
+                data = tempArray;
+                if (data.length() == 0) {
                     return "";
                 }
+                // save feed
+                //global.setFeed(mSharedPreferences, 0, data);
+            } else {
+                return "";
             }
 
             return data.toString();
@@ -200,7 +224,11 @@ public class TabCommentsFragment extends Fragment {
                 } else {
                     //hideAppLoader(true, false); // go to top
                 }*/
-                mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                if (loadMore){
+                    mWebView.loadUrl("javascript:populateChildComments(\""+mMoreId+"\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                } else {
+                    mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                }
             } else {
                 //hideAppLoader(false, true); // don't go to top of list and show error icon
                 // TODO: handle error
