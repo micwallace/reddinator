@@ -84,7 +84,7 @@
             android:summary="View comments as seen at m.reddit.com" />
         <ListPreference
                 android:key="@string/comment_font_pref"
-                android:title="Reddit Font Size"
+                android:title="Comments Font Size"
                 android:summary="Default font size for the comments view"
                 android:entries="@array/fontsize_list_preference"
                 android:entryValues="@array/fontsize_list_preference"

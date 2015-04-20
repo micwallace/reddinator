@@ -64,6 +64,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private int curvote = 0;
     private int feedposition = 0;
     private int widgetId = 0;
+    private ActionBar actionBar;
 
     private class TabInfo {
         private String tag;
@@ -119,7 +120,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
-        ActionBar actionBar = getActionBar();
+        actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -280,6 +281,18 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 });
         // Create the AlertDialog
         builder.create().show();
+    }
+
+    public void setTitleText(final String title){
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                actionBar.setTitle(title);
+
+            }
+        });
     }
 
     // VOTING STUFF

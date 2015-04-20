@@ -24,15 +24,11 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: au.com.wallaceit.reddinator" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="making progress...">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/downvote.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/downvote_active.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/upvote.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/upvote_active.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
+    <list default="true" id="8602d548-8508-4de7-a923-9f86b8182001" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="reddinator.iws" />
@@ -99,33 +95,46 @@
       <file leaf-file-name="TabCommentsFragment.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2366" max-vertical-offset="13350">
-              <caret line="168" column="0" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="3086" max-vertical-offset="3930">
+              <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
+      <file leaf-file-name="ViewRedditActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1691" max-vertical-offset="11910">
-              <caret line="199" column="52" selection-start-line="199" selection-start-column="52" selection-end-line="199" selection-end-column="52" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2895" max-vertical-offset="6720">
+              <caret line="263" column="19" selection-start-line="263" selection-start-column="19" selection-end-line="263" selection-end-column="19" />
+              <folding>
+                <element signature="e#10506#10645#0" expanded="true" />
+                <element signature="e#10634#10635#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="comments.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="comments.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/assets/comments.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.47445256" vertical-offset="1410" max-vertical-offset="3135">
-              <caret line="107" column="15" selection-start-line="107" selection-start-column="15" selection-end-line="107" selection-end-column="15" />
+            <state vertical-scroll-proportion="-14.375" vertical-offset="435" max-vertical-offset="4050">
+              <caret line="52" column="13" selection-start-line="52" selection-start-column="13" selection-end-line="52" selection-end-column="13" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#h5#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RedditData.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.33184856" vertical-offset="4516" max-vertical-offset="7335">
+              <caret line="370" column="0" selection-start-line="370" selection-start-column="0" selection-end-line="370" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -153,7 +162,7 @@
       <file leaf-file-name="Rservice.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3916" max-vertical-offset="6735">
+            <state vertical-scroll-proportion="0.0" vertical-offset="4650" max-vertical-offset="7440">
               <caret line="310" column="39" selection-start-line="310" selection-start-column="39" selection-end-line="310" selection-end-column="39" />
               <folding />
             </state>
@@ -882,11 +891,9 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/Donations/build.gradle" />
         <option value="$PROJECT_DIR$/settings.gradle" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/menu/viewmenu.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubredditsActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/drawable-hdpi/comment_reply.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/drawable-hdpi/comment_layers.xml" />
@@ -903,6 +910,8 @@
         <option value="$PROJECT_DIR$/reddinator/build.gradle" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/Rservice.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" />
       </list>
@@ -1049,8 +1058,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -1069,9 +1076,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1543,7 +1566,11 @@
       <created>1429274992804</created>
       <updated>1429274992804</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="making progress...">
+      <created>1429436413794</created>
+      <updated>1429436413794</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -1671,7 +1698,6 @@
     <MESSAGE value="started html comments view" />
     <MESSAGE value="making progress..." />
     <option name="LAST_COMMIT_MESSAGE" value="making progress..." />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1683,16 +1709,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/subredditselect.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18134715" vertical-offset="0" max-vertical-offset="1395">
-          <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/AccountWebView.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3322314" vertical-offset="459" max-vertical-offset="1230">
@@ -1708,13 +1724,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/subreddititem.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.017584994" vertical-offset="0" max-vertical-offset="853">
           <caret line="1" column="74" selection-start-line="1" selection-start-column="74" selection-end-line="1" selection-end-column="74" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
@@ -1725,13 +1741,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/webtab.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="240">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/.gitignore">
@@ -1767,13 +1783,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2722372" vertical-offset="394" max-vertical-offset="765">
           <caret line="33" column="59" selection-start-line="33" selection-start-column="59" selection-end-line="33" selection-end-column="59" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.3964647" vertical-offset="647" max-vertical-offset="1755">
-          <caret line="80" column="37" selection-start-line="80" selection-start-column="37" selection-end-line="80" selection-end-column="37" />
         </state>
       </provider>
     </entry>
@@ -1911,13 +1920,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/webview.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.13761468" vertical-offset="0" max-vertical-offset="436">
           <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backupstuff/commentstab.xml">
@@ -1950,23 +1959,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/backupstuff/listrowloadreplies.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.13227513" vertical-offset="0" max-vertical-offset="645">
           <caret line="5" column="49" selection-start-line="5" selection-start-column="49" selection-end-line="5" selection-end-column="49" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/commentstab.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/commentstab.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.30963302" vertical-offset="0" max-vertical-offset="436">
           <caret line="9" column="15" selection-start-line="9" selection-start-column="15" selection-end-line="9" selection-end-column="15" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabWebFragment.java">
@@ -1993,23 +2002,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.26726058" vertical-offset="0" max-vertical-offset="4500">
           <caret line="38" column="25" selection-start-line="38" selection-start-column="25" selection-end-line="38" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2650334" vertical-offset="1246" max-vertical-offset="7335">
-          <caret line="150" column="0" selection-start-line="150" selection-start-column="0" selection-end-line="150" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="14.164811" vertical-offset="0" max-vertical-offset="6525">
-          <caret line="482" column="0" selection-start-line="482" selection-start-column="0" selection-end-line="482" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2017,7 +2009,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.8917749" vertical-offset="491" max-vertical-offset="8850">
           <caret line="113" column="11" selection-start-line="113" selection-start-column="11" selection-end-line="113" selection-end-column="11" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2025,14 +2016,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="333" max-vertical-offset="810">
           <caret line="46" column="53" selection-start-line="46" selection-start-column="53" selection-end-line="46" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1646" max-vertical-offset="11910">
-          <caret line="199" column="52" selection-start-line="199" selection-start-column="52" selection-end-line="199" selection-end-column="52" />
           <folding />
         </state>
       </provider>
@@ -2049,27 +2032,72 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.103896104" vertical-offset="2703" max-vertical-offset="3165">
           <caret line="226" column="42" selection-start-line="226" selection-start-column="42" selection-end-line="226" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1646" max-vertical-offset="11910">
+          <caret line="199" column="52" selection-start-line="199" selection-start-column="52" selection-end-line="199" selection-end-column="52" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
+    <entry file="file://$USER_HOME$/bin/android_sdk/sources/android-21/android/app/Activity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1751" max-vertical-offset="12735">
-          <caret line="168" column="0" selection-start-line="168" selection-start-column="0" selection-end-line="168" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="71846" max-vertical-offset="89820">
+          <caret line="5007" column="16" selection-start-line="5007" selection-start-column="16" selection-end-line="5007" selection-end-column="16" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/xml/preferences.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.44805196" vertical-offset="1158" max-vertical-offset="1755">
+          <caret line="91" column="57" selection-start-line="91" selection-start-column="57" selection-end-line="91" selection-end-column="57" />
+          <folding>
+            <element signature="e#3491#3517#0" expanded="true" />
+            <element signature="e#3728#3755#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2895" max-vertical-offset="6720">
+          <caret line="263" column="19" selection-start-line="263" selection-start-column="19" selection-end-line="263" selection-end-column="19" />
+          <folding>
+            <element signature="e#10506#10645#0" expanded="true" />
+            <element signature="e#10634#10635#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/assets/comments.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47445256" vertical-offset="1410" max-vertical-offset="3135">
-          <caret line="107" column="15" selection-start-line="107" selection-start-column="15" selection-end-line="107" selection-end-column="15" />
+        <state vertical-scroll-proportion="-14.375" vertical-offset="435" max-vertical-offset="4050">
+          <caret line="52" column="13" selection-start-line="52" selection-start-column="13" selection-end-line="52" selection-end-column="13" />
           <folding>
             <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#h5#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="3086" max-vertical-offset="3930">
+          <caret line="259" column="0" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33184856" vertical-offset="4516" max-vertical-offset="7335">
+          <caret line="370" column="0" selection-start-line="370" selection-start-column="0" selection-end-line="370" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
