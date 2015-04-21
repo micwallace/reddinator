@@ -88,6 +88,9 @@ public class TabWebFragment extends Fragment {
                 fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
             } else {
                 url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+                if (url.indexOf("http://www.reddit.com/")==0){
+                    url += ".compact";
+                }
                 fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
             }
             // setup progressbar

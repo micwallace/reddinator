@@ -212,7 +212,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                 break;
 
             case R.id.menu_account:
-                Intent accnIntent = new Intent(ViewRedditActivity.this, AccountWebView.class);
+                Intent accnIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
+                accnIntent.putExtra("url", "http://www.reddit.com/message/inbox/.compact");
                 startActivity(accnIntent);
                 break;
 

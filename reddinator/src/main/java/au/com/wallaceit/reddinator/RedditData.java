@@ -283,6 +283,8 @@ public class RedditData {
 
     private JSONArray getRedditJsonArray(String url, boolean useAuth) throws RedditApiException {
         String json = getJSONFromUrl(url, useAuth);
+        if (json==null)
+            return null;
         JSONArray jArr = new JSONArray();
         try {
             jArr = new JSONArray(json);

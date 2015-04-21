@@ -47,6 +47,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -93,7 +96,10 @@ public class MainActivity extends Activity {
         loader = (ProgressBar) findViewById(R.id.appsrloader);
         errorIcon = (ImageView) findViewById(R.id.apperroricon);
         refreshbutton = (ImageButton) findViewById(R.id.apprefreshbutton);
+
         configbutton = (ImageButton) findViewById(R.id.appprefsbutton);
+        configbutton.setImageDrawable(new IconDrawable(this, Iconify.IconValue.fa_wrench).actionBarSize());
+
         srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
         // set theme colors

@@ -33,7 +33,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -59,61 +58,73 @@ public class TabCommentsFragment extends Fragment {
 
     }
 
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mContext = this.getActivity();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        global = (GlobalObjects) mContext.getApplicationContext();
+
+        // get shared preferences
+        articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+
+        ll = new LinearLayout(mContext);
+        ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        // fixes for webview not taking keyboard input on some devices
+        mWebView = new WebView(mContext);
+        mWebView.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        ll.addView(mWebView);
+        WebSettings webSettings = mWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true); // enable ecmascript
+        webSettings.setDomStorageEnabled(true); // some video sites require dom storage
+        webSettings.setSupportZoom(false);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(false);
+        int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "20"));
+        webSettings.setDefaultFontSize(fontSize);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setDisplayZoomControls(false);
+
+        String[] themeColors = global.getThemeColorHex();
+        mSharedPreferences.getString("titlefontpref", "16");
+
+
+        final String themeStr = StringUtils.join(themeColors, ",");
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.indexOf("http://www.reddit.com/")==0){
+                    Intent i = new Intent(mContext, WebViewActivity.class);
+                    i.putExtra("url", url);
+                    startActivity(i);
+                } else {
+                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(i);
+                }
+                return true; // always override url
+            }
+
+            public void onPageFinished(WebView view, String url) {
+                mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
+                loadComments("best");
+            }
+        });
+
+        mWebView.requestFocus(View.FOCUS_DOWN);
+        WebInterface webInterface = new WebInterface(mContext);
+        mWebView.addJavascriptInterface(webInterface, "Reddinator");
+
+        mWebView.loadUrl("file:///android_asset/comments.html");
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //ll = (LinearLayout) inflater.inflate(R.layout.commentstab, container, false);
 
         if (container == null) {
             return null;
         }
         if (mFirstTime) {
-            mContext = this.getActivity();
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-            global = (GlobalObjects) mContext.getApplicationContext();
-            // get shared preferences
-            articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-
-            // setup progressbar
-            ll = (LinearLayout) inflater.inflate(R.layout.commentstab, container, false);
-            mWebView = (WebView) ll.findViewById(R.id.comments_web_view);
-            // fixes for webview not taking keyboard input on some devices
-            WebSettings webSettings = mWebView.getSettings();
-            webSettings.setJavaScriptEnabled(true); // enable ecmascript
-            webSettings.setDomStorageEnabled(true); // some video sites require dom storage
-            webSettings.setSupportZoom(false);
-            webSettings.setBuiltInZoomControls(false);
-            webSettings.setDisplayZoomControls(false);
-            int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "20"));
-            webSettings.setDefaultFontSize(fontSize);
-            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-            webSettings.setDisplayZoomControls(false);
-
-            String[] themeColors = global.getThemeColorHex();
-            mSharedPreferences.getString("titlefontpref", "16");
-
-
-            final String themeStr = StringUtils.join(themeColors, ",");
-            mWebView.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(i);
-
-                    return false; // always override url
-                }
-
-                public void onPageFinished(WebView view, String url) {
-                    mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
-                    loadComments("best");
-                }
-            });
-
-            mWebView.requestFocus(View.FOCUS_DOWN);
-            WebInterface webInterface = new WebInterface(mContext);
-            mWebView.addJavascriptInterface(webInterface, "Reddinator");
-
-            mWebView.loadUrl("file:///android_asset/comments.html");
+            //ll.addView(mWebView);
             mFirstTime = false;
-
         } else {
             ((ViewGroup) ll.getParent()).removeView(ll);
         }

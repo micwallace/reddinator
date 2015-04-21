@@ -27,7 +27,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class AccountWebView extends Activity {
+public class WebViewActivity extends Activity {
     WebView wv;
     WebViewClient wvclient;
     Activity mActivity;
@@ -36,7 +36,7 @@ public class AccountWebView extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        global = ((GlobalObjects) AccountWebView.this.getApplicationContext());
+        global = ((GlobalObjects) WebViewActivity.this.getApplicationContext());
         // request loading bar
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -44,7 +44,7 @@ public class AccountWebView extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        mActivity = AccountWebView.this;
+        mActivity = WebViewActivity.this;
         setContentView(R.layout.webview);
         mActivity.setTitle(R.string.loading);
         // set and load webview
@@ -64,7 +64,12 @@ public class AccountWebView extends Activity {
         wv.getSettings().setDefaultFontSize(22);
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
-        wv.loadUrl("http://www.reddit.com/message/inbox.compact");
+        // get url from extra
+        String url = getIntent().getStringExtra("url");
+        if (url==null){
+            url = "http://www.reddit.com/.compact";
+        }
+        wv.loadUrl(url);
     }
 
     public void onBackPressed() {
