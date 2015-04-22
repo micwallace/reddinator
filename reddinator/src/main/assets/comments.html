@@ -10,6 +10,8 @@
                 $("body").css("background-color", themeColors[5]);
                 $("body").css("color", themeColors[0]);
                 $(".comment_user").css("color", themeColors[3]);
+                $(".comment_score").css("color", themeColors[4]);
+                $(".comment_reply_count").css("color", themeColors[4]);
                 $("button").css("background-color", themeColors[3]);
             }
 
@@ -101,6 +103,8 @@
                     moreElem.css("margin-right", "0").appendTo("#base");
                 } else {
                     moreElem.appendTo("#"+parentId+"-replies");
+                    var repliesElem = $("#"+parentId).children(".comment_info").children(".comment_reply_count");
+                    repliesElem.text(parseInt(repliesElem.text())+moreData.count);
                 }
             }
 
@@ -111,6 +115,8 @@
                 commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
                 commentElem.find(".comment_text").html(htmlDecode(commentData.body_html));
                 commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'http://www.reddit.com/u/'+commentData.author+'.compact');
+                commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
+                commentElem.find(".comment_reply_count").text("0");
                 if (commentData.hasOwnProperty('likes')){
                     if (commentData.likes==1){
                         commentElem.find(".comment_upvote").attr("src", "upvote_active.png");
@@ -122,7 +128,10 @@
                     commentElem.appendTo("#base");
                 } else {
                     commentElem.appendTo("#"+parentId+"-replies");
-                    $("#"+parentId).children('.reply_expand').show();
+                    var parent = $("#"+parentId);
+                    parent.children('.reply_expand').show();
+                    var repliesElem = parent.children(".comment_info").children(".comment_reply_count");
+                    repliesElem.text(parseInt(repliesElem.text())+1);
                 }
             }
 
@@ -256,7 +265,9 @@
             white-space: -o-pre-wrap; /* Opera 7 */
             word-wrap: break-word; /* Internet Explorer 5.5+ */
         }
-        *:focus {outline:0px none transparent;}
+        *:focus {
+            outline:0px none transparent;
+        }
         .clearfix:after {
             clear: both;
             content: ".";
@@ -270,14 +281,25 @@
         .clearfix {
             display: block;
         }
+        .fa-star {
+            color: #FFFF00;
+        }
+        .fa-reply, .fa-comment {
+            color: #C3DBF6;
+        }
+        .fa-cog {
+            color: #B8B8B8;
+        }
     </style>
 </head>
 <body>
 <div id="comment_template" class="comment_box" style="display: none;">
-    <div class="comment_info">
-        <span><a class="comment_user" href=""></a></span>
-        <span class="comment_score"></span>
-        <span class="comment_reply_count"></span>
+    <div class="comment_info" style="text">
+        <span style="display:inline;"><a class="comment_user" href=""></a></span>
+        <span><i class="fa fa-star"></i></span>
+        <span class="comment_score" style="padding:0;"></span>
+        <span><i class="fa fa-comment"></i></span>
+        <span class="comment_reply_count" style="padding:0;"></span>
     </div>
     <div class="comment_text">
     </div>

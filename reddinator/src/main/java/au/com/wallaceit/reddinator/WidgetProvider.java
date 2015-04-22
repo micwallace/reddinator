@@ -26,12 +26,24 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
@@ -124,7 +136,11 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.refreshbutton, refreshPendingIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
-            // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop is displaying on screen rotation) so we need to show it when updating.
+
+            int iconColor = Color.parseColor("#DBDBDB");
+            views.setImageViewBitmap(R.id.prefsbutton, getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80));
+            views.setImageViewBitmap(R.id.refreshbutton, getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80));
+            // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
             views.setTextViewText(R.id.subreddittxt, curFeed);
@@ -141,6 +157,24 @@ public class WidgetProvider extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+    }
+
+    public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize) {
+        int pad = (fontSize / 9);
+        Paint paint = new Paint();
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        paint.setAntiAlias(true);
+        paint.setTypeface(typeface);
+        paint.setColor(color);
+        paint.setTextSize(fontSize);
+        paint.setShadowLayer(3, 4, 4, Color.parseColor("#22000000"));
+
+        int textWidth = (int) (paint.measureText(text) + pad * 2);
+        int height = (int) (fontSize / 0.75);
+        Bitmap bitmap = Bitmap.createBitmap(textWidth, height, Bitmap.Config.ARGB_4444);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawText(text, (float) pad, fontSize, paint);
+        return bitmap;
     }
 
     @Override

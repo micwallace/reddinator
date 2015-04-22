@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.IconTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -73,8 +74,8 @@ public class MainActivity extends Activity {
     private ProgressBar loader;
     private TextView srtext;
     private ImageView errorIcon;
-    private ImageButton refreshbutton;
-    private ImageButton configbutton;
+    private IconTextView refreshbutton;
+    private IconTextView configbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +96,10 @@ public class MainActivity extends Activity {
         // get actionBar Views
         loader = (ProgressBar) findViewById(R.id.appsrloader);
         errorIcon = (ImageView) findViewById(R.id.apperroricon);
-        refreshbutton = (ImageButton) findViewById(R.id.apprefreshbutton);
+        refreshbutton = (IconTextView) findViewById(R.id.apprefreshbutton);
 
-        configbutton = (ImageButton) findViewById(R.id.appprefsbutton);
-        configbutton.setImageDrawable(new IconDrawable(this, Iconify.IconValue.fa_wrench).actionBarSize());
+        configbutton = (IconTextView) findViewById(R.id.appprefsbutton);
+        //configbutton.setImageDrawable(new IconDrawable(this, Iconify.IconValue.fa_wrench).actionBarSize());
 
         srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
@@ -194,8 +195,8 @@ public class MainActivity extends Activity {
             case 1:
                 actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CEE3F8")));
                 appView.setBackgroundColor(Color.WHITE);
-                configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
+                //configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
+                //refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
                 errorIcon.setBackgroundColor(Color.parseColor("#CEE3F8"));
                 srtext.setTextColor(Color.parseColor("#000000"));
                 break;
@@ -204,8 +205,8 @@ public class MainActivity extends Activity {
                 Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
                 actionBar.getCustomView().setBackgroundDrawable(header);
                 appView.setBackgroundColor(Color.BLACK);
-                configbutton.setBackgroundDrawable(null);
-                refreshbutton.setBackgroundDrawable(null);
+                //configbutton.setBackgroundDrawable(null);
+                //refreshbutton.setBackgroundDrawable(null);
                 errorIcon.setBackgroundDrawable(header);
                 srtext.setTextColor(Color.parseColor("#FFFFFF"));
                 break;
@@ -213,8 +214,8 @@ public class MainActivity extends Activity {
             case 2:
                 actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#5F99CF")));
                 appView.setBackgroundColor(Color.BLACK);
-                configbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
-                refreshbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
+                //configbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
+                //refreshbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
                 errorIcon.setBackgroundColor(Color.parseColor("#5F99CF"));
                 srtext.setTextColor(Color.parseColor("#000000"));
                 break;

@@ -8,30 +8,35 @@
     android:layout_alignParentTop="true"
     android:clickable="false">
 
-    <ImageButton
+    <IconTextView
         android:id="@+id/appprefsbutton"
-        android:layout_width="wrap_content"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:contentDescription="@string/configure"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:background="#CEE3F8"
-        android:src="@android:drawable/ic_menu_preferences" />
+        android:text="{fa-wrench}"
+        android:shadowColor="#22000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:padding="2dp"
+        android:textSize="28dp"
+        android:textColor="#DBDBDB" />
 
-    <ImageButton
+    <IconTextView
         android:id="@+id/apprefreshbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/refresh"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
         android:layout_toLeftOf="@+id/appprefsbutton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:layout_centerVertical="true"
-        android:background="#CEE3F8"
-        android:visibility="visible"
-        android:src="@android:drawable/ic_menu_rotate" />
+        android:text="{fa-refresh}"
+        android:shadowColor="#22000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:padding="2dp"
+        android:textSize="28dp"
+        android:textColor="#DBDBDB" />
 
     <ProgressBar
         android:id="@+id/appsrloader"

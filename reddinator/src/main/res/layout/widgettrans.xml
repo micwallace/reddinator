@@ -23,8 +23,7 @@
             android:background="@null"
             android:contentDescription="@string/configure"
             android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:src="@android:drawable/ic_menu_preferences" />
+            android:paddingRight="2dp" />
 
         <ImageButton
             android:id="@+id/refreshbutton"
@@ -36,7 +35,6 @@
             android:contentDescription="@string/refresh"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:src="@android:drawable/ic_menu_rotate"
             android:visibility="visible" />
 
         <ProgressBar
