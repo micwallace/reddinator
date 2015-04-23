@@ -19,9 +19,14 @@ package au.com.wallaceit.reddinator;
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
@@ -249,6 +254,24 @@ public class GlobalObjects extends Application {
             themeColors[i] = Color.parseColor(srcColors[i]);
         }
         return themeColors;
+    }
+
+    public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize) {
+        int pad = (fontSize / 9);
+        Paint paint = new Paint();
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        paint.setAntiAlias(true);
+        paint.setTypeface(typeface);
+        paint.setColor(color);
+        paint.setTextSize(fontSize);
+        paint.setShadowLayer(3, 4, 4, Color.parseColor("#22000000"));
+
+        int textWidth = (int) (paint.measureText(text) + pad * 2);
+        int height = (int) (fontSize / 0.75);
+        Bitmap bitmap = Bitmap.createBitmap(textWidth, height, Bitmap.Config.ARGB_4444);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawText(text, (float) pad, fontSize, paint);
+        return bitmap;
     }
 
 }

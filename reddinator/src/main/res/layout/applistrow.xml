@@ -107,14 +107,14 @@
             android:textColor="#ffff0000" />
 
         <ImageView
-            android:id="@+id/icon1"
+            android:id="@+id/votesicon"
             android:contentDescription="@string/icon"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/star_off" />
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/votestxt"
@@ -122,20 +122,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/icon2"
+            android:layout_toLeftOf="@+id/commentsicon"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="6dp"
             android:textColor="#336699" />
 
         <ImageView
-            android:id="@+id/icon2"
+            android:id="@+id/commentsicon"
             android:contentDescription="@string/icon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/sym_action_chat" />
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:id="@+id/commentstxt"

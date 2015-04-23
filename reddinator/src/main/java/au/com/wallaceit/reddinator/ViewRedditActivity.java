@@ -197,7 +197,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                TabWebFragment webview = (TabWebFragment) mapTabInfo.get(mTabHost.getCurrentTabTag()).fragment;
+                TabWebFragment webview = (TabWebFragment) mapTabInfo.get("Tab1").fragment;
                 webview.mWebView.stopLoading();
                 webview.mWebView.loadData("", "text/html", "utf-8");
                 this.finish();
@@ -384,7 +384,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
                     break;
                 default:
                     // show error
-                    Toast.makeText(ViewRedditActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ViewRedditActivity.this, result, Toast.LENGTH_LONG).show();
                     break;
             }
 

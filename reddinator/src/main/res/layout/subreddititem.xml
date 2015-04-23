@@ -11,17 +11,24 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
-        android:layout_toLeftOf="@+id/subreddit_delete_btn"
+        android:layout_toLeftOf="@+id/subreddit_add_btn"
         android:gravity="center_vertical"
         android:textSize="19sp" />
 
-    <ImageView
+    <IconTextView
         android:id="@+id/subreddit_add_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:contentDescription="Add image"
-        android:src="@android:drawable/ic_input_add" />
+        android:contentDescription="Delete image"
+        android:text="{fa-plus-square}"
+        android:shadowColor="#22000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:paddingRight="12dp"
+        android:textSize="32dp"
+        android:textColor="#5F99CF" />
 
 </RelativeLayout>

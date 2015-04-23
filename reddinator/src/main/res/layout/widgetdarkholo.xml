@@ -30,7 +30,7 @@
             android:id="@+id/refreshbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/prefsbutton"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/prefsbutton"
             android:background="#5F99CF"
             android:contentDescription="@string/refresh"
@@ -43,10 +43,13 @@
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
+            android:minHeight="26dp"
+            android:maxHeight="26dp"
+            android:minWidth="26dp"
+            android:maxWidth="26dp"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginRight="4dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:visibility="visible" />
 
@@ -54,14 +57,12 @@
             android:id="@+id/erroricon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:background="#5F99CF"
             android:contentDescription="@string/error"
-            android:src="@android:drawable/stat_notify_error"
             android:visibility="gone" />
 
         <TextView
@@ -70,13 +71,22 @@
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/widget_logo"
-            android:drawablePadding="5dp"
-            android:drawableRight="@android:drawable/arrow_down_float"
             android:gravity="center_vertical"
             android:paddingLeft="2dp"
             android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000" />
+
+        <ImageView
+            android:id="@+id/srcaret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/subreddittxt"
+            android:layout_marginRight="4dp"
+            android:text="{fa-caret-down}"
+            android:paddingTop="2dp" />
 
         <ImageView
             android:id="@+id/widget_logo"

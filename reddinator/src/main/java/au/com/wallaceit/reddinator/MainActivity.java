@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
     private ActionBar actionBar;
     private ProgressBar loader;
     private TextView srtext;
-    private ImageView errorIcon;
+    private IconTextView errorIcon;
     private IconTextView refreshbutton;
     private IconTextView configbutton;
 
@@ -95,9 +95,8 @@ public class MainActivity extends Activity {
         }
         // get actionBar Views
         loader = (ProgressBar) findViewById(R.id.appsrloader);
-        errorIcon = (ImageView) findViewById(R.id.apperroricon);
+        errorIcon = (IconTextView) findViewById(R.id.apperroricon);
         refreshbutton = (IconTextView) findViewById(R.id.apprefreshbutton);
-
         configbutton = (IconTextView) findViewById(R.id.appprefsbutton);
         //configbutton.setImageDrawable(new IconDrawable(this, Iconify.IconValue.fa_wrench).actionBarSize());
 
@@ -131,10 +130,10 @@ public class MainActivity extends Activity {
             }
         };
 
-        srtext.setOnClickListener(srclick);
         configbutton.setOnClickListener(configclick);
+        srtext.setOnClickListener(srclick);
         findViewById(R.id.app_logo).setOnClickListener(srclick);
-
+        findViewById(R.id.appcaret).setOnClickListener(srclick);
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
         listAdapter = new ReddinatorListAdapter(global, prefs);
@@ -298,6 +297,7 @@ public class MainActivity extends Activity {
         private boolean loadThumbnails = false;
         private boolean bigThumbs = false;
         private boolean hideInf = false;
+        private Bitmap[] images;
 
         protected ReddinatorListAdapter(GlobalObjects gobjects, SharedPreferences prefs) {
 
@@ -316,6 +316,11 @@ public class MainActivity extends Activity {
                 }
 
             }
+            // load images
+            images = new Bitmap[]{
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFFF00"), 36),
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 36)
+            };
             // load preferences
             loadAppPrefs();
             loadFeedPrefs();
@@ -390,6 +395,8 @@ public class MainActivity extends Activity {
                     } else {
                         row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
                     }
+                    ((ImageView) row.findViewById(R.id.votesicon)).setImageBitmap(images[0]);
+                    ((ImageView) row.findViewById(R.id.commentsicon)).setImageBitmap(images[1]);
                     viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
                     viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
                     viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);

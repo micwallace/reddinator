@@ -24,9 +24,8 @@
             android:hint="@string/search" >
         </EditText>
 
-        <ImageView
+        <IconTextView
             android:id="@+id/searchbutton"
-            android:onClick=""
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -34,7 +33,13 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:contentDescription="@string/search"
-            android:src="@android:drawable/ic_menu_search" />
+            android:text="{fa-search}"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:textSize="28dp"
+            android:textColor="#5F99CF" />
 
     </RelativeLayout>
 

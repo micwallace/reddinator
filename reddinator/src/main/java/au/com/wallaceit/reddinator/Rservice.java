@@ -33,6 +33,8 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
 
+import com.joanzapata.android.iconify.Iconify;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,6 +65,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private boolean loadThumbnails = false;
     private boolean bigThumbs = false;
     private boolean hideInf = false;
+    private Bitmap[] images;
 
     public ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
@@ -108,6 +111,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
+        images = new Bitmap[]{
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFFF00"), 36),
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 36)
+        };
     }
 
     @Override
@@ -178,6 +185,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
             }
             // build view
+            row.setImageViewBitmap(R.id.votesicon, images[0]);
+            row.setImageViewBitmap(R.id.commentsicon, images[1]);
             row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors[0]);

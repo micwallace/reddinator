@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -93,7 +94,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             }
 
         });
-        ImageView searchbtn = (ImageView) this.findViewById(R.id.searchbutton);
+        IconTextView searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
         searchbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -221,6 +221,10 @@ public class RedditData {
         return result;
     }
 
+    public String postComment(String articleId, String commentId, String text) throws RedditApiException {
+        return "";
+    }
+
     public ArrayList<String> getMySubreddits() throws RedditApiException {
         ArrayList<String> mysrlist = new ArrayList<>();
         if (!isLoggedIn()) {
@@ -276,7 +280,7 @@ public class RedditData {
         } catch (JSONException e) {
             //Log.e("JSON Parser", "Error parsing data " + e.toString());
             e.printStackTrace();
-
+            throw new RedditApiException("Error parsing data: "+e.getMessage());
         }
         return jObj;
     }
@@ -291,6 +295,7 @@ public class RedditData {
         } catch (JSONException e) {
             //Log.e("JSON Parser", "Error parsing data " + e.toString());
             e.printStackTrace();
+            throw new RedditApiException("Error parsing data: "+e.getMessage());
         }
         return jArr;
     }
@@ -328,17 +333,11 @@ public class RedditData {
                 if (m.find()) {
                     details = m.group(1);
                 }
-                throw new RedditApiException(String.valueOf(httpResponse.getStatusLine().getStatusCode()) + ": " + details);
+                throw new RedditApiException("API Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()) + ": " + details);
             }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return json;
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-            return json;
         } catch (IOException e) {
             e.printStackTrace();
-            return json;
+            throw new RedditApiException("Error: "+e.getMessage());
         }
         // read data
         json = getStringFromStream(is);
@@ -385,13 +384,15 @@ public class RedditData {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RedditApiException("Error: "+e.getMessage());
         }
         json = getStringFromStream(is);
         // try parse the string to a JSON object
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
-            System.out.println("Error parsing data " + e.toString());
+            e.printStackTrace();
+            throw new RedditApiException("Error: "+e.getMessage());
         }
         // return json response
         return jObj;
@@ -423,10 +424,16 @@ public class RedditData {
         return sb.toString();
     }
 
+    RedditApiException lastError;
+    public RedditApiException getLastError(){
+        return lastError;
+    }
+
     class RedditApiException extends Exception {
         //Constructor that accepts a message
         public RedditApiException(String message) {
             super(message);
+            RedditData.this.lastError = this;
         }
     }
 

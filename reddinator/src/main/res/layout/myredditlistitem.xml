@@ -15,13 +15,20 @@
 	    android:gravity="center_vertical"
 	    android:textSize="19sp" />
 
-	<ImageView
+	<IconTextView
 	    android:id="@+id/subreddit_delete_btn"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:layout_alignParentRight="true"
 	    android:layout_centerVertical="true"
 	    android:contentDescription="Delete image"
-	    android:src="@android:drawable/ic_menu_delete" />
+        android:text="{fa-trash}"
+        android:shadowColor="#22000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:paddingRight="12dp"
+        android:textSize="32dp"
+        android:textColor="#ff8c8c8c" />
 
 </RelativeLayout>

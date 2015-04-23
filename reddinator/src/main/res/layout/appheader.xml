@@ -29,6 +29,8 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="2dp"
         android:text="{fa-refresh}"
         android:shadowColor="#22000000"
         android:shadowDx="4"
@@ -41,26 +43,36 @@
     <ProgressBar
         android:id="@+id/appsrloader"
         style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:minHeight="30dp"
+        android:maxHeight="30dp"
+        android:minWidth="30dp"
+        android:maxWidth="30dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
+        android:layout_marginRight="4dp"
         android:layout_toLeftOf="@+id/apprefreshbutton"
         android:visibility="gone" />
 
-    <ImageButton
+    <IconTextView
         android:id="@+id/apperroricon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
         android:layout_toLeftOf="@+id/apprefreshbutton"
         android:contentDescription="@string/error"
-        android:src="@android:drawable/stat_notify_error"
+        android:layout_marginRight="4dp"
+        android:text="{fa-exclamation-triangle}"
+        android:shadowColor="#33000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:padding="2dp"
+        android:textSize="28dp"
+        android:textColor="#E06B6C"
         android:visibility="gone" />
 
     <TextView
@@ -70,12 +82,27 @@
         android:layout_centerVertical="true"
         android:paddingLeft="8dp"
         android:layout_toRightOf="@+id/app_logo"
-        android:drawablePadding="5dp"
-        android:drawableRight="@android:drawable/arrow_down_float"
         android:gravity="center_vertical"
         android:text="@string/app_name"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#000000" />
+
+    <IconTextView
+        android:id="@+id/appcaret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/appsubreddittxt"
+        android:layout_marginRight="4dp"
+        android:text="{fa-caret-down}"
+        android:shadowColor="#33000000"
+        android:shadowDx="0"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:paddingTop="2dp"
+        android:textSize="20dp"
+        android:textColor="#DBDBDB" />
 
     <ImageView
         android:id="@+id/app_logo"

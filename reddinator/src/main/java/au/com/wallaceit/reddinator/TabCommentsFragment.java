@@ -155,6 +155,12 @@ public class TabCommentsFragment extends Fragment {
         }
 
         @JavascriptInterface
+        public void reloadComments(String sort) {
+            System.out.println("Reload command received");
+            loadComments(sort);
+        }
+
+        @JavascriptInterface
         public void loadChildren(String moreId, String children) {
             System.out.println("Load more command received");
             CommentsLoader commentsLoader = new CommentsLoader(currentSort, moreId, children);
@@ -220,7 +226,7 @@ public class TabCommentsFragment extends Fragment {
                 // save feed
                 //global.setFeed(mSharedPreferences, 0, data);
             } else {
-                return "";
+                return "-1"; // Indicates error
             }
 
             return data.toString();
@@ -228,22 +234,18 @@ public class TabCommentsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
-            if (!result.equals("")) {
-                // hide loader
-                /*if (loadMore) {
-                    //hideAppLoader(false, false); // don't go to top of list
-                } else {
-                    //hideAppLoader(true, false); // go to top
-                }*/
+            if (result.equals("")) {
+                mWebView.loadUrl("javascript:showLoadingView('No comments here')");
+            } else if (result.equals("-1")) {
+                // show error
+                mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+            } else {
                 if (loadMore){
                     mWebView.loadUrl("javascript:populateChildComments(\""+mMoreId+"\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
                 } else {
                     mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
                 }
-            } else {
-                //hideAppLoader(false, true); // don't go to top of list and show error icon
-                // show error
-                Toast.makeText(getActivity(), "API Error: " + result, Toast.LENGTH_LONG).show();
             }
 
         }
@@ -301,7 +303,7 @@ public class TabCommentsFragment extends Fragment {
                     break;
                 default:
                     // show error
-                    Toast.makeText(getActivity(), "API Error: " + result, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
                     break;
             }
             //listAdapter.hideAppLoader(false, false);

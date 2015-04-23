@@ -138,8 +138,10 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
 
             int iconColor = Color.parseColor("#DBDBDB");
-            views.setImageViewBitmap(R.id.prefsbutton, getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80));
-            views.setImageViewBitmap(R.id.refreshbutton, getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80));
+            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80));
+            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80));
+            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 54));
+            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 80));
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
@@ -157,24 +159,6 @@ public class WidgetProvider extends AppWidgetProvider {
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
-    }
-
-    public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize) {
-        int pad = (fontSize / 9);
-        Paint paint = new Paint();
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
-        paint.setAntiAlias(true);
-        paint.setTypeface(typeface);
-        paint.setColor(color);
-        paint.setTextSize(fontSize);
-        paint.setShadowLayer(3, 4, 4, Color.parseColor("#22000000"));
-
-        int textWidth = (int) (paint.measureText(text) + pad * 2);
-        int height = (int) (fontSize / 0.75);
-        Bitmap bitmap = Bitmap.createBitmap(textWidth, height, Bitmap.Config.ARGB_4444);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawText(text, (float) pad, fontSize, paint);
-        return bitmap;
     }
 
     @Override

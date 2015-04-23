@@ -13,11 +13,13 @@
                 $(".comment_score").css("color", themeColors[4]);
                 $(".comment_reply_count").css("color", themeColors[4]);
                 $("button").css("background-color", themeColors[3]);
+                $("body").show();
             }
 
             function populateComments(json){
                 var data = JSON.parse(json);
                 $("#loading_view").hide();
+                $("#base").show();
                 recursivePopulate(data);
             }
 
@@ -35,6 +37,19 @@
 
             function clearComments(){
                 $("#base").html();
+            }
+
+            function showLoadingView(text){
+                var loading = $("#loading_view");
+                loading.children("h4").text(text);
+                $("#base").hide();
+                loading.show();
+            }
+
+            function reloadComments(sort){
+                showLoadingView("Loading...");
+                $("#base").html('');
+                Reddinator.reloadComments($("#sort_select").val());
             }
 
             function loadChildComments(moreId, children){
@@ -169,16 +184,17 @@
                     if (elem.is(":visible")){
                         elem.hide();
                     } else {
+                        $('.post_reply').hide();
                         elem.show();
                     }
                 });
-                /*$(document).on('click', ".comment:not(.post_reply)", function(){
-                    $(".post_reply").hide();
-                });*/
             });
 
     </script>
     <style rel="stylesheet">
+        body {
+            margin:0;
+        }
         .comment_box, .more_box, .post_box {
             border: 2px solid #D7D7D7;
             border-radius: 4px;
@@ -244,6 +260,7 @@
             border-radius: 4px;
             width:100%;
             margin-right:4px;
+            margin-top:-1px;
         }
         button {
             border-radius: 4px;
@@ -258,7 +275,39 @@
             margin-top:-25px;
             text-align: center;
         }
-        a {
+        #header {
+            background-color: #5F99CF;
+            background: linear-gradient(#7BA7CE, #5F99CF); /* Standard syntax */
+            color: #DBDBDB;
+            height:32px;
+            padding: 5px;
+            width: 100%;
+            top:0;
+            margin: 0 0 10px 0;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        #header div {
+            margin: 0 40px 0 45px;
+            padding: 0;
+        }
+        #header select {
+            height: 22px;
+            border: 0;
+            width: 100%;
+            vertical-align: top;
+        }
+        #header label {
+            position: absolute;
+            left: 5px;
+        }
+        #header i {
+            position: absolute;
+            right: 5px;
+            margin-right: 10px;
+        }
+        .comment_text {
             white-space: pre-wrap; /* css-3 */
             white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
             white-space: -pre-wrap; /* Opera 4-6 */
@@ -267,6 +316,9 @@
         }
         *:focus {
             outline:0px none transparent;
+        }
+        a {
+            color: #009bff;
         }
         .clearfix:after {
             clear: both;
@@ -292,7 +344,7 @@
         }
     </style>
 </head>
-<body>
+<body style="display:none;">
 <div id="comment_template" class="comment_box" style="display: none;">
     <div class="comment_info" style="text">
         <span style="display:inline;"><a class="comment_user" href=""></a></span>
@@ -327,14 +379,31 @@
 <div id="more_template" class="more_box" style="display:none;">
     <h5>Load More</h5>
 </div>
-<div id="post_comment" class="post_box">
-    <textarea rows="4">
-
-    </textarea>
-    <button onclick="postReply();">Comment</button>
+<div id="header">
+    <label>Sort:</label>
+    <i onclick="reloadComments();" class="fa fa-refresh"></i>
+    <div>
+        <select id="sort_select" onchange="reloadComments();">
+            <option value="best">Best</option>
+            <option value="top">Top</option>
+            <option value="new">New</option>
+            <option value="hot">Hot</option>
+            <option value="controversial">Controversial</option>
+            <option value="old">Old</option>
+        </select>
+    </div>
 </div>
-<div id="base">
+<div id="container" style="padding:5px;">
+    <div id="post_comment" class="post_box">
+        <textarea rows="4">
 
+        </textarea>
+        <button onclick="postReply();">Comment</button>
+    </div>
+
+    <div id="base">
+
+    </div>
 </div>
 <div id="loading_view">
     <h4>Loading...</h4>
