@@ -18,6 +18,8 @@
 
 package au.com.wallaceit.reddinator;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -30,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -108,12 +111,13 @@ public class TabCommentsFragment extends Fragment {
                 loadComments("best");
             }
         });
+        mWebView.setWebChromeClient(new WebChromeClient());
 
         mWebView.requestFocus(View.FOCUS_DOWN);
         WebInterface webInterface = new WebInterface(mContext);
         mWebView.addJavascriptInterface(webInterface, "Reddinator");
 
-        mWebView.loadUrl("file:///android_asset/comments.html");
+        mWebView.loadUrl("file:///android_asset/comments.html#"+articleId);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -174,6 +178,14 @@ public class TabCommentsFragment extends Fragment {
             CommentsVoteTask voteTask = new CommentsVoteTask(thingId, direction);
             voteTask.execute();
         }
+
+        @JavascriptInterface
+        public void comment(String parentId, String text) {
+            System.out.println("Comment command received");
+            ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
+            CommentTask commentTask = new CommentTask(parentId, text);
+            commentTask.execute();
+        }
     }
 
     private void loadComments(String sort) {
@@ -203,70 +215,54 @@ public class TabCommentsFragment extends Fragment {
             }
         }
 
+        private String lastError;
         @Override
         protected String doInBackground(Void... none) {
             //String sort = mSharedPreferences.getString("sort-app", "hot");
             JSONArray data;
 
-            JSONArray tempArray;
-            if (loadMore) {
-                String articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-                tempArray = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, mSort);
-            } else {
-                String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-                // reloading
-                //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                tempArray = global.mRedditData.getCommentsFeed(permalink, mSort, 25);
-            }
-            if (!isError(tempArray)) {
-                data = tempArray;
-                if (data.length() == 0) {
-                    return "";
+            try {
+                if (loadMore) {
+                    String articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                    data = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, mSort);
+
+                } else {
+                    String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+                    // reloading
+                    data = global.mRedditData.getCommentsFeed(permalink, mSort, 25);
                 }
-                // save feed
-                //global.setFeed(mSharedPreferences, 0, data);
-            } else {
-                return "-1"; // Indicates error
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                lastError = e.getMessage();
+                return "-1"; // Indicate error
             }
 
-            return data.toString();
+            if (data.length()>0) {
+                return data.toString();
+            }
+
+            return "";
         }
 
         @Override
         protected void onPostExecute(String result) {
-            if (result.equals("")) {
-                mWebView.loadUrl("javascript:showLoadingView('No comments here')");
-            } else if (result.equals("-1")) {
-                // show error
-                mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-            } else {
-                if (loadMore){
-                    mWebView.loadUrl("javascript:populateChildComments(\""+mMoreId+"\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
-                } else {
-                    mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
-                }
+            switch (result) {
+                case "":
+                    mWebView.loadUrl("javascript:showLoadingView('No comments here')");
+                    break;
+                case "-1":
+                    // show error
+                    mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
+                    Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    if (loadMore) {
+                        mWebView.loadUrl("javascript:populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                    } else {
+                        mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                    }
+                    break;
             }
-
-        }
-
-        // check if the array is an error array
-        private boolean isError(JSONArray tempArray) {
-            boolean error;
-            if (tempArray == null) {
-                return true; // null error
-            }
-            if (tempArray.length() > 0) {
-                try {
-                    error = tempArray.getString(0).equals("-1");
-                } catch (JSONException e) {
-                    error = true;
-                    e.printStackTrace();
-                }
-            } else {
-                error = false; // empty array means no more feed items
-            }
-            return error;
         }
     }
 
@@ -307,6 +303,61 @@ public class TabCommentsFragment extends Fragment {
                     break;
             }
             //listAdapter.hideAppLoader(false, false);
+        }
+    }
+
+    class CommentTask extends AsyncTask<String, Integer, String> {
+        JSONObject item;
+        private String redditId;
+        private String messageText;
+
+        public CommentTask(String thingId, String text) {
+            messageText = text;
+            redditId = thingId;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            // Do the vote
+            try {
+                return global.mRedditData.postComment(redditId, messageText);
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            ((ViewRedditActivity) getActivity()).setTitleText("Reddinator"); // reset title
+            if (result.indexOf("OK")==0){
+                mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.substring(2)) + "\")");
+                return;
+            }
+            if (result.equals("LOGIN")) {
+                global.mRedditData.initiateLogin(getActivity());
+            } else {
+                // show error
+                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+                // check if 403 error, if so, prompt user to reauth as scope is incorrect.
+                if (result.equals("HTTP Error: 403")){
+                    new AlertDialog.Builder(mContext)
+                    .setTitle("Permission required")
+                    .setMessage("Reddinator requires additional permission to use this feature, click ok to give reddit the okay\n (OAuth scope change)")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            global.mRedditData.initiateLogin(mContext);
+                        }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+                }
+            }
+            mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
         }
     }
 }

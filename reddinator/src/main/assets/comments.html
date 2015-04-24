@@ -5,6 +5,9 @@
     <link href="font-awesome.min.css" rel="stylesheet">
     <script src="jquery-2.1.3.min.js"></script>
     <script>
+            // set article from document hash
+            var articleId = document.location.hash.substring(1);
+
             function setTheme(themeColors){
                 var themeColors = themeColors.split(",");
                 $("body").css("background-color", themeColors[5]);
@@ -26,7 +29,7 @@
             function recursivePopulate(data){
                 for (var i in data){
                     if (data[i].kind!="more"){
-                        appendComment(data[i].data.parent_id, data[i].data);
+                        appendComment(data[i].data.parent_id, data[i].data, false);
                         if (data[i].data.replies!="" && data[i].data.replies.data.children!=null)
                             recursivePopulate(data[i].data.replies.data.children);
                     } else {
@@ -45,7 +48,7 @@
                 $("#base").hide();
                 loading.show();
             }
-
+            // java bind functions
             function reloadComments(sort){
                 showLoadingView("Loading...");
                 $("#base").html('');
@@ -91,12 +94,40 @@
                 console.log("vote callback received: "+thingId);
             }
 
+            function comment(parentId, text){
+                if (text===""){
+                    alert("Enter some text for the comment.");
+                    commentCallback(parentId, false);
+                    return;
+                }
+                console.log(parentId+" "+text);
+                Reddinator.comment(parentId, text);
+            }
+
+            function commentCallback(parentId, commentData){
+                console.log("comment callback called");
+                var postElem;
+                if (parentId.indexOf("t3_")!==-1){
+                    postElem = $("#post_comment");
+                } else {
+                    postElem = $("#"+parentId+" > .post_box");
+                }
+                if (commentData!=""){
+                    commentData = JSON.parse(commentData);
+                    postElem.children("textarea").val("");
+                    if (parentId.indexOf("t3_")===-1)
+                        postElem.hide();
+                    appendComment(parentId, commentData, true)
+                }
+                postElem.children("button").prop("disabled", false);
+            }
+
             function populateChildComments(moreId, json){
                 var data = JSON.parse(json);
                 $("#"+moreId).remove();
                 for (var i in data){
                     if (data[i].kind!="more"){
-                        appendComment(data[i].data.parent_id, data[i].data);
+                        appendComment(data[i].data.parent_id, data[i].data, false);
                     } else {
                         appendMoreButton(data[i].data.parent_id, data[i].data);
                     }
@@ -123,7 +154,7 @@
                 }
             }
 
-            function appendComment(parentId, commentData){
+            function appendComment(parentId, commentData, prepend){
                 var commentElem = $("#comment_template").clone().show();
 
                 commentElem.attr("id", commentData.name);
@@ -140,9 +171,17 @@
                     }
                 }
                 if (parentId.indexOf("t3_")!==-1){
-                    commentElem.appendTo("#base");
+                    if (prepend){
+                        commentElem.prependTo("#base");
+                    } else {
+                        commentElem.appendTo("#base");
+                    }
                 } else {
-                    commentElem.appendTo("#"+parentId+"-replies");
+                    if (prepend){
+                        commentElem.prependTo("#"+parentId+"-replies");
+                    } else {
+                        commentElem.appendTo("#"+parentId+"-replies");
+                    }
                     var parent = $("#"+parentId);
                     parent.children('.reply_expand').show();
                     var repliesElem = parent.children(".comment_info").children(".comment_reply_count");
@@ -195,7 +234,7 @@
         body {
             margin:0;
         }
-        .comment_box, .more_box, .post_box {
+        .comment_box, .more_box {
             border: 2px solid #D7D7D7;
             border-radius: 4px;
         }
@@ -251,28 +290,60 @@
             text-align: right;
             padding-right: 5px;
         }
+
         .post_reply {
             margin-left:5px;
             margin-right:5px;
             margin-top:5px;
         }
+
         textarea {
+            border: 2px solid #D7D7D7;
             border-radius: 4px;
             width:100%;
             margin-right:4px;
-            margin-top:-1px;
+            margin:-1px 0 0 0;
+            border-bottom-left-radius:0;
+            text-decoration: none;
         }
+
         button {
-            border-radius: 4px;
+            position:relative;
+            top:-5px;
+            border:2px solid #2D71B0;
+            /*-webkit-border-radius: 4px;*/
+            border-radius: 3px;
+            border-top-left-radius:0;
+            border-top-right-radius:0;
+            font-size:12px;
+            font-family:arial, helvetica, sans-serif;
+            margin:0 !important;
+            padding: 6px 6px 6px 6px;
+            text-decoration:none;
+            text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+            font-weight:bold;
+            color: #FFFFFF;
+            background-color: #6AABE8;
+            /*background-image:-webkit-gradient(linear, left top, left bottom, from(#6AABE8), to(#5F99CF));*/
+            /*background-image: -webkit-linear-gradient(top, #6AABE8, #5F99CF);*/
+            background-image: linear-gradient(to bottom, #6AABE8, #5F99CF);
         }
+
+        button:active {
+            border:1px solid #317BBF;
+            background-color: #5E98CF;
+            background-image: -webkit-gradient(linear, left top, left bottom, from(#5E98CF), to(#4F7EAB));
+            background-image: -webkit-linear-gradient(top, #5E98CF, #4F7EAB);
+            background-image: linear-gradient(to bottom, #5E98CF, #4F7EAB);
+        }
+
         #loading_view {
-            position: absolute;
+            position: fixed;
             left: 50%;
-            top: 50%;
-            width: 150px;
-            margin-left:-75px;
+            top: 200px;
+            width: 180px;
+            margin-left:-90px;
             height: 50px;
-            margin-top:-25px;
             text-align: center;
         }
         #header {
@@ -283,7 +354,7 @@
             padding: 5px;
             width: 100%;
             top:0;
-            margin: 0 0 10px 0;
+            margin: 0 0 5px 0;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
@@ -365,8 +436,8 @@
         <i class="fa fa-cog"></i>
     </div>
     <div class="post_reply post_box" style="display:none;">
-        <textarea rows="4"></textarea>
-        <button onclick="postReply();">Reply</button>
+        <textarea rows="5"></textarea>
+        <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
     </div>
     <div class="reply_expand comment_box" onclick="toggleReplies(this);">
         <h5>-</h5>
@@ -395,12 +466,9 @@
 </div>
 <div id="container" style="padding:5px;">
     <div id="post_comment" class="post_box">
-        <textarea rows="4">
-
-        </textarea>
-        <button onclick="postReply();">Comment</button>
+        <textarea rows="5"></textarea>
+        <button onclick="$(this).prop('disabled', true); comment(articleId, $(this).prev('textarea').val());">Comment</button>
     </div>
-
     <div id="base">
 
     </div>

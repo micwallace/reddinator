@@ -429,11 +429,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         }
         // set last item id for "loadmore use"
         // Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
-        try {
-            lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
-        } catch (JSONException e) {
-            lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
-            e.printStackTrace();
+        if (data.length() == 0){
+            lastItemId = "0";
+        } else {
+            try {
+                lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+            } catch (JSONException e) {
+                lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
+                e.printStackTrace();
+            }
         }
 
         // hide loader

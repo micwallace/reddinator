@@ -57,6 +57,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -68,7 +69,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -118,6 +119,7 @@ public class RedditData {
             subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
         }
         return subreddits;
     }
@@ -129,6 +131,7 @@ public class RedditData {
             subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
         }
         return subreddits;
     }
@@ -149,7 +152,7 @@ public class RedditData {
         return feed;
     }
 
-    public JSONArray getCommentsFeed(String permalink, String sort, int limit) {
+    public JSONArray getCommentsFeed(String permalink, String sort, int limit) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?api_type=json&sort=" + sort + "&limit=" + String.valueOf(limit);
         JSONArray result;
@@ -159,14 +162,14 @@ public class RedditData {
             if (result != null) {
                 feed = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
             }
-        } catch (JSONException | RedditApiException e) {
-            feed.put("-1"); // error indicator
+        } catch (JSONException e) {
             e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
         }
         return feed;
     }
 
-    public JSONArray getChildComments(String moreId, String articleId, String children, String sort) {
+    public JSONArray getChildComments(String moreId, String articleId, String children, String sort) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
         System.out.println(url);
@@ -178,9 +181,9 @@ public class RedditData {
             if (result != null) {
                 feed = result.getJSONObject("json").getJSONObject("data").getJSONArray("things");
             }
-        } catch (JSONException | RedditApiException e) {
-            feed.put("-1"); // error indicator
+        } catch (JSONException e) {
             e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
         }
         return feed;
     }
@@ -188,41 +191,70 @@ public class RedditData {
     // AUTHED CALLS
     public String vote(String id, int direction) throws RedditApiException {
 
-        // if modhash is blank, try to login
         if (!isLoggedIn()) {
             return "LOGIN";
         }
 
         String result = "";
         JSONObject resultjson;
-        resultjson = new JSONObject();
         String url = OAUTH_ENDPOINT + "/api/vote?id=" + id + "&dir=" + String.valueOf(direction) + "&api_type=json";
         try {
             resultjson = getJSONFromPost(url, null, false).getJSONObject("json");
-            JSONArray errors = resultjson.getJSONArray("errors");
-            if (resultjson.getJSONArray("errors").get(0) != null) {
+
+            if (resultjson.has("errors") && resultjson.getJSONArray("errors").length()>0) {
+                JSONArray errors = resultjson.getJSONArray("errors");
                 JSONArray firsterror = (JSONArray) errors.get(0);
                 if (firsterror.get(0).equals("USER_REQUIRED")) {
                     oauthToken = null; // bearer token invalid, nullify
-                    result = "LOGIN"; // no creds stored or login failed.
+                    return "LOGIN"; // creds invalid re-authenticate.
                 }
                 result = errors.toString();
             } else {
                 result = "OK";
             }
         } catch (JSONException e) {
-            if (resultjson.toString().equals("{}")) {
-                result = "OK";
-            } else {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
         }
 
         return result;
     }
 
-    public String postComment(String articleId, String commentId, String text) throws RedditApiException {
-        return "";
+    public String postComment(String parentId, String text) throws RedditApiException {
+
+        if (!isLoggedIn()) {
+            return "LOGIN";
+        }
+
+        String result;
+        JSONObject resultjson;
+
+        try {
+            String url = OAUTH_ENDPOINT + "/api/comment?thing_id=" + parentId + "&text=" + URLEncoder.encode(text, "UTF-8") + "&api_type=json";
+
+            resultjson = getJSONFromPost(url, null, false).getJSONObject("json");
+            System.out.println(resultjson.toString());
+            if (resultjson.has("errors") && resultjson.getJSONArray("errors").length()>0) {
+                JSONArray errors = resultjson.getJSONArray("errors");
+                JSONArray firsterror = (JSONArray) errors.get(0);
+                if (firsterror.get(0).equals("USER_REQUIRED")) {
+                    oauthToken = null; // bearer token invalid, nullify
+                    return "LOGIN"; // creds invalid re-authenticate.
+                }
+                result = errors.toString();
+            } else {
+                JSONObject commentObj = resultjson.getJSONObject("data").getJSONArray("things").getJSONObject(0).getJSONObject("data");
+                result = "OK"+commentObj.toString();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Comment encoding error: "+e.getMessage());
+        }
+
+        return result;
     }
 
     public ArrayList<String> getMySubreddits() throws RedditApiException {
@@ -274,7 +306,7 @@ public class RedditData {
 
     private JSONObject getRedditJsonObject(String url, boolean useAuth) throws RedditApiException {
         String json = getJSONFromUrl(url, useAuth);
-        JSONObject jObj = null;
+        JSONObject jObj;
         try {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
@@ -289,7 +321,7 @@ public class RedditData {
         String json = getJSONFromUrl(url, useAuth);
         if (json==null)
             return null;
-        JSONArray jArr = new JSONArray();
+        JSONArray jArr;
         try {
             jArr = new JSONArray(json);
         } catch (JSONException e) {
@@ -325,15 +357,9 @@ public class RedditData {
             is = httpEntity.getContent();
 
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                //System.out.println("Http Status: " + httpResponse.getStatusLine());
-                //System.out.println("Http Headers: " + Arrays.toString(httpResponse.getAllHeaders()));
-                Pattern p = Pattern.compile("<title>(.*?)</title>");
-                Matcher m = p.matcher(getStringFromStream(is).replaceAll("\\s+", " "));
-                String details = "";
-                if (m.find()) {
-                    details = m.group(1);
-                }
-                throw new RedditApiException("API Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()) + ": " + details);
+                String response = getStringFromStream(is);
+                System.err.println(response);
+                throw new RedditApiException("HTTP Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -374,13 +400,9 @@ public class RedditData {
             is = httpEntity.getContent();
 
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-                Pattern p = Pattern.compile("<title>(\\S+)</title>");
-                Matcher m = p.matcher(getStringFromStream(is));
-                String details = "";
-                if (m.find()) {
-                    details = m.group(1);
-                }
-                throw new RedditApiException(String.valueOf(httpResponse.getStatusLine().getStatusCode()) + ": " + details);
+                String response = getStringFromStream(is);
+                System.err.println(response);
+                throw new RedditApiException("HTTP Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -424,16 +446,10 @@ public class RedditData {
         return sb.toString();
     }
 
-    RedditApiException lastError;
-    public RedditApiException getLastError(){
-        return lastError;
-    }
-
     class RedditApiException extends Exception {
         //Constructor that accepts a message
         public RedditApiException(String message) {
             super(message);
-            RedditData.this.lastError = this;
         }
     }
 
