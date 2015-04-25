@@ -51,37 +51,45 @@
             android:entryValues="@array/widget_theme_values"
             android:dialogTitle="Choose the app theme" />
 
-			<ListPreference
-                android:key="@string/title_font_pref"
-                android:title="Item Title Size"
-                android:defaultValue="16"
-                android:summary="Font size for item titles"
-                android:entries="@array/widget_fontsize_preference"
-                android:entryValues="@array/widget_fontsize_preference"
-                android:dialogTitle="Font size for item titles" />
-			
-			<ListPreference
-                android:key="@string/title_color_pref"
-                android:title="Item Title Color"
-                android:defaultValue="0"
-                android:summary="Font color for item titles"
-                android:entries="@array/widget_fontcolor_preference"
-                android:entryValues="@array/widget_fontcolor_values"
-                android:dialogTitle="Font color for item titles" />
+        <ListPreference
+            android:key="@string/title_font_pref"
+            android:title="Item Title Size"
+            android:defaultValue="16"
+            android:summary="Font size for item titles"
+            android:entries="@array/widget_fontsize_preference"
+            android:entryValues="@array/widget_fontsize_preference"
+            android:dialogTitle="Font size for item titles" />
+
+        <ListPreference
+            android:key="@string/title_color_pref"
+            android:title="Item Title Color"
+            android:defaultValue="0"
+            android:summary="Font color for item titles"
+            android:entries="@array/widget_fontcolor_preference"
+            android:entryValues="@array/widget_fontcolor_values"
+            android:dialogTitle="Font color for item titles" />
     </PreferenceCategory>
 
     <PreferenceCategory
             android:title="Reddinator View">
 		<CheckBoxPreference
                 android:key="@string/comments_first_pref"
-                android:title="Load Comments First"
+                android:title="Show Comments First"
                 android:defaultValue="false"
-                android:summary="Load the comments page first?" />
+                android:summary="Show the comments page first?" />
         <CheckBoxPreference
             android:key="@string/comments_webview"
-            android:title="Comments Web View"
+            android:title="Mobile Reddit Comments"
             android:defaultValue="false"
             android:summary="View comments as seen at m.reddit.com" />
+        <ListPreference
+            android:key="@string/preload_pref"
+            android:title="Preload Content"
+            android:summary="Preload content that isn't shown first"
+            android:entries="@array/preload_list_preference"
+            android:entryValues="@array/preload_list_values"
+            android:defaultValue="3"
+            android:dialogTitle="Preload Content" />
         <ListPreference
                 android:key="@string/comment_font_pref"
                 android:title="Comments Font Size"
@@ -98,15 +106,6 @@
                 android:entryValues="@array/fontsize_list_preference"
                 android:defaultValue="18"
                 android:dialogTitle="Content Font Size" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Account">
-
-        <Preference android:title="Logout"
-            android:key="logout"
-            android:summary="Remove my saved account and session data"/>
-
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -38,7 +38,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name="au.com.wallaceit.reddinator.ViewRedditActivity"
+            android:name=".ViewRedditActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity

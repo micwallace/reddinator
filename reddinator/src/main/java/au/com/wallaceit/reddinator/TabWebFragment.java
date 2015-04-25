@@ -35,7 +35,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -58,13 +57,33 @@ public class TabWebFragment extends Fragment {
     private WebChromeClient.CustomViewCallback mFullSCallback;
     public WebChromeClient mChromeClient;
     private Activity mActivity;
+    private String url;
 
+    static TabWebFragment init(String url, int fontsize, boolean load) {
+        TabWebFragment webTab = new TabWebFragment();
+        // Supply val input as an argument.
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        args.putInt("fontsize", fontsize);
+        args.putBoolean("load", load);
+        webTab.setArguments(args);
+        return webTab;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //mWebView.restoreState(savedInstanceState);
     }
+
+    boolean loaded = false;
+    public void load(){
+        if (!loaded) {
+            mWebView.loadUrl(url);
+            loaded = true;
+        }
+    }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,16 +93,16 @@ public class TabWebFragment extends Fragment {
         }
         if (mFirstTime) {
             // get shared preferences
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
+            //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
             // work out the url this instance should load
-            boolean commentswv = false;
+            /*boolean commentswv = false;
             if (this.getArguments() != null) {
                 commentswv = this.getArguments().getBoolean("loadcom", false);
-            }
-
-            int fontsize;
-            String url;
-            if (commentswv) {
+            }*/
+            final boolean load = getArguments().getBoolean("load");
+            int fontsize = getArguments().getInt("fontsize");
+            url = getArguments().getString("url");
+            /*if (commentswv) {
                 url = "http://reddit.com" + getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
                 fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
             } else {
@@ -92,7 +111,7 @@ public class TabWebFragment extends Fragment {
                     url += ".compact";
                 }
                 fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
-            }
+            }*/
             // setup progressbar
             mActivity = this.getActivity();
             mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -140,7 +159,7 @@ public class TabWebFragment extends Fragment {
                     super.onPageFinished(view, url);
                 }
             });
-            mWebView.loadUrl(url);
+            if (load) load();
             mFirstTime = false;
             //System.out.println("Created fragment");
         } else {

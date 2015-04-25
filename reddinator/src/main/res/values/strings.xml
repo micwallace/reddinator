@@ -36,6 +36,7 @@
     <string name="comments_webview">commentswebviewpref</string>
     <string name="comment_font_pref">commentfontpref</string>
     <string name="content_font_pref">contentfontpref</string>
+    <string name="preload_pref">preloadpref</string>
     <string name="entries_not_empty">Entries cannot be empty!</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
@@ -44,5 +45,7 @@
     <string name="view_all">View All</string>
     <string name="preferences">Preferences</string>
     <string name="load_more_replies">Load more replies</string>
+    <string name="background_mail_pref">backgroundmailpref</string>
+    <string name="mail_check_pref">mailcheckpref</string>
 
 </resources>

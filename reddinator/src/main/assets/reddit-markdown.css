@@ -1,0 +1,206 @@
+.md-container {
+    font-size: small
+}
+
+.md {
+    /*max-width: 60em;*/
+    /*color: #222222*/
+}
+
+.md .-headers, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
+    border: 0;
+    color: inherit;
+    -webkit-font-smoothing: antialiased
+}
+
+.md .-headers code, .md h1 code, .md h2 code, .md h3 code, .md h4 code, .md h5 code, .md h6 code {
+    font-size: inherit
+}
+
+.md blockquote, .md del {
+    /*color: #4f4f4f*/
+}
+
+.md a {
+    /*color: #0079d3;*/
+    text-decoration: none
+}
+
+.md h6 {
+    text-decoration: underline
+}
+
+.md em {
+    font-style: italic;
+    font-weight: inherit
+}
+
+.md th, .md strong, .md .-headers, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
+    font-weight: 600;
+    font-style: inherit
+}
+
+.md h2, .md h4 {
+    font-weight: 500
+}
+
+.md, .md h6 {
+    font-weight: 400
+}
+
+.md * {
+    margin-left: 0;
+    margin-right: 0
+    margin-bottom: 0;
+}
+
+.md tr, .md code, .md .-cells, .md .-lists, .md .-blocks, .md .-headers, .md h1, .md h2, .md h3, .md h4, .md h5, .md h6, .md th, .md td, .md ul, .md ol, .md .-lists, .md pre, .md blockquote, .md table, .md p, .md ul, .md ol {
+    margin: 0;
+    padding: 0
+}
+
+.md hr {
+    border: 0;
+    color: transparent;
+    background: #c5c1ad;
+    height: 2px;
+    padding: 0
+}
+
+.md blockquote {
+    border-left: 2px solid #c5c1ad
+}
+
+.md code, .md pre {
+    border: 1px solid #eeeed2;
+    background-color: #fcfcf7;
+    border-radius: 2px
+}
+
+.md code {
+    margin: 0 2px;
+    white-space: nowrap
+}
+
+.md p code {
+    line-height: 1em
+}
+
+.md pre {
+    overflow: auto
+}
+
+.md pre code {
+    white-space: pre;
+    background-color: transparent;
+    border: 0;
+    display: block;
+    padding: 0 !important
+}
+
+.md td, .md th {
+    border: 1px solid #e5e3da;
+    text-align: left
+}
+
+.md td[align=center], .md th[align=center] {
+    text-align: center
+}
+
+.md td[align=right], .md th[align=right] {
+    text-align: right
+}
+
+.md img {
+    max-width: 100%
+}
+
+.md ul {
+    list-style-type: disc
+}
+
+.md ol {
+    list-style-type: decimal
+}
+
+.md blockquote {
+    padding: 0 8px;
+    margin-left: 5px
+}
+
+.md code {
+    padding: 0 4px
+}
+
+.md pre, .md .-cells, .md th, .md td {
+    padding: 4px 9px
+}
+
+.md .-lists, .md ul, .md ol {
+    padding-left: 40px
+}
+
+.md sup {
+    font-size: 0.86em;
+    line-height: 0
+}
+
+.md li li, .md li p {
+    font-size: 1em !important
+}
+
+.link .usertext .md {
+    padding: 5px 5px
+}
+
+code {
+    font-family: monospace, monospace
+}
+
+.md {
+    /*font-size: 1.0769230769230769em*/
+    font-size: 1em;
+    margin-bottom:0;
+    margin-top:6px;
+}
+
+.md h1, .md h2 {
+    font-size: 1.2857142857142858em;
+    line-height: 1.3888888888888888em;
+    margin-top: 0.8333333333333334em;
+    margin-bottom: 0.8333333333333334em
+}
+
+.md h3, .md h4 {
+    font-size: 1.1428571428571428em;
+    line-height: 1.25em;
+    margin-top: 0.625em;
+    margin-bottom: 0.625em
+}
+
+.md h5, .md h6 {
+    font-size: 1em;
+    line-height: 1.4285714285714286em;
+    margin-top: 0.7142857142857143em;
+    margin-bottom: 0.35714285714285715em
+}
+
+.md .-blocks, .md .-lists, .md pre, .md blockquote, .md table, .md p, .md ul, .md ol {
+    /*margin-top: 0.35714285714285715em;
+    margin-bottom: 0.35714285714285715em*/
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.md textarea, .md .-text, .md p, .md pre > code, .md th, .md td, .md li {
+    font-size: 1em;
+    /*line-height: 1.4285714285714286em*/
+}
+
+.md > :first-child, .md .-cells > :first-child, .md .-lists > :first-child, .md .-blocks > :first-child, .md .-headers > :first-child, .md h1 > :first-child, .md h2 > :first-child, .md h3 > :first-child, .md h4 > :first-child, .md h5 > :first-child, .md h6 > :first-child, .md th > :first-child, .md td > :first-child, .md ul > :first-child, .md ol > :first-child, .md .-lists > :first-child, .md pre > :first-child, .md blockquote > :first-child, .md table > :first-child, .md p > :first-child, .md ul > :first-child, .md ol > :first-child {
+    margin-top: 0
+}
+
+.md > :last-child, .md .-cells > :last-child, .md .-lists > :last-child, .md .-blocks > :last-child, .md .-headers > :last-child, .md h1 > :last-child, .md h2 > :last-child, .md h3 > :last-child, .md h4 > :last-child, .md h5 > :last-child, .md h6 > :last-child, .md th > :last-child, .md td > :last-child, .md ul > :last-child, .md ol > :last-child, .md .-lists > :last-child, .md pre > :last-child, .md blockquote > :last-child, .md table > :last-child, .md p > :last-child, .md ul > :last-child, .md ol > :last-child {
+    margin-bottom: 0
+}

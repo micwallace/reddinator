@@ -21,7 +21,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,27 +32,30 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TabHost.TabContentFactory;
 import android.widget.Toast;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
+import com.viewpagerindicator.TabPageIndicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.lang.reflect.Method;
 
-public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTabChangeListener {
+public class ViewRedditActivity extends FragmentActivity {
 
-    private TabHost mTabHost;
-    private HashMap<String, TabInfo> mapTabInfo = new HashMap<String, TabInfo>();
-    private TabInfo mLastTab = null;
     private GlobalObjects global;
     private SharedPreferences prefs;
     private MenuItem upvote;
@@ -65,44 +67,8 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     private int feedposition = 0;
     private int widgetId = 0;
     private ActionBar actionBar;
-
-    private class TabInfo {
-        private String tag;
-        private Class<?> clss;
-        private Bundle args;
-        private Fragment fragment;
-
-        TabInfo(String tag, Class<?> clazz, Bundle args) {
-            this.tag = tag;
-            this.clss = clazz;
-            this.args = args;
-        }
-    }
-
-    class TabFactory implements TabContentFactory {
-
-        private final Context mContext;
-
-        /**
-         * @param context; activity context
-         */
-        public TabFactory(Context context) {
-            mContext = context;
-        }
-
-        /**
-         * (non-Javadoc)
-         *
-         * @see android.widget.TabHost.TabContentFactory#createTabContent(java.lang.String)
-         */
-        public View createTabContent(String tag) {
-            View v = new View(mContext);
-            v.setMinimumWidth(0);
-            v.setMinimumHeight(0);
-            return v;
-        }
-
-    }
+    ViewPager viewPager;
+    RedditPageAdapter pageAdapter;
 
     /**
      * (non-Javadoc)
@@ -130,23 +96,36 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         }
         // set content view
         setContentView(R.layout.viewreddit);
-        // Setup TabHost
-        initialiseTabHost(savedInstanceState);
-        if (savedInstanceState != null) {
-            mTabHost.setCurrentTabByTag(savedInstanceState.getString("tab")); //set the tab as per the saved state
+        // Setup View Pager and widget
+        viewPager = (ViewPager)findViewById(R.id.tab_content);
+        pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pageAdapter);
+        TabPageIndicator titleIndicator = (TabPageIndicator) findViewById(R.id.tabs);
+        titleIndicator.setViewPager(viewPager);
+        if (prefs.getBoolean("commentsfirstpref", false)) {
+            viewPager.setCurrentItem(1);
+        } else {
+            viewPager.setCurrentItem(0);
         }
-        // hopefully a fix for webview typing problem on some devices
-        mTabHost.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+        titleIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onViewDetachedFromWindow(View v) {
+            public void onPageSelected(int position) {
+                handleTabSwitch(position);
             }
-
             @Override
-            public void onViewAttachedToWindow(View v) {
-                mTabHost.getViewTreeObserver().removeOnTouchModeChangeListener(mTabHost);
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
             }
         });
-
+        // theme
+        if (prefs.getString("widgetthemepref", "1").equals("1")) {
+            titleIndicator.setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
+        } else {
+            titleIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
+        }
+        // setup needed members
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         feedposition = getIntent().getIntExtra("itemposition", 0);
@@ -160,16 +139,28 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         //System.out.println("User likes post: " + userLikes);
     }
 
+    boolean firstChange = false;
+    private void handleTabSwitch(int position){
+        if (!firstChange){
+            if (position==0 || prefs.getBoolean("commentswebviewpref", false)) {
+                ((TabWebFragment) pageAdapter.getRegisteredFragment(position)).load();
+            } else {
+                ((TabCommentsFragment) pageAdapter.getRegisteredFragment(position)).load();
+            }
+            firstChange = true;
+        }
+    }
+
     public void onBackPressed() {
-        TabWebFragment webview = (TabWebFragment) mapTabInfo.get("Tab1").fragment;
-        if (webview != null)
-        if (webview.mFullSView != null) {
-            webview.mChromeClient.onHideCustomView();
-        } else if (webview.mWebView.canGoBack()) {
-            webview.mWebView.goBack();
+        TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
+        if (webFragment != null)
+        if (webFragment.mFullSView != null) {
+            webFragment.mChromeClient.onHideCustomView();
+        } else if (webFragment.mWebView.canGoBack()) {
+            webFragment.mWebView.goBack();
         } else {
-            webview.mWebView.stopLoading();
-            webview.mWebView.loadData("", "text/html", "utf-8");
+            webFragment.mWebView.stopLoading();
+            webFragment.mWebView.loadData("", "text/html", "utf-8");
             this.finish();
         }
     }
@@ -179,6 +170,11 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.viewmenu, menu);
         // set options menu view
+        int iconColor = Color.parseColor("#DBDBDB");
+        (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_inbox)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
 
@@ -193,13 +189,35 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
     }
 
     @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+                try{
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                }
+                catch(NoSuchMethodException e){
+                    System.out.println("Could not display action icons in menu");
+                }
+                catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                TabWebFragment webview = (TabWebFragment) mapTabInfo.get("Tab1").fragment;
-                webview.mWebView.stopLoading();
-                webview.mWebView.loadData("", "text/html", "utf-8");
+                TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
+                webFragment.mWebView.stopLoading();
+                webFragment.mWebView.loadData("", "text/html", "utf-8");
                 this.finish();
                 return true;
 
@@ -313,7 +331,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             //System.out.println("Upvote");
         }
         voteinprogress = true;
-        ViewRedditActivity.this.setTitle("Voting...");
+        ViewRedditActivity.this.setTitleText("Voting...");
         task.execute();
     }
 
@@ -327,7 +345,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
             //System.out.println("Downvote");
         }
         voteinprogress = true;
-        ViewRedditActivity.this.setTitle("Voting...");
+        ViewRedditActivity.this.setTitleText("Voting...");
         task.execute();
     }
 
@@ -354,7 +372,7 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
 
         @Override
         protected void onPostExecute(String result) {
-            ViewRedditActivity.this.setTitle("Reddinator"); // reset title
+            ViewRedditActivity.this.setTitleText("Reddinator"); // reset title
             voteinprogress = false;
             switch (result) {
                 case "OK":
@@ -403,99 +421,78 @@ public class ViewRedditActivity extends FragmentActivity implements TabHost.OnTa
      * @see android.support.v4.app.FragmentActivity#onSaveInstanceState(android.os.Bundle)
      */
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
+        //outState.putString("tab", mTabHost.getCurrentTabTag()); //save the tab selected
         super.onSaveInstanceState(outState);
     }
 
-    /**
-     * Step 2: Setup TabHost
-     */
-    private void initialiseTabHost(Bundle args) {
-        Bundle rargs = new Bundle();
-        rargs.putBoolean("loadcom", true);
-        //rargs.putString("cookie", global.mRedditData.getSessionCookie());
-        mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-        mTabHost.setup();
-        if (prefs.getString("widgetthemepref", "1").equals("1")) {
-            mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
-        } else {
-            mTabHost.getTabWidget().setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
-        }
-        // get shared preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
-        // add tabs
-        TabInfo tabInfo;
-        ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab1").setIndicator("Content"), (tabInfo = new TabInfo("Tab1", TabWebFragment.class, args)));
-        this.mapTabInfo.put(tabInfo.tag, tabInfo);
-        if (prefs.getBoolean("commentswebviewpref", false)) {
-            ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabWebFragment.class, rargs)));
-        } else {
-            ViewRedditActivity.addTab(this, this.mTabHost, this.mTabHost.newTabSpec("Tab2").setIndicator("Reddit"), (tabInfo = new TabInfo("Tab2", TabCommentsFragment.class, rargs)));
-        }
-        this.mapTabInfo.put(tabInfo.tag, tabInfo);
-        // Default to first tab
+    class RedditPageAdapter extends FragmentPagerAdapter {
 
-        if (prefs.getBoolean("commentsfirstpref", false)) {
-            this.mTabHost.setCurrentTab(1);
-            this.onTabChanged("Tab2"); // load comments tab first
-        } else {
-            this.onTabChanged("Tab1");
-        }
-        // set change listener
-        mTabHost.setOnTabChangedListener(this);
-    }
+        SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
-    /**
-     * @param activity;
-     * @param tabHost;
-     * @param tabSpec;
-     */
-    private static void addTab(ViewRedditActivity activity, TabHost tabHost, TabHost.TabSpec tabSpec, TabInfo tabInfo) {
-        // Attach a Tab view factory to the spec
-        tabSpec.setContent(activity.new TabFactory(activity));
-        String tag = tabSpec.getTag();
-        // Check to see if we already have a fragment for this tab, probably
-        // from a previously saved state.  If so, deactivate it, because our
-        // initial state is that a tab isn't shown.
-        tabInfo.fragment = activity.getSupportFragmentManager().findFragmentByTag(tag);
-        if (tabInfo.fragment != null && !tabInfo.fragment.isDetached()) {
-            android.support.v4.app.FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-            ft.detach(tabInfo.fragment);
-            ft.commit();
-            activity.getSupportFragmentManager().executePendingTransactions();
+        public RedditPageAdapter(FragmentManager fragmentManager){
+            super(fragmentManager);
         }
 
-        tabHost.addTab(tabSpec);
-    }
-
-    /**
-     * (non-Javadoc)
-     *
-     * @see android.widget.TabHost.OnTabChangeListener#onTabChanged(java.lang.String)
-     */
-    public void onTabChanged(String tag) {
-        TabInfo newTab = this.mapTabInfo.get(tag);
-        if (mLastTab != newTab) {
-            android.support.v4.app.FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-            if (mLastTab != null) {
-                if (mLastTab.fragment != null) {
-                    ft.detach(mLastTab.fragment);
-                }
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position){
+                case 0: return "Content";
+                case 1: return "Reddit";
             }
-            if (newTab != null) {
-                if (newTab.fragment == null) {
-                    newTab.fragment = Fragment.instantiate(this,
-                            newTab.clss.getName(), newTab.args);
-                    ft.add(R.id.realtabcontent, newTab.fragment, newTab.tag);
-                } else {
-                    ft.attach(newTab.fragment);
-                }
-            }
-
-            mLastTab = newTab;
-            ft.commit();
-            this.getSupportFragmentManager().executePendingTransactions();
+            return "Reddinator";
         }
+
+        @Override
+        public Fragment getItem(int position) {
+            String url;
+            int fontsize;
+            boolean commentsPref = prefs.getBoolean("commentsfirstpref", false);
+            int preloadPref = Integer.parseInt(prefs.getString("preloadpref", "3"));
+            switch (position) {
+                default:
+                case 0: // content
+                    url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+                    // use reddit mobile view
+                    if (url.indexOf("http://www.reddit.com/")==0){
+                        url += ".compact";
+                    }
+                    fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
+                    return TabWebFragment.init(url, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
+                case 1: // comments
+                    if (prefs.getBoolean("commentswebviewpref", false)) {
+                        // reddit
+                        url = "http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
+                        fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
+                        return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
+                    } else {
+                        // native
+                        return TabCommentsFragment.init((commentsPref || preloadPref>1));
+                    }
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+
     }
 
 }

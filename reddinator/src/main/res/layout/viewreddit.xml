@@ -4,36 +4,13 @@
         android:id="@+id/redditview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-    <TabHost
-        android:id="@android:id/tabhost"
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/tabs"
+        android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            >
- 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_weight="0"
-                android:background="#CEE3F8"
-                android:orientation="horizontal" />
- 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="0"/>
- 
-            <FrameLayout
-                android:id="@+android:id/realtabcontent"
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-        </LinearLayout>
-    </TabHost>
+        footerIndicatorHeight="2dp"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/tab_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
 </LinearLayout>

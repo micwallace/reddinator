@@ -42,7 +42,6 @@ import android.widget.Toast;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TabCommentsFragment extends Fragment {
@@ -55,10 +54,26 @@ public class TabCommentsFragment extends Fragment {
     public String articleId;
     private String currentSort = "best";
 
+    static TabCommentsFragment init(boolean load) {
+        TabCommentsFragment commentsTab = new TabCommentsFragment();
+        Bundle args = new Bundle();
+        args.putBoolean("load", load);
+        commentsTab.setArguments(args);
+        return commentsTab;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+    }
+
+    boolean loaded = false;
+    public void load(){
+        if (!loaded) {
+            loadComments("best");
+            loaded = true;
+        }
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +81,7 @@ public class TabCommentsFragment extends Fragment {
         mContext = this.getActivity();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (GlobalObjects) mContext.getApplicationContext();
+        final boolean load = getArguments().getBoolean("load");
 
         // get shared preferences
         articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
@@ -108,7 +124,7 @@ public class TabCommentsFragment extends Fragment {
 
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
-                loadComments("best");
+                if (load) load();
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient());

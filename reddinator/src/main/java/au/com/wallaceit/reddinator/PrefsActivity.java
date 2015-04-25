@@ -32,11 +32,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+import java.util.List;
+
 public class PrefsActivity extends PreferenceActivity {
     public int mAppWidgetId;
     private SharedPreferences mSharedPreferences;
@@ -55,24 +59,27 @@ public class PrefsActivity extends PreferenceActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        addPreferencesFromResource(R.xml.preferences);
         getListView().setBackgroundColor(Color.WHITE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-        final Preference logoutbtn = getPreferenceManager().findPreference("logout");
-        if (logoutbtn == null) {
-            return;
-        }
-        if (mSharedPreferences.getString("oauthtoken", "").equals("")) {
-            logoutbtn.setEnabled(false);
-        } else {
+
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.preferences);
+
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
+
+        if (!mSharedPreferences.getString("oauthtoken", "").equals("")){
+            // Load the account preferences when logged in
+            addPreferencesFromResource(R.xml.account_preferences);
+            Preference logoutbtn = findPreference("logout");
+            final PreferenceCategory accountSettings = (PreferenceCategory) findPreference("account");
             logoutbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     // clear oauth token and save prefs
                     GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
                     global.mRedditData.purgeAccountData();
-                    // disable button and notify user
-                    logoutbtn.setEnabled(false);
+                    // remove account prefs
+                    getPreferenceScreen().removePreference(accountSettings);
                     Toast.makeText(PrefsActivity.this, "Account Disconnected", Toast.LENGTH_LONG).show();
                     return true;
                 }

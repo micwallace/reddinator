@@ -60,6 +60,7 @@
         <item>48 Hours</item>
         <item>Never</item>
     </string-array>
+
     <string-array name="widget_refresh_values">
         <item>3600000</item>
         <item>7200000</item>
@@ -114,5 +115,34 @@
         <item>#0000FF</item>
         <item>#6600FF</item>
         <item>#8B00FF</item>
+    </string-array>
+
+    <string-array name="preload_list_preference">
+        <item>Content &amp; Comments</item>
+        <item>Comments</item>
+        <item>Content</item>
+        <item>None</item>
+    </string-array>
+    <string-array name="preload_list_values">
+        <item>3</item>
+        <item>2</item>
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+
+    <string-array name="mail_check_list">
+        <item>2 Minutes</item>
+        <item>5 Minutes</item>
+        <item>10 Minutes</item>
+        <item>30 Minutes</item>
+        <item>Never</item>
+    </string-array>
+
+    <string-array name="mail_check_values">
+        <item>3600000</item>
+        <item>7200000</item>
+        <item>14400000</item>
+        <item>21600000</item>
+        <item>0</item>
     </string-array>
 </resources>
