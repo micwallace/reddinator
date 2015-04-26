@@ -18,7 +18,6 @@
         <item name="android:selectableItemBackground">@android:color/transparent</item>
         <item name="android:button">@android:color/transparent</item>
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
-        <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
         <item name="vpiTabPageIndicatorStyle">@style/TabPageIndicator</item>
     </style>
 
@@ -28,13 +27,6 @@
         <item name="android:paddingRight">0dip</item>
     </style>
 
-    <style name="ActionOverflowButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
-        <item name="android:width">30dip</item>
-        <item name="android:paddingLeft">0dip</item>
-        <item name="android:paddingRight">0dip</item>
-        <item name="android:src">@drawable/menu_overflow</item>
-    </style>
-
     <style name="TabPageIndicator" parent="Widget">
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/vpi__tab_indicator</item>
@@ -42,9 +34,9 @@
         <item name="android:paddingRight">22dip</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:textAppearance">@style/TextAppearance.TabPageIndicator</item>
+        <item name="android:textColor">#ff153541</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textSize">14sp</item>
         <item name="android:maxLines">1</item>
     </style>
-
 </resources>

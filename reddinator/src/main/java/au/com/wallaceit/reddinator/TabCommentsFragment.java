@@ -52,6 +52,7 @@ public class TabCommentsFragment extends Fragment {
     private GlobalObjects global;
     private SharedPreferences mSharedPreferences;
     public String articleId;
+    public String permalink;
     private String currentSort = "best";
 
     static TabCommentsFragment init(boolean load) {
@@ -83,8 +84,9 @@ public class TabCommentsFragment extends Fragment {
         global = (GlobalObjects) mContext.getApplicationContext();
         final boolean load = getArguments().getBoolean("load");
 
-        // get shared preferences
+        // get needed activity values
         articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+        permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
 
         ll = new LinearLayout(mContext);
         ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
@@ -103,7 +105,7 @@ public class TabCommentsFragment extends Fragment {
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDisplayZoomControls(false);
 
-        String[] themeColors = global.getThemeColorHex();
+        String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
         mSharedPreferences.getString("titlefontpref", "16");
 
 
@@ -134,6 +136,12 @@ public class TabCommentsFragment extends Fragment {
         mWebView.addJavascriptInterface(webInterface, "Reddinator");
 
         mWebView.loadUrl("file:///android_asset/comments.html#"+articleId);
+    }
+
+    public void updateTheme() {
+        String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
+        final String themeStr = StringUtils.join(themeColors, ",");
+        mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -176,20 +184,17 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void reloadComments(String sort) {
-            System.out.println("Reload command received");
             loadComments(sort);
         }
 
         @JavascriptInterface
         public void loadChildren(String moreId, String children) {
-            System.out.println("Load more command received");
             CommentsLoader commentsLoader = new CommentsLoader(currentSort, moreId, children);
             commentsLoader.execute();
         }
 
         @JavascriptInterface
         public void vote(String thingId, int direction) {
-            System.out.println("Vote command received: "+direction);
             ((ViewRedditActivity) getActivity()).setTitleText("Voting...");
             CommentsVoteTask voteTask = new CommentsVoteTask(thingId, direction);
             voteTask.execute();
@@ -197,7 +202,6 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
-            System.out.println("Comment command received");
             ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
             CommentTask commentTask = new CommentTask(parentId, text, 0);
             commentTask.execute();
@@ -205,7 +209,6 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
-            System.out.println("Edit command received");
             ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
             CommentTask commentTask = new CommentTask(thingId, text, 1);
             commentTask.execute();
@@ -213,12 +216,18 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void delete(String thingId) {
-            System.out.println("Delete command received");
             ((ViewRedditActivity) getActivity()).setTitleText("Deleting...");
             CommentTask commentTask = new CommentTask(thingId, null, -1);
             commentTask.execute();
         }
 
+        @JavascriptInterface
+        public void openCommentLink(String thingId) {
+            Intent intent = new Intent(mContext, WebViewActivity.class);
+            intent.putExtra("url", "http://www.reddit.com"+permalink+thingId.substring(3)+".compact");
+            System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
+            startActivity(intent);
+        }
     }
 
     private void loadComments(String sort) {

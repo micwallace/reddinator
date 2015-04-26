@@ -5,7 +5,7 @@ body {
     padding-left:7px;
     padding-right:7px;
 }
-.comment_box, .more_box {
+.comment_box, .more_box, .reply_expand {
     border: 2px solid #D7D7D7;
     border-radius: 4px;
 }
@@ -57,6 +57,7 @@ h5, h6 {
 .comment_options {
     text-align: right;
     padding-right: 5px;
+    margin-bottom:2px;
 }
 
 .post_reply {
@@ -176,14 +177,24 @@ a {
 .fa-star {
     color: #FFFF00;
 }
-.fa-reply, .fa-comment, .fa-edit {
+.fa-reply, .fa-comment {
     color: #C3DBF6;
 }
-.fa-cog, .fa-trash {
+.fa-pencil {
+    color: #25C48F;
+}
+.fa-globe {
     color: #B8B8B8;
+}
+.fa-trash {
+    color:#E06B6C;
+}
+.comment_options i {
+    font-size: 24px;
 }
 .user_option {
     display:none;
+    padding-left:4px;
 }
 .comment_text textarea {
     margin-top:4px;

@@ -3,8 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:paddingBottom="15dip"
-    android:paddingTop="15dip">
+    android:paddingBottom="10dip"
+    android:paddingTop="10dip">
 
     <LinearLayout
         android:layout_width="wrap_content"

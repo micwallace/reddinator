@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
     private IconTextView errorIcon;
     private IconTextView refreshbutton;
     private IconTextView configbutton;
+    private String[] appThemeColors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +219,15 @@ public class MainActivity extends Activity {
                 srtext.setTextColor(Color.parseColor("#000000"));
                 break;
         }
+        appThemeColors = GlobalObjects.getThemeColorHex(prefs);
+        int iconColor = Color.parseColor(appThemeColors[6]);
+        int[] shadow = new int[]{3, 4, 4, Color.parseColor(appThemeColors[7])};
+        configbutton.setTextColor(iconColor);
+        configbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
+        refreshbutton.setTextColor(iconColor);
+        refreshbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
+        ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
+        ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
     }
 
     @Override
@@ -315,10 +325,12 @@ public class MainActivity extends Activity {
                 }
 
             }
+            //int iconColor = Color.parseColor(themeColors[6]);
+            int[] shadow = new int[]{3, 3, 3, Color.parseColor(appThemeColors[7])};
             // load images
             images = new Bitmap[]{
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFFF00"), 36),
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 36)
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFD014"), 40, shadow),
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 40, shadow)
             };
             // load preferences
             loadAppPrefs();

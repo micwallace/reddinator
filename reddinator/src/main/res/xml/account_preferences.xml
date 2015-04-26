@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Account" android:key="account">
+
+        <ListPreference
+        android:key="@string/mail_check_pref"
+        android:title="Mail Indicator"
+        android:summary="When actively using Reddinator,\nupdate the new mail indicator after every..."
+        android:entries="@array/mail_check_list"
+        android:entryValues="@array/mail_check_values"
+        android:defaultValue="300000"
+        android:dialogTitle="Mail Indicator" />
+
+        <ListPreference
+            android:key="@string/background_mail_pref"
+            android:title="Background Mail Check"
+            android:summary="Check &amp; notify me of new mail every..."
+            android:entries="@array/widget_refresh_list"
+            android:entryValues="@array/widget_refresh_values"
+            android:defaultValue="43200000"
+            android:dialogTitle="Background Mail Check" />
+
+        <Preference android:title="Logout"
+            android:key="logout"
+            android:summary="Remove my saved account and session data"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

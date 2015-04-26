@@ -45,7 +45,13 @@
     <string name="view_all">View All</string>
     <string name="preferences">Preferences</string>
     <string name="load_more_replies">Load more replies</string>
-    <string name="background_mail_pref">backgroundmailpref</string>
-    <string name="mail_check_pref">mailcheckpref</string>
+    <string name="background_mail_pref">background_mail_pref</string>
+    <string name="mail_check_pref">mail_check_pref</string>
+    <string name="reddit_content_font_pref">reddit_content_font_pref</string>
+    <string name="open_link">Open Link</string>
+    <string name="upvote">Upvote</string>
+    <string name="downvote">Downvote</string>
+    <string name="inbox">Inbox</string>
+    <string name="my_reddit">My Reddit</string>
 
 </resources>

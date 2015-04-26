@@ -121,6 +121,8 @@ public class OAuthView extends Activity {
         protected void onPostExecute(Boolean success) {
             OAuthView.this.loginDialog.dismiss();
             if (success) {
+                // add mail check alarm
+                MailCheckReceiver.setAlarm(OAuthView.this);
                 OAuthView.this.finish();
             } else {
                 showErrorDialog("Login to Reddit failed: " + RedditData.OAUTH_ERROR);

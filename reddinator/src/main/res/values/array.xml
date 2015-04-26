@@ -139,10 +139,10 @@
     </string-array>
 
     <string-array name="mail_check_values">
-        <item>3600000</item>
-        <item>7200000</item>
-        <item>14400000</item>
-        <item>21600000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
         <item>0</item>
     </string-array>
 </resources>

@@ -21,8 +21,11 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
@@ -53,6 +56,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 public class ViewRedditActivity extends FragmentActivity {
 
@@ -60,6 +64,7 @@ public class ViewRedditActivity extends FragmentActivity {
     private SharedPreferences prefs;
     private MenuItem upvote;
     private MenuItem downvote;
+    private MenuItem messageIcon;
 
     private String userLikes = null; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
@@ -67,8 +72,10 @@ public class ViewRedditActivity extends FragmentActivity {
     private int feedposition = 0;
     private int widgetId = 0;
     private ActionBar actionBar;
-    ViewPager viewPager;
-    RedditPageAdapter pageAdapter;
+    private BroadcastReceiver inboxReceiver;
+    private ViewPager viewPager;
+    private RedditPageAdapter pageAdapter;
+    private TabPageIndicator tabsIndicator;
 
     /**
      * (non-Javadoc)
@@ -100,31 +107,29 @@ public class ViewRedditActivity extends FragmentActivity {
         viewPager = (ViewPager)findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
-        TabPageIndicator titleIndicator = (TabPageIndicator) findViewById(R.id.tabs);
-        titleIndicator.setViewPager(viewPager);
+        tabsIndicator = (TabPageIndicator) findViewById(R.id.tabs);
+        tabsIndicator.setViewPager(viewPager);
         if (prefs.getBoolean("commentsfirstpref", false)) {
             viewPager.setCurrentItem(1);
         } else {
             viewPager.setCurrentItem(0);
         }
-        titleIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        tabsIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 handleTabSwitch(position);
             }
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
         // theme
-        if (prefs.getString("widgetthemepref", "1").equals("1")) {
-            titleIndicator.setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
-        } else {
-            titleIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
-        }
+        setHeaderTheme();
         // setup needed members
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
@@ -136,13 +141,66 @@ public class ViewRedditActivity extends FragmentActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         //System.out.println("User likes post: " + userLikes);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 3) {
+            setHeaderTheme();
+            if (pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("TabCommentsFragment"))
+                ((TabCommentsFragment) pageAdapter.getRegisteredFragment(1)).updateTheme();
+        }
+    }
+
+    private void setHeaderTheme(){
+        if (prefs.getString("widgetthemepref", "1").equals("1")) {
+            tabsIndicator.setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
+        } else {
+            tabsIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
+        }
+    }
+
+    public void onResume(){
+        super.onResume();
+        // Register receiver & check for new messages if logged in, enabled and due
+        int checkPref = Integer.parseInt(prefs.getString("mail_check_pref", "300000"));
+        if (global.mRedditData.isLoggedIn() || checkPref!=0)
+        if ((global.mRedditData.getLastUserUpdateTime()+checkPref)<(new Date()).getTime()) {
+            inboxReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // update inbox indicator
+                    setInboxIcon();
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(MailCheckService.MAIL_CHECK_COMPLETE);
+            registerReceiver(inboxReceiver, filter);
+
+            MailCheckService.checkMail(ViewRedditActivity.this, MailCheckService.ACTIVITY_CHECK_ACTION);
+        }
+    }
+
+    public void onPause(){
+        super.onPause();
+        if (inboxReceiver!=null) {
+            unregisterReceiver(inboxReceiver);
+            inboxReceiver = null;
+        }
+    }
+
+    @Override
+    public void finish() {
+        ViewGroup view = (ViewGroup) getWindow().getDecorView();
+        view.removeAllViews();
+        super.finish();
     }
 
     boolean firstChange = false;
     private void handleTabSwitch(int position){
         if (!firstChange){
-            if (position==0 || prefs.getBoolean("commentswebviewpref", false)) {
+            if (position==0 || pageAdapter.getRegisteredFragment(position).getClass().getSimpleName().equals("TabWebFragment")) {
                 ((TabWebFragment) pageAdapter.getRegisteredFragment(position)).load();
             } else {
                 ((TabCommentsFragment) pageAdapter.getRegisteredFragment(position)).load();
@@ -171,13 +229,13 @@ public class ViewRedditActivity extends FragmentActivity {
         inflater.inflate(R.menu.viewmenu, menu);
         // set options menu view
         int iconColor = Color.parseColor("#DBDBDB");
+        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_inbox)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
+        // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
-
         if (userLikes.equals("true")) {
             upvote.setIcon(R.drawable.upvote_active);
             curvote = 1;
@@ -185,7 +243,18 @@ public class ViewRedditActivity extends FragmentActivity {
             downvote.setIcon(R.drawable.downvote_active);
             curvote = -1;
         }
+        // set inbox icon color based on inbox count
+        messageIcon = (menu.findItem(R.id.menu_inbox));
+        setInboxIcon();
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setInboxIcon(){
+        if (messageIcon!=null){
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"):Color.parseColor("#DBDBDB");
+            messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        }
     }
 
     @Override
@@ -231,8 +300,14 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_account:
                 Intent accnIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", "http://www.reddit.com/message/inbox/.compact");
+                accnIntent.putExtra("url", "http://www.reddit.com/user/me/.compact");
                 startActivity(accnIntent);
+                break;
+
+            case R.id.menu_inbox:
+                Intent inboxIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
+                inboxIntent.putExtra("url", global.mRedditData.getInboxCount()>0?"http://www.reddit.com/message/unread/.compact":"http://www.reddit.com/message/inbox/.compact");
+                startActivity(inboxIntent);
                 break;
 
             case R.id.menu_open:
@@ -245,7 +320,8 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_prefs:
                 Intent intent = new Intent(ViewRedditActivity.this, PrefsActivity.class);
-                startActivity(intent);
+                intent.putExtra("fromapp", true);
+                startActivityForResult(intent, 0);
                 break;
 
             default:
@@ -292,8 +368,12 @@ public class ViewRedditActivity extends FragmentActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
                     }
+                }).setPositiveButton("Both", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL)+"\nhttp://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                    }
                 })
-                .setPositiveButton("Reddit Page", new DialogInterface.OnClickListener() {
+                .setNeutralButton("Reddit Page", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         shareText("http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
@@ -462,7 +542,7 @@ public class ViewRedditActivity extends FragmentActivity {
                     if (prefs.getBoolean("commentswebviewpref", false)) {
                         // reddit
                         url = "http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
-                        fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
+                        fontsize = Integer.parseInt(prefs.getString("reddit_content_font_pref", "21"));
                         return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
                     } else {
                         // native

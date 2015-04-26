@@ -49,6 +49,7 @@ public class PrefsActivity extends PreferenceActivity {
     private String mTitleFontColor = "";
     private String mWidgetTheme = "";
     int mFirstTimeSetup = 0;
+    String mMailRefresh = "";
     boolean isfromappview = false;
 
     @SuppressWarnings("deprecation")
@@ -78,6 +79,8 @@ public class PrefsActivity extends PreferenceActivity {
                     // clear oauth token and save prefs
                     GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
                     global.mRedditData.purgeAccountData();
+                    // remove mail check alarm
+                    MailCheckReceiver.setAlarm(PrefsActivity.this);
                     // remove account prefs
                     getPreferenceScreen().removePreference(accountSettings);
                     Toast.makeText(PrefsActivity.this, "Account Disconnected", Toast.LENGTH_LONG).show();
@@ -103,6 +106,8 @@ public class PrefsActivity extends PreferenceActivity {
         mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
         mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
 
+        mMailRefresh = mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000");
+
         Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
     }
 
@@ -125,20 +130,14 @@ public class PrefsActivity extends PreferenceActivity {
         // check if refresh rate has changed and update if needed
         if (!mRefreshrate.equals(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"))) {
             //System.out.println("Refresh preference changed, updating alarm");
-            Intent intent = new Intent(getApplicationContext(), WidgetProvider.class);
-            intent.setAction(WidgetProvider.APPWIDGET_AUTO_UPDATE);
-            intent.setPackage(PrefsActivity.this.getPackageName());
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent updateIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-            final AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-            int refreshRate = Integer.valueOf(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"));
-            if (refreshRate != 0) {
-                alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
-            } else {
-                alarmManager.cancel(updateIntent); // just incase theres a rougue alarm
-            }
+            WidgetProvider.setUpdateSchedule(PrefsActivity.this, false);
         }
-
+        // check if background mail check interval has changed
+        if (!mMailRefresh.equals(mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000"))) {
+            //System.out.println("Refresh preference changed, updating alarm");
+            MailCheckReceiver.setAlarm(PrefsActivity.this);
+        }
+        int result = 0;
         // check if theme or style has changed and update if needed
         if (!mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))
                 || !mTitleFontColor.equals(mSharedPreferences.getString(getString(R.string.title_color_pref), "0"))
@@ -152,18 +151,15 @@ public class PrefsActivity extends PreferenceActivity {
 
             if (mFirstTimeSetup == 0) { // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
                 updateWidget(); // Reloads widget without reloading feed items.
-                // if we are returning to app view,set the result to 2, indicating a theme update is needed
-                if (isfromappview) {
-                    setResult(3);
-                    finish();
-                }
             }
-
+            // if we are returning to app view,set the result to 3, indicating a theme update is needed
+            result = 3;
         }
 
         if (isfromappview) {
-            setResult(0); // no update needed
+            setResult(result); // no update needed
             finish();
+            return;
         }
         // for first time setup, widget provider receives this intent in onWidgetOptionsChanged();
         Intent resultValue = new Intent();

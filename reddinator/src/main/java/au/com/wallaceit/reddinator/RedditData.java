@@ -58,6 +58,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 public class RedditData {
@@ -72,6 +73,8 @@ public class RedditData {
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
     private String username;
+    private int inboxCount = 0;
+    private long lastUpdateTime = 0;
 
     RedditData(Context context) {
         // set user agent
@@ -87,6 +90,8 @@ public class RedditData {
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         String tokenStr = sharedPrefs.getString("oauthtoken", "");
         username = sharedPrefs.getString("username", "");
+        inboxCount = sharedPrefs.getInt("inbox_count", 0);
+        lastUpdateTime = sharedPrefs.getLong("last_info_update", 0);
         if (!tokenStr.equals("")) {
             try {
                 oauthToken = new JSONObject(tokenStr);
@@ -191,6 +196,25 @@ public class RedditData {
     // AUTHED CALLS
     public String getUsername(){
         return username;
+    }
+
+    public int getInboxCount(){
+        return inboxCount;
+    }
+
+    public long getLastUserUpdateTime(){ return lastUpdateTime; }
+
+    // updates internally tracked user info and saves it to preference. This is also used for saving oauth token for the first time.
+    public void updateUserInfo() throws RedditApiException {
+        JSONObject userInfo = getUserInfo();
+        try {
+            username = userInfo.getString("name");
+            inboxCount = userInfo.getInt("inbox_count");
+            lastUpdateTime = (new Date()).getTime();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        saveUserData();
     }
 
     public JSONObject getUserInfo() throws RedditApiException {
@@ -602,14 +626,16 @@ public class RedditData {
                 Long epoch = (System.currentTimeMillis() / 1000L);
                 Long expires_at = epoch + Integer.parseInt(oauthToken.getString("expires_in"));
                 oauthToken.put("expires_at", expires_at);
-                // get username
-                JSONObject userInfo = getUserInfo();
-                username = userInfo.getString("name");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            // save session data and add cookie to client
-            saveUserData();
+            // try to retrieve user info & save, if exception thrown, just make sure we save token
+            try {
+                updateUserInfo();
+            } catch (RedditApiException e) {
+                e.printStackTrace();
+                saveUserData();
+            }
             //System.out.println("oauth request result: OK");
             return true;
         }
@@ -639,7 +665,7 @@ public class RedditData {
                 e.printStackTrace();
                 System.out.println("oauth refresh result error: " + e.toString());
             }
-            // save session data and add cookie to client
+            // save oauth token
             saveUserData();
             //System.out.println("oauth refresh result: OK");
             return true;
@@ -654,7 +680,9 @@ public class RedditData {
     public void saveUserData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString("oauthtoken", oauthToken == null ? "" : oauthToken.toString());
-        edit.putString("username", username == null ? "" : username);
+        edit.putString("username", username);
+        edit.putInt("inbox_count", inboxCount);
+        edit.putLong("last_info_update", lastUpdateTime);
         // TEMP: Flush out old storage
         edit.remove("uname");
         edit.remove("pword");

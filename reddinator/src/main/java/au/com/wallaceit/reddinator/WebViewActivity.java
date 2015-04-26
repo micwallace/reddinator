@@ -19,13 +19,25 @@ package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
+
+import java.lang.reflect.Method;
 
 public class WebViewActivity extends Activity {
     WebView wv;
@@ -61,7 +73,8 @@ public class WebViewActivity extends Activity {
             }
         });
         wv.getSettings().setJavaScriptEnabled(true);
-        wv.getSettings().setDefaultFontSize(22);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        wv.getSettings().setDefaultFontSize(Integer.parseInt(prefs.getString("reddit_content_font_pref", "21")));
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
         // get url from extra
@@ -83,6 +96,40 @@ public class WebViewActivity extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.webviewmenu, menu);
+        // set options menu view
+        int iconColor = Color.parseColor("#DBDBDB");
+        (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+                try{
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                }
+                catch(NoSuchMethodException e){
+                    System.out.println("Could not display action icons in menu");
+                }
+                catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
@@ -90,10 +137,33 @@ public class WebViewActivity extends Activity {
                 wv.stopLoading();
                 wv.loadData("", "text/html", "utf-8");
                 this.finish();
-                return true;
+                break;
+
+            case R.id.menu_open:
+            openLink(wv.getUrl());
+            break;
+
+            case R.id.menu_share:
+            shareLink(wv.getUrl());
+            break;
+
+            default:
+            return super.onOptionsItemSelected(item);
         }
-        return false;
+        return true;
     }
 
+    public void openLink(String url) {
+        Intent openintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(openintent);
+    }
+
+    public void shareLink(String txt) {
+        Intent sendintent = new Intent(Intent.ACTION_SEND);
+        sendintent.setAction(Intent.ACTION_SEND);
+        sendintent.putExtra(Intent.EXTRA_TEXT, txt);
+        sendintent.setType("text/plain");
+        startActivity(Intent.createChooser(sendintent, "Share Url with..."));
+    }
 }
 

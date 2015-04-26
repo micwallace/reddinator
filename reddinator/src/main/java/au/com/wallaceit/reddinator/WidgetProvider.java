@@ -80,7 +80,7 @@ public class WidgetProvider extends AppWidgetProvider {
             PendingIntent subredditPendingIntent = PendingIntent.getActivity(context, 0, subredditIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // REMOTE DATA
-            Intent serviceIntent = new Intent(context, Rservice.class);
+            Intent serviceIntent = new Intent(context, WidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId); // Add the app widget ID to the intent extras.
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
@@ -128,11 +128,13 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
 
-            int iconColor = Color.parseColor("#DBDBDB");
-            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80));
-            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80));
-            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 54));
-            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 80));
+            String[] themeColors = GlobalObjects.getThemeColorHex(prefs);
+            int iconColor = Color.parseColor(themeColors[6]);
+            int[] shadow = new int[]{3, 3, 3, Color.parseColor(themeColors[7])};
+            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80, shadow));
+            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80, shadow));
+            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 54, shadow));
+            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 80, shadow));
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
@@ -164,39 +166,36 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
     }
 
-    @Override
-    public void onDisabled(Context context) {
-        // cancel the alarm for automatic updates
+    public static void setUpdateSchedule(Context context, boolean widgetsDisabled){
         Intent intent = new Intent(context.getApplicationContext(), WidgetProvider.class);
         intent.setAction(APPWIDGET_AUTO_UPDATE);
         intent.setPackage(context.getPackageName());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
-        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        m.cancel(updateIntent);
-        //System.out.println("onDisabled();");
-        super.onDisabled(context);
-    }
-
-
-    @Override
-    public void onEnabled(Context context) {
-        // set the pending intent for automatic update
-        Intent intent = new Intent(context.getApplicationContext(), WidgetProvider.class);
-        intent.setAction(APPWIDGET_AUTO_UPDATE);
-        intent.setPackage(context.getPackageName());
-        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        PendingIntent updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
 
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int refreshRate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
 
-        if (refreshRate != 0) {
-            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
+        if (refreshRate==0 || widgetsDisabled) {
+            alarmManager.cancel(updateIntent); // auto update disabled or all widgets removed
         } else {
-            alarmManager.cancel(updateIntent); // auto update disabled
+            alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
         }
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        // cancel the alarm for automatic updates
+        setUpdateSchedule(context, true);
+        //System.out.println("onDisabled();");
+        super.onDisabled(context);
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        // set the pending intent for automatic update
+        setUpdateSchedule(context, false);
         // System.out.println("onEnabled();");
         super.onEnabled(context);
     }

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:paddingRight="2dp"
-        android:paddingLeft="5dp"
+        android:paddingLeft="3dp"
         android:layout_alignParentTop="true"
         android:background="#CEE3F8"
         android:clickable="false">

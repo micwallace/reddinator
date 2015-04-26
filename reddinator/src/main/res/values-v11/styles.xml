@@ -24,4 +24,11 @@
         <item name="android:background">@android:drawable/screen_background_light_transparent</item>
     </style>
 
+    <style name="ActionOverflowButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+        <item name="android:minWidth">30dip</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
+        <item name="android:src">@drawable/menu_overflow</item>
+    </style>
+
 </resources>

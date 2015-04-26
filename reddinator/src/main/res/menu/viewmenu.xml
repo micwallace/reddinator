@@ -2,36 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_upvote"
-        android:title="Upvote"
+        android:title="@string/upvote"
         android:icon="@drawable/upvote"
         android:showAsAction="always" />
 
     <item
         android:id="@+id/menu_downvote"
-        android:title="Downvote"
+        android:title="@string/downvote"
         android:icon="@drawable/downvote"
         android:showAsAction="always" />
 
     <item
         android:id="@+id/menu_inbox"
-        android:title="Inbox"
+        android:title="@string/inbox"
         android:showAsAction="always" />
 
     <item
         android:id="@+id/menu_account"
-        android:title="My Reddit"
-        android:icon="@drawable/reddit_icon_small"
+        android:title="@string/my_reddit"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/menu_open"
-        android:title="Open Link"
+        android:title="@string/open_link"
         android:showAsAction="never" />
 
     <item
         android:id="@+id/menu_share"
         android:title="@string/share"
-        android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="never" />
 
     <item

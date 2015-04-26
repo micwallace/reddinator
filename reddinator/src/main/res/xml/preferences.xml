@@ -91,21 +91,29 @@
             android:defaultValue="3"
             android:dialogTitle="Preload Content" />
         <ListPreference
-                android:key="@string/comment_font_pref"
-                android:title="Comments Font Size"
-                android:summary="Default font size for the comments view"
-                android:entries="@array/fontsize_list_preference"
-                android:entryValues="@array/fontsize_list_preference"
-                android:defaultValue="22"
-                android:dialogTitle="Reddit Font Size" />
+            android:key="@string/comment_font_pref"
+            android:title="Comments Font Size"
+            android:summary="Default font size for the comments view"
+            android:entries="@array/fontsize_list_preference"
+            android:entryValues="@array/fontsize_list_preference"
+            android:defaultValue="20"
+            android:dialogTitle="Reddit Font Size" />
 		<ListPreference
-                android:key="@string/content_font_pref"
-                android:title="Content Font Size"
-                android:summary="Default font size for the content view"
-                android:entries="@array/fontsize_list_preference"
-                android:entryValues="@array/fontsize_list_preference"
-                android:defaultValue="18"
-                android:dialogTitle="Content Font Size" />
+            android:key="@string/content_font_pref"
+            android:title="Content Font Size"
+            android:summary="Default font size for the content web view"
+            android:entries="@array/fontsize_list_preference"
+            android:entryValues="@array/fontsize_list_preference"
+            android:defaultValue="18"
+            android:dialogTitle="Content Font Size" />
+        <ListPreference
+            android:key="@string/reddit_content_font_pref"
+            android:title="Reddit Mobile Font Size"
+            android:summary="Default font size for mobile reddit webviews"
+            android:entries="@array/fontsize_list_preference"
+            android:entryValues="@array/fontsize_list_preference"
+            android:defaultValue="21"
+            android:dialogTitle="Reddit Mobile Font Size" />
     </PreferenceCategory>
 
 </PreferenceScreen>

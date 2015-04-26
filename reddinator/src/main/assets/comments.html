@@ -26,16 +26,16 @@
     </div>
     <div class="clearfix"></div>
     <div class="comment_options">
-        <i class="user_option fa fa-edit" onclick="startEdit($(this).parent().parent().attr('id'));"></i>
+        <i class="user_option fa fa-pencil" onclick="startEdit($(this).parent().parent().attr('id'));"></i>
         <i class="user_option fa fa-trash" onclick="deleteComment($(this).parent().parent().attr('id'));"></i>
         <i class="post_toggle fa fa-reply"></i>
-        <i class="fa fa-cog"></i>
+        <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().attr('id'));"></i>
     </div>
     <div class="post_reply post_box" style="display:none;">
         <textarea rows="5"></textarea>
         <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
     </div>
-    <div class="reply_expand comment_box" onclick="toggleReplies(this);">
+    <div class="reply_expand" onclick="toggleReplies(this);">
         <h5>-</h5>
         <h6>hide replies</h6>
     </div>
