@@ -87,7 +87,9 @@ public class WebViewActivity extends Activity {
         }
         wv.loadUrl(url);
         // check for clear inbox flag
-        if (getIntent().getAction().equals(ACTION_CLEAR_INBOX_COUNT)) {
+        String action = getIntent().getAction();
+        if (action!=null)
+        if (action.equals(ACTION_CLEAR_INBOX_COUNT)) {
             global.mRedditData.clearStoredInboxCount();
             // Also clear notification that may be present (created in CheckMailService)
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
