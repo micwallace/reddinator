@@ -306,6 +306,7 @@ public class MainActivity extends Activity {
         private boolean loadThumbnails = false;
         private boolean bigThumbs = false;
         private boolean hideInf = false;
+        private boolean showItemSubreddit = false;
         private Bitmap[] images;
 
         protected ReddinatorListAdapter(GlobalObjects gobjects, SharedPreferences prefs) {
@@ -365,6 +366,8 @@ public class MainActivity extends Activity {
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
+            String subreddit = prefs.getString("currentfeed-app", "");
+            showItemSubreddit = (subreddit.equals("Front Page") || subreddit.equals("all"));
         }
 
         @Override
@@ -426,6 +429,7 @@ public class MainActivity extends Activity {
                 String domain = "";
                 String id = "";
                 String userLikes = "null";
+                String subreddit = "";
                 int score = 0;
                 int numcomments = 0;
                 boolean nsfw = false;
@@ -439,6 +443,7 @@ public class MainActivity extends Activity {
                     numcomments = tempobj.getInt("num_comments");
                     userLikes = tempobj.getString("likes");
                     nsfw = tempobj.getBoolean("over_18");
+                    subreddit = tempobj.getString("subreddit");
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // return null; // The view is invalid;
@@ -447,7 +452,7 @@ public class MainActivity extends Activity {
                 viewHolder.listheading.setText(Html.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors[0]);
-                viewHolder.sourcetxt.setText(domain);
+                viewHolder.sourcetxt.setText((showItemSubreddit?subreddit+" - ":"")+domain);
                 viewHolder.sourcetxt.setTextColor(themeColors[3]);
                 viewHolder.votestxt.setText(String.valueOf(score));
                 viewHolder.votestxt.setTextColor(themeColors[4]);

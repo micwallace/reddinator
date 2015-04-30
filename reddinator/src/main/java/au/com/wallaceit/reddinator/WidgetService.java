@@ -65,6 +65,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private boolean loadThumbnails = false;
     private boolean bigThumbs = false;
     private boolean hideInf = false;
+    private boolean showItemSubreddit = false;
     private Bitmap[] images;
 
     public ListRemoteViewsFactory(Context context, Intent intent) {
@@ -107,10 +108,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         endOfFeed = false;
-        // get thumbnail load preference for the widget
-        loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
-        bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
-        hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
+
+        loadFeedPrefs();
+
         String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
         //int iconColor = Color.parseColor(themeColors[6]);
         int[] shadow = new int[]{3, 4, 4, Color.parseColor(themeColors[7])};
@@ -118,6 +118,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#F4C712"), 40, shadow),
                 GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 40, shadow)
         };
+    }
+
+    public void loadFeedPrefs(){
+        loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
+        bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
+        hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
+        String subreddit = mSharedPreferences.getString("currentfeed-" + appWidgetId, "");
+        showItemSubreddit = (subreddit.equals("Front Page") || subreddit.equals("all"));
     }
 
     @Override
@@ -162,6 +170,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             String thumbnail = "";
             String domain = "";
             String id = "";
+            String subreddit = "";
             int score = 0;
             int numcomments = 0;
             boolean nsfw = false;
@@ -177,9 +186,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 score = tempobj.getInt("score");
                 numcomments = tempobj.getInt("num_comments");
                 nsfw = tempobj.getBoolean("over_18");
+                subreddit = tempobj.getString("subreddit");
             } catch (JSONException e) {
                 e.printStackTrace();
-                // return null; // The view is invalid;
             }
             // create remote view from specified layout
             if (bigThumbs) {
@@ -193,7 +202,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors[0]);
-            row.setTextViewText(R.id.sourcetxt, domain);
+            row.setTextViewText(R.id.sourcetxt, (showItemSubreddit?subreddit+" - ":"")+domain);
             row.setTextColor(R.id.sourcetxt, themeColors[3]);
             row.setTextColor(R.id.votestxt, themeColors[4]);
             row.setTextColor(R.id.commentstxt, themeColors[4]);
@@ -344,9 +353,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDataSetChanged() {
         // get thumbnail load preference for the widget
-        loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
-        bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
-        hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
+        loadFeedPrefs();
+
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         themeColors = global.getThemeColors(); // reset theme colors
         int loadType = global.getLoadType();

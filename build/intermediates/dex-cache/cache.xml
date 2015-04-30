@@ -23,13 +23,6 @@
         <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-5d24e71af5c8d771505381162ea1c6674ad7a967.jar" />
     </item>
     <item
-        jar="/home/michael/.gradle/caches/modules-2/files-2.1/org.mod4j.org.apache.commons/lang/2.1.0/c2200288f7c9dd4f9e8b647a95290f978362b567/lang-2.1.0.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="c2200288f7c9dd4f9e8b647a95290f978362b567">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/lang-2.1.0-d82300ccd44fb5353a51c2295ce09ac36b719f5e.jar" />
-    </item>
-    <item
         jar="/home/michael/.gradle/caches/modules-2/files-2.1/com.joanzapata.android/android-iconify/1.0.9/27817b0ae26d4fa788711f1f75aaa45d76901722/android-iconify-1.0.9.jar"
         jumboMode="false"
         revision="19.1.0"
@@ -42,6 +35,13 @@
         revision="19.1.0"
         sha1="58190d9f1c316feacb29a04bdb2df6064e9076d1">
         <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-cce07005264862761df0b0d07eb630eb4afc6d30.jar" />
+    </item>
+    <item
+        jar="/home/michael/.gradle/caches/modules-2/files-2.1/org.mod4j.org.apache.commons/lang/2.1.0/c2200288f7c9dd4f9e8b647a95290f978362b567/lang-2.1.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="c2200288f7c9dd4f9e8b647a95290f978362b567">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/lang-2.1.0-d82300ccd44fb5353a51c2295ce09ac36b719f5e.jar" />
     </item>
     <item
         jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"

@@ -88,6 +88,7 @@ public class MailCheckService extends Service {
     private void setNotification(){
         int message = global.mRedditData.getInboxCount();
         Intent notifyIntent = new Intent(this, WebViewActivity.class);
+        notifyIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
         notifyIntent.putExtra("url", "http://www.reddit.com/message/unread/.compact");
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(message+ " New Messages")
@@ -95,7 +96,6 @@ public class MailCheckService extends Service {
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.reddit_icon_small))
                 .setSmallIcon(R.drawable.ic_notify)
                 .setContentIntent(PendingIntent.getActivity(this, 0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-                .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

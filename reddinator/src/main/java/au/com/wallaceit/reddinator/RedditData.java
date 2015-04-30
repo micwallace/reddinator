@@ -204,6 +204,13 @@ public class RedditData {
 
     public long getLastUserUpdateTime(){ return lastUpdateTime; }
 
+    public void clearStoredInboxCount(){
+        inboxCount = 0;
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.putInt("inbox_count", inboxCount);
+        edit.apply();
+    }
+
     // updates internally tracked user info and saves it to preference. This is also used for saving oauth token for the first time.
     public void updateUserInfo() throws RedditApiException {
         JSONObject userInfo = getUserInfo();

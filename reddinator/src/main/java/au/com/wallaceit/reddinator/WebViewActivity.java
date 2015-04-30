@@ -19,6 +19,7 @@ package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -44,6 +45,8 @@ public class WebViewActivity extends Activity {
     WebViewClient wvclient;
     Activity mActivity;
     GlobalObjects global;
+
+    public static final String ACTION_CLEAR_INBOX_COUNT= "clearInboxCount";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +86,13 @@ public class WebViewActivity extends Activity {
             url = "http://www.reddit.com/.compact";
         }
         wv.loadUrl(url);
+        // check for clear inbox flag
+        if (getIntent().getAction().equals(ACTION_CLEAR_INBOX_COUNT)) {
+            global.mRedditData.clearStoredInboxCount();
+            // Also clear notification that may be present (created in CheckMailService)
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(1);
+        }
     }
 
     public void onBackPressed() {
