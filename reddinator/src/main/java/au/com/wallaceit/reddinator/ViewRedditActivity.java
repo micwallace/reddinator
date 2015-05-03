@@ -76,6 +76,7 @@ public class ViewRedditActivity extends FragmentActivity {
     private ViewPager viewPager;
     private RedditPageAdapter pageAdapter;
     private TabPageIndicator tabsIndicator;
+    public ThemeManager.Theme theme;
 
     /**
      * (non-Javadoc)
@@ -129,7 +130,7 @@ public class ViewRedditActivity extends FragmentActivity {
             }
         });
         // theme
-        setHeaderTheme();
+        updateTheme();
         // setup needed members
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
@@ -147,18 +148,19 @@ public class ViewRedditActivity extends FragmentActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 3) {
-            setHeaderTheme();
+            updateTheme();
             if (pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("TabCommentsFragment"))
                 ((TabCommentsFragment) pageAdapter.getRegisteredFragment(1)).updateTheme();
         }
     }
 
-    private void setHeaderTheme(){
-        if (prefs.getString("widgetthemepref", "1").equals("1")) {
-            tabsIndicator.setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
-        } else {
+    private void updateTheme(){
+        //if (prefs.getString("widgetthemepref", "1").equals("1")) {
+        theme = global.mThemeManager.getActiveTheme(null);
+        tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color"))); // set light theme
+        /*} else {
             tabsIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
-        }
+        }*/
     }
 
     public void onResume(){
@@ -180,6 +182,8 @@ public class ViewRedditActivity extends FragmentActivity {
 
             MailCheckService.checkMail(ViewRedditActivity.this, MailCheckService.ACTIVITY_CHECK_ACTION);
         }
+
+        setInboxIcon();
     }
 
     public void onPause(){

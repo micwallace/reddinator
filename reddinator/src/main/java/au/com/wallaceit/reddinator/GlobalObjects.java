@@ -49,6 +49,7 @@ public class GlobalObjects extends Application {
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
+    public ThemeManager mThemeManager;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -59,6 +60,7 @@ public class GlobalObjects extends Application {
         }
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(GlobalObjects.this.getApplicationContext());
         mRedditData = new RedditData(GlobalObjects.this.getApplicationContext());
+        mThemeManager = new ThemeManager(GlobalObjects.this.getApplicationContext(), mSharedPreferences);
     }
 
     // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume

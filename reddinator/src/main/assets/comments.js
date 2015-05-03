@@ -8,13 +8,13 @@ function init(themeColors, user){
 }
 
 function setTheme(themeColors){
-    var themeColors = themeColors.split(",");
-    $("body").css("background-color", themeColors[5]);
-    $("body").css("color", themeColors[0]);
-    $(".comment_user").css("color", themeColors[3]);
-    $(".comment_score").css("color", themeColors[4]);
-    $(".comment_reply_count").css("color", themeColors[4]);
-    $("button").css("background-color", themeColors[3]);
+    var themeColors = JSON.parse(themeColors);
+    $("body").css("background-color", themeColors["background_color"]);
+    $("body").css("color", themeColors["headline_text"]);
+    $(".comment_user").css("color", themeColors["source_text"]);
+    $(".comment_score").css("color", themeColors["votes_text"]);
+    $(".comment_reply_count").css("color", themeColors["comments_text"]);
+    $("button").css("background-color", themeColors["header_color"]);
     $("body").show();
 }
 

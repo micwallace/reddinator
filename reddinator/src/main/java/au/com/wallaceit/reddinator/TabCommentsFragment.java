@@ -105,11 +105,9 @@ public class TabCommentsFragment extends Fragment {
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDisplayZoomControls(false);
 
-        String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
         mSharedPreferences.getString("titlefontpref", "16");
 
-
-        final String themeStr = StringUtils.join(themeColors, ",");
+        final String themeStr = ((ViewRedditActivity) getActivity()).theme.getValuesString();
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -139,8 +137,9 @@ public class TabCommentsFragment extends Fragment {
     }
 
     public void updateTheme() {
-        String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
-        final String themeStr = StringUtils.join(themeColors, ",");
+        String themeStr = ((ViewRedditActivity) getActivity()).theme.getValuesString();
+        //String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
+        //final String themeStr = StringUtils.join(themeColors, ",");
         mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
