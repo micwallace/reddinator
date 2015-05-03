@@ -58,7 +58,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/srtoolbar"
-        android:background="#FFF"></ListView>
+        android:background="#FFF"/>
 
     <RelativeLayout
         android:id="@+id/srtoolbar"

@@ -42,6 +42,9 @@ public class ThemeManager {
     JSONObject valueLabels;
     JSONObject themes;
     JSONObject customThemes;
+    static final int LISTMODE_ALL= 0;
+    static final int LISTMODE_CUSTOM= 1;
+    static final int LISTMODE_DEFAULT= 2;
 
     public ThemeManager(Context context, SharedPreferences preferences){
         this.prefs = preferences;
@@ -49,25 +52,30 @@ public class ThemeManager {
         loadThemes();
     }
 
-    public HashMap<String, String> getThemeList(){
+    public HashMap<String, String> getThemeList(int mode){
         HashMap<String, String> themeList = new HashMap<>();
+        Iterator iterator;
         String key;
-        Iterator iterator = themes.keys();
-        while (iterator.hasNext()){
-            key = (String) iterator.next();
-            try {
-                themeList.put(key, themes.getJSONObject(key).getString("name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if (mode==LISTMODE_ALL || mode==LISTMODE_DEFAULT) {
+            iterator = themes.keys();
+            while (iterator.hasNext()) {
+                key = (String) iterator.next();
+                try {
+                    themeList.put(key, themes.getJSONObject(key).getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        iterator = customThemes.keys();
-        while (iterator.hasNext()){
-            key = (String) iterator.next();
-            try {
-                themeList.put(key, customThemes.getJSONObject(key).getString("name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if (mode==LISTMODE_ALL || mode==LISTMODE_CUSTOM) {
+            iterator = customThemes.keys();
+            while (iterator.hasNext()) {
+                key = (String) iterator.next();
+                try {
+                    themeList.put(key, customThemes.getJSONObject(key).getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -120,7 +128,7 @@ public class ThemeManager {
         if (themePrefKey==null)
             return getTheme(prefs.getString("appthemepref", "reddit_classic"));
 
-        return getTheme(prefs.getString(themePrefKey, "reddit_classic"));
+        return getTheme(prefs.getString(themePrefKey, prefs.getString("appthemepref", "reddit_classic")));
     }
 
     private void loadThemes(){
@@ -147,19 +155,24 @@ public class ThemeManager {
         }
     }
 
-    public void saveCustomTheme(String name, Theme theme){
+    public void saveCustomTheme(String themeId, Theme theme){
         try {
-            customThemes.put(name, theme.getTheme());
+            customThemes.put(themeId, theme.getTheme());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         prefs.edit().putString("userThemes", customThemes.toString()).apply();
     }
 
+    public void deleteCustomTheme(String themeId){
+        customThemes.remove(themeId);
+        prefs.edit().putString("userThemes", customThemes.toString()).apply();
+    }
+
     public class Theme {
-        JSONObject theme;
-        JSONObject jsonValues;
-        HashMap<String, String> values = null;
+        private JSONObject theme;
+        private JSONObject jsonValues;
+        private HashMap<String, String> values = null;
 
         public Theme(JSONObject theme){
             this.theme = theme;
@@ -185,6 +198,14 @@ public class ThemeManager {
                 e.printStackTrace();
             }
             return "";
+        }
+
+        public void setName(String name){
+            try {
+                theme.put("name", name);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         private void loadValues(){

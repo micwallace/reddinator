@@ -156,7 +156,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
     private void updateTheme(){
         //if (prefs.getString("widgetthemepref", "1").equals("1")) {
-        theme = global.mThemeManager.getActiveTheme(null);
+        theme = global.mThemeManager.getActiveTheme("appthemepref");
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color"))); // set light theme
         /*} else {
             tabsIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme

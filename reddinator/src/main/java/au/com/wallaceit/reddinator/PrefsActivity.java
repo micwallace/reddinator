@@ -20,25 +20,30 @@ package au.com.wallaceit.reddinator;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class PrefsActivity extends PreferenceActivity {
@@ -51,6 +56,7 @@ public class PrefsActivity extends PreferenceActivity {
     int mFirstTimeSetup = 0;
     String mMailRefresh = "";
     boolean isfromappview = false;
+    GlobalObjects global;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -62,7 +68,7 @@ public class PrefsActivity extends PreferenceActivity {
         }
         getListView().setBackgroundColor(Color.WHITE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-
+        global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
@@ -77,7 +83,6 @@ public class PrefsActivity extends PreferenceActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     // clear oauth token and save prefs
-                    GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
                     global.mRedditData.purgeAccountData();
                     // remove mail check alarm
                     MailCheckReceiver.setAlarm(PrefsActivity.this);
@@ -88,6 +93,16 @@ public class PrefsActivity extends PreferenceActivity {
                 }
             });
         }
+
+        Preference themeManagerButton = findPreference("theme_manager_button");
+        themeManagerButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PrefsActivity.this, ThemesActivity.class);
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -107,6 +122,12 @@ public class PrefsActivity extends PreferenceActivity {
         mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
 
         mMailRefresh = mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000");
+
+        // set themes list
+        HashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
+        ListPreference themePref = (ListPreference) findPreference("appthemepref");
+        themePref.setEntries(themeList.values().toArray(new CharSequence[themeList.values().size()]));
+        themePref.setEntryValues(themeList.keySet().toArray(new CharSequence[themeList.keySet().size()]));
 
         Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
     }

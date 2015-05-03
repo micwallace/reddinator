@@ -2,40 +2,49 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.wallaceit.reddinator"
     android:versionCode="12"
-    android:versionName="2.3">
+    android:versionName="2.3" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name="au.com.wallaceit.reddinator.GlobalObjects"
+        android:name=".GlobalObjects"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/reddit_icon_small"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="au.com.wallaceit.reddinator.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="au.com.wallaceit.reddinator.PrefsActivity"
-            android:label="@string/app_name">
+            android:name=".PrefsActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name="au.com.wallaceit.reddinator.SubredditSelectActivity"
+            android:name=".ThemesActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_themes" />
+        <activity
+            android:name=".ThemeEditorActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_theme_editor"/>
+        <activity
+            android:name=".SubredditSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name="au.com.wallaceit.reddinator.ViewAllSubredditsActivity"
+            android:name=".ViewAllSubredditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
@@ -47,7 +56,7 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name="au.com.wallaceit.reddinator.OAuthView"
+            android:name=".OAuthView"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
 
@@ -55,14 +64,13 @@
             android:name=".WidgetService"
             android:enabled="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <service
             android:name=".MailCheckService"
             android:enabled="true" />
 
         <receiver
-            android:name="au.com.wallaceit.reddinator.WidgetProvider"
-            android:enabled="true">
+            android:name=".WidgetProvider"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="au.com.wallaceit.redinator.WidgetProvider.ITEM_CLICK" />
                 <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE" />
@@ -79,16 +87,16 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info" />
         </receiver>
-
-        <receiver android:name="au.com.wallaceit.reddinator.MailCheckReceiver"
-            android:enabled="true">
+        <receiver
+            android:name=".MailCheckReceiver"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="reddinator.background.mailcheck" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="au.com.wallaceit.reddinator.BootReceiver"
-            android:enabled="true">
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />

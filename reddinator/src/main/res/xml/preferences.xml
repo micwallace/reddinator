@@ -52,6 +52,18 @@
             android:dialogTitle="Choose the app theme" />
 
         <ListPreference
+            android:key="@string/app_theme_pref"
+            android:title="App Theme"
+            android:defaultValue="reddit_classic"
+            android:summary="App &amp; default widget theme"
+            android:dialogTitle="Choose the app theme" />
+
+        <Preference
+            android:title="Theme Manager"
+            android:key="theme_manager_button"
+            android:summary="Create &amp; edit custom themes"/>
+
+        <ListPreference
             android:key="@string/title_font_pref"
             android:title="Item Title Size"
             android:defaultValue="16"

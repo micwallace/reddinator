@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="au.com.wallaceit.reddinator.ThemesActivity">
+    <item
+        android:id="@+id/action_add"
+        android:title="@string/add"
+        android:orderInCategory="100"
+        android:showAsAction="always" />
+</menu>
