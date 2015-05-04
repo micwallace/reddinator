@@ -1,29 +1,51 @@
 {
     "labels":{
-        "background_color":     "App Background Color",
-        "background_drawable":  "Widget Background Drawable",
-        "feed_header_color":    "Feed Header Color",
-        "feed_header_drawable": "Feed Header Drawable",
-        "header_color":         "App Tabs/Headers Color",
-        "headline_text":        "Headline Text Color",
-        "load_text":            "Load Button Text Color",
-        "divider":              "List Divider Color",
-        "default_icon":         "Default Icon Color",
-        "source_text":          "Article Source Text Color",
-        "votes_text":           "Votes Text Color",
-        "votes_icon":           "Votes Icon Color",
-        "comments_text":        "Comments Count Text Color",
-        "comments_icon":        "Comments Count Icon Color"
+        "background_color":     "App Background",
+        "feed_header_color":    "Feed Header",
+        "header_color":         "App Tabs/Headers",
+        "header_text":          "Header Text",
+        "headline_text":        "Post & Comments Text",
+        "load_text":            "Load Button Text",
+        "divider":              "List Divider",
+        "default_icon":         "Default Icon",
+        "source_text":          "Article Source Text",
+        "votes_text":           "Votes Text",
+        "votes_icon":           "Votes Icon",
+        "comments_text":        "Comments Count Text",
+        "comments_icon":        "Comments Count Icon",
+        "icon_shadow":          "Icon Shadow"
     },
+    "label_order":[
+        "background_color",
+        "feed_header_color",
+        "header_color",
+        "header_text",
+        "headline_text",
+        "load_text",
+        "divider",
+        "default_icon",
+        "source_text",
+        "votes_text",
+        "votes_icon",
+        "comments_text",
+        "comments_icon",
+        "icon_shadow"
+    ],
+    "theme_order":[
+      "reddit_classic",
+      "reddit_dark",
+      "android_holo",
+      "dark_holo",
+      "transparent"
+    ],
     "themes":{
         "reddit_classic":{
             "name":"Reddit Classic",
             "values":{
                 "background_color":"#FFFFFF",
-                "background_drawable":"",
-                "feed_header_color":"#CEE3F8",
-                "feed_header_drawable":"",
+                "feed_header_color":"#FFCEE3F8",
                 "header_color":"#CEE3F8",
+                "header_text":"#000000",
                 "headline_text":"#000000",
                 "load_text":"#000000",
                 "divider":"#D7D7D7",
@@ -32,17 +54,17 @@
                 "votes_text":"#FF4500",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF4500",
-                "comments_icon":"#C3DBF6"
+                "comments_icon":"#C3DBF6",
+                "icon_shadow":"#30000000"
             }
         },
         "reddit_dark":{
             "name":"Reddit Dark",
             "values":{
                 "background_color":"#000000",
-                "background_drawable":"",
-                "feed_header_color":"#5F99CF",
-                "feed_header_drawable":"",
+                "feed_header_color":"#FF5F99CF",
                 "header_color":"#5F99CF",
+                "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
@@ -51,17 +73,17 @@
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
-                "comments_icon":"#C3DBF6"
+                "comments_icon":"#C3DBF6",
+                "icon_shadow":"#22000000"
             }
         },
         "android_holo":{
             "name":"Android Holo",
             "values":{
                 "background_color":"#000000",
-                "background_drawable":"",
-                "feed_header_color":"",
-                "feed_header_drawable":"android.R.drawable.dark_header",
+                "feed_header_color":"#FF000000",
                 "header_color":"#5F99CF",
+                "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
@@ -70,17 +92,17 @@
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
-                "comments_icon":"#C3DBF6"
+                "comments_icon":"#C3DBF6",
+                "icon_shadow":"#22000000"
             }
         },
         "dark_holo":{
             "name":"Dark Holo",
             "values":{
                 "background_color":"#000000",
-                "background_drawable":"",
-                "feed_header_color":"#5F99CF",
-                "feed_header_drawable":"",
+                "feed_header_color":"#FF5F99CF",
                 "header_color":"#5F99CF",
+                "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
@@ -89,17 +111,17 @@
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
-                "comments_icon":"#C3DBF6"
+                "comments_icon":"#C3DBF6",
+                "icon_shadow":"#22000000"
             }
         },
         "transparent":{
             "name":"Transparent",
             "values":{
                 "background_color":"#000000",
-                "background_drawable":"",
-                "feed_header_color":"",
-                "feed_header_drawable":"android.R.drawable.dark_header",
+                "feed_header_color":"#FF000000",
                 "header_color":"#5F99CF",
+                "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
@@ -108,7 +130,8 @@
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
-                "comments_icon":"#C3DBF6"
+                "comments_icon":"#C3DBF6",
+                "icon_shadow":"#22000000"
             }
         }
     }

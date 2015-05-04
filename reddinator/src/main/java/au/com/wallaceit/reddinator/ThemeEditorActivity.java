@@ -1,17 +1,27 @@
 package au.com.wallaceit.reddinator;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
-import android.support.v7.app.ActionBarActivity;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.OpacityBar;
+import com.larswerkman.holocolorpicker.SVBar;
+
+import org.json.JSONException;
 
 import java.util.UUID;
 
@@ -20,7 +30,6 @@ public class ThemeEditorActivity extends ListActivity {
     private GlobalObjects global;
     private String themeId = "";
     private ThemeManager.Theme theme;
-    private ThemeSettingsAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +42,7 @@ public class ThemeEditorActivity extends ListActivity {
             theme = global.mThemeManager.getTheme(themeId);
         } else if (getIntent().hasExtra("templateId")){
             // creating new theme from template
-            theme = global.mThemeManager.getTheme(getIntent().getStringExtra("templateId"));
+            theme = global.mThemeManager.cloneTheme(getIntent().getStringExtra("templateId"));
             // set a unique id & default name for the theme
             themeId = "theme-"+ UUID.randomUUID();
             theme.setName("My Awesome Theme");
@@ -41,8 +50,7 @@ public class ThemeEditorActivity extends ListActivity {
 
         setContentView(R.layout.activity_theme_editor);
 
-        listAdapter = new ThemeSettingsAdapter();
-        setListAdapter(listAdapter);
+        setListAdapter(new ThemeSettingsAdapter());
 
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
@@ -53,6 +61,10 @@ public class ThemeEditorActivity extends ListActivity {
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
         }
+    }
+
+    public void refreshList(){
+        ((BaseAdapter) getListView().getAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -84,7 +96,13 @@ public class ThemeEditorActivity extends ListActivity {
 
         @Override
         public Object getItem(int position) {
-            String key = (String) theme.getValues().keySet().toArray()[position];
+            String key = null;
+            try {
+                key = (String) global.mThemeManager.getPreferenceOrder().get(position);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
             return theme.getValues().get(key);
         }
 
@@ -95,35 +113,102 @@ public class ThemeEditorActivity extends ListActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.myredditlistitem, parent, false);
+            convertView = getLayoutInflater().inflate(R.layout.theme_editor_row, parent, false);
             // setup the row
-            TextView settingName = (TextView) convertView.findViewById(R.id.subreddit_name);
+            TextView settingName = (TextView) convertView.findViewById(R.id.theme_value_name);
+            TextView settingValue = (TextView) convertView.findViewById(R.id.theme_value);
 
             if (position==0){
                 settingName.setText("Name");
+                settingValue.setText(theme.getName());
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    /*String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
-                    personalList.remove(sreddit);
-                    global.removeFromPersonalList(sreddit);
-                    mListAdapter.notifyDataSetChanged();*/
-                        System.out.println("Set name...");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ThemeEditorActivity.this);
+                        final EditText input = new EditText(ThemeEditorActivity.this);
+                        input.setInputType(InputType.TYPE_CLASS_TEXT);
+                        input.setText(theme.getName());
+                        input.selectAll();
+                        builder.setTitle("Theme Name")
+                        .setView(input)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                theme.setName(input.getText().toString());
+                                refreshList();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
                     }
                 });
             } else {
-                final String key = (String) theme.getValues().keySet().toArray()[position-1];
+                String key = null;
+                try {
+                    key = (String) global.mThemeManager.getPreferenceOrder().get(position-1);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+                ImageView colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
+                String value = theme.getValue(key);
                 settingName.setText(global.mThemeManager.getThemePrefLabel(key));
+                settingValue.setText(value);
+                if (!value.equals("")) {
+                    colorPreview.setBackgroundColor(Color.parseColor(value));
+                    colorPreview.setVisibility(View.VISIBLE);
+                }
 
+                final String finalKey = key;
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                    /*String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
-                    personalList.remove(sreddit);
-                    global.removeFromPersonalList(sreddit);
-                    mListAdapter.notifyDataSetChanged();*/
-                        System.out.println(key);
+                        final Dialog dialog = new Dialog(ThemeEditorActivity.this);
+                        dialog.setTitle("Select Color");
+                        dialog.setContentView(R.layout.color_picker_dialog);
+                        // Initialise the color picker
+                        final ColorPicker picker = (ColorPicker) dialog.findViewById(R.id.picker);
+                        SVBar svBar = (SVBar) dialog.findViewById(R.id.svbar);
+                        OpacityBar opacityBar = (OpacityBar) dialog.findViewById(R.id.opacitybar);
+                        picker.addSVBar(svBar);
+                        // is opacity needed?
+                        final boolean useAlpha = theme.getValue(finalKey).length()>7;
+                        if (useAlpha) {
+                            picker.addOpacityBar(opacityBar);
+                        } else {
+                            opacityBar.setVisibility(View.GONE);
+                        }
+                        // set current color
+                        int curColor = Color.parseColor(theme.getValue(finalKey));
+                        picker.setColor(curColor);
+                        picker.setOldCenterColor(curColor);
+
+                        Button okButton = (Button) dialog.findViewById(R.id.button_ok);
+                        okButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String hexColor = useAlpha?("#"+Integer.toHexString(picker.getColor())):String.format("#%06X", (0xFFFFFF & picker.getColor()));
+                                System.out.println(hexColor);
+                                theme.setValue(finalKey, hexColor.toUpperCase());
+                                refreshList();
+                                dialog.dismiss();
+                            }
+                        });
+
+                        Button cancelButton = (Button) dialog.findViewById(R.id.button_cancel);
+                        cancelButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        dialog.show();
                     }
                 });
             }

@@ -56,5 +56,6 @@
     <string name="title_activity_themes">Custom Themes</string>
     <string name="title_activity_theme_editor">Edit Theme</string>
     <string name="app_theme_pref">appthemepref</string>
+    <string name="color_preview">Color preview</string>
 
 </resources>

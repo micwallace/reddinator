@@ -44,6 +44,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class PrefsActivity extends PreferenceActivity {
@@ -54,9 +55,10 @@ public class PrefsActivity extends PreferenceActivity {
     private String mTitleFontColor = "";
     private String mWidgetTheme = "";
     int mFirstTimeSetup = 0;
-    String mMailRefresh = "";
+    private String mMailRefresh = "";
     boolean isfromappview = false;
-    GlobalObjects global;
+    private GlobalObjects global;
+    private ListPreference themePref;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -103,6 +105,8 @@ public class PrefsActivity extends PreferenceActivity {
                 return true;
             }
         });
+
+        themePref = (ListPreference) findPreference("appthemepref");
     }
 
     @Override
@@ -124,8 +128,7 @@ public class PrefsActivity extends PreferenceActivity {
         mMailRefresh = mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000");
 
         // set themes list
-        HashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
-        ListPreference themePref = (ListPreference) findPreference("appthemepref");
+        LinkedHashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
         themePref.setEntries(themeList.values().toArray(new CharSequence[themeList.values().size()]));
         themePref.setEntryValues(themeList.keySet().toArray(new CharSequence[themeList.keySet().size()]));
 

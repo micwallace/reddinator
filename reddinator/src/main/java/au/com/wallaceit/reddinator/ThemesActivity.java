@@ -28,7 +28,6 @@ import java.util.HashMap;
 public class ThemesActivity extends ListActivity {
     GlobalObjects global;
     HashMap<String, String> themesList;
-    ThemesListAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +38,7 @@ public class ThemesActivity extends ListActivity {
 
         setContentView(R.layout.activity_themes);
 
-        listAdapter = new ThemesListAdapter();
-        setListAdapter(listAdapter);
+        setListAdapter(new ThemesListAdapter());
 
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();

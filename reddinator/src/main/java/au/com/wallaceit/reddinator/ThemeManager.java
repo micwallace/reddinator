@@ -21,27 +21,28 @@ package au.com.wallaceit.reddinator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.JsonReader;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Created by michael on 2/05/15.
  */
 public class ThemeManager {
-    Context context;
-    SharedPreferences prefs;
-    JSONObject valueLabels;
-    JSONObject themes;
-    JSONObject customThemes;
+    private Context context;
+    private SharedPreferences prefs;
+    private JSONObject valueLabels;
+    private JSONArray valueOrder;
+    private JSONObject themes;
+    private JSONArray themeOrder;
+    private JSONObject customThemes;
     static final int LISTMODE_ALL= 0;
     static final int LISTMODE_CUSTOM= 1;
     static final int LISTMODE_DEFAULT= 2;
@@ -52,15 +53,13 @@ public class ThemeManager {
         loadThemes();
     }
 
-    public HashMap<String, String> getThemeList(int mode){
-        HashMap<String, String> themeList = new HashMap<>();
-        Iterator iterator;
+    public LinkedHashMap<String, String> getThemeList(int mode){
+        LinkedHashMap<String, String> themeList = new LinkedHashMap<>();
         String key;
         if (mode==LISTMODE_ALL || mode==LISTMODE_DEFAULT) {
-            iterator = themes.keys();
-            while (iterator.hasNext()) {
-                key = (String) iterator.next();
+            for (int i=0; i<themeOrder.length(); i++) {
                 try {
+                    key = themeOrder.getString(i);
                     themeList.put(key, themes.getJSONObject(key).getString("name"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -68,7 +67,7 @@ public class ThemeManager {
             }
         }
         if (mode==LISTMODE_ALL || mode==LISTMODE_CUSTOM) {
-            iterator = customThemes.keys();
+            Iterator iterator = customThemes.keys();
             while (iterator.hasNext()) {
                 key = (String) iterator.next();
                 try {
@@ -82,7 +81,7 @@ public class ThemeManager {
         return themeList;
     }
 
-    public String getThemePrefLabel(String key){
+    public String getThemePrefLabel(String key) {
         try {
             return valueLabels.getString(key);
         } catch (JSONException e) {
@@ -91,15 +90,11 @@ public class ThemeManager {
         return "";
     }
 
-    public JSONObject getThemes(){
-        return new JSONObject();
+    public JSONArray getPreferenceOrder(){
+        return valueOrder;
     }
 
-    public JSONObject getCustomThemes(){
-        return new JSONObject();
-    }
-
-    public Theme getTheme(String key){
+    private JSONObject getThemeJSON(String key){
         JSONObject theme = null;
         if (themes.has(key)){
             try {
@@ -121,6 +116,21 @@ public class ThemeManager {
             }
         }
 
+        return theme;
+    }
+
+    public Theme cloneTheme(String key){
+        JSONObject theme = getThemeJSON(key);
+        try {
+            theme = new JSONObject(theme.toString()); // so fucking ridiculous, only way to clone json
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new Theme(theme);
+    }
+
+    public Theme getTheme(String key){
+        JSONObject theme = getThemeJSON(key);
         return new Theme(theme);
     }
 
@@ -143,7 +153,9 @@ public class ThemeManager {
             json = new String(buffer, "UTF-8");
             JSONObject themeData = new JSONObject(json);
             themes = themeData.getJSONObject("themes");
+            themeOrder = themeData.getJSONArray("theme_order");
             valueLabels = themeData.getJSONObject("labels");
+            valueOrder = themeData.getJSONArray("label_order");
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -170,21 +182,22 @@ public class ThemeManager {
     }
 
     public class Theme {
-        private JSONObject theme;
+        private JSONObject mTheme;
         private JSONObject jsonValues;
-        private HashMap<String, String> values = null;
+        private LinkedHashMap<String, String> values = null;
 
-        public Theme(JSONObject theme){
-            this.theme = theme;
+        public Theme(JSONObject theme) {
+            mTheme = theme;
             try {
                 jsonValues = theme.getJSONObject("values");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            System.out.println(theme.toString());
         }
 
         public JSONObject getTheme(){
-            return theme;
+            return mTheme;
         }
 
         public String getValuesString(){
@@ -193,7 +206,7 @@ public class ThemeManager {
 
         public String getName(){
             try {
-                return theme.getString("name");
+                return mTheme.getString("name");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -202,14 +215,14 @@ public class ThemeManager {
 
         public void setName(String name){
             try {
-                theme.put("name", name);
+                mTheme.put("name", name);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
         private void loadValues(){
-            values = new HashMap<>();
+            values = new LinkedHashMap<>();
             Iterator iterator = jsonValues.keys();
             String key;
             while (iterator.hasNext()){
@@ -236,7 +249,7 @@ public class ThemeManager {
             if (values.containsKey(key))
                 return values.get(key);
 
-            return null; // TODO: return default color
+            return (new Theme(getThemeJSON("reddit_classic"))).getValue(key);
         }
 
         public void setValue(String key, String newValue){
@@ -246,7 +259,7 @@ public class ThemeManager {
             // update in json source
             try {
                 jsonValues.put(key, newValue);
-                theme.put("values", jsonValues);
+                mTheme.put("values", jsonValues);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -264,4 +277,5 @@ public class ThemeManager {
             return themeColors;
         }
     }
+
 }

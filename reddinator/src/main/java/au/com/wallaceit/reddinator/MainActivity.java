@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
     private IconTextView errorIcon;
     private IconTextView refreshbutton;
     private IconTextView configbutton;
-    private String[] appThemeColors;
+    private ThemeManager.Theme theme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,39 +189,15 @@ public class MainActivity extends Activity {
     }
 
     private void setThemeColors() {
-        int themenum = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.widget_theme_pref), "1"));
-        switch (themenum) {
-            case 1:
-                actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#CEE3F8")));
-                appView.setBackgroundColor(Color.WHITE);
-                //configbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                //refreshbutton.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                errorIcon.setBackgroundColor(Color.parseColor("#CEE3F8"));
-                srtext.setTextColor(Color.parseColor("#000000"));
-                break;
-            case 3:
-            case 5:
-                Drawable header = getResources().getDrawable(android.R.drawable.dark_header);
-                actionBar.getCustomView().setBackgroundDrawable(header);
-                appView.setBackgroundColor(Color.BLACK);
-                //configbutton.setBackgroundDrawable(null);
-                //refreshbutton.setBackgroundDrawable(null);
-                errorIcon.setBackgroundDrawable(header);
-                srtext.setTextColor(Color.parseColor("#FFFFFF"));
-                break;
-            case 4:
-            case 2:
-                actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#5F99CF")));
-                appView.setBackgroundColor(Color.BLACK);
-                //configbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
-                //refreshbutton.setBackgroundColor(Color.parseColor("#5F99CF"));
-                errorIcon.setBackgroundColor(Color.parseColor("#5F99CF"));
-                srtext.setTextColor(Color.parseColor("#000000"));
-                break;
-        }
-        appThemeColors = GlobalObjects.getThemeColorHex(prefs);
-        int iconColor = Color.parseColor(appThemeColors[6]);
-        int[] shadow = new int[]{3, 4, 4, Color.parseColor(appThemeColors[7])};
+
+        theme = global.mThemeManager.getActiveTheme("appthemepref");
+
+        appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
+        actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("feed_header_color"))));
+        srtext.setTextColor(Color.parseColor(theme.getValue("header_text")));
+
+        int iconColor = Color.parseColor(theme.getValue("default_icon"));
+        int[] shadow = new int[]{3, 4, 4, Color.parseColor(theme.getValue("icon_shadow"))};
         configbutton.setTextColor(iconColor);
         configbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
         refreshbutton.setTextColor(iconColor);
@@ -327,7 +303,7 @@ public class MainActivity extends Activity {
 
             }
             //int iconColor = Color.parseColor(themeColors[6]);
-            int[] shadow = new int[]{3, 3, 3, Color.parseColor(appThemeColors[7])};
+            int[] shadow = new int[]{3, 3, 3, Color.parseColor(theme.getValue("icon_shadow"))};
             // load images
             images = new Bitmap[]{
                     GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFD014"), 40, shadow),
@@ -357,6 +333,7 @@ public class MainActivity extends Activity {
             if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
                 themeColors[0] = Color.parseColor(mSharedPreferences.getString("titlecolorpref", "#000"));
             }
+            theme.getIntColors();
             // get font size preference
             titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         }
