@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -45,6 +44,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 
 public class WidgetService extends RemoteViewsService {
     @Override
@@ -60,7 +60,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private GlobalObjects global;
     private SharedPreferences mSharedPreferences;
     private String titleFontSize = "16";
-    private int[] themeColors;
+    private HashMap<String, Integer> themeColors;
     private boolean loadCached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
     private boolean loadThumbnails = false;
     private boolean bigThumbs = false;
@@ -84,7 +84,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // load cached data
             data = global.getFeed(mSharedPreferences, appWidgetId);
             if (data.length() != 0) {
-                titleFontSize = mSharedPreferences.getString(context.getString(R.string.widget_theme_pref), "16");
+                titleFontSize = mSharedPreferences.getString(context.getString(R.string.title_font_pref), "16");
                 try {
                     lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
                 } catch (JSONException e) {
@@ -110,22 +110,23 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         endOfFeed = false;
 
         loadFeedPrefs();
-
-        String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
-        //int iconColor = Color.parseColor(themeColors[6]);
-        int[] shadow = new int[]{3, 4, 4, Color.parseColor(themeColors[7])};
-        images = new Bitmap[]{
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#F4C712"), 40, shadow),
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 40, shadow)
-        };
     }
 
     public void loadFeedPrefs(){
+        themeColors = global.mThemeManager.getActiveTheme("widgettheme-"+appWidgetId).getIntColors();
+        //int iconColor = Color.parseColor(themeColors[6]);
+        int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
+        images = new Bitmap[]{
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 40, shadow),
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 40, shadow)
+        };
+        titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
+
         loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
         String subreddit = mSharedPreferences.getString("currentfeed-" + appWidgetId, "");
-        showItemSubreddit = (subreddit.equals("Front Page") || subreddit.equals("all"));
+        showItemSubreddit = (subreddit!=null && (subreddit.equals("Front Page") || subreddit.equals("all")));
     }
 
     @Override
@@ -155,7 +156,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             } else {
                 loadmorerow.setTextViewText(R.id.loadmoretxt, "Load more...");
             }
-            loadmorerow.setTextColor(R.id.loadmoretxt, themeColors[0]);
+            loadmorerow.setTextColor(R.id.loadmoretxt, themeColors.get("load_text"));
             Intent i = new Intent();
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
@@ -201,14 +202,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setImageViewBitmap(R.id.commentsicon, images[1]);
             row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
-            row.setTextColor(R.id.listheading, themeColors[0]);
-            row.setTextViewText(R.id.sourcetxt, (showItemSubreddit?subreddit+" - ":"")+domain);
-            row.setTextColor(R.id.sourcetxt, themeColors[3]);
-            row.setTextColor(R.id.votestxt, themeColors[4]);
-            row.setTextColor(R.id.commentstxt, themeColors[4]);
+            row.setTextColor(R.id.listheading, themeColors.get("headline_text"));
+            row.setTextViewText(R.id.sourcetxt, (showItemSubreddit ? subreddit + " - " :"")+domain);
+            row.setTextColor(R.id.sourcetxt, themeColors.get("source_text"));
+            row.setTextColor(R.id.votestxt, themeColors.get("votes_text"));
+            row.setTextColor(R.id.commentstxt, themeColors.get("comments_text"));
             row.setTextViewText(R.id.votestxt, String.valueOf(score));
             row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
-            row.setInt(R.id.listdivider, "setBackgroundColor", themeColors[2]);
+            row.setInt(R.id.listdivider, "setBackgroundColor", themeColors.get("divider"));
             row.setViewVisibility(R.id.nsfwflag, nsfw ? TextView.VISIBLE : TextView.GONE);
             // add extras and set click intent
             Intent i = new Intent();
@@ -328,10 +329,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getLoadingView() {
         RemoteViews rowload = new RemoteViews(mContext.getPackageName(), R.layout.listrowload);
-        if (themeColors == null) {
-            themeColors = global.getThemeColors(); // prevents null pointer
-        }
-        rowload.setTextColor(R.id.listloadtxt, themeColors[0]);
+        rowload.setTextColor(R.id.listloadtxt, themeColors.get("load_text"));
         return rowload;
     }
 
@@ -352,11 +350,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        // get thumbnail load preference for the widget
+        // load theme & feed prefs
         loadFeedPrefs();
 
-        titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
-        themeColors = global.getThemeColors(); // reset theme colors
         int loadType = global.getLoadType();
         if (!loadCached) {
             loadCached = (loadType == GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly but only check it if load cached is not already set true in the above constructor
@@ -481,26 +477,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     // hide appwidget loader
     private void hideWidgetLoader(boolean goToTopOfList, boolean showError) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(mContext);
-        // get theme layout id
-        int layout = 1;
-        switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
-            case 1:
-                layout = R.layout.widgetmain;
-                break;
-            case 2:
-                layout = R.layout.widgetdark;
-                break;
-            case 3:
-                layout = R.layout.widgetholo;
-                break;
-            case 4:
-                layout = R.layout.widgetdarkholo;
-                break;
-            case 5:
-                layout = R.layout.widgettrans;
-                break;
-        }
-        RemoteViews views = new RemoteViews(mContext.getPackageName(), layout);
+        // hide loader
+        RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget);
         views.setViewVisibility(R.id.srloader, View.INVISIBLE);
         // go to the top of the list view
         if (goToTopOfList) {

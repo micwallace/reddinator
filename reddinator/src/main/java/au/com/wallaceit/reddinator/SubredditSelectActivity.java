@@ -190,7 +190,7 @@ public class SubredditSelectActivity extends ListActivity {
             editor.putString("currentfeed-" + mAppWidgetId, subreddit);
             // refresh widget and close activity (NOTE: put in function)
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-            RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
+            RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
             views.setTextViewText(R.id.subreddittxt, subreddit);
             views.setViewVisibility(R.id.srloader, View.VISIBLE);
             views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
@@ -213,7 +213,7 @@ public class SubredditSelectActivity extends ListActivity {
         if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)) {
             if (mAppWidgetId != 0) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-                RemoteViews views = new RemoteViews(getPackageName(), getThemeLayoutId());
+                RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
                 views.setViewVisibility(R.id.srloader, View.VISIBLE);
                 views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
                 // bypass the cached entrys only if the sorting preference has changed
@@ -381,25 +381,5 @@ public class SubredditSelectActivity extends ListActivity {
             });
             return convertView;
         }
-    }
-
-    private int getThemeLayoutId() {
-        // get theme layout id
-        int layoutid = 1;
-        switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
-            case 1:
-                layoutid = R.layout.widgetmain;
-                break;
-            case 2:
-                layoutid = R.layout.widgetdark;
-                break;
-            case 3:
-                layoutid = R.layout.widgetholo;
-                break;
-            case 4:
-                layoutid = R.layout.widgetdarkholo;
-                break;
-        }
-        return layoutid;
     }
 }

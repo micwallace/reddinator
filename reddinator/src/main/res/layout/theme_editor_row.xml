@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:padding="10dip">
     <LinearLayout
         android:orientation="vertical"
@@ -26,6 +27,21 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="" />
     </LinearLayout>
+    <IconTextView
+        android:id="@+id/simple_color_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Select Color"
+        android:text="{fa-list}"
+        android:shadowColor="#33000000"
+        android:shadowDx="4"
+        android:shadowDy="4"
+        android:shadowRadius="3"
+        android:paddingTop="4dp"
+        android:paddingRight="12dp"
+        android:textSize="36dp"
+        android:textColor="#ff696969"
+        android:visibility="gone"/>
     <ImageView
         android:contentDescription="@string/color_preview"
         android:id="@+id/color_preview"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Reddit"
+    android:id="@+id/widget_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -9,40 +9,40 @@
         android:id="@+id/widgetheader"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:paddingRight="2dp"
-        android:paddingLeft="3dp"
         android:layout_alignParentTop="true"
         android:background="#CEE3F8"
-        android:clickable="false">
+        android:clickable="false"
+        android:paddingRight="2dp"
+        android:paddingLeft="3dp">
 
         <ImageButton
             android:id="@+id/prefsbutton"
             android:layout_width="wrap_content"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:contentDescription="@string/configure"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="#CEE3F8" />
+            android:contentDescription="@string/configure"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
+            android:background="@android:color/transparent" />
 
         <ImageButton
             android:id="@+id/refreshbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/prefsbutton"
             android:contentDescription="@string/refresh"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/prefsbutton"
-            android:background="#CEE3F8"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:background="@android:color/transparent" />
 
         <ProgressBar
             android:id="@+id/srloader"
             style="?android:attr/progressBarStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:minHeight="26dp"
             android:maxHeight="26dp"
             android:minWidth="26dp"
@@ -61,7 +61,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
-            android:background="#CEE3F8"
+            android:background="#5F99CF"
             android:contentDescription="@string/error"
             android:visibility="gone" />
 
@@ -70,12 +70,12 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
-            android:paddingLeft="2dp"
             android:layout_toRightOf="@+id/widget_logo"
             android:gravity="center_vertical"
+            android:paddingLeft="2dp"
             android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000" />
+            android:textColor="#000" />
 
         <ImageView
             android:id="@+id/srcaret"
@@ -125,15 +125,15 @@
             android:layout_marginLeft="10dp"
             android:text="@string/loading"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000" />
+            android:textColor="#FFF" />
     </LinearLayout>
 
     <ListView
         android:id="@+id/listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/widgetheader">
-
+        android:layout_below="@+id/widgetheader"
+        android:background="@android:color/white">
     </ListView>
 
 </RelativeLayout>

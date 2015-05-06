@@ -29,7 +29,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -60,6 +59,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
 
 public class MainActivity extends Activity {
 
@@ -193,7 +193,7 @@ public class MainActivity extends Activity {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
 
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
-        actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("feed_header_color"))));
+        actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("header_color"))));
         srtext.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
         int iconColor = Color.parseColor(theme.getValue("default_icon"));
@@ -222,7 +222,7 @@ public class MainActivity extends Activity {
 
             case 3: // reload theme
                 setThemeColors();
-                listAdapter.loadAppPrefs();
+                listAdapter.loadTheme();
                 listView.invalidateViews();
                 break;
         }
@@ -278,7 +278,7 @@ public class MainActivity extends Activity {
         private GlobalObjects global;
         private SharedPreferences mSharedPreferences;
         private String titleFontSize = "16";
-        private int[] themeColors;
+        private HashMap<String, Integer> themeColors;
         private boolean loadThumbnails = false;
         private boolean bigThumbs = false;
         private boolean hideInf = false;
@@ -293,47 +293,28 @@ public class MainActivity extends Activity {
             data = global.getFeed(mSharedPreferences, 0);
             //System.out.println("cached Data length: "+data.length());
             if (data.length() != 0) {
-                titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
                 try {
                     lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
                 } catch (JSONException e) {
                     lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
                     e.printStackTrace();
                 }
-
             }
-            //int iconColor = Color.parseColor(themeColors[6]);
-            int[] shadow = new int[]{3, 3, 3, Color.parseColor(theme.getValue("icon_shadow"))};
-            // load images
-            images = new Bitmap[]{
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), Color.parseColor("#FFD014"), 40, shadow),
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), Color.parseColor("#C3DBF6"), 40, shadow)
-            };
             // load preferences
-            loadAppPrefs();
+            loadTheme();
             loadFeedPrefs();
         }
 
-        private void loadAppPrefs() {
-            switch (Integer.valueOf(mSharedPreferences.getString("widgetthemepref", "1"))) {
-                // set colors array: healine text, load more text, divider, domain text, vote & comments
-                case 1:
-                    themeColors = new int[]{Color.BLACK, Color.BLACK, Color.parseColor("#D7D7D7"), Color.parseColor("#336699"), Color.parseColor("#FF4500")};
-                    break;
-                case 2:
-                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#5F99CF"), Color.parseColor("#FF8B60")};
-                    break;
-                case 3:
-                case 4:
-                case 5:
-                    themeColors = new int[]{Color.WHITE, Color.WHITE, Color.parseColor("#646464"), Color.parseColor("#CEE3F8"), Color.parseColor("#FF8B60")};
-                    break;
-            }
-            // user title color override
-            if (!mSharedPreferences.getString("titlecolorpref", "0").equals("0")) {
-                themeColors[0] = Color.parseColor(mSharedPreferences.getString("titlecolorpref", "#000"));
-            }
-            theme.getIntColors();
+        private void loadTheme() {
+            themeColors = theme.getIntColors();
+
+            int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
+            // load images
+            images = new Bitmap[]{
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 40, shadow),
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 40, shadow)
+            };
+
             // get font size preference
             titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         }
@@ -344,7 +325,7 @@ public class MainActivity extends Activity {
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
             String subreddit = prefs.getString("currentfeed-app", "");
-            showItemSubreddit = (subreddit.equals("Front Page") || subreddit.equals("all"));
+            showItemSubreddit = (subreddit!=null && (subreddit.equals("Front Page") || subreddit.equals("all")));
         }
 
         @Override
@@ -367,7 +348,7 @@ public class MainActivity extends Activity {
                 } else {
                     loadtxtview.setText("Load more...");
                 }
-                loadtxtview.setTextColor(themeColors[1]);
+                loadtxtview.setTextColor(themeColors.get("load_text"));
                 loadmorerow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -428,15 +409,15 @@ public class MainActivity extends Activity {
                 // Update view
                 viewHolder.listheading.setText(Html.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
-                viewHolder.listheading.setTextColor(themeColors[0]);
+                viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
                 viewHolder.sourcetxt.setText((showItemSubreddit?subreddit+" - ":"")+domain);
-                viewHolder.sourcetxt.setTextColor(themeColors[3]);
+                viewHolder.sourcetxt.setTextColor(themeColors.get("source_text"));
                 viewHolder.votestxt.setText(String.valueOf(score));
-                viewHolder.votestxt.setTextColor(themeColors[4]);
+                viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));
                 viewHolder.commentstxt.setText(String.valueOf(numcomments));
-                viewHolder.commentstxt.setTextColor(themeColors[4]);
+                viewHolder.commentstxt.setTextColor(themeColors.get("comments_text"));
                 viewHolder.nsfw.setVisibility((nsfw ? TextView.VISIBLE : TextView.GONE));
-                row.findViewById(R.id.listdivider).setBackgroundColor(themeColors[2]);
+                row.findViewById(R.id.listdivider).setBackgroundColor(themeColors.get("divider"));
 
                 // set vote button
                 if (!userLikes.equals("null")) {

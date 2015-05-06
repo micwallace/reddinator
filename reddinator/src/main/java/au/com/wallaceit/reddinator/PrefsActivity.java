@@ -17,48 +17,38 @@
  */
 package au.com.wallaceit.reddinator;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.AlarmManager;
-import android.app.Dialog;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
-public class PrefsActivity extends PreferenceActivity {
+public class PrefsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     public int mAppWidgetId;
     private SharedPreferences mSharedPreferences;
     private String mRefreshrate = "";
     private String mTitleFontSize = "";
-    private String mTitleFontColor = "";
-    private String mWidgetTheme = "";
+    //private String mTitleFontColor = "";
+    private String mAppTheme = "";
     int mFirstTimeSetup = 0;
     private String mMailRefresh = "";
     boolean isfromappview = false;
     private GlobalObjects global;
+    private boolean themeChanged = false;
+    private PreferenceCategory appearanceCat;
     private ListPreference themePref;
+    private Preference themeEditorButton;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -96,6 +86,8 @@ public class PrefsActivity extends PreferenceActivity {
             });
         }
 
+        appearanceCat = (PreferenceCategory) findPreference("appearance");
+
         Preference themeManagerButton = findPreference("theme_manager_button");
         themeManagerButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -106,7 +98,37 @@ public class PrefsActivity extends PreferenceActivity {
             }
         });
 
+        themeEditorButton = findPreference("theme_editor_button");
+        themeEditorButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(PrefsActivity.this, ThemeEditorActivity.class);
+                intent.putExtra("themeId", mAppTheme);
+                startActivity(intent);
+                return true;
+            }
+        });
+
         themePref = (ListPreference) findPreference("appthemepref");
+
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(PrefsActivity.this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        switch(key){
+            case "appthemepref":
+                setupThemePrefs();
+            case "userThemes":
+                themeChanged = true;
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(PrefsActivity.this);
     }
 
     @Override
@@ -121,9 +143,9 @@ public class PrefsActivity extends PreferenceActivity {
             }
         }
         mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
-        mWidgetTheme = mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1");
         mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
-        mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");
+        /*mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");*/
+        setupThemePrefs();
 
         mMailRefresh = mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000");
 
@@ -132,7 +154,16 @@ public class PrefsActivity extends PreferenceActivity {
         themePref.setEntries(themeList.values().toArray(new CharSequence[themeList.values().size()]));
         themePref.setEntryValues(themeList.keySet().toArray(new CharSequence[themeList.keySet().size()]));
 
-        Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setupThemePrefs(){
+        mAppTheme = mSharedPreferences.getString(getString(R.string.app_theme_pref), "reddit_classic");
+        if (global.mThemeManager.isThemeEditable(mAppTheme)){
+            appearanceCat.addPreference(themeEditorButton);
+        } else {
+            appearanceCat.removePreference(themeEditorButton);
+        }
     }
 
     public void onBackPressed() {
@@ -163,15 +194,7 @@ public class PrefsActivity extends PreferenceActivity {
         }
         int result = 0;
         // check if theme or style has changed and update if needed
-        if (!mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))
-                || !mTitleFontColor.equals(mSharedPreferences.getString(getString(R.string.title_color_pref), "0"))
-                || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))) {
-
-            // set theme selected title color if theme has changed but font hasn't.
-            if (mTitleFontColor.equals(mSharedPreferences.getString(getString(R.string.title_color_pref), "0"))
-                    && !mWidgetTheme.equals(mSharedPreferences.getString(getString(R.string.widget_theme_pref), "1"))) {
-                setUseThemeColor();
-            }
+        if (themeChanged || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))) {
 
             if (mFirstTimeSetup == 0) { // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
                 updateWidget(); // Reloads widget without reloading feed items.
@@ -201,10 +224,6 @@ public class PrefsActivity extends PreferenceActivity {
             global.setRefreshView();
         }
         mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
-    }
-
-    private void setUseThemeColor() {
-        mSharedPreferences.edit().putString(getString(R.string.title_color_pref), "0").apply();
     }
 
 }

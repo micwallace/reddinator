@@ -10,9 +10,12 @@ function init(themeColors, user){
 function setTheme(themeColors){
     var themeColors = JSON.parse(themeColors);
     $("body").css("background-color", themeColors["background_color"]);
-    $("body").css("color", themeColors["headline_text"]);
+    $("#loading_view").css("color", themeColors["load_text"]);
+    $(".comment_text").css("color", themeColors["headline_text"]);
     $(".comment_user").css("color", themeColors["source_text"]);
+    $(".fa-star").css("color", themeColors["votes_icon"]);
     $(".comment_score").css("color", themeColors["votes_text"]);
+    $(".fa-comment").css("color", themeColors["comments_icon"]);
     $(".comment_reply_count").css("color", themeColors["comments_text"]);
     $("button").css("background-color", themeColors["header_color"]);
     $("body").show();

@@ -24,12 +24,10 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.TypedValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -225,38 +223,6 @@ public class GlobalObjects extends Application {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-    }
-
-    public static String[] getThemeColorHex(SharedPreferences sharedPreferences) {
-        String[] themeColors = new String[6];
-        switch (Integer.valueOf(sharedPreferences.getString("widgetthemepref", "1"))) {
-            // set colors array: 0:headline text, 1:load more text, 2:divider, 3:domain text, 4:vote & comments, 5:background color, 6:icon color, 7:icon shadow
-            case 1:
-                themeColors = new String[]{"#000000", "#000000", "#D7D7D7", "#336699", "#FF4500", "#FFFFFF", "#467599", "#30000000"};
-                break;
-            case 2:
-                themeColors = new String[]{"#FFFFFF", "#FFFFFF", "#646464", "#5F99CF", "#FF8B60", "#000000", "#DBDBDB", "#22000000"};
-                break;
-            case 3:
-            case 4:
-            case 5:
-                themeColors = new String[]{"#FFFFFF", "#FFFFFF", "#646464", "#CEE3F8", "#FF8B60", "#000000", "#DBDBDB", "#22000000"};
-                break;
-        }
-        // user title color override
-        if (!sharedPreferences.getString("titlecolorpref", "0").equals("0")) {
-            themeColors[0] = sharedPreferences.getString("titlecolorpref", "#000");
-        }
-        return themeColors;
-    }
-
-    public int[] getThemeColors(){
-        String[] srcColors = getThemeColorHex(mSharedPreferences);
-        int[] themeColors = new int[8];
-        for (int i= 0; i<srcColors.length; i++){
-            themeColors[i] = Color.parseColor(srcColors[i]);
-        }
-        return themeColors;
     }
 
     public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize, int[] shadow) {

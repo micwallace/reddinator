@@ -36,6 +36,8 @@ import android.widget.RemoteViews;
 
 import com.joanzapata.android.iconify.Iconify;
 
+import java.util.HashMap;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
     public static String ITEM_URL = "ITEM_URL";
@@ -59,7 +61,7 @@ public class WidgetProvider extends AppWidgetProvider {
     @SuppressWarnings("deprecation")
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-
+        GlobalObjects global = (GlobalObjects) context.getApplicationContext();
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             // CONFIG BUTTON
@@ -99,28 +101,8 @@ public class WidgetProvider extends AppWidgetProvider {
             clickIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            // get theme layout id
-            int layout = R.layout.widgetmain;
-            switch (Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))) {
-                case 1:
-                    layout = R.layout.widgetmain;
-                    break;
-                case 2:
-                    layout = R.layout.widgetdark;
-                    break;
-                case 3:
-                    layout = R.layout.widgetholo;
-                    break;
-                case 4:
-                    layout = R.layout.widgetdarkholo;
-                    break;
-                case 5:
-                    layout = R.layout.widgettrans;
-                    break;
-            }
-
             // ADD ALL TO REMOTE VIEWS
-            RemoteViews views = new RemoteViews(context.getPackageName(), layout);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
             views.setPendingIntentTemplate(R.id.listview, clickPendingIntent);
             views.setOnClickPendingIntent(R.id.subreddittxt, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.widget_logo, subredditPendingIntent);
@@ -128,9 +110,13 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
 
-            String[] themeColors = GlobalObjects.getThemeColorHex(prefs);
-            int iconColor = Color.parseColor(themeColors[6]);
-            int[] shadow = new int[]{3, 3, 3, Color.parseColor(themeColors[7])};
+            // setup theme
+            HashMap<String, Integer> themeColors = global.mThemeManager.getActiveTheme("widgettheme-"+appWidgetId).getIntColors();
+            views.setInt(R.id.widgetheader, "setBackgroundColor", themeColors.get("widget_header_color"));
+            views.setInt(R.id.listview, "setBackgroundColor", themeColors.get("widget_background_color"));
+
+            int iconColor = themeColors.get("default_icon");
+            int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80, shadow));
             views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80, shadow));
             views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 54, shadow));
@@ -139,6 +125,7 @@ public class WidgetProvider extends AppWidgetProvider {
             // set current feed title
             String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
             views.setTextViewText(R.id.subreddittxt, curFeed);
+            views.setTextColor(R.id.subreddittxt, themeColors.get("header_text"));
 
             // Set remote adapter for widget.
             if (Build.VERSION.SDK_INT >= 14) {
@@ -280,7 +267,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid, boolean loadmore) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         // show loader
-        RemoteViews views = new RemoteViews(intent.getPackage(), getThemeLayoutId(context));
+        RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widget);
         views.setViewVisibility(R.id.srloader, View.VISIBLE);
         views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
         // load more text
@@ -304,29 +291,5 @@ public class WidgetProvider extends AppWidgetProvider {
         // the bypass cache indicator is used when the last remoteviewfactory has been terminated. A new one is created so we need to tell it not to load the cached data
         GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
         global.setBypassCache(true);
-    }
-
-    private int getThemeLayoutId(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        // get theme layout id
-        int layoutId = 1;
-        switch (Integer.valueOf(prefs.getString(context.getString(R.string.widget_theme_pref), "1"))) {
-            case 1:
-                layoutId = R.layout.widgetmain;
-                break;
-            case 2:
-                layoutId = R.layout.widgetdark;
-                break;
-            case 3:
-                layoutId = R.layout.widgetholo;
-                break;
-            case 4:
-                layoutId = R.layout.widgetdarkholo;
-                break;
-            case 5:
-                layoutId = R.layout.widgettrans;
-                break;
-        }
-        return layoutId;
     }
 }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -156,12 +157,14 @@ public class ThemeEditorActivity extends ListActivity {
                     return null;
                 }
                 ImageView colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
+                IconTextView simplePickBtn = (IconTextView) convertView.findViewById(R.id.simple_color_btn);
                 String value = theme.getValue(key);
                 settingName.setText(global.mThemeManager.getThemePrefLabel(key));
                 settingValue.setText(value);
                 if (!value.equals("")) {
                     colorPreview.setBackgroundColor(Color.parseColor(value));
                     colorPreview.setVisibility(View.VISIBLE);
+                    simplePickBtn.setVisibility(View.VISIBLE);
                 }
 
                 final String finalKey = key;
@@ -209,6 +212,34 @@ public class ThemeEditorActivity extends ListActivity {
                         });
 
                         dialog.show();
+                    }
+                });
+
+                simplePickBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ThemeEditorActivity.this);
+                        builder.setTitle("Pick a simple color")
+                        .setItems(R.array.fontcolor_names, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String hexColor = getResources().getStringArray(R.array.fontcolor_values)[i];
+                                if (theme.getValue(finalKey).length()>7){
+                                    // Add alpha values if needed
+                                    hexColor = "#FF"+hexColor.substring(1);
+                                }
+                                System.out.println(hexColor);
+                                theme.setValue(finalKey, hexColor);
+                                refreshList();
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
                     }
                 });
             }

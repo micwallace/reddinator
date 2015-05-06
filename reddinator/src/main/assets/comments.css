@@ -174,10 +174,7 @@ a {
 .clearfix {
     display: block;
 }
-.fa-star {
-    color: #FFFF00;
-}
-.fa-reply, .fa-comment {
+.fa-reply {
     color: #C3DBF6;
 }
 .fa-pencil {

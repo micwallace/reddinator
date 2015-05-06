@@ -41,15 +41,15 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Appearance">
-        <ListPreference
+    <PreferenceCategory android:key="appearance" android:title="Appearance">
+        <!--<ListPreference
             android:key="@string/widget_theme_pref"
             android:title="App Theme"
             android:defaultValue="1"
             android:summary="Choose the app theme"
             android:entries="@array/widget_theme_preference"
             android:entryValues="@array/widget_theme_values"
-            android:dialogTitle="Choose the app theme" />
+            android:dialogTitle="Choose the app theme" /> -->
 
         <ListPreference
             android:key="@string/app_theme_pref"
@@ -57,6 +57,11 @@
             android:defaultValue="reddit_classic"
             android:summary="App &amp; default widget theme"
             android:dialogTitle="Choose the app theme" />
+
+        <Preference
+            android:title="Edit Theme"
+            android:key="theme_editor_button"
+            android:summary="Edit the current theme"/>
 
         <Preference
             android:title="Theme Manager"
@@ -72,14 +77,14 @@
             android:entryValues="@array/widget_fontsize_preference"
             android:dialogTitle="Font size for item titles" />
 
-        <ListPreference
+        <!--<ListPreference
             android:key="@string/title_color_pref"
             android:title="Item Title Color"
             android:defaultValue="0"
             android:summary="Font color for item titles"
             android:entries="@array/widget_fontcolor_preference"
             android:entryValues="@array/widget_fontcolor_values"
-            android:dialogTitle="Font color for item titles" />
+            android:dialogTitle="Font color for item titles" /> -->
     </PreferenceCategory>
 
     <PreferenceCategory

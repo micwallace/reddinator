@@ -1,7 +1,8 @@
 {
     "labels":{
+        "widget_background_color":     "Widget Background",
         "background_color":     "App Background",
-        "feed_header_color":    "Feed Header",
+        "widget_header_color":  "Widget Header",
         "header_color":         "App Tabs/Headers",
         "header_text":          "Header Text",
         "headline_text":        "Post & Comments Text",
@@ -16,8 +17,9 @@
         "icon_shadow":          "Icon Shadow"
     },
     "label_order":[
+        "widget_background_color",
         "background_color",
-        "feed_header_color",
+        "widget_header_color",
         "header_color",
         "header_text",
         "headline_text",
@@ -42,8 +44,9 @@
         "reddit_classic":{
             "name":"Reddit Classic",
             "values":{
+                "widget_background_color":"#FFFFFFFF",
                 "background_color":"#FFFFFF",
-                "feed_header_color":"#FFCEE3F8",
+                "widget_header_color":"#FFCEE3F8",
                 "header_color":"#CEE3F8",
                 "header_text":"#000000",
                 "headline_text":"#000000",
@@ -61,8 +64,9 @@
         "reddit_dark":{
             "name":"Reddit Dark",
             "values":{
+                "widget_background_color":"#FF000000",
                 "background_color":"#000000",
-                "feed_header_color":"#FF5F99CF",
+                "widget_header_color":"#FF5F99CF",
                 "header_color":"#5F99CF",
                 "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
@@ -80,15 +84,16 @@
         "android_holo":{
             "name":"Android Holo",
             "values":{
+                "widget_background_color":"#80000000",
                 "background_color":"#000000",
-                "feed_header_color":"#FF000000",
-                "header_color":"#5F99CF",
+                "widget_header_color":"#FF000000",
+                "header_color":"#191919",
                 "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
                 "default_icon":"#DBDBDB",
-                "source_text":"#5F99CF",
+                "source_text":"#CEE3F8",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
@@ -99,15 +104,16 @@
         "dark_holo":{
             "name":"Dark Holo",
             "values":{
+                "widget_background_color":"#80000000",
                 "background_color":"#000000",
-                "feed_header_color":"#FF5F99CF",
+                "widget_header_color":"#FF5F99CF",
                 "header_color":"#5F99CF",
                 "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
                 "default_icon":"#DBDBDB",
-                "source_text":"#5F99CF",
+                "source_text":"#CEE3F8",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
                 "comments_text":"#FF8B60",
@@ -118,8 +124,9 @@
         "transparent":{
             "name":"Transparent",
             "values":{
+                "widget_background_color":"#00000000",
                 "background_color":"#000000",
-                "feed_header_color":"#FF000000",
+                "widget_header_color":"#80000000",
                 "header_color":"#5F99CF",
                 "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",

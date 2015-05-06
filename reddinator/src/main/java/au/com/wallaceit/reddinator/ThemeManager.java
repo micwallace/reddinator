@@ -141,6 +141,13 @@ public class ThemeManager {
         return getTheme(prefs.getString(themePrefKey, prefs.getString("appthemepref", "reddit_classic")));
     }
 
+    public boolean isThemeEditable(String key){
+        if (customThemes.has(key)){
+            return true;
+        }
+        return false;
+    }
+
     private void loadThemes(){
         String json = "{}";
         // load static themes
@@ -193,7 +200,7 @@ public class ThemeManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println(theme.toString());
+            //System.out.println(theme.toString());
         }
 
         public JSONObject getTheme(){
@@ -272,6 +279,7 @@ public class ThemeManager {
             String key;
             while (iterator.hasNext()){
                 key = (String) iterator.next();
+                //System.out.println(key);
                 themeColors.put(key, Color.parseColor(srcColors.get(key)));
             }
             return themeColors;

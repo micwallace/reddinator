@@ -87,8 +87,7 @@
         <item>5</item>
     </string-array>
 
-    <string-array name="widget_fontcolor_preference">
-        <item>Theme Selected</item>
+    <string-array name="fontcolor_names">
         <item>Reddit Blue</item>
         <item>Reddit Dark Blue</item>
         <item>Reddit Orange</item>
@@ -102,8 +101,7 @@
         <item>Violet</item>
 
     </string-array>
-    <string-array name="widget_fontcolor_values">
-        <item>0</item>
+    <string-array name="fontcolor_values">
         <item>#CEE3F8</item>
         <item>#5F99CF</item>
         <item>#FF4500</item>
