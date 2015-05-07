@@ -38,7 +38,7 @@
         <activity
             android:name=".ThemeEditorActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_theme_editor"/>
+            android:label="@string/title_activity_theme_editor" />
         <activity
             android:name=".SubredditSelectActivity"
             android:configChanges="orientation|screenSize"
@@ -55,6 +55,16 @@
             android:name=".WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
+        <activity
+            android:name=".SubmitActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/submit" >
+            <intent-filter
+                android:label="Share with Reddit">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".OAuthView"
             android:configChanges="orientation|screenSize"

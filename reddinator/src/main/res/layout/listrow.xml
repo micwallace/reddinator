@@ -63,7 +63,8 @@
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:text="@string/reddit_domain"
-            android:textColor="#336699" />
+            android:textColor="#336699"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/nsfwflag"

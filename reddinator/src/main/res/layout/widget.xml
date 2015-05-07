@@ -75,7 +75,8 @@
             android:paddingLeft="2dp"
             android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000" />
+            android:textColor="#000"
+            android:ellipsize="end" />
 
         <ImageView
             android:id="@+id/srcaret"

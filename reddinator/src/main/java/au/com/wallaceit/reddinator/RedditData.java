@@ -141,6 +141,24 @@ public class RedditData {
         return subreddits;
     }
 
+    public JSONArray searchRedditNames(String query) throws RedditApiException {
+        JSONArray names;
+        String url = (isLoggedIn() ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/search_reddit_names.json?include_over_18=true&query=" + Uri.encode(query);
+        try {
+            names = getJSONFromPost(url, null, false).getJSONArray("names");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return names;
+    }
+
+    public JSONObject getSubmitText(String subreddit) throws RedditApiException {
+
+        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/api/submit_text/.json";
+        return getRedditJsonObject(url, false);
+    }
+
     public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid) {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + (subreddit.equals("Front Page") ? "" : "/r/" + subreddit) + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");

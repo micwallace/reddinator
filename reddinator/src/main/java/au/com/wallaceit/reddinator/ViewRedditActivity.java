@@ -236,6 +236,7 @@ public class ViewRedditActivity extends FragmentActivity {
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
@@ -327,6 +328,11 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_share:
                 showShareDialog();
+                break;
+
+            case R.id.menu_submit:
+                Intent submitIntent = new Intent(ViewRedditActivity.this, SubmitActivity.class);
+                startActivity(submitIntent);
                 break;
 
             case R.id.menu_prefs:
