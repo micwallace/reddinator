@@ -212,8 +212,8 @@ public class GlobalObjects extends Application {
         bypassCache = bypassed;
     }
 
-    public void showAlertDialog(String title, String message) {
-        new AlertDialog.Builder(this)
+    public void showAlertDialog(Context context, String title, String message) {
+        new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {

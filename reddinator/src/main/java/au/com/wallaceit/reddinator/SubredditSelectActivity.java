@@ -319,7 +319,7 @@ public class SubredditSelectActivity extends ListActivity {
                     list = global.mRedditData.getMySubreddits();
                 } catch (RedditData.RedditApiException e) {
                     e.printStackTrace();
-                    global.showAlertDialog("API Error", e.getMessage());
+                    global.showAlertDialog(SubredditSelectActivity.this,"API Error", e.getMessage());
                     return;
                 }
                 if (list == null)

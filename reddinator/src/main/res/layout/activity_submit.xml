@@ -34,9 +34,10 @@
             android:hint="Title"/>
 
         <TextView
-            android:id="@+id/chars_left"
+            android:id="@+id/title_chars_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="6dp"
             android:text="300 characters left" />
 
         <EditText
@@ -66,8 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Submition Text"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:id="@+id/submission_text" />
         </ScrollView>
     </LinearLayout>

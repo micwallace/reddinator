@@ -112,7 +112,7 @@ public class OAuthView extends Activity {
             try {
                 return global.mRedditData.retrieveToken(code, state);
             } catch (RedditData.RedditApiException e) {
-                global.showAlertDialog("API Error", e.getMessage());
+                global.showAlertDialog(OAuthView.this, "API Error", e.getMessage());
                 e.printStackTrace();
                 return false;
             }

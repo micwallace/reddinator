@@ -10,7 +10,7 @@ function init(themeColors, user){
 function setTheme(themeColors){
     var themeColors = JSON.parse(themeColors);
     $("body").css("background-color", themeColors["background_color"]);
-    $("#loading_view").css("color", themeColors["load_text"]);
+    $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
     $(".comment_text").css("color", themeColors["headline_text"]);
     $(".comment_user").css("color", themeColors["source_text"]);
     $(".fa-star").css("color", themeColors["votes_icon"]);

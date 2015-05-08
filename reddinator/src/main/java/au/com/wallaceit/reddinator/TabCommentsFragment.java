@@ -293,7 +293,8 @@ public class TabCommentsFragment extends Fragment {
                     break;
                 case "-1":
                     // show error
-                    mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
+                    if (!loadMore)
+                        mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
                     Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:

@@ -58,11 +58,13 @@
         <activity
             android:name=".SubmitActivity"
             android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustPan"
             android:label="@string/submit" >
             <intent-filter
                 android:label="Share with Reddit">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity

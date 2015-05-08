@@ -134,15 +134,18 @@ public class ViewRedditActivity extends FragmentActivity {
         // setup needed members
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-        feedposition = getIntent().getIntExtra("itemposition", 0);
+        feedposition = getIntent().getIntExtra("itemposition", -1);
         // Get selected item from feed and user vote preference
-        JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
-        try {
-            userLikes = currentFeedItem.getString("likes");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (getIntent().getBooleanExtra("submitted", false)){
+            userLikes = "true";
+        } else {
+            JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
+            try {
+                userLikes = currentFeedItem.getString("likes");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-
         //System.out.println("User likes post: " + userLikes);
     }
 
@@ -506,9 +509,11 @@ public class ViewRedditActivity extends FragmentActivity {
         }
 
         private void setUpdateRecord(String val) {
-            global.setItemUpdate(feedposition, redditid, val);
-            // save in feed preferences
-            global.setItemVote(prefs, widgetId, feedposition, redditid, val);
+            if (feedposition>=0) {
+                global.setItemUpdate(feedposition, redditid, val);
+                // save in feed preferences
+                global.setItemVote(prefs, widgetId, feedposition, redditid, val);
+            }
         }
     }
 
