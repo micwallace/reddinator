@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -307,25 +308,30 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
                 }
                 System.out.println(jsonResult.toString());
 
-                finish();
-                /*String id = "";
+                String id = "";
                 String permalink = "";
                 try {
                     JSONObject data = jsonResult.getJSONObject("data");
                     id = data.getString("name");
-                    permalink = data.getString("url").replace(".json", ".compact");
+                    permalink = StringEscapeUtils.unescapeJava(data.getString("url").replace(".json", ""));
+                    String url = isLink?link.getText().toString():permalink+".compact";
+
+                    if (permalink != null)
+                        permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
+
+                    Intent intent = new Intent(SubmitActivity.this, ViewRedditActivity.class);
+                    intent.putExtra(WidgetProvider.ITEM_ID, id);
+                    intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
+                    intent.putExtra(WidgetProvider.ITEM_URL, url);
+                    intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    // show api error
+                    Toast.makeText(SubmitActivity.this, "Could not open submitted post: "+errorText, Toast.LENGTH_LONG).show();
+                    finish();
                 }
-                String url = isLink?link.getText().toString():permalink;
-
-                Intent intent = new Intent(SubmitActivity.this, ViewRedditActivity.class);
-                intent.putExtra(WidgetProvider.ITEM_ID, id);
-                intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
-                intent.putExtra(WidgetProvider.ITEM_URL, url);
-                intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);*/
             } else {
                 // show api error
                 Toast.makeText(SubmitActivity.this, errorText, Toast.LENGTH_LONG).show();

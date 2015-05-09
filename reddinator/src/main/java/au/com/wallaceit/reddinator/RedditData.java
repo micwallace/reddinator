@@ -426,7 +426,8 @@ public class RedditData {
 
     public JSONObject submit(String subreddit, boolean isLink, String title, String content) throws RedditApiException {
         try {
-            String url = OAUTH_ENDPOINT + "/api/submit?api_type=json&extension=json&then=comments&sr=" + URLEncoder.encode(subreddit, "UTF-8") + "&kind=" + (isLink?"link":"self") + "&title=" + URLEncoder.encode(title, "UTF-8") + "&" + URLEncoder.encode((isLink?"url="+content:"text="+content),"UTF-8");
+            content = URLEncoder.encode(content,"UTF-8");
+            String url = OAUTH_ENDPOINT + "/api/submit?api_type=json&extension=json&then=comments&sr=" + URLEncoder.encode(subreddit, "UTF-8") + "&kind=" + (isLink?"link":"self") + "&title=" + URLEncoder.encode(title, "UTF-8") + "&" + (isLink?"url="+content:"text="+content);
 
             return getJSONFromPost(url, null, false).getJSONObject("json");
 
