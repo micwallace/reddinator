@@ -39,11 +39,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GlobalObjects extends Application {
-    static final boolean DEBUG_LOGGING = true;
-    private ArrayList<String> mSubredditList;
-    static int LOADTYPE_LOAD = 0;
-    static int LOADTYPE_LOADMORE = 1;
-    static int LOADTYPE_REFRESH_VIEW = 3;
+
+    private ArrayList<JSONObject> mSubredditList; // cached popular subreddits
+    final static int LOADTYPE_LOAD = 0;
+    final static int LOADTYPE_LOADMORE = 1;
+    final static int LOADTYPE_REFRESH_VIEW = 3;
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
@@ -133,12 +133,12 @@ public class GlobalObjects extends Application {
         return !mSubredditList.isEmpty();
     }
 
-    public void putSrList(ArrayList<String> list) {
+    public void putSrList(ArrayList<JSONObject> list) {
         mSubredditList.clear();
         mSubredditList.addAll(list);
     }
 
-    public ArrayList<String> getSrList() {
+    public ArrayList<JSONObject> getSrList() {
         return mSubredditList;
     }
 

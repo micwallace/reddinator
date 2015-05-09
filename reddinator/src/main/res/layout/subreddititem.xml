@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dp">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/subreddit_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/subreddit_add_btn"
         android:gravity="center_vertical"
-        android:textSize="19sp" />
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/subreddit_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/subreddit_name"
+        android:layout_toLeftOf="@+id/subreddit_add_btn"
+        android:gravity="center_vertical"
+        android:textSize="12sp" />
 
     <IconTextView
         android:id="@+id/subreddit_add_btn"
@@ -27,7 +36,7 @@
         android:shadowDx="4"
         android:shadowDy="4"
         android:shadowRadius="3"
-        android:paddingRight="12dp"
+        android:paddingLeft="10dp"
         android:textSize="32dp"
         android:textColor="#5F99CF" />
 

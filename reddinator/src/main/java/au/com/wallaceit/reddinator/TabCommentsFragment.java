@@ -54,6 +54,7 @@ public class TabCommentsFragment extends Fragment {
     public String articleId;
     public String permalink;
     private String currentSort = "best";
+    CommentsLoader commentsLoader;
 
     static TabCommentsFragment init(boolean load) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
@@ -171,6 +172,13 @@ public class TabCommentsFragment extends Fragment {
         //mWebView.saveState(WVState);
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (commentsLoader!=null)
+            commentsLoader.cancel(true);
+    }
+
     public class WebInterface {
         Context mContext;
 
@@ -232,7 +240,7 @@ public class TabCommentsFragment extends Fragment {
     private void loadComments(String sort) {
         if (sort != null)
             currentSort = sort;
-        CommentsLoader commentsLoader = new CommentsLoader(currentSort);
+        commentsLoader = new CommentsLoader(currentSort);
         commentsLoader.execute();
     }
 

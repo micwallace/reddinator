@@ -66,15 +66,17 @@ public class SubredditSelectActivity extends ListActivity {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
         // set theme colors
-        if (mSharedPreferences.getString("widgetthemepref", "1").equals("1")) {
-            findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#CEE3F8")); // set light theme
-        } else {
-            findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
-        }
+        setThemeColors();
         // get subreddit list and set adapter
         personalList = global.getPersonalList();
         mListAdapter = new MyRedditsAdapter(this, personalList);
         setListAdapter(mListAdapter);
+        mListAdapter.sort(new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.compareToIgnoreCase(t1);
+            }
+        });
         ListView listView = getListView();
         listView.setTextFilterEnabled(true);
         Intent intent = getIntent();
@@ -163,6 +165,10 @@ public class SubredditSelectActivity extends ListActivity {
         curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true);
         curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
         curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
+    }
+
+    private void setThemeColors(){
+        findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor(global.mThemeManager.getActiveTheme("appthemepref").getValue("header_color"))); // set light theme
     }
 
     @Override
@@ -359,7 +365,7 @@ public class SubredditSelectActivity extends ListActivity {
     class MyRedditsAdapter extends ArrayAdapter<String> {
         private LayoutInflater inflater;
 
-        public MyRedditsAdapter(Context context, List<String> objects) {
+        public MyRedditsAdapter(Context context, ArrayList<String> objects) {
             super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -369,7 +375,7 @@ public class SubredditSelectActivity extends ListActivity {
             convertView = inflater.inflate(R.layout.myredditlistitem, parent, false);
             super.getView(position, convertView, parent);
             // setup the row
-            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(personalList.get(position));
+            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(getItem(position));
             convertView.findViewById(R.id.subreddit_delete_btn).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

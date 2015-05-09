@@ -61,6 +61,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RedditData {
     private SharedPreferences sharedPrefs;
@@ -512,7 +514,15 @@ public class RedditData {
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 String response = getStringFromStream(is);
                 System.err.println(response);
-                throw new RedditApiException("HTTP Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()));
+                String errorMsg;
+                final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+                final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
+                Matcher matcher = patternh2.matcher(response);
+                errorMsg = matcher.group(1);
+                matcher = patternh3.matcher(response);
+                if (!matcher.group(1).equals(""))
+                    errorMsg += ", "+matcher.group(1);
+                throw new RedditApiException("Error "+String.valueOf(httpResponse.getStatusLine().getStatusCode())+": "+errorMsg);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -555,7 +565,15 @@ public class RedditData {
             if (httpResponse.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
                 String response = getStringFromStream(is);
                 System.err.println(response);
-                throw new RedditApiException("HTTP Error: "+String.valueOf(httpResponse.getStatusLine().getStatusCode()));
+                String errorMsg;
+                final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+                final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
+                Matcher matcher = patternh2.matcher(response);
+                errorMsg = matcher.group(1);
+                matcher = patternh3.matcher(response);
+                if (!matcher.group(1).equals(""))
+                    errorMsg += ", "+matcher.group(1);
+                throw new RedditApiException("Error "+String.valueOf(httpResponse.getStatusLine().getStatusCode())+": "+errorMsg);
             }
         } catch (IOException e) {
             e.printStackTrace();

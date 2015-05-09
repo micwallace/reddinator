@@ -40,9 +40,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +53,9 @@ public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_SET_SUBREDDIT = 2;
     public static final int RESULT_REFRESH_LIST = 1;
     private GlobalObjects global;
-    private ArrayList<String> sreddits;
+    private ArrayList<JSONObject> sreddits;
     private JSONArray srjson;
-    private ArrayAdapter<String> listadapter;
+    private ArrayAdapter<JSONObject> listadapter;
     private EditText searchbox;
     private ListView listview;
     private TextView emptyview;
@@ -74,7 +76,11 @@ public class ViewAllSubredditsActivity extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 Intent intent = new Intent(); // update subreddit without adding to list
-                intent.putExtra("subreddit", sreddits.get(position));
+                try {
+                    intent.putExtra("subreddit", sreddits.get(position).getString("display_name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 setResult(RESULT_SET_SUBREDDIT, intent);
                 finish();
             }
@@ -85,9 +91,8 @@ public class ViewAllSubredditsActivity extends ListActivity {
         searchbox = (EditText) this.findViewById(R.id.searchbox);
         searchbox.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId,
-                                          KeyEvent event) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event!=null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_UP)) {
                     search(v.getText().toString());
                 }
                 return true;
@@ -182,7 +187,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 int i = 0;
                 while (i < srjson.length()) {
                     try {
-                        sreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+                        sreddits.add(srjson.getJSONObject(i).getJSONObject("data"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -210,33 +215,59 @@ public class ViewAllSubredditsActivity extends ListActivity {
         listview.setAdapter(listadapter);
     }
 
-    class SubredditsAdapter extends ArrayAdapter<String> {
+    class SubredditsAdapter extends ArrayAdapter<JSONObject> {
         private LayoutInflater inflater;
 
-        public SubredditsAdapter(Context context, List<String> objects) {
+        public SubredditsAdapter(Context context, List<JSONObject> objects) {
             super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            convertView = inflater.inflate(R.layout.subreddititem, parent, false);
-            super.getView(position, convertView, parent);
+        public View getView(final int position, View row, ViewGroup parent) {
+
+            super.getView(position, row, parent);
+            ViewHolder viewHolder = new ViewHolder();
+            if (row == null || row.getTag() == null) {
+                // inflate new view
+                row = inflater.inflate(R.layout.subreddititem, parent, false);
+                viewHolder.name = (TextView) row.findViewById(R.id.subreddit_name);
+                viewHolder.description = (TextView) row.findViewById(R.id.subreddit_description);
+                viewHolder.addIcon = (IconTextView) row.findViewById(R.id.subreddit_add_btn);
+            } else {
+                viewHolder = (ViewHolder) row.getTag();
+            }
             // setup the row
-            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(sreddits.get(position));
-            convertView.findViewById(R.id.subreddit_add_btn).setOnClickListener(new OnClickListener() {
+            final String name;
+            String description;
+            try {
+                name = sreddits.get(position).getString("display_name");
+                description = sreddits.get(position).getString("public_description");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+            viewHolder.name.setText(name);
+            viewHolder.description.setText(description);
+            viewHolder.addIcon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    global.addToPersonalList(sreddits.get(position));
+                    global.addToPersonalList(name);
                     Intent intent = new Intent(); // Indicate that subreddit list has changed
                     setResult(RESULT_REFRESH_LIST, intent);
                     finish();
                 }
             });
-            return convertView;
+            row.setTag(viewHolder);
+
+            return row;
         }
 
-
+        class ViewHolder {
+            TextView name;
+            TextView description;
+            IconTextView addIcon;
+        }
     }
 
     private void updateAdapter() {
@@ -245,29 +276,31 @@ public class ViewAllSubredditsActivity extends ListActivity {
 
     private DLTask dlpopulartask;
 
-    private class DLTask extends AsyncTask<String, Integer, ArrayList<String>> {
+    private class DLTask extends AsyncTask<String, Integer, ArrayList<JSONObject>> {
         @Override
-        protected ArrayList<String> doInBackground(String... string) {
+        protected ArrayList<JSONObject> doInBackground(String... string) {
             // load popular subreddits
             try {
                 srjson = global.mRedditData.getSubreddits();
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-
+                Toast.makeText(ViewAllSubredditsActivity.this, "Error loading subreddits: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
             if (srjson == null) {
-                ArrayList<String> errResult = new ArrayList<>();
-                errResult.add("Error Fetching Subreddits");
-                return errResult;
+                return new ArrayList<>();
             }
             // put into arraylist
-            ArrayList<String> popreddits = new ArrayList<>();
+            ArrayList<JSONObject> popreddits = new ArrayList<>();
             int i = 0;
-            popreddits.add("Front Page"); // slap the front page on there
-            popreddits.add("all"); // and an all
+            try {
+                popreddits.add(new JSONObject("{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}")); // slap the front page on there
+                popreddits.add(new JSONObject("{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}")); // and an all
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             while (i < srjson.length()) {
                 try {
-                    popreddits.add(srjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+                    popreddits.add(srjson.getJSONObject(i).getJSONObject("data"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -277,7 +310,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             return popreddits;
         }
 
-        protected void onPostExecute(ArrayList<String> resultlist) {
+        protected void onPostExecute(ArrayList<JSONObject> resultlist) {
             if (!this.isCancelled() || cancelrevert) {
                 sreddits.addAll(resultlist);
                 updateAdapter();
