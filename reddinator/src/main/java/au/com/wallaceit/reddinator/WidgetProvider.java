@@ -117,10 +117,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
             int iconColor = themeColors.get("default_icon");
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
-            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 80, shadow));
-            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 80, shadow));
-            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 54, shadow));
-            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 80, shadow));
+            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
+            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");

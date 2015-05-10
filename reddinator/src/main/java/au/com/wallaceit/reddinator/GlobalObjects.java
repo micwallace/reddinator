@@ -28,6 +28,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -191,6 +192,7 @@ public class GlobalObjects extends Application {
     }
 
     public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize, int[] shadow) {
+        fontSize = convertDiptoPix(context, fontSize);
         int pad = (fontSize / 9);
         Paint paint = new Paint();
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
@@ -206,6 +208,11 @@ public class GlobalObjects extends Application {
         Canvas canvas = new Canvas(bitmap);
         canvas.drawText(text, (float) pad, fontSize, paint);
         return bitmap;
+    }
+
+    public static int convertDiptoPix(Context context, float dip) {
+        int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
+        return value;
     }
 
 }

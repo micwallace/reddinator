@@ -117,8 +117,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         //int iconColor = Color.parseColor(themeColors[6]);
         int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
         images = new Bitmap[]{
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 40, shadow),
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 40, shadow)
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
 

@@ -311,8 +311,8 @@ public class MainActivity extends Activity {
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             // load images
             images = new Bitmap[]{
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 40, shadow),
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 40, shadow)
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
             };
 
             // get font size preference
