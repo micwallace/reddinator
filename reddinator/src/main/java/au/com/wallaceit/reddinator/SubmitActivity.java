@@ -52,20 +52,6 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
         global = (GlobalObjects) getApplicationContext();
-        // get actionbar and set home button, pad the icon
-        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
-        int headerColor = Color.parseColor(theme.getValue("header_color"));
-        int headerTextColor = Color.parseColor(theme.getValue("header_text"));
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));
-
-        }
-        ImageView view = (ImageView) findViewById(android.R.id.home);
-        if (view != null) {
-            view.setPadding(5, 0, 5, 0);
-        }
 
         subreddit = (AutoCompleteTextView) findViewById(R.id.subreddit);
         subreddit.setAdapter(new SubredditSelectAdaptor(this, R.layout.autocomplete_list_item));
@@ -94,25 +80,40 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                charsLeft.setText((300-title.getText().toString().length())+" characters left");
+                charsLeft.setText((300 - title.getText().toString().length()) + " characters left");
             }
         });
-
-        // add tab buttons
-        actionBar.addTab(actionBar.newTab().setText("Link").setTabListener(SubmitActivity.this));
-        actionBar.addTab(actionBar.newTab().setText("Text").setTabListener(SubmitActivity.this));
-
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        actionBar.selectTab(actionBar.getTabAt(0));
 
         String action = getIntent().getAction();
         if (action!=null && (action.equals(Intent.ACTION_SEND) && getIntent().getType().equals("text/plain"))) {
             link.setText(getIntent().getStringExtra(Intent.EXTRA_TEXT));
+        }
+
+        // get actionbar and set home button, pad the icon
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        //int headerTextColor = Color.parseColor(theme.getValue("header_text"));
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));
+            // add tab buttons
+            actionBar.addTab(actionBar.newTab().setText("Link").setTabListener(SubmitActivity.this));
+            actionBar.addTab(actionBar.newTab().setText("Text").setTabListener(SubmitActivity.this));
+
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            actionBar.selectTab(actionBar.getTabAt(0));
+        }
+        ImageView view = (ImageView) findViewById(android.R.id.home);
+        if (view != null) {
+            view.setPadding(5, 0, 5, 0);
         }
 
         Button submitButton = (Button) findViewById(R.id.submit_button);

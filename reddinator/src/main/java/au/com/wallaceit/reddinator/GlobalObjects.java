@@ -48,6 +48,7 @@ public class GlobalObjects extends Application {
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
     public ThemeManager mThemeManager;
+    public SubredditManager mSubManager;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -128,7 +129,7 @@ public class GlobalObjects extends Application {
         return null;
     }
 
-    // cached data
+    // cached popular subreddits
     public boolean isSrlistCached() {
         return !mSubredditList.isEmpty();
     }
@@ -143,47 +144,11 @@ public class GlobalObjects extends Application {
     }
 
     // personal sr list
-    private ArrayList<String> personalList;
+    public SubredditManager getSubredditManager(){
+        if (mSubManager==null)
+            mSubManager = new SubredditManager(mSharedPreferences);
 
-    private void loadPersonalList() {
-        Set<String> feeds = mSharedPreferences.getStringSet("personalsr", new HashSet<String>());
-        if (feeds.isEmpty()) {
-            // first time setup
-            personalList = new ArrayList<>(Arrays.asList("Front Page", "all", "arduino", "AskReddit", "pics", "technology", "science", "videos", "worldnews"));
-            savePersonalList();
-        } else {
-            personalList = new ArrayList<>(feeds);
-        }
-    }
-
-    private void savePersonalList() {
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        Set<String> set = new HashSet<>();
-        set.addAll(personalList);
-        editor.putStringSet("personalsr", set);
-        editor.apply();
-    }
-
-    public ArrayList<String> getPersonalList() {
-        if (personalList == null) {
-            loadPersonalList();
-        }
-        return personalList;
-    }
-
-    public void setPersonalList(ArrayList<String> list) {
-        personalList = list;
-        savePersonalList();
-    }
-
-    public void removeFromPersonalList(String value) {
-        personalList.remove(value);
-        savePersonalList();
-    }
-
-    public void addToPersonalList(String value) {
-        personalList.add(value);
-        savePersonalList();
+        return mSubManager;
     }
 
     // widget data loadtype functions; a bypass for androids restrictive widget api

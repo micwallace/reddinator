@@ -17,8 +17,11 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
@@ -28,9 +31,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.v4.view.PagerTabStrip;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,7 +47,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.util.*;
 
-public class SubredditSelectActivity extends ListActivity {
+public class SubredditSelectActivity extends Activity implements ActionBar.TabListener {
     ArrayAdapter<String> mListAdapter;
     private ArrayList<String> personalList;
     SharedPreferences mSharedPreferences;
@@ -53,32 +59,45 @@ public class SubredditSelectActivity extends ListActivity {
     boolean curHideInfPref;
     TextView widgetPrefBtn;
     private int mAppWidgetId;
+    private ActionBar actionBar;
+    private ListView subList;
+    private ListView multiList;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.subredditselect);
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((GlobalObjects) SubredditSelectActivity.this.getApplicationContext());
-        // set theme colors
-        setThemeColors();
+
         // get subreddit list and set adapter
-        personalList = global.getPersonalList();
+        personalList = global.getSubredditManager().getSubreddits();
         mListAdapter = new MyRedditsAdapter(this, personalList);
-        setListAdapter(mListAdapter);
+        subList = (ListView) findViewById(R.id.sublist);
+        subList.setAdapter(mListAdapter);
+        subList.setTextFilterEnabled(true);
+        subList.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String subreddit = ((TextView) view.findViewById(R.id.subreddit_name)).getText().toString();
+                setSubredditAndFinish(subreddit);
+                //System.out.println(sreddit+" selected");
+            }
+        });
         mListAdapter.sort(new Comparator<String>() {
             @Override
             public int compare(String s, String t1) {
                 return s.compareToIgnoreCase(t1);
             }
         });
-        ListView listView = getListView();
-        listView.setTextFilterEnabled(true);
+        // get multi list and set adapter
+        //personalList = global.getPersonalList();
+        //mListAdapter = new MyRedditsAdapter(this, personalList);
+        multiList = (ListView) findViewById(R.id.multilist);
+        //multiList.setAdapter(mListAdapter);
+        multiList.setTextFilterEnabled(true);
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -89,14 +108,7 @@ public class SubredditSelectActivity extends ListActivity {
         } else {
             mAppWidgetId = 0;
         }
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                String subreddit = ((TextView) view.findViewById(R.id.subreddit_name)).getText().toString();
-                setSubredditAndFinish(subreddit);
-                //System.out.println(sreddit+" selected");
-            }
-        });
+
         Button addBtn = (Button) findViewById(R.id.addsrbutton);
         addBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -165,10 +177,30 @@ public class SubredditSelectActivity extends ListActivity {
         curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true);
         curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
         curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
+
+        actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+            // add tab buttons
+            actionBar.addTab(actionBar.newTab().setText("My Subreddits").setTabListener(SubredditSelectActivity.this));
+            actionBar.addTab(actionBar.newTab().setText("My Multis").setTabListener(SubredditSelectActivity.this));
+
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            actionBar.selectTab(actionBar.getTabAt(0));
+        }
+
+        // set theme colors
+        setThemeColors();
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setThemeColors(){
-        findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor(global.mThemeManager.getActiveTheme("appthemepref").getValue("header_color"))); // set light theme
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
+        if (actionBar!=null)
+            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));
     }
 
     @Override
@@ -180,7 +212,7 @@ public class SubredditSelectActivity extends ListActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == ViewAllSubredditsActivity.RESULT_REFRESH_LIST) {
-            personalList = global.getPersonalList();
+            personalList = global.getSubredditManager().getSubreddits();
             mListAdapter.notifyDataSetChanged();
         } else if (resultCode == ViewAllSubredditsActivity.RESULT_SET_SUBREDDIT) {
             setSubredditAndFinish(data.getStringExtra("subreddit"));
@@ -332,14 +364,11 @@ public class SubredditSelectActivity extends ListActivity {
                     return;
                 // copy into current personal list if not empty or error
                 if (!list.isEmpty()) {
-                    if (clearlist) {
-                        personalList.clear();
-                    }
-                    // Add Front Page & all
                     list.add(0, "Front Page");
                     list.add(1, "all");
-                    personalList.addAll(list);
-                    global.setPersonalList(personalList);
+                    // Add Front Page & all
+                    global.getSubredditManager().addSubreddits(list, clearlist);
+                    personalList = global.getSubredditManager().getSubreddits();
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -359,6 +388,24 @@ public class SubredditSelectActivity extends ListActivity {
             }
         };
         t.start();
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        if (tab.getText().equals("My Subreddits")){
+            multiList.setVisibility(View.GONE);
+            subList.setVisibility(View.VISIBLE);
+        } else {
+            subList.setVisibility(View.GONE);
+            multiList.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
     // list adapter
@@ -381,7 +428,7 @@ public class SubredditSelectActivity extends ListActivity {
                 public void onClick(View v) {
                     String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
                     personalList.remove(sreddit);
-                    global.removeFromPersonalList(sreddit);
+                    global.getSubredditManager().removeSubreddit(sreddit);
                     mListAdapter.notifyDataSetChanged();
                 }
             });

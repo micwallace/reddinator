@@ -403,10 +403,37 @@ public class RedditData {
     public ArrayList<String> getMySubreddits() throws RedditApiException {
         ArrayList<String> mysrlist = new ArrayList<>();
         if (!isLoggedIn()) {
-            mysrlist.add("Something bad happened");
+            //add("Something bad happened");
+            return null; // TODO: handle all logins & 403 permission denied errors with an exception
         }
 
         String url = OAUTH_ENDPOINT + "/subreddits/mine/subscriber.json?limit=100&show=all";
+        JSONArray resultjson = new JSONArray();
+        try {
+            resultjson = getRedditJsonObject(url, true).getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        int i = 0;
+        while (i < resultjson.length()) {
+            try {
+                mysrlist.add(resultjson.getJSONObject(i).getJSONObject("data").getString("display_name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+
+        return mysrlist;
+    }
+
+    public ArrayList<String> getMyMultis() throws RedditApiException {
+        ArrayList<String> mysrlist = new ArrayList<>();
+        if (!isLoggedIn()) {
+            mysrlist.add("Something bad happened");
+        }
+
+        String url = OAUTH_ENDPOINT + "/api/multi/mine";
         JSONArray resultjson = new JSONArray();
         try {
             resultjson = getRedditJsonObject(url, true).getJSONObject("data").getJSONArray("children");
@@ -620,6 +647,13 @@ public class RedditData {
     class RedditApiException extends Exception {
         //Constructor that accepts a message
         public RedditApiException(String message) {
+            super(message);
+        }
+    }
+
+    class NotLoggedInException extends Exception {
+        //Constructor that accepts a message
+        public NotLoggedInException(String message) {
             super(message);
         }
     }

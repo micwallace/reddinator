@@ -54,11 +54,19 @@
     </LinearLayout>
 
     <ListView
-        android:id="@android:id/list"
+        android:id="@+id/sublist"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/srtoolbar"
         android:background="#FFF"/>
+
+    <ListView
+        android:id="@+id/multilist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/srtoolbar"
+        android:background="#FFF"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/srtoolbar"

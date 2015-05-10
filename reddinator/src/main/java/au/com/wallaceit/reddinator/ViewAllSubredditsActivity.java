@@ -252,7 +252,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             viewHolder.addIcon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    global.addToPersonalList(name);
+                    global.getSubredditManager().addSubreddit(name);
                     Intent intent = new Intent(); // Indicate that subreddit list has changed
                     setResult(RESULT_REFRESH_LIST, intent);
                     finish();
