@@ -83,6 +83,8 @@ public class SubredditManager {
         subreddits.remove(subredditName);
     }
 
+
+
     public void addMulti(JSONObject multiObj){
 
     }

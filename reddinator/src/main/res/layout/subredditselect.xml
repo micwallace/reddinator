@@ -63,8 +63,8 @@
             android:id="@+id/multilist"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="#FFF"
-            android:visibility="gone"/>
+            android:background="#FFF"/>
+
     </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

@@ -241,6 +241,7 @@ public class RedditData {
             lastUpdateTime = (new Date()).getTime();
         } catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
         saveUserData();
     }
@@ -410,14 +411,8 @@ public class RedditData {
         }
 
         String url = OAUTH_ENDPOINT + "/api/multi/mine";
-        JSONArray resultjson = new JSONArray();
-        try {
-            resultjson = getRedditJsonObject(url, true).getJSONObject("data").getJSONArray("children");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        return resultjson;
+        return getRedditJsonArray(url, true);
     }
 
     public JSONObject submit(String subreddit, boolean isLink, String title, String content) throws RedditApiException {
@@ -562,7 +557,6 @@ public class RedditData {
             int errorCode = httpResponse.getStatusLine().getStatusCode();
             if (errorCode != HttpStatus.SC_OK) {
                 String response = getStringFromStream(is);
-                System.err.println(response);
                 String errorMsg;
                 final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
                 final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");

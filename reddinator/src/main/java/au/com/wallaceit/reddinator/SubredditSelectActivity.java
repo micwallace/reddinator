@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -118,6 +119,12 @@ public class SubredditSelectActivity extends Activity {
             mAppWidgetId = 0;
         }
 
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new SubredditsPagerAdapter());
+
+        tabs = (TabPageIndicator) findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
+
         Button addBtn = (Button) findViewById(R.id.addsrbutton);
         addBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -131,7 +138,11 @@ public class SubredditSelectActivity extends Activity {
             @Override
             public void onClick(View arg0) {
                 if (global.mRedditData.isLoggedIn()) {
-                    showImportDialog();
+                    if (pager.getCurrentItem()==1) {
+                        showImportMultiDialog();
+                    } else {
+                        showImportDialog();
+                    }
                 } else {
                     global.mRedditData.initiateLogin(SubredditSelectActivity.this);
                 }
@@ -155,11 +166,7 @@ public class SubredditSelectActivity extends Activity {
         curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
         curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SubredditsPagerAdapter());
 
-        tabs = (TabPageIndicator) findViewById(R.id.tabs);
-        tabs.setViewPager(pager);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -503,12 +510,18 @@ public class SubredditSelectActivity extends Activity {
                 final JSONArray list;
                 try {
                     list = global.mRedditData.getMySubreddits();
-                } catch (RedditData.RedditApiException e) {
+                } catch (final RedditData.RedditApiException e) {
                     e.printStackTrace();
-                    // check login required
-                    if (e.isAuthError()) global.mRedditData.initiateLogin(SubredditSelectActivity.this);
-                    // show error
-                    Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            sdialog.dismiss();
+                            // check login required
+                            if (e.isAuthError())
+                                global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                            // show error
+                            Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                     return;
                 }
                 if (list == null)
@@ -553,23 +566,75 @@ public class SubredditSelectActivity extends Activity {
         t.start();
     }
 
-    /*@Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        if (tab.getText().equals("My Subreddits")){
-            multiList.setVisibility(View.GONE);
-            subList.setVisibility(View.VISIBLE);
-        } else {
-            subList.setVisibility(View.GONE);
-            multiList.setVisibility(View.VISIBLE);
-        }
+    private void showImportMultiDialog() {
+        AlertDialog importDialog = new AlertDialog.Builder(SubredditSelectActivity.this).create(); //Read Update
+        importDialog.setTitle("Importing Multi-reddits, Replace current list?");
+
+        importDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importMultireddits(true);
+            }
+        });
+
+        importDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                importMultireddits(false);
+            }
+        });
+
+        importDialog.show();
     }
 
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    private void importMultireddits(final boolean clearlist) {
+        // use a thread for searching; show dialog
+        // Set thread network policy to prevent network on main thread exceptions.
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "", ("Importing Multis..."), true);
+        Thread t = new Thread() {
+            public void run() {
+
+                final JSONArray list;
+                try {
+                    list = global.mRedditData.getMyMultis();
+                } catch (final RedditData.RedditApiException e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            sdialog.dismiss();
+                            // check login required
+                            if (e.isAuthError())
+                                global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                            // show error
+                            Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    return;
+                }
+                if (list == null)
+                    return;
+
+                // copy into current personal list if not empty or error
+                System.out.println(list);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        sdialog.dismiss();
+                        if (list.length() == 0) {
+                            new AlertDialog.Builder(SubredditSelectActivity.this).setMessage("No multis to import!")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    }).show();
+                        } else {
+                            mListAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        };
+        t.start();
     }
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }*/
 
     // list adapter
     class MyRedditsAdapter extends ArrayAdapter<String> {
