@@ -14,10 +14,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -70,7 +72,7 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
             }
         });
         submitText = (TextView) findViewById(R.id.submission_text);
-        submitText.setMovementMethod(LinkMovementMethod.getInstance());
+        submitText.setMovementMethod(new SafeLinkMethod());
         charsLeft= (TextView) findViewById(R.id.title_chars_left);
         title = (EditText) findViewById(R.id.title);
         link = (EditText) findViewById(R.id.link);
@@ -129,6 +131,20 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
                 }
             }
         });
+    }
+
+    private class SafeLinkMethod extends LinkMovementMethod {
+
+        @Override
+        public boolean onTouchEvent( TextView widget, Spannable buffer, MotionEvent event ) {
+            try {
+                return super.onTouchEvent( widget, buffer, event ) ;
+            } catch( Exception ex ) {
+                Toast.makeText( SubmitActivity.this, "Could not load link", Toast.LENGTH_LONG ).show();
+                return true;
+            }
+        }
+
     }
 
     private boolean validateInput(){

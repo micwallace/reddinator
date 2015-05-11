@@ -316,10 +316,11 @@ public class TabCommentsFragment extends Fragment {
         }
     }
 
-    class CommentsVoteTask extends AsyncTask<String, Integer, String> {
+    class CommentsVoteTask extends AsyncTask<String, Integer, Boolean> {
         JSONObject item;
         private String redditId;
         private int direction;
+        private RedditData.RedditApiException exception;
 
         public CommentsVoteTask(String thingId, int dir) {
             direction = dir;
@@ -327,40 +328,38 @@ public class TabCommentsFragment extends Fragment {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected Boolean doInBackground(String... strings) {
             // Do the vote
             try {
                 return global.mRedditData.vote(redditId, direction);
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                return e.getMessage();
+                exception = e;
+                return false;
             }
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean result) {
             ((ViewRedditActivity) getActivity()).setTitleText("Reddinator"); // reset title
-            switch (result) {
-                case "OK":
-                    mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
-                    break;
-                case "LOGIN":
-                    global.mRedditData.initiateLogin(getActivity());
-                    break;
-                default:
-                    // show error
-                    Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-                    break;
+            if (result) {
+                mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
+            } else {
+                // check login required
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity());
+                // show error
+                Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
             }
             //listAdapter.hideAppLoader(false, false);
         }
     }
 
-    class CommentTask extends AsyncTask<String, Integer, String> {
+    class CommentTask extends AsyncTask<String, Integer, JSONObject> {
         JSONObject item;
         private String redditId;
         private String messageText;
         private int action = 0; // 0=add, 1=edit, -1=delete
+        private RedditData.RedditApiException exception;
 
         public CommentTask(String thingId, String text, int mode) {
             messageText = text;
@@ -369,13 +368,13 @@ public class TabCommentsFragment extends Fragment {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected JSONObject doInBackground(String... strings) {
             // Do the vote
-            String result = "";
+            JSONObject result = null;
             try {
                 switch (action){
                     case -1:
-                        result = global.mRedditData.deleteComment(redditId);
+                        result = global.mRedditData.deleteComment(redditId)?new JSONObject():null;
                         break;
                     case 0:
                         result = global.mRedditData.postComment(redditId, messageText);
@@ -387,54 +386,35 @@ public class TabCommentsFragment extends Fragment {
 
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                return e.getMessage();
+                exception = e;
+                return null;
             }
 
             return result;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(JSONObject result) {
             ((ViewRedditActivity) getActivity()).setTitleText("Reddinator"); // reset title
-            if (result.indexOf("OK")==0){
+            if (result!=null){
                 switch (action){
                     case -1:
                         mWebView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
                         break;
                     case 0:
-                        mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.substring(2)) + "\")");
+                        mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
                         break;
                     case 1:
-                        mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.substring(2)) + "\")");
+                        mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
                         break;
                 }
-
-                return;
-            }
-            if (result.equals("LOGIN")) {
-                global.mRedditData.initiateLogin(getActivity());
             } else {
+                // check login required
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity());
                 // show error
-                Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
-                // check if 403 error, if so, prompt user to reauth as scope is incorrect.
-                if (result.equals("HTTP Error: 403")){
-                    new AlertDialog.Builder(mContext)
-                    .setTitle("Permission required")
-                    .setMessage("Reddinator requires additional permission to use this feature, click ok to give reddit the okay\n (OAuth scope change)")
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            global.mRedditData.initiateLogin(mContext);
-                        }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).show();
-                }
+                Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+                mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
             }
-            mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
         }
     }
 }

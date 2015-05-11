@@ -21,8 +21,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -31,37 +29,48 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
+import com.viewpagerindicator.TabPageIndicator;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.lang.reflect.Method;
 import java.util.*;
 
-public class SubredditSelectActivity extends Activity implements ActionBar.TabListener {
+public class SubredditSelectActivity extends Activity {
     ArrayAdapter<String> mListAdapter;
     private ArrayList<String> personalList;
     SharedPreferences mSharedPreferences;
     GlobalObjects global;
     String curSort;
     Button sortBtn;
+    boolean needsThemeUpdate = false;
     boolean curThumbPref;
     boolean curBigThumbPref;
     boolean curHideInfPref;
-    TextView widgetPrefBtn;
     private int mAppWidgetId;
-    private ActionBar actionBar;
     private ListView subList;
     private ListView multiList;
+    private TabPageIndicator tabs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,74 +142,81 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
         curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
         String sortTxt = "Sort:  " + curSort;
         sortBtn.setText(sortTxt);
+        sortBtn.setCompoundDrawables(new IconDrawable(this, Iconify.IconValue.fa_sort).color(Color.parseColor("#22000000")).actionBarSize(), null, null, null);
         sortBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
                 showSortDialog();
             }
         });
-        // set options dialog click listener
-        widgetPrefBtn = (TextView) findViewById(R.id.widgetprefbtn);
-        widgetPrefBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
-                final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)};
-                AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-                builder.setTitle("Feed Options");
-                builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
-                    public void onClick(DialogInterface dialogInterface, int item, boolean state) {
-                        Editor prefsedit = mSharedPreferences.edit();
-                        switch (item) {
-                            case 0:
-                                prefsedit.putBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
-                                break;
-                            case 1:
-                                prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
-                                break;
-                            case 2:
-                                prefsedit.putBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
-                                break;
-                        }
-                        prefsedit.apply();
-                    }
-                });
-                builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-                builder.create().show();
-            }
-        });
+
         // load initial values for comparison
         curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true);
         curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
         curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
 
-        actionBar = getActionBar();
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new SubredditsPagerAdapter());
+
+        tabs = (TabPageIndicator) findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
+
+        ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-
-            // add tab buttons
-            actionBar.addTab(actionBar.newTab().setText("My Subreddits").setTabListener(SubredditSelectActivity.this));
-            actionBar.addTab(actionBar.newTab().setText("My Multis").setTabListener(SubredditSelectActivity.this));
-
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            actionBar.selectTab(actionBar.getTabAt(0));
         }
 
         // set theme colors
         setThemeColors();
     }
 
+    class SubredditsPagerAdapter extends PagerAdapter {
+
+        public Object instantiateItem(View collection, int position) {
+
+            int resId = 0;
+            switch (position) {
+                case 0:
+                    resId = R.id.sublist;
+                    break;
+                case 1:
+                    resId = R.id.multilist;
+                    break;
+            }
+            return findViewById(resId);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "My Subreddits";
+                case 1:
+                    return "My Multis";
+            }
+
+            return null;
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == ((View) arg1);
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setThemeColors(){
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
-        findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
-        if (actionBar!=null)
-            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));
+        //findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
+        tabs.setBackgroundColor(headerColor);
+        /*if (actionBar!=null)
+            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));*/
     }
 
     @Override
@@ -248,7 +264,7 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
     // save changes on back press
     public void onBackPressed() {
         // check if sort has changed
-        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)) {
+        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || needsThemeUpdate) {
             if (mAppWidgetId != 0) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
@@ -260,7 +276,11 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
                 } else {
                     global.setRefreshView();
                 }
-                appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
+                if (needsThemeUpdate){
+                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, new int[]{mAppWidgetId}, false);
+                } else {
+                    appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
+                }
                 appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
             } else {
                 if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
@@ -276,10 +296,73 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.subreddit_select_menu, menu);
+        // set options menu view
+        int iconColor = Color.parseColor("#DBDBDB");
+        (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
+        if (mAppWidgetId==0) {
+            (menu.findItem(R.id.menu_widgettheme)).setEnabled(false);
+        }
+        (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+                try{
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                }
+                catch(NoSuchMethodException e){
+                    System.out.println("Could not display action icons in menu");
+                }
+                catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            case R.id.menu_submit:
+                Intent submitIntent = new Intent(SubredditSelectActivity.this, SubmitActivity.class);
+                startActivity(submitIntent);
+                break;
+
+            case R.id.menu_feedprefs:
+                showFeedPrefsDialog();
+                return true;
+
+            case R.id.menu_widgettheme:
+                showWidgetThemeDialog();
+                return true;
+
+            case R.id.menu_thememanager:
+                Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
+                startActivityForResult(intent, 0);
+                return true;
+
+            case R.id.menu_prefs:
+                Intent intent2 = new Intent(SubredditSelectActivity.this, PrefsActivity.class);
+                startActivityForResult(intent2, 0);
                 return true;
         }
         return false;
@@ -323,6 +406,71 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
         builder.show();
     }
 
+    private void showFeedPrefsDialog(){
+        final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
+        final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
+        builder.setTitle("Feed Options");
+        builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
+            public void onClick(DialogInterface dialogInterface, int item, boolean state) {
+                Editor prefsedit = mSharedPreferences.edit();
+                switch (item) {
+                    case 0:
+                        prefsedit.putBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        break;
+                    case 1:
+                        prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        break;
+                    case 2:
+                        prefsedit.putBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        break;
+                }
+                prefsedit.apply();
+            }
+        });
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+    private void showWidgetThemeDialog(){
+
+        // set themes list
+        LinkedHashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
+        themeList.put("app_select", "Use App theme");
+        final String[] keys = themeList.keySet().toArray(new String[themeList.keySet().size()]);
+        String curTheme = mSharedPreferences.getString("widgettheme-"+mAppWidgetId, "app_select");
+        int curIndex = 0;
+        for (int i=0; i<keys.length; i++){
+            if (keys[i].equals(curTheme)) {
+                curIndex = i;
+                break;
+            }
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Widget Theme")
+        .setSingleChoiceItems(themeList.values().toArray(new String[themeList.values().size()]), curIndex,
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    needsThemeUpdate = true;
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putString("widgettheme-" + mAppWidgetId, keys[i]);
+                    System.out.println(keys[i]);
+                    editor.apply();
+                    dialogInterface.cancel();
+                }
+            }
+        ).setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        }).show();
+    }
+
     private void showImportDialog() {
         AlertDialog importDialog = new AlertDialog.Builder(SubredditSelectActivity.this).create(); //Read Update
         importDialog.setTitle("Replace current list?");
@@ -352,29 +500,44 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
         Thread t = new Thread() {
             public void run() {
 
-                final ArrayList<String> list;
+                final JSONArray list;
                 try {
                     list = global.mRedditData.getMySubreddits();
                 } catch (RedditData.RedditApiException e) {
                     e.printStackTrace();
-                    global.showAlertDialog(SubredditSelectActivity.this,"API Error", e.getMessage());
+                    // check login required
+                    if (e.isAuthError()) global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                    // show error
+                    Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (list == null)
                     return;
+
                 // copy into current personal list if not empty or error
-                if (!list.isEmpty()) {
-                    list.add(0, "Front Page");
-                    list.add(1, "all");
+                if (list.length()>0) {
+                    ArrayList<String> mysrlist = new ArrayList<>();
                     // Add Front Page & all
-                    global.getSubredditManager().addSubreddits(list, clearlist);
+                    mysrlist.add(0, "Front Page");
+                    mysrlist.add(1, "all");
+
+                    int i = 0;
+                    while (i < list.length()) {
+                        try {
+                            mysrlist.add(list.getJSONObject(i).getJSONObject("data").getString("display_name"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        i++;
+                    }
+                    global.getSubredditManager().addSubreddits(mysrlist, clearlist);
                     personalList = global.getSubredditManager().getSubreddits();
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
                         sdialog.dismiss();
-                        if (list.isEmpty() || list.get(0).contains("Error:")) {
-                            new AlertDialog.Builder(SubredditSelectActivity.this).setMessage(list.isEmpty() ? "No subreddits to import!" : list.get(0))
+                        if (list.length()==0) {
+                            new AlertDialog.Builder(SubredditSelectActivity.this).setMessage("No subreddits to import!")
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
@@ -390,7 +553,7 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
         t.start();
     }
 
-    @Override
+    /*@Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         if (tab.getText().equals("My Subreddits")){
             multiList.setVisibility(View.GONE);
@@ -406,7 +569,7 @@ public class SubredditSelectActivity extends Activity implements ActionBar.TabLi
     }
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
+    }*/
 
     // list adapter
     class MyRedditsAdapter extends ArrayAdapter<String> {

@@ -762,7 +762,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        class ListVoteTask extends AsyncTask<String, Integer, String> {
+        class ListVoteTask extends AsyncTask<String, Integer, Boolean> {
             JSONObject item;
             private String redditid;
             private int direction;
@@ -770,6 +770,7 @@ public class MainActivity extends Activity {
             private int listposition;
             private ImageButton upvotebtn;
             private ImageButton downvotebtn;
+            private RedditData.RedditApiException exception;
 
             public ListVoteTask(int dir, View view, int position) {
                 direction = dir;
@@ -788,7 +789,7 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            protected String doInBackground(String... strings) {
+            protected Boolean doInBackground(String... strings) {
                 // enumerate current vote and clicked direction
                 if (direction == 1) {
                     if (curVote.equals("true")) { // if already upvoted, neutralize.
@@ -804,13 +805,14 @@ public class MainActivity extends Activity {
                     return global.mRedditData.vote(redditid, direction);
                 } catch (RedditData.RedditApiException e) {
                     e.printStackTrace();
-                    return e.getMessage();
+                    exception = e;
+                    return false;
                 }
             }
 
             @Override
-            protected void onPostExecute(String result) {
-                if (result.equals("OK")) {
+            protected void onPostExecute(Boolean result) {
+                if (result) {
                     // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
                     String value = "null";
                     switch (direction) {
@@ -834,11 +836,11 @@ public class MainActivity extends Activity {
                     }
                     listAdapter.updateUiVote(listposition, redditid, value);
                     global.setItemVote(prefs, 0, listposition, redditid, value);
-                } else if (result.equals("LOGIN")) {
-                    global.mRedditData.initiateLogin(MainActivity.this);
                 } else {
+                    // check login required
+                    if (exception.isAuthError()) global.mRedditData.initiateLogin(MainActivity.this);
                     // show error
-                    Toast.makeText(MainActivity.this, "API Error: " + result, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 listAdapter.hideAppLoader(false, false);
             }

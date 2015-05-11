@@ -138,14 +138,19 @@ public class ThemeManager {
         if (themePrefKey==null)
             return getTheme(prefs.getString("appthemepref", "reddit_classic"));
 
-        return getTheme(prefs.getString(themePrefKey, prefs.getString("appthemepref", "reddit_classic")));
+        String themeKey = prefs.getString(themePrefKey, "reddit_classic");
+
+        if (!themes.has(themeKey) && !customThemes.has(themeKey))
+            return getTheme(prefs.getString("appthemepref", "reddit_classic"));
+
+        return getTheme(prefs.getString(themePrefKey, "reddit_classic"));
     }
 
     public boolean isThemeEditable(String key){
-        if (customThemes.has(key)){
-            return true;
+        if (!customThemes.has(key)) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     private void loadThemes(){

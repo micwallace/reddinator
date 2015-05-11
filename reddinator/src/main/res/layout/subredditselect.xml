@@ -4,82 +4,18 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/widgetpref"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:background="#EFF7FF"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/sortselect"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="left"
-            android:layout_weight="50"
-            android:background="#EFF7FF"
-            android:gravity="center_vertical"
-            android:paddingLeft="14dp"
-            android:text="@string/sort_hot"
-            android:textColor="#FF4500" />
-
-        <TextView
-            android:id="@+id/widgetprefbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="50"
-            android:drawablePadding="2dp"
-            android:gravity="right|center_vertical"
-            android:paddingRight="2dp"
-            android:text="@string/widget_prefs"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#336699" />
-
-        <IconTextView
-            android:id="@+id/feedprefsicon"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:gravity="right|center_vertical"
-            android:text="{fa-wrench}"
-            android:shadowColor="#22000000"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="3"
-            android:padding="2dp"
-            android:textSize="28dp"
-            android:textColor="#5F99CF" />
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/sublist"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/srtoolbar"
-        android:background="#FFF"/>
-
-    <ListView
-        android:id="@+id/multilist"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/srtoolbar"
-        android:background="#FFF"
-        android:visibility="gone"/>
-
     <RelativeLayout
         android:id="@+id/srtoolbar"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/widgetpref"
+        android:layout_alignParentTop="true"
         android:background="#CEE3F8">
 
         <Button
             android:id="@+id/addsrbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFFFF"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:text="@string/view_all"
@@ -89,20 +25,46 @@
             android:id="@+id/importsrbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFFFF"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/addsrbutton"
             android:text="@string/sr_import"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/textView1"
+        <Button
+            android:id="@+id/sortselect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="14dp"
-            android:text="@string/my_subreddits"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:backgroundTint="#FFFFFFFF"
+            android:gravity="center_vertical"
+            android:text="@string/sort_hot"
+            android:textColor="#ffd72900" />
     </RelativeLayout>
+
+    <com.viewpagerindicator.TabPageIndicator
+        android:id="@+id/tabs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/srtoolbar"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tabs">
+
+        <ListView
+            android:id="@+id/sublist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#FFF"/>
+
+        <ListView
+            android:id="@+id/multilist"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#FFF"
+            android:visibility="gone"/>
+    </android.support.v4.view.ViewPager>
 
 </RelativeLayout>

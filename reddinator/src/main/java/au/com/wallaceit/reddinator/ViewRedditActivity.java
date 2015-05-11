@@ -160,10 +160,7 @@ public class ViewRedditActivity extends FragmentActivity {
     private void updateTheme(){
         //if (prefs.getString("widgetthemepref", "1").equals("1")) {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
-        tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color"))); // set light theme
-        /*} else {
-            tabsIndicator.setBackgroundColor(Color.parseColor("#5F99CF")); // set dark theme
-        }*/
+        tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
     }
 
     public void onResume(){
@@ -449,10 +446,11 @@ public class ViewRedditActivity extends FragmentActivity {
         task.execute();
     }
 
-    class VoteTask extends AsyncTask<String, Integer, String> {
+    class VoteTask extends AsyncTask<String, Integer, Boolean> {
         private String redditid;
         private int direction;
         private int feedposition;
+        private RedditData.RedditApiException exception;
 
         public VoteTask(int position, String id, int dir) {
             redditid = id;
@@ -461,51 +459,46 @@ public class ViewRedditActivity extends FragmentActivity {
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected Boolean doInBackground(String... strings) {
             try {
                 return global.mRedditData.vote(redditid, direction);
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                return e.getMessage();
+                return false;
             }
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Boolean result) {
             ViewRedditActivity.this.setTitleText("Reddinator"); // reset title
             voteinprogress = false;
-            switch (result) {
-                case "OK":
-                    curvote = direction;
-                    switch (direction) {
-                        case -1:
-                            upvote.setIcon(R.drawable.upvote);
-                            downvote.setIcon(R.drawable.downvote_active);
-                            setUpdateRecord("false");
-                            break;
+            if (result) {
+                curvote = direction;
+                switch (direction) {
+                    case -1:
+                        upvote.setIcon(R.drawable.upvote);
+                        downvote.setIcon(R.drawable.downvote_active);
+                        setUpdateRecord("false");
+                        break;
 
-                        case 0:
-                            upvote.setIcon(R.drawable.upvote);
-                            downvote.setIcon(R.drawable.downvote);
-                            setUpdateRecord("null");
-                            break;
+                    case 0:
+                        upvote.setIcon(R.drawable.upvote);
+                        downvote.setIcon(R.drawable.downvote);
+                        setUpdateRecord("null");
+                        break;
 
-                        case 1:
-                            upvote.setIcon(R.drawable.upvote_active);
-                            downvote.setIcon(R.drawable.downvote);
-                            setUpdateRecord("true");
-                            break;
-                    }
-                    break;
-                case "LOGIN":
-                    global.mRedditData.initiateLogin(ViewRedditActivity.this);
-                    break;
-                default:
-                    // show error
-                    Toast.makeText(ViewRedditActivity.this, result, Toast.LENGTH_LONG).show();
-                    break;
+                    case 1:
+                        upvote.setIcon(R.drawable.upvote_active);
+                        downvote.setIcon(R.drawable.downvote);
+                        setUpdateRecord("true");
+                        break;
+                }
+            } else {
+                // check login required
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this);
+                // show error
+                Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
-
         }
 
         private void setUpdateRecord(String val) {
