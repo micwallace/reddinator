@@ -162,9 +162,9 @@ public class RedditData {
         return getRedditJsonObject(url, false);
     }
 
-    public JSONArray getRedditFeed(String subreddit, String sort, int limit, String afterid) {
+    public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) {
         boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + (subreddit.equals("Front Page") ? "" : "/r/" + subreddit) + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed = new JSONArray();
         try {

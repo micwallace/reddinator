@@ -123,7 +123,7 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
-            String curFeed = prefs.getString("currentfeed-" + appWidgetId, "technology");
+            String curFeed = global.getSubredditManager().getCurrentFeedName(appWidgetId);
             views.setTextViewText(R.id.subreddittxt, curFeed);
             views.setTextColor(R.id.subreddittxt, themeColors.get("header_text"));
 

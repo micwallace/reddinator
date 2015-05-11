@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.PagerTitleStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -53,12 +52,14 @@ import com.viewpagerindicator.TabPageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class SubredditSelectActivity extends Activity {
     ArrayAdapter<String> mListAdapter;
+    ArrayAdapter<String> mMultiAdapter;
     private ArrayList<String> personalList;
     SharedPreferences mSharedPreferences;
     GlobalObjects global;
@@ -83,7 +84,7 @@ public class SubredditSelectActivity extends Activity {
 
         // get subreddit list and set adapter
         personalList = global.getSubredditManager().getSubreddits();
-        mListAdapter = new MyRedditsAdapter(this, personalList);
+        mListAdapter = new MySubredditsAdapter(this, personalList);
         subList = (ListView) findViewById(R.id.sublist);
         subList.setAdapter(mListAdapter);
         subList.setTextFilterEnabled(true);
@@ -91,7 +92,8 @@ public class SubredditSelectActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String subreddit = ((TextView) view.findViewById(R.id.subreddit_name)).getText().toString();
-                setSubredditAndFinish(subreddit);
+                global.getSubredditManager().setFeedSubreddit(mAppWidgetId, subreddit);
+                updateFeedAndFinish();
                 //System.out.println(sreddit+" selected");
             }
         });
@@ -103,10 +105,32 @@ public class SubredditSelectActivity extends Activity {
         });
         // get multi list and set adapter
         //personalList = global.getPersonalList();
-        //mListAdapter = new MyRedditsAdapter(this, personalList);
+        mMultiAdapter = new MyMultisAdapter(this, global.getSubredditManager().getMultiNames());
         multiList = (ListView) findViewById(R.id.multilist);
-        //multiList.setAdapter(mListAdapter);
+        multiList.setAdapter(mMultiAdapter);
         multiList.setTextFilterEnabled(true);
+        multiList.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                String multiname = ((TextView) view.findViewById(R.id.multireddit_name)).getText().toString();
+                JSONObject multiObj = global.getSubredditManager().getMultiData(multiname);
+                try {
+                    String name = multiObj.getString("display_name");
+                    String path = multiObj.getString("path");
+                    global.getSubredditManager().setFeed(mAppWidgetId, name, path, true);
+                    updateFeedAndFinish();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(SubredditSelectActivity.this, "Error setting multi.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        mMultiAdapter.sort(new Comparator<String>() {
+            @Override
+            public int compare(String s, String t1) {
+                return s.compareToIgnoreCase(t1);
+            }
+        });
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -238,21 +262,18 @@ public class SubredditSelectActivity extends Activity {
             personalList = global.getSubredditManager().getSubreddits();
             mListAdapter.notifyDataSetChanged();
         } else if (resultCode == ViewAllSubredditsActivity.RESULT_SET_SUBREDDIT) {
-            setSubredditAndFinish(data.getStringExtra("subreddit"));
+            global.getSubredditManager().setFeedSubreddit(mAppWidgetId, data.getStringExtra("subreddit"));
+            updateFeedAndFinish();
         }
     }
 
-    private void setSubredditAndFinish(String subreddit) {
-        // save preference
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
-        Editor editor = prefs.edit();
+    private void updateFeedAndFinish() {
 
         if (mAppWidgetId != 0) {
-            editor.putString("currentfeed-" + mAppWidgetId, subreddit);
             // refresh widget and close activity (NOTE: put in function)
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
             RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
-            views.setTextViewText(R.id.subreddittxt, subreddit);
+            views.setTextViewText(R.id.subreddittxt, global.getSubredditManager().getCurrentFeedName(mAppWidgetId));
             views.setViewVisibility(R.id.srloader, View.VISIBLE);
             views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
             // bypass cache if service not loaded
@@ -260,11 +281,8 @@ public class SubredditSelectActivity extends Activity {
             appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
             appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
         } else {
-            editor.putString("currentfeed-app", subreddit);
             setResult(2); // update feed prefs + reload feed
         }
-        // save the preference
-        editor.apply();
         finish();
     }
 
@@ -627,6 +645,7 @@ public class SubredditSelectActivity extends Activity {
                                         }
                                     }).show();
                         } else {
+                            global.mSubManager.addMultis(list, clearlist);
                             mListAdapter.notifyDataSetChanged();
                         }
                     }
@@ -637,21 +656,30 @@ public class SubredditSelectActivity extends Activity {
     }
 
     // list adapter
-    class MyRedditsAdapter extends ArrayAdapter<String> {
+    class MySubredditsAdapter extends ArrayAdapter<String> {
         private LayoutInflater inflater;
 
-        public MyRedditsAdapter(Context context, ArrayList<String> objects) {
+        public MySubredditsAdapter(Context context, ArrayList<String> objects) {
             super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = inflater.inflate(R.layout.myredditlistitem, parent, false);
             super.getView(position, convertView, parent);
+            ViewHolder viewHolder;
+            if (convertView == null || convertView.getTag() == null) {
+                // inflate new view
+                convertView = inflater.inflate(R.layout.myredditlistitem, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) convertView.findViewById(R.id.subreddit_name);
+                viewHolder.deleteIcon = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
             // setup the row
-            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(getItem(position));
-            convertView.findViewById(R.id.subreddit_delete_btn).setOnClickListener(new OnClickListener() {
+            viewHolder.name.setText(getItem(position));
+            viewHolder.deleteIcon.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
@@ -660,7 +688,66 @@ public class SubredditSelectActivity extends Activity {
                     mListAdapter.notifyDataSetChanged();
                 }
             });
+            convertView.setTag(viewHolder);
+
             return convertView;
+        }
+
+        class ViewHolder {
+            TextView name;
+            IconTextView deleteIcon;
+        }
+    }
+
+    class MyMultisAdapter extends ArrayAdapter<String> {
+        private LayoutInflater inflater;
+
+        public MyMultisAdapter(Context context, ArrayList<String> objects) {
+            super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            super.getView(position, convertView, parent);
+            ViewHolder viewHolder;
+            if (convertView == null || convertView.getTag() == null) {
+                // inflate new view
+                convertView = inflater.inflate(R.layout.mymultilistitem, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) convertView.findViewById(R.id.multireddit_name);
+                viewHolder.deleteIcon = (IconTextView) convertView.findViewById(R.id.multi_delete_btn);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+            JSONObject multiObj = global.getSubredditManager().getMultiData(getItem(position));
+            String displayName;
+            try {
+                displayName = multiObj.getString("display_name");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+            // setup the row
+            viewHolder.name.setText(displayName);
+            viewHolder.deleteIcon.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String mreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.multireddit_name)).getText().toString();
+                    //personalList.remove(mreddit);
+                    global.getSubredditManager().removeMulti(mreddit);
+                    mListAdapter.notifyDataSetChanged();
+                }
+            });
+
+            convertView.setTag(viewHolder);
+
+            return convertView;
+        }
+
+        class ViewHolder {
+            TextView name;
+            IconTextView deleteIcon;
         }
     }
 }

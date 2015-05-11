@@ -18,6 +18,7 @@
 package au.com.wallaceit.reddinator;
 
 import android.content.SharedPreferences;
+import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -25,7 +26,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -56,6 +59,58 @@ public class SubredditManager {
         }
     }
 
+    public String getCurrentFeedName(int feedId){
+        try {
+            return getCurrentFeed(feedId).getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getCurrentFeedPath(int feedId){
+        try {
+            return getCurrentFeed(feedId).getString("path");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public boolean isFeedMulti(int feedId){
+        try {
+            return getCurrentFeed(feedId).getBoolean("is_multi");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void setFeed(int feedId, String name, String path, boolean isMulti){
+        JSONObject data = new JSONObject();
+        try {
+            data.put("name", name);
+            data.put("path", path);
+            data.put("is_multi", isMulti);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("currentfeed-"+String.valueOf(feedId), data.toString());
+        editor.apply();
+    }
+
+    public void setFeedSubreddit(int feedId, String subreddit){
+        boolean isMulti = (subreddit.equals("Front Page") || subreddit.equals("all"));
+        setFeed(feedId, subreddit, subreddit.equals("Front Page")?"":"/r/"+subreddit, isMulti);
+    }
+
+    private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
+
+    private JSONObject getCurrentFeed(int feedId) throws JSONException {
+        return new JSONObject(prefs.getString("currentfeed-"+String.valueOf(feedId), defaultFeed));
+    }
+
     private void saveSubs(){
         SharedPreferences.Editor editor = prefs.edit();
         Set<String> set = new HashSet<>();
@@ -83,18 +138,61 @@ public class SubredditManager {
         subreddits.remove(subredditName);
     }
 
+    public JSONObject getMultis(){
+        return multis;
+    }
 
+    public ArrayList<String> getMultiNames(){
+        Iterator iterator = multis.keys();
+        ArrayList<String> multiList = new ArrayList<>();
+        while (iterator.hasNext()){
+            multiList.add(iterator.next().toString());
+        }
+        return multiList;
+    }
+
+    public JSONObject getMultiData(String multiName){
+        try {
+            return multis.getJSONObject(multiName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     public void addMulti(JSONObject multiObj){
-
+        addMultiData(multiObj);
+        saveMultis();
     }
 
     public void addMultis(JSONArray subsArray, boolean clearCurrent){
+        if (clearCurrent)
+            multis = new JSONObject();
 
+        for (int i = 0; i<subsArray.length(); i++){
+            try {
+                addMultiData(subsArray.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        saveMultis();
     }
 
     public void removeMulti(String key){
+        multis.remove(key);
+        saveMultis();
+    }
 
+    private void addMultiData(JSONObject multiObj){
+        try {
+            JSONObject data =  multiObj.getJSONObject("data");
+            String name = data.getString("name");
+            multis.put(name, data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveMultis(){

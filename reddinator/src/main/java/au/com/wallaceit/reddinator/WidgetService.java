@@ -125,8 +125,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
-        String subreddit = mSharedPreferences.getString("currentfeed-" + appWidgetId, "");
-        showItemSubreddit = (subreddit!=null && (subreddit.equals("Front Page") || subreddit.equals("all")));
+        showItemSubreddit = global.getSubredditManager().isFeedMulti(appWidgetId);
     }
 
     @Override
@@ -386,7 +385,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     private void loadReddits(boolean loadMore) {
-        String curFeed = mSharedPreferences.getString("currentfeed-" + appWidgetId, "technology");
+        String curFeed = global.getSubredditManager().getCurrentFeedPath(appWidgetId);
         String sort = mSharedPreferences.getString("sort-" + appWidgetId, "hot");
         // Load more or initial load/reload?
         if (loadMore) {

@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
         });
 
         // set the current subreddit
-        srtext.setText(prefs.getString("currentfeed-app", "technology"));
+        srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
 
         // Trigger reload?
         if (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2)
@@ -215,7 +215,7 @@ public class MainActivity extends Activity {
                 break;
 
             case 2: // reload feed prefs and update feed, subreddit has changed
-                srtext.setText(PreferenceManager.getDefaultSharedPreferences(context).getString("currentfeed-app", "technology"));
+                srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
                 listAdapter.loadFeedPrefs();
                 listAdapter.reloadReddits();
                 break;
@@ -324,8 +324,7 @@ public class MainActivity extends Activity {
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
-            String subreddit = prefs.getString("currentfeed-app", "");
-            showItemSubreddit = (subreddit!=null && (subreddit.equals("Front Page") || subreddit.equals("all")));
+            showItemSubreddit = global.getSubredditManager().isFeedMulti(0);
         }
 
         @Override
@@ -673,7 +672,7 @@ public class MainActivity extends Activity {
 
             @Override
             protected Long doInBackground(Void... none) {
-                String curFeed = mSharedPreferences.getString("currentfeed-app", "technology");
+                String curFeed = global.getSubredditManager().getCurrentFeedPath(0);
                 // System.out.println("Current feed: " + curFeed);
                 String sort = mSharedPreferences.getString("sort-app", "hot");
 
