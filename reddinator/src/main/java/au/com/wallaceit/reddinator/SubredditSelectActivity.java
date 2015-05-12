@@ -246,10 +246,8 @@ public class SubredditSelectActivity extends Activity {
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         //findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
         tabs.setBackgroundColor(headerColor);
-        tabs.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
-        /*if (actionBar!=null)
-            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));*/
     }
 
     @Override

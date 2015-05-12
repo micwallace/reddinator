@@ -11,6 +11,7 @@ body {
 }
 .comment_box {
     margin: 10px 0 5px 0;
+    padding-bottom:5px;
     position: relative;
 }
 .more_box {
@@ -47,6 +48,8 @@ body {
     text-align:center;
     margin-left:6px;
     margin-right:-2px;
+    margin-bottom:2px;
+    margin-top:2px;
 }
 .reply_expand h5 {
     float:left;

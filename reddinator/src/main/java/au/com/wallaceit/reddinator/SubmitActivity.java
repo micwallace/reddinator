@@ -3,7 +3,6 @@ package au.com.wallaceit.reddinator;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
@@ -39,7 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class SubmitActivity extends Activity implements ActionBar.TabListener {
+public class SubmitActivity extends Activity {
 
     private GlobalObjects global;
     private AutoCompleteTextView subreddit;
@@ -48,7 +48,6 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
     private EditText title;
     private EditText link;
     private EditText text;
-    private SimpleTabsWidget tabs;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -113,13 +112,13 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new SubmitPagerAdapter());
         LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
-        tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
+        SimpleTabsWidget tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
         tabs.setViewPager(pager);
 
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         tabs.setBackgroundColor(headerColor);
-        tabs.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
         Button submitButton = (Button) findViewById(R.id.submit_button);
@@ -172,14 +171,14 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
 
         @Override
         public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == ((View) arg1);
+            return arg0 == arg1;
         }
     }
 
     private class SafeLinkMethod extends LinkMovementMethod {
 
         @Override
-        public boolean onTouchEvent( TextView widget, Spannable buffer, MotionEvent event ) {
+        public boolean onTouchEvent( @NonNull TextView widget, @NonNull Spannable buffer, @NonNull MotionEvent event ) {
             try {
                 return super.onTouchEvent( widget, buffer, event ) ;
             } catch( Exception ex ) {
@@ -219,24 +218,6 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
     }
 
     @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        if (tab.getText().equals("Link")){
-            text.setVisibility(View.GONE);
-            link.setVisibility(View.VISIBLE);
-        } else {
-            link.setVisibility(View.GONE);
-            text.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -272,7 +253,7 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
 
         @Override
         public Filter getFilter() {
-            Filter filter = new Filter() {
+            return new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults filterResults = new FilterResults();
@@ -299,7 +280,6 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
                         notifyDataSetInvalidated();
                     }
                 }};
-            return filter;
         }
     }
 
@@ -368,8 +348,8 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
                 }
                 System.out.println(jsonResult.toString());
 
-                String id = "";
-                String permalink = "";
+                String id;
+                String permalink;
                 try {
                     JSONObject data = jsonResult.getJSONObject("data");
                     id = data.getString("name");

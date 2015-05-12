@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +94,7 @@ public class RedditData {
         username = sharedPrefs.getString("username", "");
         inboxCount = sharedPrefs.getInt("inbox_count", 0);
         lastUpdateTime = sharedPrefs.getLong("last_info_update", 0);
-        if (!tokenStr.equals("")) {
+        if (tokenStr!=null && !tokenStr.equals("")) {
             try {
                 oauthToken = new JSONObject(tokenStr);
             } catch (JSONException e) {
@@ -121,7 +120,7 @@ public class RedditData {
 
     // NON-AUTHED REQUESTS
     public JSONArray getSubreddits() throws RedditApiException {
-        JSONArray subreddits = new JSONArray();
+        JSONArray subreddits;
         String url = STANDARD_ENDPOINT + "/subreddits/popular.json?limit=50";
         try {
             subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
@@ -133,7 +132,7 @@ public class RedditData {
     }
 
     public JSONArray getSubredditSearch(String query) throws RedditApiException {
-        JSONArray subreddits = new JSONArray();
+        JSONArray subreddits;
         String url = STANDARD_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
             subreddits = getRedditJsonObject(url, false).getJSONObject("data").getJSONArray("children");
@@ -297,7 +296,6 @@ public class RedditData {
             throw new RedditApiException("Reddit Login Required", true);
         }
 
-        String result;
         JSONObject resultjson;
 
         try {
@@ -331,7 +329,6 @@ public class RedditData {
             throw new RedditApiException("Reddit Login Required", true);
         }
 
-        String result;
         JSONObject resultjson;
 
         try {
@@ -364,7 +361,6 @@ public class RedditData {
             throw new RedditApiException("Reddit Login Required", true);
         }
 
-        String result;
         JSONObject resultjson;
 
         try {
@@ -395,7 +391,7 @@ public class RedditData {
         }
 
         String url = OAUTH_ENDPOINT + "/subreddits/mine/subscriber.json?limit=100&show=all";
-        JSONArray resultjson = new JSONArray();
+        JSONArray resultjson;
         try {
             resultjson = getRedditJsonObject(url, true).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
@@ -414,6 +410,44 @@ public class RedditData {
 
         return getRedditJsonArray(url, true);
     }
+
+    /*public JSONArray cloneMulti() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }
+
+    public JSONArray addMulti() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }
+
+    public JSONArray editMulti() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }
+
+    public JSONArray deleteMulti() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }
+
+    public JSONArray addMultiSubreddit() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }
+
+    public JSONArray removeMultiSubreddit() throws RedditApiException {
+        if (!isLoggedIn()) {
+            throw new RedditApiException("Reddit Login Required", true);
+        }
+    }*/
+
+
 
     public JSONObject submit(String subreddit, boolean isLink, String title, String content) throws RedditApiException {
         if (!isLoggedIn()) {
@@ -482,7 +516,7 @@ public class RedditData {
 
     // HTTP Get Request
     private String getJSONFromUrl(String url, boolean useAuth) throws RedditApiException {
-        String json = null;
+        String json;
         // create client if null
         if (httpclient == null) {
             createHttpClient();
@@ -505,18 +539,7 @@ public class RedditData {
             is = httpEntity.getContent();
             int errorCode = httpResponse.getStatusLine().getStatusCode();
             if (errorCode != HttpStatus.SC_OK) {
-                String errorMsg = "Unknown Error";
-                if (is!=null) {
-                    String response = getStringFromStream(is);
-                    System.err.println(response);
-                    final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-                    final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
-                    Matcher matcher = patternh2.matcher(response);
-                    errorMsg = matcher.group(1);
-                    matcher = patternh3.matcher(response);
-                    if (!matcher.group(1).equals(""))
-                        errorMsg += ", " + matcher.group(1);
-                }
+                String errorMsg = getHttpErrorText(is);
                 throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403);
             }
         } catch (IOException e) {
@@ -558,18 +581,7 @@ public class RedditData {
             is = httpEntity.getContent();
             int errorCode = httpResponse.getStatusLine().getStatusCode();
             if (errorCode != HttpStatus.SC_OK) {
-                String errorMsg = "Unknown Error";
-                if (is!=null) {
-                    String response = getStringFromStream(is);
-                    System.err.println(response);
-                    final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-                    final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
-                    Matcher matcher = patternh2.matcher(response);
-                    errorMsg = matcher.group(1);
-                    matcher = patternh3.matcher(response);
-                    if (!matcher.group(1).equals(""))
-                        errorMsg += ", " + matcher.group(1);
-                }
+                String errorMsg = getHttpErrorText(is);
                 throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403);
             }
         } catch (IOException e) {
@@ -586,6 +598,66 @@ public class RedditData {
         }
         // return json response
         return jObj;
+    }
+
+    // HTTPS POST Request
+    private JSONObject getJSONFromPutOrDelete(String url, String method) throws RedditApiException {
+        JSONObject jObj;
+        String json;
+        InputStream is;
+        // create client if null
+        if (httpclient == null) {
+            createHttpClient();
+        }
+        try {
+            HttpPost httppost = new HttpPost(url);
+            if (isLoggedIn()) {
+                if (isTokenExpired()) {
+                    refreshToken();
+                }
+                String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
+                //System.out.println("Logged In, setting token header: " + tokenStr);
+                httppost.addHeader("Authorization", tokenStr);
+            }
+
+            HttpResponse httpResponse = httpclient.execute(httppost);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+            int errorCode = httpResponse.getStatusLine().getStatusCode();
+            if (errorCode != HttpStatus.SC_OK) {
+                String errorMsg = getHttpErrorText(is);
+                throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Error: "+e.getMessage());
+        }
+        json = getStringFromStream(is);
+        // try parse the string to a JSON object
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Error: "+e.getMessage());
+        }
+        // return json response
+        return jObj;
+    }
+
+    private String getHttpErrorText(InputStream is){
+        String errorMsg = "Unknown Error";
+        if (is!=null) {
+            String response = getStringFromStream(is);
+            System.err.println(response);
+            final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+            final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
+            Matcher matcher = patternh2.matcher(response);
+            errorMsg = matcher.group(1);
+            matcher = patternh3.matcher(response);
+            if (!matcher.group(1).equals(""))
+                errorMsg += ", " + matcher.group(1);
+        }
+        return errorMsg;
     }
 
     private String getStringFromStream(InputStream is) {
@@ -747,11 +819,6 @@ public class RedditData {
         edit.putString("username", username);
         edit.putInt("inbox_count", inboxCount);
         edit.putLong("last_info_update", lastUpdateTime);
-        // TEMP: Flush out old storage
-        edit.remove("uname");
-        edit.remove("pword");
-        edit.remove("cook");
-        edit.remove("modhash");
         edit.apply();
     }
 

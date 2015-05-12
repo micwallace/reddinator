@@ -148,7 +148,7 @@ public class ViewRedditActivity extends FragmentActivity {
         //if (prefs.getString("widgetthemepref", "1").equals("1")) {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
-        tabsIndicator.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
     }
 
