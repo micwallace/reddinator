@@ -46,11 +46,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
-import com.viewpagerindicator.TabPageIndicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,7 +75,7 @@ public class ViewRedditActivity extends FragmentActivity {
     private BroadcastReceiver inboxReceiver;
     private ViewPager viewPager;
     private RedditPageAdapter pageAdapter;
-    private TabPageIndicator tabsIndicator;
+    private SimpleTabsWidget tabsIndicator;
     public ThemeManager.Theme theme;
 
     /**
@@ -108,27 +108,14 @@ public class ViewRedditActivity extends FragmentActivity {
         viewPager = (ViewPager)findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
-        tabsIndicator = (TabPageIndicator) findViewById(R.id.tabs);
+        LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
+        tabsIndicator = new SimpleTabsWidget(ViewRedditActivity.this, tabLayout);
         tabsIndicator.setViewPager(viewPager);
         if (prefs.getBoolean("commentsfirstpref", false)) {
             viewPager.setCurrentItem(1);
         } else {
             viewPager.setCurrentItem(0);
         }
-        tabsIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                handleTabSwitch(position);
-            }
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
         // theme
         updateTheme();
         // setup needed members
@@ -161,6 +148,8 @@ public class ViewRedditActivity extends FragmentActivity {
         //if (prefs.getString("widgetthemepref", "1").equals("1")) {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        tabsIndicator.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
     }
 
     public void onResume(){

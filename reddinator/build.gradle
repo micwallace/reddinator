@@ -47,6 +47,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'org.mod4j.org.apache.commons:lang:2.1.0'
     compile 'com.joanzapata.android:android-iconify:1.0.9'
-    compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'com.larswerkman:HoloColorPicker:1.5'
 }

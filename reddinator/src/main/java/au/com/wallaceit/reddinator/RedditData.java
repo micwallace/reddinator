@@ -505,16 +505,18 @@ public class RedditData {
             is = httpEntity.getContent();
             int errorCode = httpResponse.getStatusLine().getStatusCode();
             if (errorCode != HttpStatus.SC_OK) {
-                String response = getStringFromStream(is);
-                System.err.println(response);
-                String errorMsg;
-                final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-                final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
-                Matcher matcher = patternh2.matcher(response);
-                errorMsg = matcher.group(1);
-                matcher = patternh3.matcher(response);
-                if (!matcher.group(1).equals(""))
-                    errorMsg += ", "+matcher.group(1);
+                String errorMsg = "Unknown Error";
+                if (is!=null) {
+                    String response = getStringFromStream(is);
+                    System.err.println(response);
+                    final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+                    final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
+                    Matcher matcher = patternh2.matcher(response);
+                    errorMsg = matcher.group(1);
+                    matcher = patternh3.matcher(response);
+                    if (!matcher.group(1).equals(""))
+                        errorMsg += ", " + matcher.group(1);
+                }
                 throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403);
             }
         } catch (IOException e) {
@@ -556,15 +558,18 @@ public class RedditData {
             is = httpEntity.getContent();
             int errorCode = httpResponse.getStatusLine().getStatusCode();
             if (errorCode != HttpStatus.SC_OK) {
-                String response = getStringFromStream(is);
-                String errorMsg;
-                final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-                final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
-                Matcher matcher = patternh2.matcher(response);
-                errorMsg = matcher.group(1);
-                matcher = patternh3.matcher(response);
-                if (!matcher.group(1).equals(""))
-                    errorMsg += ", "+matcher.group(1);
+                String errorMsg = "Unknown Error";
+                if (is!=null) {
+                    String response = getStringFromStream(is);
+                    System.err.println(response);
+                    final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+                    final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
+                    Matcher matcher = patternh2.matcher(response);
+                    errorMsg = matcher.group(1);
+                    matcher = patternh3.matcher(response);
+                    if (!matcher.group(1).equals(""))
+                        errorMsg += ", " + matcher.group(1);
+                }
                 throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403);
             }
         } catch (IOException e) {
@@ -686,6 +691,7 @@ public class RedditData {
                 oauthToken.put("expires_at", expires_at);
             } catch (JSONException e) {
                 e.printStackTrace();
+                throw new RedditApiException("OAuth Error: "+e.getMessage());
             }
             // try to retrieve user info & save, if exception thrown, just make sure we save token
             try {
@@ -721,7 +727,7 @@ public class RedditData {
                 oauthToken.put("expires_at", (epoch + expires_in));
             } catch (JSONException e) {
                 e.printStackTrace();
-                System.out.println("oauth refresh result error: " + e.toString());
+                throw new RedditApiException("OAuth Error: "+e.getMessage());
             }
             // save oauth token
             saveUserData();

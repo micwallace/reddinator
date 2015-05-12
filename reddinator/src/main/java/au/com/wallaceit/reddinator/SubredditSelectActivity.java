@@ -48,7 +48,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
-import com.viewpagerindicator.TabPageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,7 +71,7 @@ public class SubredditSelectActivity extends Activity {
     private int mAppWidgetId;
     private ListView subList;
     private ListView multiList;
-    private TabPageIndicator tabs;
+    private SimpleTabsWidget tabs;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +145,8 @@ public class SubredditSelectActivity extends Activity {
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new SubredditsPagerAdapter());
 
-        tabs = (TabPageIndicator) findViewById(R.id.tabs);
+        LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
+        tabs = new SimpleTabsWidget(SubredditSelectActivity.this, tabsLayout);
         tabs.setViewPager(pager);
 
         Button addBtn = (Button) findViewById(R.id.addsrbutton);
@@ -246,6 +246,8 @@ public class SubredditSelectActivity extends Activity {
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         //findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
         tabs.setBackgroundColor(headerColor);
+        tabs.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
         /*if (actionBar!=null)
             actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));*/
     }

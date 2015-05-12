@@ -38,11 +38,12 @@
             android:backgroundTint="#FFFFFFFF"
             android:gravity="center_vertical"
             android:text="@string/sort_hot"
-            android:textColor="#ffd72900" />
+            android:textColor="#FF4500" />
     </RelativeLayout>
 
-    <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/tabs"
+    <include
+        android:id="@+id/tab_widget"
+        layout="@layout/tabs"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/srtoolbar"/>
@@ -51,7 +52,7 @@
         android:id="@+id/pager"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/tabs">
+        android:layout_below="@+id/tab_widget">
 
         <ListView
             android:id="@+id/sublist"

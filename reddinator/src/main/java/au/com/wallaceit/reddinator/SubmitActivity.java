@@ -8,16 +8,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
     private EditText title;
     private EditText link;
     private EditText text;
+    private SimpleTabsWidget tabs;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -99,24 +101,26 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
         }
 
         // get actionbar and set home button, pad the icon
-        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
-        int headerColor = Color.parseColor(theme.getValue("header_color"));
-        //int headerTextColor = Color.parseColor(theme.getValue("header_text"));
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setStackedBackgroundDrawable(new ColorDrawable(headerColor));
-            // add tab buttons
-            actionBar.addTab(actionBar.newTab().setText("Link").setTabListener(SubmitActivity.this));
-            actionBar.addTab(actionBar.newTab().setText("Text").setTabListener(SubmitActivity.this));
-
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-            actionBar.selectTab(actionBar.getTabAt(0));
         }
         ImageView view = (ImageView) findViewById(android.R.id.home);
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
         }
+
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new SubmitPagerAdapter());
+        LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
+        tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
+        tabs.setViewPager(pager);
+
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        tabs.setBackgroundColor(headerColor);
+        tabs.setInidicatorColor(Color.parseColor("#FF4500"));
+        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
         Button submitButton = (Button) findViewById(R.id.submit_button);
         submitButton.setBackgroundColor(headerColor);
@@ -131,6 +135,45 @@ public class SubmitActivity extends Activity implements ActionBar.TabListener {
                 }
             }
         });
+    }
+
+    class SubmitPagerAdapter extends PagerAdapter {
+
+        public Object instantiateItem(View collection, int position) {
+
+            int resId = 0;
+            switch (position) {
+                case 0:
+                    resId = R.id.link;
+                    break;
+                case 1:
+                    resId = R.id.text;
+                    break;
+            }
+            return findViewById(resId);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Link";
+                case 1:
+                    return "Text";
+            }
+
+            return null;
+        }
+
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == ((View) arg1);
+        }
     }
 
     private class SafeLinkMethod extends LinkMovementMethod {
