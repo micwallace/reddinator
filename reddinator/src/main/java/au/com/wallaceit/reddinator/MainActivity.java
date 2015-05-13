@@ -665,6 +665,7 @@ public class MainActivity extends Activity {
         class FeedLoader extends AsyncTask<Void, Integer, Long> {
 
             private Boolean loadMore;
+            private RedditData.RedditApiException exception;
 
             public FeedLoader(Boolean loadmore) {
                 loadMore = loadmore;
@@ -675,46 +676,50 @@ public class MainActivity extends Activity {
                 String curFeed = global.getSubredditManager().getCurrentFeedPath(0);
                 // System.out.println("Current feed: " + curFeed);
                 String sort = mSharedPreferences.getString("sort-app", "hot");
-
+                endOfFeed = false;
                 if (loadMore) {
                     // fetch 25 more after current last item and append to the list
-                    JSONArray tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
-                    if (!isError(tempData)) {
-                        if (tempData.length() == 0) {
-                            endOfFeed = true;
-                        } else {
-                            endOfFeed = false;
-                            int i = 0;
-                            while (i < tempData.length()) {
-                                try {
-                                    data.put(tempData.get(i));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                i++;
-                            }
-                            // save feed
-                            global.setFeed(prefs, 0, data);
-                        }
-                    } else {
+                    JSONArray tempData = null;
+                    try {
+                        tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+                    } catch (RedditData.RedditApiException e) {
+                        e.printStackTrace();
+                        exception = e;
                         return (long) 0;
                     }
-                } else {
-                    endOfFeed = false;
-                    // reloading
-                    int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                    JSONArray tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
-                    // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-                    if (!isError(tempArray)) {
-                        data = tempArray;
-                        if (data.length() == 0) {
-                            endOfFeed = true;
+                    if (tempData.length() == 0) {
+                        endOfFeed = true;
+                    } else {
+                        int i = 0;
+                        while (i < tempData.length()) {
+                            try {
+                                data.put(tempData.get(i));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            i++;
                         }
                         // save feed
                         global.setFeed(prefs, 0, data);
-                    } else {
+                    }
+                } else {
+                    // reloading
+                    int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
+                    JSONArray tempArray = null;
+                    try {
+                        tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
+                    } catch (RedditData.RedditApiException e) {
+                        e.printStackTrace();
+                        exception = e;
                         return (long) 0;
                     }
+                    // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
+                    data = tempArray;
+                    if (data.length() == 0) {
+                        endOfFeed = true;
+                    }
+                    // save feed
+                    global.setFeed(prefs, 0, data);
                 }
 
                 try {
@@ -737,27 +742,9 @@ public class MainActivity extends Activity {
                     }
                     listAdapter.notifyDataSetChanged();
                 } else {
+                    Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
                     hideAppLoader(false, true); // don't go to top of list and show error icon
                 }
-            }
-
-            // check if the array is an error array
-            private boolean isError(JSONArray tempArray) {
-                boolean error;
-                if (tempArray == null) {
-                    return true; // null error
-                }
-                if (tempArray.length() > 0) {
-                    try {
-                        error = tempArray.getString(0).equals("-1");
-                    } catch (JSONException e) {
-                        error = true;
-                        e.printStackTrace();
-                    }
-                } else {
-                    error = false; // empty array means no more feed items
-                }
-                return error;
             }
         }
 

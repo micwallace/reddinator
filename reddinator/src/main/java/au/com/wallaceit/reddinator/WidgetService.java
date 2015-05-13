@@ -31,6 +31,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
@@ -390,27 +391,30 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // Load more or initial load/reload?
         if (loadMore) {
             // fetch 25 more after current last item and append to the list
-            JSONArray tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
-            if (!isError(tempData)) {
-                if (tempData.length() == 0) {
-                    endOfFeed = true;
-                } else {
-                    endOfFeed = false;
-                    int i = 0;
-                    while (i < tempData.length()) {
-                        try {
-                            data.put(tempData.get(i));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        i++;
-                    }
-                    // Save feed data
-                    global.setFeed(mSharedPreferences, appWidgetId, data);
-                }
-            } else {
+            JSONArray tempData = null;
+            try {
+                tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
+            }
+            if (tempData.length() == 0) {
+                endOfFeed = true;
+            } else {
+                endOfFeed = false;
+                int i = 0;
+                while (i < tempData.length()) {
+                    try {
+                        data.put(tempData.get(i));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    i++;
+                }
+                // Save feed data
+                global.setFeed(mSharedPreferences, appWidgetId, data);
             }
         } else {
             endOfFeed = false;
@@ -419,19 +423,21 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // reload feed
             int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
             JSONArray tempArray;
-            tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
-            // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-            if (!isError(tempArray)) {
-                data = tempArray;
-                if (data.length() == 0) {
-                    endOfFeed = true;
-                }
-                // Save feed data
-                global.setFeed(mSharedPreferences, appWidgetId, data);
-            } else {
+            try {
+                tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
+                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
+            // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
+            data = tempArray;
+            if (data.length() == 0) {
+                endOfFeed = true;
+            }
+            // Save feed data
+            global.setFeed(mSharedPreferences, appWidgetId, data);
         }
         // set last item id for "loadmore use"
         // Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
@@ -452,25 +458,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             hideWidgetLoader(true, false); // go to top
         }
-    }
-
-    // check if the array is an error array
-    private boolean isError(JSONArray tempArray) {
-        boolean error;
-        if (tempArray == null) {
-            return true; // null error
-        }
-        if (tempArray.length() > 0) {
-            try {
-                error = tempArray.getString(0).equals("-1");
-            } catch (JSONException e) {
-                error = true;
-                e.printStackTrace();
-            }
-        } else {
-            error = false; // empty array means no more feed items
-        }
-        return error;
     }
 
     // hide appwidget loader
