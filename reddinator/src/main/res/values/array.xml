@@ -143,4 +143,48 @@
         <item>1800000</item>
         <item>0</item>
     </string-array>
+
+    <string-array name="multi_icons">
+        <item>art and design</item>
+        <item>ask</item>
+        <item>books</item>
+        <item>business</item>
+        <item>cars</item>
+        <item>comics</item>
+        <item>cute animals</item>
+        <item>diy</item>
+        <item>entertainment</item>
+        <item>food and drink</item>
+        <item>funny</item>
+        <item>games</item>
+        <item>grooming</item>
+        <item>health</item>
+        <item>life advice</item>
+        <item>military</item>
+        <item>models pinup</item>
+        <item>music</item>
+        <item>news</item>
+        <item>philosophy</item>
+        <item>pictures and gifs</item>
+        <item>science</item>
+        <item>shopping</item>
+        <item>sports</item>
+        <item>style</item>
+        <item>tech</item>
+        <item>travel</item>
+        <item>unusual stories</item>
+        <item>video</item>
+        <item>None</item>
+    </string-array>
+
+    <string-array name="multi_visibility">
+        <item>private</item>
+        <item>public</item>
+        <item>hidden</item>
+    </string-array>
+
+    <string-array name="multi_weights">
+        <item>classic</item>
+        <item>fresh</item>
+    </string-array>
 </resources>

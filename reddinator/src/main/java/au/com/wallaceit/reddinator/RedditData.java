@@ -51,7 +51,6 @@ import java.util.regex.Pattern;
 
 public class RedditData {
     private SharedPreferences sharedPrefs;
-    //private DefaultHttpClient httpClient;
     private OkHttpClient httpClient;
     private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
@@ -403,7 +402,7 @@ public class RedditData {
         return redditApiGetArray(url, true);
     }
 
-    public JSONObject cloneMulti(String name, String fromPath) throws RedditApiException {
+    public JSONObject copyMulti(String name, String fromPath) throws RedditApiException {
         checkLogin();
 
         String url;
@@ -431,12 +430,12 @@ public class RedditData {
         return redditApiPost(url);
     }
 
-    public JSONObject editMulti(String multiPathName, JSONObject multiObj) throws RedditApiException {
+    public JSONObject editMulti(String multiPath, JSONObject multiObj) throws RedditApiException {
         checkLogin();
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode("/me/m/" + multiPathName, "UTF-8")+"&?model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&?model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -445,12 +444,12 @@ public class RedditData {
         return redditApiPut(url);
     }
 
-    public JSONObject deleteMulti(String multiPathName) throws RedditApiException {
+    public JSONObject deleteMulti(String multiPath) throws RedditApiException {
         checkLogin();
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode("/me/m/" + multiPathName, "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -459,12 +458,12 @@ public class RedditData {
         return redditApiDelete(url);
     }
 
-    public JSONObject addMultiSubreddit(String multiPathName, String subredditName) throws RedditApiException {
+    public JSONObject addMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {
         checkLogin();
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode("/me/m/" + multiPathName, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -473,12 +472,12 @@ public class RedditData {
         return redditApiPut(url);
     }
 
-    public JSONObject removeMultiSubreddit(String multiPathName, String subredditName) throws RedditApiException {
+    public JSONObject removeMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {
         checkLogin();
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode("/me/m/" + multiPathName, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());

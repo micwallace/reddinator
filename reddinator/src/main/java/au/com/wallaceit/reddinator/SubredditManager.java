@@ -102,7 +102,7 @@ public class SubredditManager {
 
     public void setFeedSubreddit(int feedId, String subreddit){
         boolean isMulti = (subreddit.equals("Front Page") || subreddit.equals("all"));
-        setFeed(feedId, subreddit, subreddit.equals("Front Page")?"":"/r/"+subreddit, isMulti);
+        setFeed(feedId, subreddit, subreddit.equals("Front Page") ? "" : "/r/" + subreddit, isMulti);
     }
 
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
@@ -142,18 +142,38 @@ public class SubredditManager {
         return multis;
     }
 
-    public ArrayList<String> getMultiNames(){
+    public ArrayList<JSONObject> getMultiList(){
+        ArrayList<JSONObject> multiList = new ArrayList<>();
         Iterator iterator = multis.keys();
-        ArrayList<String> multiList = new ArrayList<>();
-        while (iterator.hasNext()){
-            multiList.add(iterator.next().toString());
+        JSONObject multiObj;
+        while(iterator.hasNext()){
+            try {
+                multiObj = multis.getJSONObject(iterator.next().toString());
+                multiList.add(multiObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return multiList;
     }
 
-    public JSONObject getMultiData(String multiName){
+    public ArrayList<String> getMultiSubreddits(String multiPath){
+
+        ArrayList<String> multiList = new ArrayList<>();
         try {
-            return multis.getJSONObject(multiName);
+            JSONArray multiSubs = multis.getJSONObject(multiPath).getJSONArray("subreddits");
+            for (int i=0; i<multiSubs.length(); i++){
+                multiList.add(multiSubs.getJSONObject(i).getString("name"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return multiList;
+    }
+
+    public JSONObject getMultiData(String multiPath){
+        try {
+            return multis.getJSONObject(multiPath);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -188,7 +208,7 @@ public class SubredditManager {
     private void addMultiData(JSONObject multiObj){
         try {
             JSONObject data =  multiObj.getJSONObject("data");
-            String name = data.getString("name");
+            String name = data.getString("path");
             multis.put(name, data);
         } catch (JSONException e) {
             e.printStackTrace();

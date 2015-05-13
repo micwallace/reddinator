@@ -11,24 +11,62 @@
 	    android:layout_alignParentLeft="true"
 	    android:layout_alignParentTop="true"
 	    android:layout_marginLeft="10dp"
-	    android:layout_toLeftOf="@+id/subreddit_delete_btn"
 	    android:gravity="center_vertical"
 	    android:textSize="19sp" />
 
-	<IconTextView
-	    android:id="@+id/multi_delete_btn"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_alignParentRight="true"
-	    android:layout_centerVertical="true"
-	    android:contentDescription="Delete image"
-        android:text="{fa-trash}"
-        android:shadowColor="#22000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
-        android:shadowRadius="3"
-        android:paddingRight="12dp"
-        android:textSize="32dp"
-        android:textColor="#ff8c8c8c" />
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:orientation="horizontal"
+		android:gravity="center_vertical">
 
+		<IconTextView
+			android:id="@+id/multi_edit_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="Edit image"
+			android:text="{fa-pencil}"
+			android:shadowColor="#22000000"
+			android:shadowDx="4"
+			android:shadowDy="4"
+			android:shadowRadius="3"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"
+			android:textSize="32dp"
+			android:textColor="#25C48F"
+			android:visibility="gone"/>
+
+		<IconTextView
+			android:id="@+id/multi_editsubs_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="Edit Subreddits image"
+			android:text="{fa-list}"
+			android:shadowColor="#22000000"
+			android:shadowDx="4"
+			android:shadowDy="4"
+			android:shadowRadius="3"
+			android:paddingLeft="4dp"
+			android:paddingRight="4dp"
+			android:textSize="32dp"
+			android:textColor="#5F99CF"
+			android:visibility="gone"/>
+
+		<IconTextView
+			android:id="@+id/multi_delete_btn"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:contentDescription="Delete image"
+			android:text="{fa-trash}"
+			android:shadowColor="#22000000"
+			android:shadowDx="4"
+			android:shadowDy="4"
+			android:shadowRadius="3"
+			android:paddingLeft="4dp"
+			android:paddingRight="12dp"
+			android:textSize="32dp"
+			android:textColor="#ff8c8c8c" />
+	</LinearLayout>
 </RelativeLayout>

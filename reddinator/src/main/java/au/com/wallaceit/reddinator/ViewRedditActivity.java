@@ -538,14 +538,14 @@ public class ViewRedditActivity extends FragmentActivity {
                     url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
                     // use reddit mobile view
                     if (url.indexOf("http://www.reddit.com/")==0){
-                        url += ".compact";
+                        url = url.replace("http://www.reddit.com/", "http://m.reddit.com/");
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
                     return TabWebFragment.init(url, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
                 case 1: // comments
                     if (prefs.getBoolean("commentswebviewpref", false)) {
                         // reddit
-                        url = "http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
+                        url = "http://m.reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                         fontsize = Integer.parseInt(prefs.getString("reddit_content_font_pref", "21"));
                         return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
                     } else {

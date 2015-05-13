@@ -75,7 +75,7 @@ public class OAuthView extends Activity {
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
 
-        wv.loadUrl("https://www.reddit.com/api/v1/authorize.compact?client_id=" + RedditData.OAUTH_CLIENTID + "&response_type=code&state=" + oauthstate + "&redirect_uri=" + RedditData.OAUTH_REDIRECT + "&duration=permanent&scope=" + RedditData.OAUTH_SCOPES);
+        wv.loadUrl("https://m.reddit.com/api/v1/authorize?client_id=" + RedditData.OAUTH_CLIENTID + "&response_type=code&state=" + oauthstate + "&redirect_uri=" + RedditData.OAUTH_REDIRECT + "&duration=permanent&scope=" + RedditData.OAUTH_SCOPES);
     }
 
     class OverrideClient extends WebViewClient {

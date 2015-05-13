@@ -83,7 +83,7 @@ public class WebViewActivity extends Activity {
         // get url from extra
         String url = getIntent().getStringExtra("url");
         if (url==null){
-            url = "http://www.reddit.com/.compact";
+            url = "http://m.reddit.com/";
         }
         wv.loadUrl(url);
         // check for clear inbox flag
@@ -175,7 +175,7 @@ public class WebViewActivity extends Activity {
         sendintent.setAction(Intent.ACTION_SEND);
         sendintent.putExtra(Intent.EXTRA_TEXT, txt);
         sendintent.setType("text/plain");
-        startActivity(Intent.createChooser(sendintent, "Share Url with..."));
+        startActivity(Intent.createChooser(sendintent, "Share URL with..."));
     }
 }
 
