@@ -33,6 +33,7 @@ import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class OAuthView extends Activity {
     WebView wv;
@@ -75,7 +76,7 @@ public class OAuthView extends Activity {
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
 
-        wv.loadUrl("https://m.reddit.com/api/v1/authorize?client_id=" + RedditData.OAUTH_CLIENTID + "&response_type=code&state=" + oauthstate + "&redirect_uri=" + RedditData.OAUTH_REDIRECT + "&duration=permanent&scope=" + RedditData.OAUTH_SCOPES);
+        wv.loadUrl("https://www.reddit.com/api/v1/authorize.compact?client_id=" + RedditData.OAUTH_CLIENTID + "&response_type=code&state=" + oauthstate + "&redirect_uri=" + RedditData.OAUTH_REDIRECT + "&duration=permanent&scope=" + RedditData.OAUTH_SCOPES);
     }
 
     class OverrideClient extends WebViewClient {
@@ -88,7 +89,7 @@ public class OAuthView extends Activity {
                     if (oauthUri.getQueryParameter("error").equals("access_denied")) {
                         OAuthView.this.finish();
                     } else {
-                        showErrorDialog("Login to Reddit failed: " + oauthUri.getQueryParameter("error"));
+                        Toast.makeText(OAuthView.this, "Login to Reddit failed: " + oauthUri.getQueryParameter("error"), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     new LoginTask().execute(oauthUri);
@@ -99,7 +100,10 @@ public class OAuthView extends Activity {
 
     ProgressDialog loginDialog;
 
-    class LoginTask extends AsyncTask<Uri, Void, Boolean> {
+    class LoginTask extends AsyncTask<Uri, String, Boolean> {
+        RedditData.RedditApiException exception;
+        boolean loginSuccess = false;
+
         @Override
         protected void onPreExecute() {
             wv.setVisibility(View.INVISIBLE);
@@ -110,39 +114,42 @@ public class OAuthView extends Activity {
             String code = uris[0].getQueryParameter("code");
             String state = uris[0].getQueryParameter("state");
             try {
-                return global.mRedditData.retrieveToken(code, state);
+                global.mRedditData.retrieveToken(code, state);
+                loginSuccess = true;
+                // load subreddits & multis
+                publishProgress("Loading your subreddits...");
+                global.loadAccountSubreddits();
+                publishProgress("Loading your multis...");
+                global.loadAccountMultis();
+                return true;
             } catch (RedditData.RedditApiException e) {
                 global.showAlertDialog(OAuthView.this, "API Error", e.getMessage());
                 e.printStackTrace();
+                exception = e;
                 return false;
             }
         }
 
+        @Override
+        protected void onProgressUpdate(String... statusText){
+            loginDialog.setTitle("Loading");
+            loginDialog.setMessage(statusText[0]);
+        }
+
         protected void onPostExecute(Boolean success) {
             OAuthView.this.loginDialog.dismiss();
-            if (success) {
-                // add mail check alarm
-                MailCheckReceiver.setAlarm(OAuthView.this);
-                OAuthView.this.finish();
-            } else {
-                showErrorDialog("Login to Reddit failed: " + RedditData.OAUTH_ERROR);
+            if (!success){
+                if (!loginSuccess){
+                    Toast.makeText(OAuthView.this, "Login to Reddit failed:\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    Toast.makeText(OAuthView.this, "Failed to load subscriptions:\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
+            // add mail check alarm
+            MailCheckReceiver.setAlarm(OAuthView.this);
+            OAuthView.this.finish();
         }
-    }
-
-    private void showErrorDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Login Error");
-        builder.setMessage(message);
-        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-                OAuthView.this.finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 
     public void onBackPressed() {

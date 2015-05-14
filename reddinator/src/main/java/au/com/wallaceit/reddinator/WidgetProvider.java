@@ -104,6 +104,7 @@ public class WidgetProvider extends AppWidgetProvider {
             // ADD ALL TO REMOTE VIEWS
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
             views.setPendingIntentTemplate(R.id.listview, clickPendingIntent);
+            views.setOnClickPendingIntent(R.id.srcaret, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.subreddittxt, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.widget_logo, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, refreshPendingIntent);

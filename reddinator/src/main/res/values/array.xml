@@ -174,7 +174,7 @@
         <item>travel</item>
         <item>unusual stories</item>
         <item>video</item>
-        <item>None</item>
+        <item>none</item>
     </string-array>
 
     <string-array name="multi_visibility">

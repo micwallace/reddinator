@@ -15,11 +15,11 @@
         android:layout_centerVertical="true">
 
         <ImageView
-            android:layout_width="wrap_content"
+            android:layout_width="42dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/loading_img"
-            android:scaleType="center"
+            android:scaleType="centerInside"
             android:src="@drawable/reddit_icon_small"
             android:cropToPadding="false" />
 

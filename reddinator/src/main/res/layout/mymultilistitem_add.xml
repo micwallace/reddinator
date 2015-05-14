@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="50dp"
+	android:layout_alignParentRight="true"
+	android:layout_alignParentEnd="true"
+	android:orientation="horizontal"
+	android:gravity="center_horizontal|center_vertical">
+	<IconTextView
+		android:id="@+id/multi_edit_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:contentDescription="Edit image"
+		android:text="{fa-plus_square}"
+		android:shadowColor="#22000000"
+		android:shadowDx="4"
+		android:shadowDy="4"
+		android:shadowRadius="3"
+		android:paddingRight="8dp"
+		android:textSize="32dp"
+		android:textColor="#25C48F"/>
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="@android:style/TextAppearance.Large"
+		android:text="@string/create_a_multi"/>
+</LinearLayout>

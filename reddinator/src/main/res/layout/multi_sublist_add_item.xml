@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp">
+
+    <AutoCompleteTextView
+        android:id="@+id/subreddit_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/buttons"
+        android:gravity="center_vertical"
+        android:textSize="19sp" />
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingRight="6dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <IconTextView
+            android:id="@+id/multi_sub_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/add"
+            android:text="{fa-plus}"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textSize="32dp"
+            android:textColor="#25C48F"/>
+
+        <IconTextView
+            android:id="@+id/multi_sub_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:contentDescription="@string/search"
+            android:text="{fa-search}"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:textSize="28dp"
+            android:textColor="#5F99CF" />
+    </LinearLayout>
+</RelativeLayout>

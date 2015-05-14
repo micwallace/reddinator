@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,7 +58,7 @@ public class SubmitActivity extends Activity {
         global = (GlobalObjects) getApplicationContext();
 
         subreddit = (AutoCompleteTextView) findViewById(R.id.subreddit);
-        subreddit.setAdapter(new SubredditSelectAdaptor(this, R.layout.autocomplete_list_item));
+        subreddit.setAdapter(new SubAutoCompleteAdapter(this, R.layout.autocomplete_list_item));
         subreddit.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -110,19 +111,21 @@ public class SubmitActivity extends Activity {
         }
 
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SubmitPagerAdapter());
+        pager.setAdapter(new SimpleTabsAdapter(new String[]{"Link", "Text"}, new int[]{R.id.link, R.id.text}, SubmitActivity.this, null));
         LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
         SimpleTabsWidget tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
         tabs.setViewPager(pager);
 
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
+        int headerText = Color.parseColor(theme.getValue("header_text"));
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
-        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
+        tabs.setTextColor(headerText);
 
         Button submitButton = (Button) findViewById(R.id.submit_button);
-        submitButton.setBackgroundColor(headerColor);
+        submitButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.MULTIPLY);
+        submitButton.setTextColor(headerText);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,45 +137,6 @@ public class SubmitActivity extends Activity {
                 }
             }
         });
-    }
-
-    class SubmitPagerAdapter extends PagerAdapter {
-
-        public Object instantiateItem(View collection, int position) {
-
-            int resId = 0;
-            switch (position) {
-                case 0:
-                    resId = R.id.link;
-                    break;
-                case 1:
-                    resId = R.id.text;
-                    break;
-            }
-            return findViewById(resId);
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Link";
-                case 1:
-                    return "Text";
-            }
-
-            return null;
-        }
-
-        @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == arg1;
-        }
     }
 
     private class SafeLinkMethod extends LinkMovementMethod {
@@ -225,61 +189,6 @@ public class SubmitActivity extends Activity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    class SubredditSelectAdaptor extends ArrayAdapter<String> implements Filterable {
-
-        JSONArray suggestions;
-
-        public SubredditSelectAdaptor(Context context, int resource) {
-            super(context, resource);
-        }
-
-        @Override
-        public int getCount() {
-            return suggestions.length();
-        }
-
-        @Override
-        public String getItem(int index) {
-            try {
-                return suggestions.getString(index);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        public Filter getFilter() {
-            return new Filter() {
-                @Override
-                protected FilterResults performFiltering(CharSequence constraint) {
-                    FilterResults filterResults = new FilterResults();
-                    if (constraint != null) {
-                        // Retrieve the autocomplete results.
-                        try {
-                            suggestions = global.mRedditData.searchRedditNames(constraint.toString());
-                            // Assign the data to the FilterResults
-                            filterResults.values = suggestions;
-                            filterResults.count = suggestions.length();
-                        } catch (RedditData.RedditApiException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return filterResults;
-                }
-
-                @Override
-                protected void publishResults(CharSequence constraint, FilterResults results) {
-                    if (results != null && results.count > 0) {
-                        notifyDataSetChanged();
-                    }
-                    else {
-                        notifyDataSetInvalidated();
-                    }
-                }};
         }
     }
 

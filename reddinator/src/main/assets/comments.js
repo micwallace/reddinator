@@ -213,10 +213,10 @@ function appendMoreButton(parentId, moreData){
 
 function appendComment(parentId, commentData, prepend){
     var commentElem = $("#comment_template").clone().show();
-
     commentElem.attr("id", commentData.name);
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
-    commentElem.find(".comment_text").html(htmlDecode(commentData.body_html));
+    var text = htmlDecode(commentData.body_html);
+    commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'http://www.reddit.com/u/'+commentData.author+'.compact');
     commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
     commentElem.find(".comment_reply_count").text("0");
@@ -245,7 +245,7 @@ function appendComment(parentId, commentData, prepend){
             commentElem.appendTo("#"+parentId+"-replies");
         }
         var parent = $("#"+parentId);
-        parent.children('.reply_expand').show();
+        parent.children('.option_container').children('.reply_expand').css('visibility', 'visible');
         var repliesElem = parent.children(".comment_info").children(".comment_reply_count");
         repliesElem.text(parseInt(repliesElem.text())+1);
     }
@@ -258,7 +258,7 @@ function htmlDecode(input){
 }
 
 function toggleReplies(element){
-    var replies = $(element).parent().find(".comment_replies");
+    var replies = $(element).parent().parent().find(".comment_replies");
     if (replies.is(":visible")){
         replies.hide();
         $(element).children('h5').text("+");
@@ -281,7 +281,7 @@ $(function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
     $(document).on('click', ".post_toggle", function(){
-        var elem = $(this).parent().parent().children(".post_reply");
+        var elem = $(this).parent().parent().parent().children(".post_reply");
         if (elem.is(":visible")){
             elem.hide();
         } else {

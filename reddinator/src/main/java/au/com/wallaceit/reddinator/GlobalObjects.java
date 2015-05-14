@@ -29,6 +29,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +50,7 @@ public class GlobalObjects extends Application {
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;
     public ThemeManager mThemeManager;
-    public SubredditManager mSubManager;
+    private SubredditManager mSubManager;
     private SharedPreferences mSharedPreferences;
 
     @Override
@@ -144,12 +145,26 @@ public class GlobalObjects extends Application {
         return mSubredditList;
     }
 
-    // personal sr list
+    // personal sr lists
     public SubredditManager getSubredditManager(){
         if (mSubManager==null)
             mSubManager = new SubredditManager(mSharedPreferences);
 
         return mSubManager;
+    }
+
+    public int loadAccountSubreddits() throws RedditData.RedditApiException {
+
+        final JSONArray list= mRedditData.getMySubreddits();
+        getSubredditManager().setSubreddits(list);
+        return list.length();
+    }
+
+    public int loadAccountMultis() throws RedditData.RedditApiException {
+
+        JSONArray list = mRedditData.getMyMultis();
+        getSubredditManager().addMultis(list, true);
+        return list.length();
     }
 
     // widget data loadtype functions; a bypass for androids restrictive widget api
@@ -211,8 +226,7 @@ public class GlobalObjects extends Application {
     }
 
     public static int convertDiptoPix(Context context, float dip) {
-        int value = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
-        return value;
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
 }

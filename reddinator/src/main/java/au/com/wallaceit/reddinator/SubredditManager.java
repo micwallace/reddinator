@@ -38,19 +38,31 @@ import java.util.Set;
  */
 public class SubredditManager {
     private SharedPreferences prefs;
-    private ArrayList<String> subreddits;
+    //private ArrayList<String> subreddits;
+    private JSONObject subreddits;
     private JSONObject multis;
+    private final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
+    private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
     public SubredditManager(SharedPreferences prefs){
         // load subreddits & multis
         this.prefs = prefs;
-        Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
+        /*Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
         if (feeds==null || feeds.isEmpty()) {
             // first time setup
             subreddits = new ArrayList<>(Arrays.asList("Front Page", "all", "arduino", "AskReddit", "pics", "technology", "science", "videos", "worldnews"));
             saveSubs();
         } else {
             subreddits = new ArrayList<>(feeds);
+        }*/
+        try {
+            subreddits = new JSONObject(prefs.getString("userSubreddits", "{}"));
+            if (subreddits.length()==0){
+                subreddits = new JSONObject(defaultSubreddits);
+                saveSubs();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         try {
             multis = new JSONObject(prefs.getString("userMultis", "{}"));
@@ -59,6 +71,7 @@ public class SubredditManager {
         }
     }
 
+    // CURRENT FEEDS
     public String getCurrentFeedName(int feedId){
         try {
             return getCurrentFeed(feedId).getString("name");
@@ -105,43 +118,74 @@ public class SubredditManager {
         setFeed(feedId, subreddit, subreddit.equals("Front Page") ? "" : "/r/" + subreddit, isMulti);
     }
 
-    private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
-
     private JSONObject getCurrentFeed(int feedId) throws JSONException {
         return new JSONObject(prefs.getString("currentfeed-"+String.valueOf(feedId), defaultFeed));
     }
 
+    // SUBREDDIT STORAGE
     private void saveSubs(){
         SharedPreferences.Editor editor = prefs.edit();
-        Set<String> set = new HashSet<>();
+        /*Set<String> set = new HashSet<>();
         set.addAll(subreddits);
-        editor.putStringSet("personalsr", set);
+        editor.putStringSet("userSubreddits", set);*/
+        editor.putString("userSubreddits", subreddits.toString());
         editor.apply();
     }
 
-    public ArrayList<String> getSubreddits() {
-        return subreddits;
+    public ArrayList<String> getSubredditNames() {
+        ArrayList<String> subList = new ArrayList<>();
+        Iterator iterator = subreddits.keys();
+        while (iterator.hasNext()){
+            subList.add(iterator.next().toString());
+        }
+        return subList;
     }
 
-    public void addSubreddit(String subredditName){
-        subreddits.add(subredditName);
+    public JSONObject getSubredditData(String name){
+        try {
+            return subreddits.getJSONObject(name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void addSubreddits(ArrayList<String> subNames, boolean clearCurrent){
-        if (clearCurrent)
-            subreddits.clear();
+    public void addSubreddit(JSONObject subObj){
+        try {
+            subreddits.put(subObj.getString("display_name"), subObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        saveSubs();
+    }
 
-        subreddits.addAll(subNames);
+    public void setSubreddits(JSONArray subsArray){
+        for (int i = 0; i<subsArray.length(); i++){
+            try {
+                addSubredditData(subsArray.getJSONObject(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        saveSubs();
+    }
+
+    private void addSubredditData(JSONObject multiObj){
+        try {
+            JSONObject data =  multiObj.getJSONObject("data");
+            String name = data.getString("display_name");
+            subreddits.put(name, data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeSubreddit(String subredditName){
         subreddits.remove(subredditName);
+        saveSubs();
     }
 
-    public JSONObject getMultis(){
-        return multis;
-    }
-
+    // MULTI STORAGE
     public ArrayList<JSONObject> getMultiList(){
         ArrayList<JSONObject> multiList = new ArrayList<>();
         Iterator iterator = multis.keys();
@@ -171,6 +215,28 @@ public class SubredditManager {
         return multiList;
     }
 
+    public void setMultiSubs(String multiPath, ArrayList<String> multiSubList){
+        JSONArray multiSubs = new JSONArray();
+        JSONObject subObj;
+        for (int i=0; i<multiSubList.size(); i++){
+            subObj = new JSONObject();
+            try {
+                subObj.put("name", multiSubList.get(i));
+                multiSubs.put(subObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            JSONObject multiObj = multis.getJSONObject(multiPath);
+            multiObj.put("subreddits", multiSubs);
+            multis.put(multiPath, multiObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        saveMultis();
+    }
+
     public JSONObject getMultiData(String multiPath){
         try {
             return multis.getJSONObject(multiPath);
@@ -180,8 +246,14 @@ public class SubredditManager {
         }
     }
 
-    public void addMulti(JSONObject multiObj){
-        addMultiData(multiObj);
+    public void setMultiData(String multiPath, JSONObject multiObj){
+
+        try {
+            multis.put(multiPath, multiObj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         saveMultis();
     }
 

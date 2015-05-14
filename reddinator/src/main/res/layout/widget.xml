@@ -24,6 +24,7 @@
             android:contentDescription="@string/configure"
             android:paddingLeft="2dp"
             android:paddingRight="1dp"
+            android:scaleType="centerInside"
             android:background="@android:color/transparent" />
 
         <ImageButton
@@ -36,6 +37,7 @@
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:visibility="visible"
+            android:scaleType="centerInside"
             android:background="@android:color/transparent" />
 
         <ProgressBar
@@ -62,6 +64,7 @@
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:contentDescription="@string/error"
+            android:scaleType="centerInside"
             android:visibility="gone" />
 
         <TextView
@@ -79,13 +82,14 @@
 
         <ImageView
             android:id="@+id/srcaret"
-            android:layout_width="wrap_content"
+            android:layout_width="14dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="2dp"
             android:layout_toRightOf="@+id/subreddittxt"
-            android:layout_marginRight="4dp"
+            android:layout_marginRight="2dp"
             android:text="{fa-caret-down}"
+            android:scaleType="centerInside"
             android:paddingTop="2dp" />
 
         <ImageView

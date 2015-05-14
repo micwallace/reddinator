@@ -67,5 +67,9 @@
     <string name="visibility">Visibility</string>
     <string name="weighting">Weighting</string>
     <string name="remove">Remove</string>
+    <string name="save">Save</string>
+    <string name="login">Login</string>
+    <string name="create_a_multi">Create A Multi</string>
+    <string name="name">Name</string>
 
 </resources>

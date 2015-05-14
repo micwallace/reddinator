@@ -38,7 +38,7 @@
 			android:textColor="#25C48F"
 			android:visibility="gone"/>
 
-		<IconTextView
+		<!--<IconTextView
 			android:id="@+id/multi_editsubs_btn"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
 			android:paddingRight="4dp"
 			android:textSize="32dp"
 			android:textColor="#5F99CF"
-			android:visibility="gone"/>
+			android:visibility="gone"/>-->
 
 		<IconTextView
 			android:id="@+id/multi_delete_btn"

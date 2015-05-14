@@ -55,7 +55,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -380,16 +380,10 @@ public class RedditData {
         return resultjson;
     }
 
-    public JSONObject subscribe(String subreddit, boolean subscribe) throws RedditApiException {
+    public JSONObject subscribe(String subId, boolean subscribe) throws RedditApiException {
         checkLogin();
 
-        String url;
-        try {
-            url = OAUTH_ENDPOINT + "/api/subscribe?sr="+ URLEncoder.encode(subreddit, "UTF-8")+"&action="+(subscribe?"sub":"unsub");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Encoding error: "+e.getMessage());
-        }
+        String url = OAUTH_ENDPOINT + "/api/subscribe?sr="+ subId +"&action="+(subscribe?"sub":"unsub");
 
         return redditApiPost(url);
     }
@@ -407,7 +401,7 @@ public class RedditData {
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/copy?display_name="+ URLEncoder.encode(name, "UTF-8")+"&from="+URLEncoder.encode(fromPath, "UTF-8")+"&to="+URLEncoder.encode("/me/m/" + name.toLowerCase().replaceAll("\\s+", ""), "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/copy?display_name="+ URLEncoder.encode(name, "UTF-8")+"&from="+fromPath+"&to=/user/"+username+"/m/"+URLEncoder.encode(name.toLowerCase().replaceAll("\\s+", ""), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -421,7 +415,7 @@ public class RedditData {
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode("/me/m/" + name, "UTF-8")+"&model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/user/"+username+"/m/"+name+"?model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -435,7 +429,7 @@ public class RedditData {
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&?model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi"+multiPath+"?model="+URLEncoder.encode(multiObj.toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -444,18 +438,12 @@ public class RedditData {
         return redditApiPut(url);
     }
 
-    public JSONObject deleteMulti(String multiPath) throws RedditApiException {
+    public void deleteMulti(String multiPath) throws RedditApiException {
         checkLogin();
 
-        String url;
-        try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Encoding error: "+e.getMessage());
-        }
+        String url = OAUTH_ENDPOINT + "/api/multi"+multiPath;
 
-        return redditApiDelete(url);
+        redditApiDelete(url);
     }
 
     public JSONObject addMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {
@@ -463,7 +451,7 @@ public class RedditData {
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi"+multiPath+"/r/"+subredditName+"?srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"name\":\""+subredditName+"\"}", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -472,18 +460,18 @@ public class RedditData {
         return redditApiPut(url);
     }
 
-    public JSONObject removeMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {
+    public void removeMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {
         checkLogin();
 
         String url;
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/?multipath="+ URLEncoder.encode(multiPath, "UTF-8")+"&srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"subreddit_name\":\""+subredditName+"\"}", "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi"+multiPath+"/r/"+subredditName+"?srname="+URLEncoder.encode(subredditName, "UTF-8")+"&model="+URLEncoder.encode("{\"name\":\""+subredditName+"\"}", "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
         }
 
-        return redditApiDelete(url);
+        redditApiDelete(url);
     }
 
     public JSONObject submit(String subreddit, boolean isLink, String title, String content) throws RedditApiException {
@@ -503,22 +491,6 @@ public class RedditData {
     // COMM FUNCTIONS
     // Create Http/s client
     private boolean createHttpClient() {
-        // Initialize client
-        /*HttpParams params = new BasicHttpParams();
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(params, HTTP.DEFAULT_CONTENT_CHARSET);
-        HttpProtocolParams.setUseExpectContinue(params, true);
-        HttpConnectionParams.setConnectionTimeout(params, 12000);
-        HttpConnectionParams.setSoTimeout(params, 10000);
-        SchemeRegistry schReg = new SchemeRegistry();
-        schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-        schReg.register(new Scheme("https", org.apache.http.conn.ssl.SSLSocketFactory.getSocketFactory(), 443));
-        ClientConnectionManager conMgr = new ThreadSafeClientConnManager(params, schReg);
-        //cookieStore = new BasicCookieStore();
-        httpclient = new DefaultHttpClient(conMgr, params);
-        httpclient.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
-        //httpclient.setCookieStore(cookieStore);*/
-
         httpClient = new OkHttpClient();
         httpClient.setConnectTimeout(10, TimeUnit.SECONDS);
         httpClient.setReadTimeout(10, TimeUnit.SECONDS);
@@ -585,16 +557,9 @@ public class RedditData {
         return jObj;
     }
 
-    private JSONObject redditApiDelete(String url) throws RedditApiException {
-        JSONObject jObj;
-        try {
-            String json = redditApiRequest(url, "DELETE", REQUEST_MODE_AUTHED, null);
-            jObj = new JSONObject(json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Error: "+e.getMessage());
-        }
-        return jObj;
+    private void redditApiDelete(String url) throws RedditApiException {
+
+        redditApiRequest(url, "DELETE", REQUEST_MODE_AUTHED, null);
     }
 
     private JSONObject redditApiOauthRequest(String url, HashMap<String, String> data) throws RedditApiException {
@@ -634,28 +599,14 @@ public class RedditData {
                 httpRequestBody = formBuilder.build();
             } else {
                 if (!method.equals("GET")) {
-                    requestStr = URLEncoder.encode(urlStr.substring(urlStr.indexOf("?")), "UTF-8");
+                    int queryIndex = urlStr.indexOf("?");
+                    if (queryIndex!=-1)
+                        urlStr = urlStr.substring(queryIndex);
+                    requestStr = URLEncoder.encode(urlStr, "UTF-8");
                 }
                 httpRequestBody = RequestBody.create(POST_ENCODED, requestStr);
             }
 
-            //HttpUriRequest httpRequest;
-            /*switch (method){
-                default:
-                case "GET":
-                    httpRequest = new HttpGet(urlStr);
-                    break;
-                case "POST":
-                    httpRequest = new HttpPost(urlStr);
-                    if (formData != null) ((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(formData));
-                    break;
-                case "PUT":
-                    httpRequest = new HttpPut(urlStr);
-                    break;
-                case "DELETE":
-                    httpRequest = new HttpDelete(urlStr);
-                    break;
-            }*/
             switch (method){
                 case "POST":
                     httpRequest.post(httpRequestBody);
@@ -686,9 +637,9 @@ public class RedditData {
             Response response = httpClient.newCall(httpRequest.build()).execute();
             json = response.body().string();
             int errorCode = response.code();
-            if (errorCode != 200) {
+            if (errorCode<200 && errorCode>202) {
                 String errorMsg = getErrorText(json);
-                throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+errorMsg+(errorCode==403?" (Login to Reddit may be required)":""), errorCode==403, errorCode);
+                throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+(errorMsg.equals("")?response.message():errorMsg)+(errorCode==403?" (Authorization with Reddit required)":""), errorCode==403, errorCode);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -699,7 +650,7 @@ public class RedditData {
     }
 
     private String getErrorText(String response){
-        String errorMsg = "Unknown Error";
+        String errorMsg = "";
         if (response!=null) {
             if (response.indexOf("{")==0)
             try {
@@ -714,7 +665,7 @@ public class RedditData {
                 e.printStackTrace();
             }
             // attempt to get html error message (often returned by 403)
-            System.err.println(response);
+            /*System.err.println(response);
             final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
             final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
             Matcher matcher = patternh2.matcher(response);
@@ -723,7 +674,7 @@ public class RedditData {
                 matcher = patternh3.matcher(response);
                 if (matcher.group(1)!=null && !matcher.group(1).equals(""))
                     errorMsg += ", " + matcher.group(1);
-            }
+            }*/
         }
         return errorMsg;
     }
@@ -761,17 +712,6 @@ public class RedditData {
     }
 
     // OAUTH FUNCTIONS
-    public static String OAUTH_ERROR = "";
-
-    private void setOauthError(JSONObject jsonObject) {
-        try {
-            OAUTH_ERROR = jsonObject.getString("error");
-        } catch (JSONException e) {
-            OAUTH_ERROR = "Unspecified error";
-            e.printStackTrace();
-        }
-    }
-
     public boolean isLoggedIn() {
         return oauthToken != null;
     }
@@ -797,10 +737,9 @@ public class RedditData {
         return token;
     }
 
-    public boolean retrieveToken(String code, String state) throws RedditApiException {
+    public void retrieveToken(String code, String state) throws RedditApiException {
         if (!state.equals(oauthstate)) {
-            System.out.println("oauth request result: Invalid state");
-            return false;
+            throw new RedditApiException("OAuth Error: Invalid state");
         }
         String url = "https://www.reddit.com/api/v1/access_token";
         JSONObject resultjson;
@@ -828,15 +767,13 @@ public class RedditData {
                 saveUserData();
             }
             //System.out.println("oauth request result: OK");
-            return true;
+            return;
         }
-        // set error result
-        setOauthError(resultjson);
-        System.out.println("oauth request result error: " + resultjson.toString());
-        return false;
+        // throw error
+        throwOAuthError(resultjson);
     }
 
-    private boolean refreshToken() throws RedditApiException {
+    private void refreshToken() throws RedditApiException {
         String url = "https://www.reddit.com/api/v1/access_token";
         JSONObject resultjson;
         HashMap<String, String> params = new HashMap<>();
@@ -859,13 +796,25 @@ public class RedditData {
             // save oauth token
             saveUserData();
             //System.out.println("oauth refresh result: OK");
-            return true;
-        } else {
-            // set error result
-            setOauthError(resultjson);
-            System.out.println("oauth refresh result error: " + resultjson.toString());
+            return;
         }
-        return false;
+        // set error result
+        throwOAuthError(resultjson);
+    }
+
+    private void throwOAuthError(JSONObject resultjson) throws RedditApiException {
+        String error;
+        if (resultjson.has("error")){
+            try {
+                error = resultjson.getString("error");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                error = "Unknown Error D-:";
+            }
+        } else {
+            error = "Unknown Error D-:";
+        }
+        throw new RedditApiException("OAuth Error: "+error);
     }
 
     public void saveUserData() {
