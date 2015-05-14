@@ -9,33 +9,8 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="+ finished multi &amp; subscriptions support.&#10;+ added sub/multi load on login &amp; login/refresh button on subreddit screen.&#10;~ lots of various improvements.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SimpleTabsAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubAutoCompleteAdapter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/dialog_multi_add.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/multi_sublist_item.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/mymultilistitem_add.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/multi_sub_list_item.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/multi_sublist_add_item.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubmitActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubmitActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditManager.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubredditsActivity.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewAllSubredditsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" afterPath="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/xml/app_widget_provider_info.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/values/array.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/values/array.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/assets/comments.js" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/comments.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/dialog_multi_edit.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/dialog_multi_edit.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowloadmore.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowloadmore.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/mymultilistitem.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/mymultilistitem.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/subredditselect.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/subredditselect.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/widget.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/widget.xml" />
+    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="reddinator.iws" />
@@ -79,10 +54,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SubredditSelectActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SubredditSelectActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.57923496">
+            <state vertical-scroll-proportion="-10.965517">
               <caret line="122" column="25" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="25" />
               <folding>
                 <element signature="e#0#56000#0" expanded="true" />
@@ -156,6 +131,16 @@
                 <element signature="e#47135#47136#0" expanded="true" />
                 <element signature="e#47167#47168#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.10380623">
+              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1507,7 +1492,6 @@
         <option value="$PROJECT_DIR$/ViewPagerIndicator/build.gradle" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ThemeManager.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/values/attrs.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/tab_indicator.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/tab.xml" />
@@ -1551,6 +1535,7 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SimpleTabsAdapter.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
       </list>
     </option>
   </component>
@@ -2033,7 +2018,13 @@
       <option name="project" value="LOCAL" />
       <updated>1431525802560</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="+ finished multi &amp; subscriptions support.&#10;+ added sub/multi load on login &amp; login/refresh button on subreddit screen.&#10;~ lots of various improvements.">
+      <created>1431626978958</created>
+      <option name="number" value="00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1431626978958</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2115,13 +2106,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/drawable-hdpi/tab_divider.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.103270225">
-          <caret line="4" column="8" selection-start-line="4" selection-start-column="8" selection-end-line="4" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/tabs.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -2627,7 +2611,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.57923496">
+        <state vertical-scroll-proportion="-10.965517">
           <caret line="122" column="25" selection-start-line="122" selection-start-column="25" selection-end-line="122" selection-end-column="25" />
           <folding>
             <element signature="e#0#56000#0" expanded="true" />
@@ -2701,6 +2685,14 @@
             <element signature="e#47135#47136#0" expanded="true" />
             <element signature="e#47167#47168#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.10380623">
+          <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
