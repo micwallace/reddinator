@@ -137,19 +137,15 @@ public class TabCommentsFragment extends Fragment {
 
     public void updateTheme() {
         String themeStr = ((ViewRedditActivity) getActivity()).theme.getValuesString();
-        //String[] themeColors = GlobalObjects.getThemeColorHex(mSharedPreferences);
-        //final String themeStr = StringUtils.join(themeColors, ",");
         mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //ll = (LinearLayout) inflater.inflate(R.layout.commentstab, container, false);
 
         if (container == null) {
             return null;
         }
         if (mFirstTime) {
-            //ll.addView(mWebView);
             mFirstTime = false;
         } else {
             ((ViewGroup) ll.getParent()).removeView(ll);
