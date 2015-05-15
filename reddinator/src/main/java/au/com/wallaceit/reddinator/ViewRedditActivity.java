@@ -282,7 +282,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_account:
                 Intent accnIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", "http://www.reddit.com/user/me/.compact");
+                accnIntent.putExtra("url", "https://www.reddit.com/user/me/.compact");
                 startActivity(accnIntent);
                 break;
 
@@ -290,10 +290,10 @@ public class ViewRedditActivity extends FragmentActivity {
                 String url;
                 Intent inboxIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
                 if (global.mRedditData.getInboxCount()>0) {
-                    url = "http://www.reddit.com/message/unread/.compact";
+                    url = "https://www.reddit.com/message/unread/.compact";
                     inboxIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
                 } else {
-                    url = "http://www.reddit.com/message/inbox/.compact";
+                    url = "https://www.reddit.com/message/inbox/.compact";
                 }
                 inboxIntent.putExtra("url", url);
                 startActivity(inboxIntent);
