@@ -16,6 +16,41 @@
         <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/support-annotations-22.1.1-ece4568776c382f41da38b59a711b512266d6a7f.jar" />
     </item>
     <item
+        jar="/home/michael/.gradle/caches/modules-2/files-2.1/com.joanzapata.android/android-iconify/1.0.9/27817b0ae26d4fa788711f1f75aaa45d76901722/android-iconify-1.0.9.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="27817b0ae26d4fa788711f1f75aaa45d76901722">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/android-iconify-1.0.9-97a95fdc00db2f1b4a33a719b335d8a1784ff66b.jar" />
+    </item>
+    <item
+        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-4010c763a43e2f6fd13ee1cbbc813fc5c3f52a24.jar" />
+    </item>
+    <item
+        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/libs/internal_impl-22.1.1.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-c2cf34af4ecd8eb461ad3cb484c1875cd68a22a3.jar" />
+    </item>
+    <item
+        jar="/home/michael/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.3.0/2e7bc7033dc2c8423e661224171b3133fb155b28/okhttp-2.3.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="2e7bc7033dc2c8423e661224171b3133fb155b28">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/okhttp-2.3.0-38d30ec4c5402571fe829a90f5f0a17425be7caa.jar" />
+    </item>
+    <item
+        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
+        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-1350499459471249711e7ccb9037cfb00394a5f1.jar" />
+    </item>
+    <item
         jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.larswerkman/HoloColorPicker/1.5/jars/classes.jar"
         jumboMode="false"
         revision="19.1.0"
@@ -28,41 +63,6 @@
         revision="19.1.0"
         sha1="c2200288f7c9dd4f9e8b647a95290f978362b567">
         <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/lang-2.1.0-d82300ccd44fb5353a51c2295ce09ac36b719f5e.jar" />
-    </item>
-    <item
-        jar="/home/michael/.gradle/caches/modules-2/files-2.1/com.joanzapata.android/android-iconify/1.0.9/27817b0ae26d4fa788711f1f75aaa45d76901722/android-iconify-1.0.9.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="27817b0ae26d4fa788711f1f75aaa45d76901722">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/android-iconify-1.0.9-97a95fdc00db2f1b4a33a719b335d8a1784ff66b.jar" />
-    </item>
-    <item
-        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="c95ba8152923e4872e86a82cfcba9a51c0214328">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-1350499459471249711e7ccb9037cfb00394a5f1.jar" />
-    </item>
-    <item
-        jar="/home/michael/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.3.0/2e7bc7033dc2c8423e661224171b3133fb155b28/okhttp-2.3.0.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="2e7bc7033dc2c8423e661224171b3133fb155b28">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/okhttp-2.3.0-38d30ec4c5402571fe829a90f5f0a17425be7caa.jar" />
-    </item>
-    <item
-        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/support-v4/22.1.1/jars/libs/internal_impl-22.1.1.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="9e070ad32b2700b0343e8e0cccc437733d91ba3a">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/internal_impl-22.1.1-c2cf34af4ecd8eb461ad3cb484c1875cd68a22a3.jar" />
-    </item>
-    <item
-        jar="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="19.1.0"
-        sha1="a3ff3c506644c820eb2bdf06e8339f72be578551">
-        <dex dex="/home/michael/Android Projects/reddinator/reddinator/build/intermediates/pre-dexed/debug/classes-4010c763a43e2f6fd13ee1cbbc813fc5c3f52a24.jar" />
     </item>
 
 </items>

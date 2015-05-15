@@ -15,7 +15,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Submit"/>
+        android:text="@string/submit"/>
     <LinearLayout
         android:id="@+id/submit_container"
         android:layout_width="match_parent"
@@ -32,20 +32,21 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/subreddit"
-            android:hint="Subreddit"/>
+            android:hint="@string/subreddit"/>
 
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:id="@+id/title"
-            android:hint="Title"/>
+            android:hint="@string/title"/>
 
         <TextView
             android:id="@+id/title_chars_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="6dp"
-            android:text="300 characters left" />
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:text="@string/characters_left" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
@@ -57,14 +58,14 @@
                 android:layout_height="fill_parent"
                 android:gravity="top"
                 android:id="@+id/text"
-                android:hint="Text" />
+                android:hint="@string/text" />
 
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:id="@+id/link"
-                android:hint="Link"/>
+                android:hint="@string/link"/>
         </android.support.v4.view.ViewPager>
 
         <ScrollView

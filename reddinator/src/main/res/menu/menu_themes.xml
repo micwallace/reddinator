@@ -6,4 +6,9 @@
         android:title="@string/add"
         android:orderInCategory="100"
         android:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_about"
+        android:title="@string/about"
+        android:showAsAction="never" />
 </menu>

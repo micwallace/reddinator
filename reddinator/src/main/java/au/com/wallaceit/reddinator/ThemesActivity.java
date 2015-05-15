@@ -67,6 +67,7 @@ public class ThemesActivity extends ListActivity {
         getMenuInflater().inflate(R.menu.menu_themes, menu);
         int iconColor = Color.parseColor("#25C48F");
         (menu.findItem(R.id.action_add)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
         return true;
     }
 
@@ -75,32 +76,33 @@ public class ThemesActivity extends ListActivity {
 
         int id = item.getItemId();
 
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
+        switch (id){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            case R.id.action_add:
+                // open template picker dialog
+                final HashMap<String,String> themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
+                builder.setTitle("Choose A Template to Start")
+                        .setItems(themesList.values().toArray(new CharSequence[themesList.values().size()]), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                String themeId = (String) themesList.keySet().toArray()[i];
+                                Intent intent = new Intent(ThemesActivity.this, ThemeEditorActivity.class);
+                                intent.putExtra("templateId", themeId);
+                                startActivityForResult(intent, 1);
+                            }
+                        });
+                builder.show();
+                break;
+            case R.id.menu_about:
+                GlobalObjects.showInfoDialog(this, true);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        if (id == R.id.action_add) {
-            // open template picker dialog
-            final HashMap<String,String> themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
-            AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
-            builder.setTitle("Choose A Template to Start")
-            .setItems(themesList.values().toArray(new CharSequence[themesList.values().size()]), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int i) {
-                    String themeId = (String) themesList.keySet().toArray()[i];
-                    Intent intent = new Intent(ThemesActivity.this, ThemeEditorActivity.class);
-                    intent.putExtra("templateId", themeId);
-                    startActivityForResult(intent, 1);
-                }
-            });
-
-            builder.show();
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     private class ThemesListAdapter extends BaseAdapter {

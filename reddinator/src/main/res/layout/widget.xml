@@ -17,22 +17,26 @@
 
         <ImageButton
             android:id="@+id/prefsbutton"
-            android:layout_width="wrap_content"
+            android:layout_width="34dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/configure"
-            android:paddingLeft="2dp"
-            android:paddingRight="1dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginEnd="1dp"
             android:scaleType="centerInside"
             android:background="@android:color/transparent" />
 
         <ImageButton
             android:id="@+id/refreshbutton"
-            android:layout_width="wrap_content"
+            android:layout_width="34dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/prefsbutton"
+            android:layout_toStartOf="@+id/prefsbutton"
             android:contentDescription="@string/refresh"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
@@ -51,18 +55,22 @@
             android:maxWidth="26dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
             android:layout_toLeftOf="@+id/refreshbutton"
+            android:layout_toStartOf="@+id/refreshbutton"
             android:visibility="visible" />
 
         <ImageButton
             android:id="@+id/erroricon"
-            android:layout_width="wrap_content"
+            android:layout_width="34dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/refreshbutton"
+            android:layout_toStartOf="@+id/refreshbutton"
             android:contentDescription="@string/error"
             android:scaleType="centerInside"
             android:visibility="gone" />
@@ -73,8 +81,10 @@
             android:layout_height="fill_parent"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/widget_logo"
+            android:layout_toEndOf="@+id/widget_logo"
             android:gravity="center_vertical"
-            android:paddingLeft="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:text="@string/app_name"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#000"
@@ -82,21 +92,23 @@
 
         <ImageView
             android:id="@+id/srcaret"
-            android:layout_width="14dp"
+            android:layout_width="18dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_toRightOf="@+id/subreddittxt"
+            android:layout_toEndOf="@+id/subreddittxt"
             android:layout_marginRight="2dp"
-            android:text="{fa-caret-down}"
             android:scaleType="centerInside"
-            android:paddingTop="2dp" />
+            android:paddingTop="2dp"
+            android:contentDescription="@string/subreddit" />
 
         <ImageView
             android:id="@+id/widget_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/logo"
             android:src="@drawable/reddit_icon_small" />
@@ -127,6 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="@string/loading"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#FFF" />

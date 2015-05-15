@@ -17,24 +17,35 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import static au.com.wallaceit.reddinator.R.layout.dialog_info;
 
 public class GlobalObjects extends Application {
 
@@ -225,4 +236,58 @@ public class GlobalObjects extends Application {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
+    public static PackageInfo getPackageInfo(Context context){
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return pInfo;
+    }
+
+    public static void doShowWelcomeDialog(final Activity context){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean aboutDismissed = preferences.getBoolean("welcomeDialogShown-"+getPackageInfo(context).versionCode, false);
+        if (!aboutDismissed){
+            showInfoDialog(context, false);
+        }
+    }
+
+    public static void showInfoDialog(final Activity context, final boolean isInfo){
+        LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(dialog_info, null);
+        ((TextView) aboutView.findViewById(R.id.version)).setText("version "+getPackageInfo(context).versionName);
+        aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/micwallace/reddinator"));
+                context.startActivity(intent);
+            }
+        });
+        aboutView.findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RFUQJ6EP5FLD2"));
+                context.startActivity(intent);
+            }
+        });
+        aboutView.findViewById(R.id.gold).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com/gold?goldtype=gift&months=1&thing=t3_33zpng"));
+                context.startActivity(intent);
+            }
+        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(isInfo?"About":"Welcome to Reddinator").setView(aboutView)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (!isInfo)
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionCode, true).apply();
+                dialogInterface.dismiss();
+            }
+        }).show();
+    }
 }

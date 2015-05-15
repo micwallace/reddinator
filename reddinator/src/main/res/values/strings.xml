@@ -71,5 +71,37 @@
     <string name="login">Login</string>
     <string name="create_a_multi">Create A Multi</string>
     <string name="name">Name</string>
+    <string name="about_open_source">Reddinator is proudly open-source software. Come and contribute on Github</string>
+    <string name="about_donate">Programing is thirsty work, buy me a beer to help maintain the app.</string>
+    <string name="about_r_reddinator">Stay up to date with the latest news at:\nhttps://www.reddit.com/r/reddinator/</string>
+    <string name="about_beta_program">Join the beta program through Google+\nhttps://plus.google.com/communities/108346406386882223261</string>
+    <string name="donate_paypal">Donate with Paypal</string>
+    <string name="about_give_gold">If you feel my effort deserves gold</string>
+    <string name="give_gold">Give Reddit Gold</string>
+    <string name="about_text"><![CDATA[Reddinator is a feature packed, customisable and open-source app & widget for android. This app is a token of my appreciation for Reddit and its community, I hope you enjoy! Reddinator will always be free, but contributions using the methods below are much appreciated.]]></string>
+    <string name="about_thankyou">Thanks for using Reddinator!</string>
+    <string name="subreddit">Subreddit</string>
+    <string name="title">Title</string>
+    <string name="characters_left">300 characters left</string>
+    <string name="text">Text</string>
+    <string name="link">Link</string>
+    <string name="about">About</string>
+    <string name="transparency">Transparency</string>
+    <string name="github">Github</string>
+    <string name="fa_search">{fa-search}</string>
+    <string name="select_color">Select Color</string>
+    <string name="fa_list">{fa-list}</string>
+    <string name="fa_plus_square">{fa-plus-square}</string>
+    <string name="delete">Delete</string>
+    <string name="fa_trash">{fa-trash}</string>
+    <string name="edit">Edit</string>
+    <string name="fa_pencil">{fa-pencil}</string>
+    <string name="fa_plus">{fa-plus}</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="fa_wrench">{fa-wrench}</string>
+    <string name="fa_refresh">{fa-refresh}</string>
+    <string name="fa_error">{fa-exclamation-triangle}</string>
+    <string name="fa_caret">{fa-caret-down}</string>
 
 </resources>

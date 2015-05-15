@@ -47,7 +47,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/display_name"
@@ -61,7 +62,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/description"
@@ -75,7 +77,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/icon"
@@ -88,7 +91,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/color"
@@ -102,7 +106,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/visibility"
@@ -115,7 +120,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="6dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
                     android:paddingTop="6dp"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="@string/weighting"

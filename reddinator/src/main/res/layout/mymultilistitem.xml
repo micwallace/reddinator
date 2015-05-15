@@ -9,8 +9,10 @@
 	    android:layout_height="wrap_content"
 	    android:layout_alignParentBottom="true"
 	    android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
 	    android:layout_alignParentTop="true"
 	    android:layout_marginLeft="10dp"
+		android:layout_marginStart="10dp"
 	    android:gravity="center_vertical"
 	    android:textSize="19sp" />
 
@@ -20,21 +22,21 @@
 		android:layout_alignParentRight="true"
 		android:layout_alignParentEnd="true"
 		android:orientation="horizontal"
-		android:gravity="center_vertical">
+		android:gravity="center|end">
 
 		<IconTextView
 			android:id="@+id/multi_edit_btn"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:contentDescription="Edit image"
-			android:text="{fa-pencil}"
+			android:contentDescription="@string/edit"
+			android:text="@string/fa_pencil"
 			android:shadowColor="#22000000"
 			android:shadowDx="4"
 			android:shadowDy="4"
 			android:shadowRadius="3"
 			android:paddingLeft="4dp"
 			android:paddingRight="4dp"
-			android:textSize="32dp"
+			android:textSize="32sp"
 			android:textColor="#25C48F"
 			android:visibility="gone"/>
 
@@ -58,15 +60,17 @@
 			android:id="@+id/multi_delete_btn"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:contentDescription="Delete image"
-			android:text="{fa-trash}"
+			android:contentDescription="@string/delete"
+			android:text="@string/fa_trash"
 			android:shadowColor="#22000000"
 			android:shadowDx="4"
 			android:shadowDy="4"
 			android:shadowRadius="3"
-			android:paddingLeft="4dp"
-			android:paddingRight="12dp"
-			android:textSize="32dp"
+			android:layout_marginLeft="4dp"
+			android:layout_marginStart="4dp"
+			android:layout_marginRight="12dp"
+			android:layout_marginEnd="12dp"
+			android:textSize="32sp"
 			android:textColor="#ff8c8c8c" />
 	</LinearLayout>
 </RelativeLayout>

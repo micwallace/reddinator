@@ -214,6 +214,7 @@ public class ViewRedditActivity extends FragmentActivity {
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
         // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
@@ -315,6 +316,10 @@ public class ViewRedditActivity extends FragmentActivity {
                 Intent intent = new Intent(ViewRedditActivity.this, PrefsActivity.class);
                 intent.putExtra("fromapp", true);
                 startActivityForResult(intent, 0);
+                break;
+
+            case R.id.menu_about:
+                GlobalObjects.showInfoDialog(this, true);
                 break;
 
             default:

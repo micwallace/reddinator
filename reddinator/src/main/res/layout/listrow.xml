@@ -80,7 +80,7 @@
         <ImageView
             android:id="@+id/votesicon"
             android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
+            android:layout_width="14dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
@@ -102,7 +102,7 @@
         <ImageView
             android:id="@+id/commentsicon"
             android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
+            android:layout_width="14dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"

@@ -117,6 +117,7 @@ public class WebViewActivity extends Activity {
         int iconColor = Color.parseColor("#DBDBDB");
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -154,15 +155,19 @@ public class WebViewActivity extends Activity {
                 break;
 
             case R.id.menu_open:
-            openLink(wv.getUrl());
-            break;
+                openLink(wv.getUrl());
+                break;
 
             case R.id.menu_share:
-            shareLink(wv.getUrl());
-            break;
+                shareLink(wv.getUrl());
+                break;
+
+            case R.id.menu_about:
+                GlobalObjects.showInfoDialog(this, true);
+                break;
 
             default:
-            return super.onOptionsItemSelected(item);
+                return super.onOptionsItemSelected(item);
         }
         return true;
     }

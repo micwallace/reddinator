@@ -31,12 +31,16 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/votecontainer"
+            android:layout_toStartOf="@+id/votecontainer"
             android:layout_below="@id/thumbnail"
             android:gravity="top"
             android:paddingBottom="4dp"
-            android:paddingLeft="6dip"
-            android:paddingRight="10dp"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:paddingTop="4dip"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
@@ -49,15 +53,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:orientation="vertical"
             android:layout_marginTop="6dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp">
 
             <ImageButton
                 android:id="@+id/app_upvote"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:contentDescription="Up Vote"
+                android:contentDescription="@string/upvote"
                 android:src="@drawable/upvote"
                 android:background="@null"
                 android:scaleType="fitCenter"
@@ -67,7 +73,7 @@
                 android:id="@+id/app_downvote"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:contentDescription="Down Vote"
+                android:contentDescription="@string/downvote"
                 android:src="@drawable/downvote"
                 android:background="@null"
                 android:scaleType="fitCenter" />
@@ -80,9 +86,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/headcontainer"
         android:paddingBottom="4dp"
-        android:paddingLeft="6dip">
+        android:layout_marginLeft="6dip"
+        android:layout_marginStart="6dip">
 
         <TextView
             android:id="@+id/sourcetxt"
@@ -90,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="@string/reddit_domain"
             android:textColor="#336699" />
 
@@ -99,7 +108,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/sourcetxt"
-            android:paddingLeft="6dip"
+            android:layout_toEndOf="@+id/sourcetxt"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
             android:text="@string/nsfw_flag"
             android:visibility="gone"
             android:textColor="#ffff0000" />
@@ -107,11 +118,12 @@
         <ImageView
             android:id="@+id/votesicon"
             android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
+            android:layout_width="14dp"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:paddingTop="2dp"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
+            android:layout_toStartOf="@+id/votestxt"
             android:scaleType="fitCenter" />
 
         <TextView
@@ -121,27 +133,34 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentsicon"
+            android:layout_toStartOf="@+id/commentsicon"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:textColor="#336699" />
 
         <ImageView
             android:id="@+id/commentsicon"
             android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
+            android:layout_width="14dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"
-            android:scaleType="fitCenter" />
+            android:layout_toStartOf="@+id/commentstxt"
+            android:scaleType="fitCenter"/>
 
         <TextView
             android:id="@+id/commentstxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textColor="#336699"
             android:textIsSelectable="false" />
 
@@ -152,6 +171,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/infbox"
         android:background="#D7D7D7">
 

@@ -18,8 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/searchbutton"
+            android:layout_toStartOf="@+id/searchbutton"
             android:ems="10"
             android:hint="@string/search" >
         </EditText>
@@ -29,16 +31,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:contentDescription="@string/search"
-            android:text="{fa-search}"
+            android:text="@string/fa_search"
             android:shadowColor="#22000000"
             android:shadowDx="4"
             android:shadowDy="4"
             android:shadowRadius="3"
-            android:textSize="28dp"
+            android:textSize="28sp"
             android:textColor="#5F99CF" />
 
     </RelativeLayout>
@@ -74,6 +77,7 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
 	        android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
 	        android:text="@string/loading_popular"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#000" />

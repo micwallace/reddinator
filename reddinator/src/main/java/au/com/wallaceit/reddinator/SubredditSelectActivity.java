@@ -45,8 +45,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.IconTextView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RemoteViews;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -56,7 +68,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 
 public class SubredditSelectActivity extends Activity {
     private ArrayList<String> subredditList;
@@ -210,6 +225,8 @@ public class SubredditSelectActivity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        GlobalObjects.doShowWelcomeDialog(SubredditSelectActivity.this);
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -343,6 +360,7 @@ public class SubredditSelectActivity extends Activity {
         (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -374,7 +392,7 @@ public class SubredditSelectActivity extends Activity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
-                return true;
+                break;
 
             case R.id.menu_submit:
                 Intent submitIntent = new Intent(SubredditSelectActivity.this, SubmitActivity.class);
@@ -383,23 +401,30 @@ public class SubredditSelectActivity extends Activity {
 
             case R.id.menu_feedprefs:
                 showFeedPrefsDialog();
-                return true;
+                break;
 
             case R.id.menu_widgettheme:
                 showWidgetThemeDialog();
-                return true;
+                break;
 
             case R.id.menu_thememanager:
                 Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
                 startActivityForResult(intent, 0);
-                return true;
+                break;
 
             case R.id.menu_prefs:
                 Intent intent2 = new Intent(SubredditSelectActivity.this, PrefsActivity.class);
                 startActivityForResult(intent2, 0);
-                return true;
+                break;
+
+            case R.id.menu_about:
+                GlobalObjects.showInfoDialog(this, true);
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
+        return true;
     }
 
     // show sort select dialog
