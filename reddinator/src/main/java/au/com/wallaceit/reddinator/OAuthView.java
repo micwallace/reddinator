@@ -123,7 +123,6 @@ public class OAuthView extends Activity {
                 global.loadAccountMultis();
                 return true;
             } catch (RedditData.RedditApiException e) {
-                global.showAlertDialog(OAuthView.this, "API Error", e.getMessage());
                 e.printStackTrace();
                 exception = e;
                 return false;
