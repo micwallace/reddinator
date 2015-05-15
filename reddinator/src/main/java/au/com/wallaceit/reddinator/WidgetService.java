@@ -391,7 +391,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // Load more or initial load/reload?
         if (loadMore) {
             // fetch 25 more after current last item and append to the list
-            JSONArray tempData = null;
+            JSONArray tempData;
             try {
                 tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
             } catch (RedditData.RedditApiException e) {

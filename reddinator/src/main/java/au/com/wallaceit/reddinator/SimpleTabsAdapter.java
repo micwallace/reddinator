@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
+import android.view.ViewGroup;
 
 class SimpleTabsAdapter extends PagerAdapter {
 
@@ -38,7 +39,7 @@ class SimpleTabsAdapter extends PagerAdapter {
         this.layoutIds = layoutIds;
     }
 
-    public Object instantiateItem(View collection, int position) {
+    public Object instantiateItem(ViewGroup collection, int position) {
         if (position>labels.length)
             return null;
         if (layout==null)

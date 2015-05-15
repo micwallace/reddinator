@@ -33,7 +33,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.IconTextView;
@@ -47,7 +46,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_ADD_TO_MULTI = 3;
@@ -61,7 +59,6 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private JSONArray srjson;
     private SubredditsAdapter listadapter;
     private EditText searchbox;
-    private ListView listview;
     private TextView emptyview;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +71,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         }
         setContentView(R.layout.viewallsubreddit);
         // setup list view
-        listview = getListView();
+        ListView listview = getListView();
         listview.setTextFilterEnabled(true);
         listview.setEmptyView(findViewById(R.id.subredditload));
         listview.setOnItemClickListener(new OnItemClickListener() {
@@ -306,6 +303,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private DLTask dlpopulartask;
 
     private class DLTask extends AsyncTask<String, Integer, ArrayList<JSONObject>> {
+        RedditData.RedditApiException exception;
         @Override
         protected ArrayList<JSONObject> doInBackground(String... string) {
             // load popular subreddits
@@ -313,7 +311,8 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 srjson = global.mRedditData.getSubreddits();
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                Toast.makeText(ViewAllSubredditsActivity.this, "Error loading subreddits: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                exception = e;
+                return null;
             }
             if (srjson == null) {
                 return new ArrayList<>();
@@ -334,6 +333,10 @@ public class ViewAllSubredditsActivity extends ListActivity {
         }
 
         protected void onPostExecute(ArrayList<JSONObject> resultlist) {
+            if (resultlist==null){
+                Toast.makeText(ViewAllSubredditsActivity.this, "Error loading subreddits: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
             if (!this.isCancelled() || cancelrevert) {
                 if (action==null || !action.equals(ACTION_ADD_MULTI_SUB)) {
                     sreddits.addAll(defaultsreddits);

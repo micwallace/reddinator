@@ -39,7 +39,6 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     private SharedPreferences mSharedPreferences;
     private String mRefreshrate = "";
     private String mTitleFontSize = "";
-    //private String mTitleFontColor = "";
     private String mAppTheme = "";
     int mFirstTimeSetup = 0;
     private String mMailRefresh = "";
@@ -65,8 +64,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-
-        if (!mSharedPreferences.getString("oauthtoken", "").equals("")){
+        String token = mSharedPreferences.getString("oauthtoken", "");
+        if (token!=null && !token.equals("")){
             // Load the account preferences when logged in
             addPreferencesFromResource(R.xml.account_preferences);
             Preference logoutbtn = findPreference("logout");

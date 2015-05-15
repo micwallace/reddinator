@@ -73,7 +73,6 @@ public class ViewRedditActivity extends FragmentActivity {
     private int widgetId = 0;
     private ActionBar actionBar;
     private BroadcastReceiver inboxReceiver;
-    private ViewPager viewPager;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     public ThemeManager.Theme theme;
@@ -105,7 +104,7 @@ public class ViewRedditActivity extends FragmentActivity {
         // set content view
         setContentView(R.layout.viewreddit);
         // Setup View Pager and widget
-        viewPager = (ViewPager)findViewById(R.id.tab_content);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
@@ -188,18 +187,6 @@ public class ViewRedditActivity extends FragmentActivity {
         ViewGroup view = (ViewGroup) getWindow().getDecorView();
         view.removeAllViews();
         super.finish();
-    }
-
-    boolean firstChange = false;
-    private void handleTabSwitch(int position){
-        if (!firstChange){
-            if (position==0 || pageAdapter.getRegisteredFragment(position).getClass().getSimpleName().equals("TabWebFragment")) {
-                ((TabWebFragment) pageAdapter.getRegisteredFragment(position)).load();
-            } else {
-                ((TabCommentsFragment) pageAdapter.getRegisteredFragment(position)).load();
-            }
-            firstChange = true;
-        }
     }
 
     public void onBackPressed() {
@@ -453,6 +440,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 return global.mRedditData.vote(redditid, direction);
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
+                exception = e;
                 return false;
             }
         }

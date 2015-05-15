@@ -42,8 +42,9 @@ public class MailCheckReceiver extends BroadcastReceiver {
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int refreshRate = Integer.valueOf(prefs.getString(context.getString(R.string.background_mail_pref), "43200000"));
-
-        if (refreshRate == 0 || prefs.getString("oauthtoken", "").equals("")) {
+        String token = prefs.getString("oauthtoken", "");
+        boolean loggedIn = (token!=null && !token.equals(""));
+        if (refreshRate == 0 || !loggedIn) {
             alarmManager.cancel(updateIntent); // cancel if disabled or not logged in
         } else {
             alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);

@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -48,6 +49,7 @@ public class WebViewActivity extends Activity {
 
     public static final String ACTION_CLEAR_INBOX_COUNT= "clearInboxCount";
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

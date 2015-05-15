@@ -14,28 +14,22 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Created by michael on 10/05/15.
+ *
+ * Subreddit Manager Provides a global interface for modifying the user subreddit & multi lists.
  */
 package au.com.wallaceit.reddinator;
 
 import android.content.SharedPreferences;
-import android.widget.ArrayAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
-/**
- * Created by michael on 10/05/15.
- *
- * Subreddit Manager Provides a global interface for modifying the user subreddit & multi lists.
- */
 public class SubredditManager {
     private SharedPreferences prefs;
     //private ArrayList<String> subreddits;
@@ -47,14 +41,7 @@ public class SubredditManager {
     public SubredditManager(SharedPreferences prefs){
         // load subreddits & multis
         this.prefs = prefs;
-        /*Set<String> feeds = prefs.getStringSet("personalsr", new HashSet<String>());
-        if (feeds==null || feeds.isEmpty()) {
-            // first time setup
-            subreddits = new ArrayList<>(Arrays.asList("Front Page", "all", "arduino", "AskReddit", "pics", "technology", "science", "videos", "worldnews"));
-            saveSubs();
-        } else {
-            subreddits = new ArrayList<>(feeds);
-        }*/
+
         try {
             subreddits = new JSONObject(prefs.getString("userSubreddits", "{}"));
             if (subreddits.length()==0){
@@ -125,9 +112,6 @@ public class SubredditManager {
     // SUBREDDIT STORAGE
     private void saveSubs(){
         SharedPreferences.Editor editor = prefs.edit();
-        /*Set<String> set = new HashSet<>();
-        set.addAll(subreddits);
-        editor.putStringSet("userSubreddits", set);*/
         editor.putString("userSubreddits", subreddits.toString());
         editor.apply();
     }

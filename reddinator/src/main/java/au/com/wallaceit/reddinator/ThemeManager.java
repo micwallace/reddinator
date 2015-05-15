@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Created by michael on 2/05/15.
  */
 
 package au.com.wallaceit.reddinator;
@@ -32,9 +34,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-/**
- * Created by michael on 2/05/15.
- */
 public class ThemeManager {
     private Context context;
     private SharedPreferences prefs;
@@ -147,19 +146,17 @@ public class ThemeManager {
     }
 
     public boolean isThemeEditable(String key){
-        if (!customThemes.has(key)) {
-            return false;
-        }
-        return true;
+        return customThemes.has(key);
     }
 
     private void loadThemes(){
-        String json = "{}";
+        String json;
         // load static themes
         try {
             InputStream is = context.getAssets().open("themes.json");
             int size = is.available();
             byte[] buffer = new byte[size];
+            //noinspection ResultOfMethodCallIgnored
             is.read(buffer);
             is.close();
             json = new String(buffer, "UTF-8");

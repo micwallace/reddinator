@@ -28,7 +28,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -193,7 +192,7 @@ public class MainActivity extends Activity {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
 
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
-        actionBar.getCustomView().setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("header_color"))));
+        actionBar.getCustomView().setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
         srtext.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
         int iconColor = Color.parseColor(theme.getValue("default_icon"));
@@ -679,7 +678,7 @@ public class MainActivity extends Activity {
                 endOfFeed = false;
                 if (loadMore) {
                     // fetch 25 more after current last item and append to the list
-                    JSONArray tempData = null;
+                    JSONArray tempData;
                     try {
                         tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
                     } catch (RedditData.RedditApiException e) {
@@ -705,7 +704,7 @@ public class MainActivity extends Activity {
                 } else {
                     // reloading
                     int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                    JSONArray tempArray = null;
+                    JSONArray tempArray;
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
                     } catch (RedditData.RedditApiException e) {

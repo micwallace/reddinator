@@ -97,7 +97,7 @@ public class ThemeEditorActivity extends ListActivity {
 
         @Override
         public Object getItem(int position) {
-            String key = null;
+            String key;
             try {
                 key = (String) global.mThemeManager.getPreferenceOrder().get(position);
             } catch (JSONException e) {
@@ -114,14 +114,19 @@ public class ThemeEditorActivity extends ListActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.theme_editor_row, parent, false);
-            // setup the row
-            TextView settingName = (TextView) convertView.findViewById(R.id.theme_value_name);
-            TextView settingValue = (TextView) convertView.findViewById(R.id.theme_value);
-
+            ViewHolder viewHolder;
+            if (convertView == null || convertView.getTag() == null) {
+                convertView = getLayoutInflater().inflate(R.layout.theme_editor_row, parent, false);
+                // setup the row
+                viewHolder = new ViewHolder();
+                viewHolder.settingName = (TextView) convertView.findViewById(R.id.theme_value_name);
+                viewHolder.settingValue = (TextView) convertView.findViewById(R.id.theme_value);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
             if (position==0){
-                settingName.setText("Name");
-                settingValue.setText(theme.getName());
+                viewHolder.settingName.setText("Name");
+                viewHolder.settingValue.setText(theme.getName());
 
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -149,7 +154,7 @@ public class ThemeEditorActivity extends ListActivity {
                     }
                 });
             } else {
-                String key = null;
+                String key;
                 try {
                     key = (String) global.mThemeManager.getPreferenceOrder().get(position-1);
                 } catch (JSONException e) {
@@ -159,8 +164,8 @@ public class ThemeEditorActivity extends ListActivity {
                 ImageView colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
                 IconTextView simplePickBtn = (IconTextView) convertView.findViewById(R.id.simple_color_btn);
                 String value = theme.getValue(key);
-                settingName.setText(global.mThemeManager.getThemePrefLabel(key));
-                settingValue.setText(value);
+                viewHolder.settingName.setText(global.mThemeManager.getThemePrefLabel(key));
+                viewHolder.settingValue.setText(value);
                 if (!value.equals("")) {
                     colorPreview.setBackgroundColor(Color.parseColor(value));
                     colorPreview.setVisibility(View.VISIBLE);
@@ -243,6 +248,9 @@ public class ThemeEditorActivity extends ListActivity {
                     }
                 });
             }
+
+            convertView.setTag(viewHolder);
+
             return convertView;
         }
 
@@ -254,6 +262,11 @@ public class ThemeEditorActivity extends ListActivity {
         @Override
         public boolean isEmpty() {
             return theme.getValues().size()==0;
+        }
+
+        class ViewHolder {
+            TextView settingName;
+            TextView settingValue;
         }
     }
 }

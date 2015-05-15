@@ -46,7 +46,6 @@ public class WidgetProvider extends AppWidgetProvider {
     public static String ITEM_CLICK = "ITEM_CLICK";
     public static String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
     public static String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
-    private PendingIntent updateIntent = null;
 
     public WidgetProvider() {
     }
@@ -60,7 +59,6 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @SuppressWarnings("deprecation")
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         GlobalObjects global = (GlobalObjects) context.getApplicationContext();
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {

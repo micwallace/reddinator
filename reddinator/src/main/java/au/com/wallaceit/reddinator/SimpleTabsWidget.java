@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Created by michael on 12/05/15.
  */
 package au.com.wallaceit.reddinator;
 
@@ -29,9 +31,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by michael on 12/05/15.
- */
 public class SimpleTabsWidget {
     LayoutInflater inflater;
     LinearLayout tabWidget;
@@ -82,7 +81,7 @@ public class SimpleTabsWidget {
     private void insertTab(int index, String text){
 
         TabClickListener clickListener = new TabClickListener(index);
-        LinearLayout tabContainer = (LinearLayout) inflater.inflate(R.layout.tab, null);
+        LinearLayout tabContainer = (LinearLayout) inflater.inflate(R.layout.tab, tabWidget, false);
         tabContainer.setOnClickListener(clickListener);
 
         TextView tabText = (TextView) tabContainer.findViewById(R.id.tab_text);
@@ -94,7 +93,7 @@ public class SimpleTabsWidget {
         indicator.setBackgroundColor(colors[1]);
         indicatorItems.add(indicator);
 
-        tabContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.FILL_PARENT, 1));
+        tabContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
         tabWidget.addView(tabContainer);
     }
 

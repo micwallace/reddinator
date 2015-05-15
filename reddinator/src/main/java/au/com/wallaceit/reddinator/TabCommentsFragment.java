@@ -18,16 +18,15 @@
 
 package au.com.wallaceit.reddinator;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -50,7 +48,6 @@ public class TabCommentsFragment extends Fragment {
     private boolean mFirstTime = true;
     private LinearLayout ll;
     private GlobalObjects global;
-    private SharedPreferences mSharedPreferences;
     public String articleId;
     public String permalink;
     private String currentSort = "best";
@@ -78,10 +75,11 @@ public class TabCommentsFragment extends Fragment {
         }
     }
 
+    @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this.getActivity();
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (GlobalObjects) mContext.getApplicationContext();
         final boolean load = getArguments().getBoolean("load");
 

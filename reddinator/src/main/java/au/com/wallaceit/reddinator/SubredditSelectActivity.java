@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -112,7 +113,7 @@ public class SubredditSelectActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 if (position==mMultiAdapter.getCount()-1){
-                    LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, null);
+                    LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, parent, false);
                     final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
                     AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
                     builder.setTitle("Create A Multi").setView(layout)
@@ -803,7 +804,8 @@ public class SubredditSelectActivity extends Activity {
     private void showMultiEditDialog(final String multiPath){
         JSONObject multiObj = global.getSubredditManager().getMultiData(multiPath);
 
-        LinearLayout dialogView =  (LinearLayout)  getLayoutInflater().inflate(R.layout.dialog_multi_edit, null);
+        @SuppressLint("InflateParams")
+        LinearLayout dialogView =  (LinearLayout)  getLayoutInflater().inflate(R.layout.dialog_multi_edit, null); // passing null okay for dialog
         final Button saveButton = (Button) dialogView.findViewById(R.id.multi_save_button);
         final EditText name = (EditText) dialogView.findViewById(R.id.multi_name);
         final EditText description = (EditText) dialogView.findViewById(R.id.multi_description);
@@ -1116,8 +1118,8 @@ public class SubredditSelectActivity extends Activity {
             progressDialog.dismiss();
             ArrayList<String> subreddits;
             if (result) {
-                if (this.result!=null)
-                    System.out.println("resultData: "+this.result.toString());
+                //if (this.result!=null)
+                    //System.out.println("resultData: "+this.result.toString());
                 switch (action) {
                     case ACTION_SUBSCRIBE:
                         global.getSubredditManager().addSubreddit((JSONObject) params[0]);
