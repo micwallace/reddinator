@@ -7,22 +7,21 @@
     <RelativeLayout
         android:id="@+id/headcontainer"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:maxHeight="80dp"
+            android:maxWidth="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:layout_marginTop="4dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/img"
-            android:maxHeight="80dp"
-            android:maxWidth="80dp"
-            android:paddingTop="4dp"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:visibility="gone" />
 
         <TextView
@@ -30,13 +29,17 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/thumbnail"
             android:gravity="top"
             android:paddingBottom="4dp"
-            android:paddingLeft="6dip"
-            android:paddingRight="10dp"
-            android:paddingTop="4dip"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:paddingTop="6dip"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
             android:textIsSelectable="false"
@@ -49,9 +52,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/headcontainer"
         android:paddingBottom="4dp"
-        android:paddingLeft="6dip">
+        android:layout_marginLeft="6dip"
+        android:layout_marginStart="6dip">
 
         <TextView
             android:id="@+id/sourcetxt"
@@ -59,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="@string/reddit_domain"
             android:textColor="#336699" />
 
@@ -68,7 +74,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/sourcetxt"
-            android:paddingLeft="6dip"
+            android:layout_toEndOf="@+id/sourcetxt"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
             android:text="@string/nsfw_flag"
             android:visibility="gone"
             android:textColor="#ffff0000" />
@@ -80,6 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
+            android:layout_toStartOf="@+id/votestxt"
             android:paddingTop="2dp"
             android:scaleType="fitCenter"
             android:src="@android:drawable/star_off" />
@@ -91,8 +100,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentsicon"
+            android:layout_toStartOf="@+id/commentsicon"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:textColor="#336699" />
 
         <ImageView
@@ -102,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"
+            android:layout_toStartOf="@+id/commentstxt"
             android:scaleType="fitCenter"
             android:src="@android:drawable/sym_action_chat" />
 
@@ -110,9 +123,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textColor="#336699"
             android:textIsSelectable="false" />
 
@@ -123,6 +139,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/infbox"
         android:background="#D7D7D7">
 

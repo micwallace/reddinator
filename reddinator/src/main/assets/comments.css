@@ -62,7 +62,7 @@ h5, h6 {
 .comment_options {
     text-align: right;
     float:right;
-    width:60px;
+    display:inline;
     padding-right: 5px;
     margin-top:4px;
     margin-right:2px;

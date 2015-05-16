@@ -8,22 +8,21 @@
     <RelativeLayout
         android:id="@+id/headcontainer"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:maxHeight="80dp"
+            android:maxWidth="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:layout_marginTop="4dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/img"
-            android:maxHeight="80dp"
-            android:maxWidth="80dp"
-            android:paddingTop="4dp"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:visibility="gone" />
 
         <TextView
@@ -41,7 +40,7 @@
             android:layout_marginStart="6dip"
             android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
-            android:paddingTop="4dip"
+            android:paddingTop="6dip"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
             android:textIsSelectable="false"

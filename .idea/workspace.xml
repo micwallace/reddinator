@@ -5,15 +5,18 @@
       <config />
     </shared>
   </component>
-  <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
-  </component>
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ThemesActivity.java" line="78" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="">
+    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="~ some UI tweaks, fix for thumbnails.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/reddinator-release.apk" afterPath="$PROJECT_DIR$/reddinator/reddinator-release.apk" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" afterPath="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="reddinator.iws" />
@@ -44,96 +47,88 @@
     <leaf>
       <file leaf-file-name="widget.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widget.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-0.0">
+              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
           <provider editor-type-id="android-designer">
             <state />
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-1.5862069">
-              <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="488" column="25" selection-start-line="488" selection-start-column="25" selection-end-line="488" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="listrow.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.83201265">
+              <caret line="35" column="40" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
+              <folding />
+            </state>
+          </provider>
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="listrowbigthumb.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-11.379311">
+              <caret line="22" column="52" selection-start-line="22" selection-start-column="52" selection-end-line="22" selection-end-column="52" />
               <folding>
-                <element signature="e#4292#4311#0" expanded="true" />
+                <element signature="e#3097#3116#0" expanded="true" />
               </folding>
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TabCommentsFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
-              <folding />
-            </state>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SubredditSelectActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
+      <file leaf-file-name="applistrow.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="362" column="104" selection-start-line="362" selection-start-column="104" selection-end-line="362" selection-end-column="104" />
+            <state vertical-scroll-proportion="-12.413794">
+              <caret line="54" column="36" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
               <folding />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GlobalObjects.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="202" column="20" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
-              <folding />
-            </state>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OAuthView.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java">
+      <file leaf-file-name="applistrowbigthumb.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="124" column="55" selection-start-line="124" selection-start-column="55" selection-end-line="124" selection-end-column="55" />
+            <state vertical-scroll-proportion="-17.068966">
+              <caret line="42" column="33" selection-start-line="42" selection-start-column="33" selection-end-line="42" selection-end-column="33" />
               <folding />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SubmitActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubmitActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="176" column="5" selection-start-line="176" selection-start-column="5" selection-end-line="176" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.10380623">
-              <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ViewRedditActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WebViewActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WebViewActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="88" column="9" selection-start-line="88" selection-start-column="9" selection-end-line="88" selection-end-column="9" />
-              <folding />
-            </state>
+          <provider editor-type-id="android-designer">
+            <state />
           </provider>
         </entry>
       </file>
@@ -1446,7 +1441,6 @@
       <list>
         <option value="$PROJECT_DIR$/reddinator/src/main/assets/comments.html" />
         <option value="$PROJECT_DIR$/reddinator/src/main/assets/comments.js" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MailCheckReceiver.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SimpleTabsAdapter.java" />
@@ -1461,8 +1455,6 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/RedditData.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/drawable-hdpi/tab_divider.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/tabs.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/menu/viewmenu.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/menu/subreddit_select_menu.xml" />
@@ -1482,8 +1474,6 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowloadmore.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/dialog_multi_edit.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml" />
-        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/activity_submit.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/appheader.xml" />
         <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/color_picker_dialog.xml" />
@@ -1494,7 +1484,12 @@
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ViewRedditActivity.java" />
         <option value="$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/assets/comments.css" />
         <option value="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml" />
+        <option value="$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml" />
       </list>
     </option>
   </component>
@@ -1537,6 +1532,21 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator-reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -1547,31 +1557,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="reddinator-reddinator">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="reddinator">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -1626,18 +1611,84 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane">
-        <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="reddinator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="reddinator-reddinator" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="reddinator" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="reddinator-reddinator">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="reddinator">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -2019,7 +2070,13 @@
       <option name="project" value="LOCAL" />
       <updated>1431702404083</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="~ a quick patch">
+      <created>1431702446004</created>
+      <option name="number" value="00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1431702446004</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2037,29 +2094,29 @@
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.18690096" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18690096" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.4914803" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39933628" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32815966" sideWeight="0.5085197" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.19306931" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.5021299" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.31683168" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.33139536" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23893805" sideWeight="0.4914803" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23893805" sideWeight="0.4914803" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.4978701" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.6831683" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32964602" sideWeight="0.4978701" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24973376" sideWeight="0.6686047" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.4978701" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32964602" sideWeight="0.4914803" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -2106,13 +2163,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/bin/android_sdk/platforms/android-22/data/res/values/attrs.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3321859">
-          <caret line="132" column="20" selection-start-line="132" selection-start-column="20" selection-end-line="132" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/drawable-hdpi/paypal_donate.jpg">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -2123,39 +2173,10 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-32.068966">
-          <caret line="62" column="42" selection-start-line="62" selection-start-column="42" selection-end-line="62" selection-end-column="42" />
-          <folding>
-            <element signature="e#783#796#0" expanded="false" />
-            <element signature="e#2296#2319#0" expanded="false" />
-            <element signature="e#2685#2704#0" expanded="false" />
-            <element signature="e#2887#2901#0" expanded="false" />
-            <element signature="e#3766#3780#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-62.068966">
-          <caret line="120" column="47" selection-start-line="120" selection-start-column="47" selection-end-line="120" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/WidgetProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.0585198">
           <caret line="60" column="134" selection-start-line="60" selection-start-column="134" selection-end-line="60" selection-end-column="134" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2229,19 +2250,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5712121">
-          <caret line="315" column="0" selection-start-line="315" selection-start-column="0" selection-end-line="315" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/assets/themes.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-17.541666">
           <caret line="114" column="39" selection-start-line="114" selection-start-column="32" selection-end-line="114" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2356,17 +2368,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.66561013">
-          <caret line="28" column="15" selection-start-line="28" selection-start-column="15" selection-end-line="28" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowloadmore.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -2375,7 +2376,7 @@
         <state vertical-scroll-proportion="0.23771791">
           <caret line="10" column="14" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
           <folding>
-            <element signature="e#960#979#0" expanded="true" />
+            <element signature="e#960#979#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2410,7 +2411,7 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="87" column="28" selection-start-line="87" selection-start-column="28" selection-end-line="87" selection-end-column="28" />
           <folding>
-            <element signature="e#3649#3665#0" expanded="true" />
+            <element signature="e#3649#3665#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2431,35 +2432,6 @@
         <state vertical-scroll-proportion="0.3464567">
           <caret line="53" column="18" selection-start-line="53" selection-start-column="18" selection-end-line="53" selection-end-column="18" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.183835">
-          <caret line="176" column="0" selection-start-line="176" selection-start-column="0" selection-end-line="176" selection-end-column="0" />
-          <folding>
-            <element signature="e#2648#2664#0" expanded="false" />
-            <element signature="e#3059#3077#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8082409">
-          <caret line="180" column="35" selection-start-line="180" selection-start-column="35" selection-end-line="180" selection-end-column="35" />
-          <folding>
-            <element signature="e#1078#1094#0" expanded="false" />
-            <element signature="e#1489#1507#0" expanded="false" />
-            <element signature="e#4697#4716#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2567,17 +2539,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/multi_sublist_add_item.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6196513">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/subredditselect.xml">
       <provider editor-type-id="android-designer">
         <state />
@@ -2586,21 +2547,8 @@
         <state vertical-scroll-proportion="0.78446907">
           <caret line="45" column="42" selection-start-line="45" selection-start-column="42" selection-end-line="45" selection-end-column="42" />
           <folding>
-            <element signature="e#1222#1237#0" expanded="true" />
-            <element signature="e#1540#1558#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widget.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5862069">
-          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
-          <folding>
-            <element signature="e#4292#4311#0" expanded="true" />
+            <element signature="e#1222#1237#0" expanded="false" />
+            <element signature="e#1540#1558#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2609,7 +2557,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="88" column="9" selection-start-line="88" selection-start-column="9" selection-end-line="88" selection-end-column="9" />
-          <folding />
+          <folding>
+            <element signature="e#0#7028#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2640#3031#0" expanded="false" />
+            <element signature="e#3030#3031#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2617,38 +2570,37 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="300" column="0" selection-start-line="300" selection-start-column="0" selection-end-line="300" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#0#22545#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#6580#6817#0" expanded="false" />
+            <element signature="e#6816#6817#0" expanded="false" />
+            <element signature="e#13942#14191#0" expanded="false" />
+            <element signature="e#14190#14191#0" expanded="false" />
+            <element signature="e#14243#14520#0" expanded="false" />
+            <element signature="e#14519#14520#0" expanded="false" />
+            <element signature="e#14807#15048#0" expanded="false" />
+            <element signature="e#15047#15048#0" expanded="false" />
+            <element signature="e#15076#15399#0" expanded="false" />
+            <element signature="e#15398#15399#0" expanded="false" />
+            <element signature="e#15450#15719#0" expanded="false" />
+            <element signature="e#15718#15719#0" expanded="false" />
+            <element signature="e#15869#16008#0" expanded="false" />
+            <element signature="e#16007#16008#0" expanded="false" />
+            <element signature="e#16119#16120#0" expanded="false" />
+            <element signature="e#16156#16157#0" expanded="false" />
+            <element signature="e#19979#19980#0" expanded="false" />
+            <element signature="e#20025#20026#0" expanded="false" />
+            <element signature="e#21874#21875#0" expanded="false" />
+            <element signature="e#21906#21907#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/assets/comments.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="362" column="104" selection-start-line="362" selection-start-column="104" selection-end-line="362" selection-end-column="104" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="202" column="20" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="124" column="55" selection-start-line="124" selection-start-column="55" selection-end-line="124" selection-end-column="55" />
+        <state vertical-scroll-proportion="0.8181818">
+          <caret line="63" column="16" selection-start-line="63" selection-start-column="16" selection-end-line="63" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -2661,10 +2613,196 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/OAuthView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="124" column="55" selection-start-line="124" selection-start-column="55" selection-end-line="124" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#6734#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2391#2782#0" expanded="false" />
+            <element signature="e#2781#2782#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/GlobalObjects.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="202" column="20" selection-start-line="202" selection-start-column="20" selection-end-line="202" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#11498#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#5625#5626#0" expanded="false" />
+            <element signature="e#5673#5674#0" expanded="false" />
+            <element signature="e#5853#5854#0" expanded="false" />
+            <element signature="e#5890#5891#0" expanded="false" />
+            <element signature="e#6662#6663#0" expanded="false" />
+            <element signature="e#6693#6694#0" expanded="false" />
+            <element signature="e#6726#6727#0" expanded="false" />
+            <element signature="e#6770#6771#0" expanded="false" />
+            <element signature="e#6799#6800#0" expanded="false" />
+            <element signature="e#6839#6840#0" expanded="false" />
+            <element signature="e#6875#6876#0" expanded="false" />
+            <element signature="e#6923#6924#0" expanded="false" />
+            <element signature="e#6990#6991#0" expanded="false" />
+            <element signature="e#7024#7025#0" expanded="false" />
+            <element signature="e#7076#7077#0" expanded="false" />
+            <element signature="e#7114#7115#0" expanded="false" />
+            <element signature="e#7366#7564#0" expanded="false" />
+            <element signature="e#7563#7564#0" expanded="false" />
+            <element signature="e#9834#10119#0" expanded="false" />
+            <element signature="e#10118#10119#0" expanded="false" />
+            <element signature="e#10185#10512#0" expanded="false" />
+            <element signature="e#10511#10512#0" expanded="false" />
+            <element signature="e#10576#10886#0" expanded="false" />
+            <element signature="e#10885#10886#0" expanded="false" />
+            <element signature="e#11080#11480#0" expanded="false" />
+            <element signature="e#11479#11480#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/SubredditSelectActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="362" column="104" selection-start-line="362" selection-start-column="104" selection-end-line="362" selection-end-column="104" />
+          <folding>
+            <element signature="e#0#57021#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#4637#4638#0" expanded="false" />
+            <element signature="e#4701#4702#0" expanded="false" />
+            <element signature="e#9651#9652#0" expanded="false" />
+            <element signature="e#9699#9700#0" expanded="false" />
+            <element signature="e#23415#23416#0" expanded="false" />
+            <element signature="e#23462#23463#0" expanded="false" />
+            <element signature="e#25026#25027#0" expanded="false" />
+            <element signature="e#25073#25074#0" expanded="false" />
+            <element signature="e#28949#28950#0" expanded="false" />
+            <element signature="e#29013#29014#0" expanded="false" />
+            <element signature="e#35548#35549#0" expanded="false" />
+            <element signature="e#35629#35630#0" expanded="false" />
+            <element signature="e#36083#36084#0" expanded="false" />
+            <element signature="e#36132#36133#0" expanded="false" />
+            <element signature="e#36190#36191#0" expanded="false" />
+            <element signature="e#36222#36223#0" expanded="false" />
+            <element signature="e#36443#36444#0" expanded="false" />
+            <element signature="e#36496#36497#0" expanded="false" />
+            <element signature="e#36554#36555#0" expanded="false" />
+            <element signature="e#36586#36587#0" expanded="false" />
+            <element signature="e#43805#43806#0" expanded="false" />
+            <element signature="e#43877#43878#0" expanded="false" />
+            <element signature="e#47687#47688#0" expanded="false" />
+            <element signature="e#47719#47720#0" expanded="false" />
+            <element signature="e#47940#47941#0" expanded="false" />
+            <element signature="e#47989#47990#0" expanded="false" />
+            <element signature="e#48047#48048#0" expanded="false" />
+            <element signature="e#48094#48095#0" expanded="false" />
+            <element signature="e#48152#48153#0" expanded="false" />
+            <element signature="e#48184#48185#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/TabCommentsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/multi_sublist_add_item.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4770206">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowload.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.66561013">
+          <caret line="28" column="15" selection-start-line="28" selection-start-column="15" selection-end-line="28" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="488" column="25" selection-start-line="488" selection-start-column="25" selection-end-line="488" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10380623">
-          <caret line="4" column="31" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="31" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="41" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/widget.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="20" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrowbigthumb.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-17.068966">
+          <caret line="42" column="33" selection-start-line="42" selection-start-column="33" selection-end-line="42" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrowbigthumb.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.379311">
+          <caret line="22" column="52" selection-start-line="22" selection-start-column="52" selection-end-line="22" selection-end-column="52" />
+          <folding>
+            <element signature="e#3097#3116#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/applistrow.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-12.413794">
+          <caret line="54" column="36" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reddinator/src/main/res/layout/listrow.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.83201265">
+          <caret line="35" column="40" selection-start-line="35" selection-start-column="40" selection-end-line="35" selection-end-column="40" />
           <folding />
         </state>
       </provider>

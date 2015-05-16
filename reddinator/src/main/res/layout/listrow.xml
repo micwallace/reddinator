@@ -7,20 +7,24 @@
     <RelativeLayout
         android:id="@+id/headcontainer"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp">
 
         <TextView
             android:id="@+id/listheading"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_toRightOf="@+id/thumbnail"
+            android:layout_toEndOf="@+id/thumbnail"
             android:gravity="top"
             android:minHeight="50dip"
             android:paddingBottom="4dp"
-            android:paddingLeft="6dip"
-            android:paddingRight="10dp"
-            android:paddingTop="4dip"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
             android:textIsSelectable="false"
@@ -28,19 +32,18 @@
 
         <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="4dp"
-            android:contentDescription="@string/img"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:maxHeight="80dp"
             android:maxWidth="80dp"
-            android:minHeight="80dp"
-            android:minWidth="80dp"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:contentDescription="@string/img"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="4dp"
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
@@ -51,9 +54,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/headcontainer"
         android:paddingBottom="2dp"
-        android:paddingLeft="6dip"
+        android:layout_marginLeft="6dip"
+        android:layout_marginStart="6dip"
         android:paddingTop="1dp">
 
         <TextView
@@ -62,6 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:text="@string/reddit_domain"
             android:textColor="#336699"
             android:ellipsize="end"/>
@@ -72,7 +78,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/sourcetxt"
-            android:paddingLeft="6dip"
+            android:layout_toEndOf="@+id/sourcetxt"
+            android:layout_marginLeft="6dip"
+            android:layout_marginStart="6dip"
             android:text="@string/nsfw_flag"
             android:visibility="gone"
             android:textColor="#ffff0000" />
@@ -84,6 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
+            android:layout_toStartOf="@+id/votestxt"
             android:paddingTop="2dp"
             android:scaleType="fitCenter"
             android:src="@android:drawable/star_off" />
@@ -95,8 +104,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentsicon"
+            android:layout_toStartOf="@+id/commentsicon"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:textColor="#336699" />
 
         <ImageView
@@ -106,6 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"
+            android:layout_toStartOf="@+id/commentstxt"
             android:scaleType="fitCenter"
             android:src="@android:drawable/sym_action_chat" />
 
@@ -114,9 +127,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:textColor="#336699"
             android:textIsSelectable="false" />
 
@@ -127,6 +143,7 @@
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/infbox"
         android:background="#D7D7D7">
 
