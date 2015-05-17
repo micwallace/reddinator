@@ -88,8 +88,8 @@
         <ImageView
             android:id="@+id/votesicon"
             android:contentDescription="@string/icon"
-            android:layout_width="14dp"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/votestxt"
             android:layout_toStartOf="@+id/votestxt"
@@ -114,8 +114,8 @@
         <ImageView
             android:id="@+id/commentsicon"
             android:contentDescription="@string/icon"
-            android:layout_width="14dp"
-            android:layout_height="wrap_content"
+            android:layout_width="15dp"
+            android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/commentstxt"
             android:layout_toStartOf="@+id/commentstxt"
