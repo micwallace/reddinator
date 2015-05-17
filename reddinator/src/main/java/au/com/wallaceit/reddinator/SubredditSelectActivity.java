@@ -22,7 +22,6 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -82,12 +81,10 @@ public class SubredditSelectActivity extends Activity {
     private MyMultisAdapter mMultiAdapter;
     private SharedPreferences mSharedPreferences;
     private GlobalObjects global;
-    private String curSort;
     private Button sortBtn;
     private boolean needsThemeUpdate = false;
-    private boolean curThumbPref;
-    private boolean curBigThumbPref;
-    private boolean curHideInfPref;
+    private boolean needsFeedUpdate = false;
+    private boolean needsFeedViewUpdate = false;
     private int mAppWidgetId;
     private SimpleTabsWidget tabs;
     private Button refreshButton;
@@ -209,8 +206,7 @@ public class SubredditSelectActivity extends Activity {
         });
         // sort button
         sortBtn = (Button) findViewById(R.id.sortselect);
-        curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
-        String sortTxt = "Sort:  " + curSort;
+        String sortTxt = "Sort:  " + mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
         sortBtn.setText(sortTxt);
         sortBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -218,11 +214,6 @@ public class SubredditSelectActivity extends Activity {
                 showSortDialog();
             }
         });
-
-        // load initial values for comparison
-        curThumbPref = mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true);
-        curBigThumbPref = mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
-        curHideInfPref = mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -326,14 +317,14 @@ public class SubredditSelectActivity extends Activity {
     // save changes on back press
     public void onBackPressed() {
         // check if sort has changed
-        if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot")) || curThumbPref != mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true) || curBigThumbPref != mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || curHideInfPref != mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false) || needsThemeUpdate) {
+        if (needsFeedUpdate || needsFeedViewUpdate || needsThemeUpdate) {
             if (mAppWidgetId != 0) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
                 views.setViewVisibility(R.id.srloader, View.VISIBLE);
                 views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
                 // bypass the cached entrys only if the sorting preference has changed
-                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
+                if (needsFeedUpdate) {
                     global.setBypassCache(true);
                 } else {
                     global.setRefreshView();
@@ -347,7 +338,7 @@ public class SubredditSelectActivity extends Activity {
             } else {
                 Intent intent = new Intent();
                 intent.putExtra("themeupdate", needsThemeUpdate);
-                if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
+                if (needsFeedUpdate) {
                     setResult(2, intent); // reload feed and prefs
                 } else {
                     setResult(1, intent); // tells main activity to update feed prefs
@@ -478,7 +469,7 @@ public class SubredditSelectActivity extends Activity {
                 // set new text in button
                 String sorttxt = "Sort:  " + sort;
                 sortBtn.setText(sorttxt);
-                //System.out.println("Sort set: "+sort);
+                needsFeedUpdate = true; // mark feed for updating
                 dialog.dismiss();
             }
         });
@@ -505,6 +496,7 @@ public class SubredditSelectActivity extends Activity {
                         break;
                 }
                 prefsedit.apply();
+                needsFeedViewUpdate = true;
             }
         });
         builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
@@ -970,6 +962,7 @@ public class SubredditSelectActivity extends Activity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                         global.getSubredditManager().setAllFilter(filterSubsAdapter.getSubsList());
+                        needsFeedUpdate = true; // mark feed for updating
                     }
                 }).show().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
