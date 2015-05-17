@@ -94,6 +94,7 @@
     <string name="fa_plus_square">{fa-plus-square}</string>
     <string name="delete">Delete</string>
     <string name="fa_trash">{fa-trash}</string>
+    <string name="fa_filter">{fa-filter}</string>
     <string name="edit">Edit</string>
     <string name="fa_pencil">{fa-pencil}</string>
     <string name="fa_plus">{fa-plus}</string>
@@ -103,5 +104,7 @@
     <string name="fa_refresh">{fa-refresh}</string>
     <string name="fa_error">{fa-exclamation-triangle}</string>
     <string name="fa_caret">{fa-caret-down}</string>
+    <string name="filter_subreddits">Filter Subreddits</string>
+    <string name="filter_subreddits_select">Select subreddits to exclude</string>
 
 </resources>

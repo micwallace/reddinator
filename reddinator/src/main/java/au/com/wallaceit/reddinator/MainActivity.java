@@ -673,38 +673,38 @@ public class MainActivity extends Activity {
             @Override
             protected Long doInBackground(Void... none) {
                 String curFeed = global.getSubredditManager().getCurrentFeedPath(0);
-                // System.out.println("Current feed: " + curFeed);
+                boolean isAll = global.getSubredditManager().getCurrentFeedName(0).equals("all");
                 String sort = mSharedPreferences.getString("sort-app", "hot");
+                JSONArray tempArray;
                 endOfFeed = false;
                 if (loadMore) {
                     // fetch 25 more after current last item and append to the list
-                    JSONArray tempData;
                     try {
-                        tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+                        tempArray = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
                         exception = e;
                         return (long) 0;
                     }
-                    if (tempData.length() == 0) {
+                    if (tempArray.length() == 0) {
                         endOfFeed = true;
                     } else {
+                        if (isAll)
+                            tempArray = global.getSubredditManager().filterFeed(tempArray);
+
                         int i = 0;
-                        while (i < tempData.length()) {
+                        while (i < tempArray.length()) {
                             try {
-                                data.put(tempData.get(i));
+                                data.put(tempArray.get(i));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                             i++;
                         }
-                        // save feed
-                        global.setFeed(prefs, 0, data);
                     }
                 } else {
                     // reloading
                     int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                    JSONArray tempArray;
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
                     } catch (RedditData.RedditApiException e) {
@@ -712,20 +712,27 @@ public class MainActivity extends Activity {
                         exception = e;
                         return (long) 0;
                     }
-                    // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-                    data = tempArray;
+                    // check if end of feed, if not process & set feed data
                     if (data.length() == 0) {
                         endOfFeed = true;
+                    } else {
+                        if (isAll)
+                            tempArray = global.getSubredditManager().filterFeed(tempArray);
                     }
-                    // save feed
-                    global.setFeed(prefs, 0, data);
+                    data = tempArray;
                 }
-
-                try {
-                    lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
-                } catch (JSONException e) {
-                    lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
-                    e.printStackTrace();
+                // save feed
+                global.setFeed(prefs, 0, data);
+                if (endOfFeed){
+                    lastItemId = "0";
+                } else {
+                    try {
+                        lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+                    } catch (JSONException e) {
+                        lastItemId = "0"; // Could not get last item ID; perform a reload next time
+                        endOfFeed = true;
+                        e.printStackTrace();
+                    }
                 }
                 return (long) 1;
             }

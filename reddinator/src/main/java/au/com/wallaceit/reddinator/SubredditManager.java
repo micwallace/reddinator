@@ -23,11 +23,14 @@ package au.com.wallaceit.reddinator;
 
 import android.content.SharedPreferences;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class SubredditManager {
@@ -106,7 +109,39 @@ public class SubredditManager {
     }
 
     private JSONObject getCurrentFeed(int feedId) throws JSONException {
-        return new JSONObject(prefs.getString("currentfeed-"+String.valueOf(feedId), defaultFeed));
+        return new JSONObject(prefs.getString("currentfeed-" + String.valueOf(feedId), defaultFeed));
+    }
+
+    // /r/all filtering
+    public ArrayList<String> getAllFilter(){
+        return new ArrayList<>(Arrays.asList(StringUtils.split(prefs.getString("allFilter", ""), ",")));
+    }
+
+    public void setAllFilter(ArrayList<String> filter){
+        prefs.edit().putString("allFilter", StringUtils.join(filter.toArray(new String[filter.size()]), ",")).apply();
+    }
+
+    public JSONArray filterFeed(JSONArray feedArray){
+        String allFilter = prefs.getString("allFilter", "");
+        if (allFilter==null || allFilter.equals(""))
+            return feedArray; // no filters applied
+
+        JSONArray filtered = new JSONArray();
+        ArrayList<String> filter = getAllFilter();
+        JSONObject feedObj;
+        String subreddit;
+        for (int i=0; i<feedArray.length(); i++){
+            try {
+                feedObj = feedArray.getJSONObject(i);
+                subreddit = feedObj.getJSONObject("data").getString("subreddit");
+                if (!filter.contains(subreddit)) // add item if not exlcuded (in filter)
+                    filtered.put(feedObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return filtered;
     }
 
     // SUBREDDIT STORAGE

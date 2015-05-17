@@ -73,7 +73,7 @@
             <textarea rows="5"></textarea>
             <button onclick="$(this).prop('disabled', true); comment(articleId, $(this).prev('textarea').val());">Comment</button>
         </div>
-        <button onclick="$(this).css('display', 'none'); $('#post_comment_box').css('display', 'block');" style="width:100%;">Add Comment</button>
+        <button id="post_comment_button" onclick="$(this).css('display', 'none'); $('#post_comment_box').css('display', 'block');" style="width:100%;">Add Comment</button>
     </div>
     <div id="base">
 

@@ -110,15 +110,18 @@ function commentCallback(parentId, commentData){
     console.log("comment callback called");
     var postElem;
     if (parentId.indexOf("t3_")!==-1){
-        postElem = $("#post_comment");
+        postElem = $("#post_comment_box");
     } else {
         postElem = $("#"+parentId+" > .post_box");
     }
     if (commentData){
         commentData = JSON.parse(commentData);
         postElem.children("textarea").val("");
-        if (parentId.indexOf("t3_")===-1)
-            postElem.hide();
+        if (parentId.indexOf("t3_")!==-1){
+            $("#post_comment_button").show();
+        }
+        postElem.children('textarea').val('');
+        postElem.hide();
         appendComment(parentId, commentData, true)
     }
     postElem.children("button").prop("disabled", false);

@@ -35,7 +35,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -152,7 +151,7 @@ public class GlobalObjects extends Application {
         return mSubredditList;
     }
 
-    // personal sr lists
+    // subreddit list, settings & filter management
     public SubredditManager getSubredditManager(){
         if (mSubManager==null)
             mSubManager = new SubredditManager(mSharedPreferences);

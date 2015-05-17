@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -45,6 +46,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -641,6 +643,7 @@ public class SubredditSelectActivity extends Activity {
                 viewHolder = new ViewHolder();
                 viewHolder.name = (TextView) convertView.findViewById(R.id.subreddit_name);
                 viewHolder.deleteIcon = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
+                viewHolder.filterIcon = (IconTextView) convertView.findViewById(R.id.subreddit_filter_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -650,14 +653,14 @@ public class SubredditSelectActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     final String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
-                    if (global.mRedditData.isLoggedIn() && (!sreddit.equals("Front Page") && !sreddit.equals("all"))){
+                    if (global.mRedditData.isLoggedIn() && (!sreddit.equals("Front Page") && !sreddit.equals("all"))) {
                         new AlertDialog.Builder(SubredditSelectActivity.this).setTitle("Unsubscribe")
-                        .setMessage("Are you sure you want to unsubscribe from "+sreddit+"?")
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setMessage("Are you sure you want to unsubscribe from " + sreddit + "?")
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 new SubscriptionEditTask(SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
@@ -670,6 +673,18 @@ public class SubredditSelectActivity extends Activity {
                     }
                 }
             });
+            if (getItem(position).equals("all")){
+                viewHolder.filterIcon.setVisibility(View.VISIBLE);
+                viewHolder.filterIcon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showFilterEditDialog();
+                    }
+                });
+            } else{
+                viewHolder.filterIcon.setVisibility(View.GONE);
+            }
+
             convertView.setTag(viewHolder);
 
             return convertView;
@@ -678,6 +693,7 @@ public class SubredditSelectActivity extends Activity {
         class ViewHolder {
             TextView name;
             IconTextView deleteIcon;
+            IconTextView filterIcon;
         }
     }
 
@@ -759,12 +775,13 @@ public class SubredditSelectActivity extends Activity {
                             showMultiEditDialog(path);
                         }
                     });
-                /*viewHolder.subsIcon.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showMultiEditDialog(path);
-                    }
-                });*/
+                    // will use for viewing subreddits list when not editable; later!
+                    /*viewHolder.subsIcon.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showMultiEditDialog(path);
+                        }
+                    });*/
                 }
             }
 
@@ -824,7 +841,7 @@ public class SubredditSelectActivity extends Activity {
         }).show();
     }
 
-    private MultiSubsAdapter multiSubsAdapter;
+    private SubsListAdapter multiSubsAdapter;
     private AlertDialog multiDialog;
     private void showMultiEditDialog(final String multiPath){
         JSONObject multiObj = global.getSubredditManager().getMultiData(multiPath);
@@ -874,7 +891,7 @@ public class SubredditSelectActivity extends Activity {
         simpleTabsWidget.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
 
         ListView subList = (ListView) dialogView.findViewById(R.id.multi_subredditList);
-        multiSubsAdapter = new MultiSubsAdapter(SubredditSelectActivity.this, multiPath);
+        multiSubsAdapter = new SubsListAdapter(SubredditSelectActivity.this, multiPath);
         subList.setAdapter(multiSubsAdapter);
 
         saveButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.MULTIPLY);
@@ -906,22 +923,64 @@ public class SubredditSelectActivity extends Activity {
         multiDialog = builder.setView(dialogView).show();
     }
 
-    class MultiSubsAdapter extends BaseAdapter {
+    private void showFilterEditDialog(){
+
+        @SuppressLint("InflateParams")
+        LinearLayout dialogView =  (LinearLayout)  getLayoutInflater().inflate(R.layout.dialog_filter, null); // passing null okay for dialog
+
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        int headerText = Color.parseColor(theme.getValue("header_text"));
+        dialogView.findViewById(R.id.filter_header).setBackgroundColor(headerColor);
+        ((TextView) dialogView.findViewById(R.id.filter_headert1)).setTextColor(headerText);
+        ((TextView) dialogView.findViewById(R.id.filter_headert2)).setTextColor(headerText);
+
+        ListView subList = (ListView) dialogView.findViewById(R.id.filter_subredditList);
+        final SubsListAdapter filterSubsAdapter = new SubsListAdapter(SubredditSelectActivity.this, null);
+        subList.setAdapter(filterSubsAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
+        builder.setView(dialogView)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        global.getSubredditManager().setAllFilter(filterSubsAdapter.getSubsList());
+                    }
+                }).show().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);;
+    }
+
+    class SubsListAdapter extends BaseAdapter {
+        private final int MODE_MULTI = 1;
+        private int mode = 0;
         private LayoutInflater inflater;
-        private ArrayList<String> multiSubs;
+        private ArrayList<String> subsList;
         private String multiPath;
         private SubAutoCompleteAdapter autoCompleteAdapter;
 
-        public MultiSubsAdapter(Context context, String multiPath) {
+        public SubsListAdapter(Context context, String multiPath) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             autoCompleteAdapter = new SubAutoCompleteAdapter(context, R.layout.autocomplete_list_item);
-            this.multiPath = multiPath;
-            refreshMultiSubreddits();
+            if (multiPath!=null) {
+                this.multiPath = multiPath;
+                mode = MODE_MULTI;
+            }
+            refreshList();
         }
 
-        public void refreshMultiSubreddits(){
-            multiSubs = global.getSubredditManager().getMultiSubreddits(multiPath);
-            Collections.sort(multiSubs, new Comparator<String>() {
+        public void refreshList(){
+            if (mode==MODE_MULTI) {
+                subsList = global.getSubredditManager().getMultiSubreddits(multiPath);
+            } else {
+                subsList = global.getSubredditManager().getAllFilter();
+            }
+            Collections.sort(subsList, new Comparator<String>() {
                 @Override
                 public int compare(String s, String t1) {
                     return s.compareToIgnoreCase(t1);
@@ -936,7 +995,7 @@ public class SubredditSelectActivity extends Activity {
             final ViewHolder viewHolder;
             if (convertView == null || convertView.getTag() == null) {
                 // inflate new view
-                if (position==multiSubs.size()) {
+                if (position== subsList.size()) {
                     convertView = inflater.inflate(R.layout.multi_sublist_add_item, parent, false);
                     viewHolder = new ViewHolder();
                     viewHolder.nameInput = (AutoCompleteTextView) convertView.findViewById(R.id.subreddit_name);
@@ -952,47 +1011,74 @@ public class SubredditSelectActivity extends Activity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             // setup the row
-            if (position==multiSubs.size()) {
+            if (position== subsList.size()) {
                 viewHolder.nameInput.setAdapter(autoCompleteAdapter);
                 viewHolder.nameInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String subreddit = viewHolder.nameInput.getText().toString();
-                        System.out.println("Adding Sub: " + subreddit);
-                        new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
+                        performAdd(subreddit);
                     }
                 });
                 viewHolder.addIcon.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String subreddit = viewHolder.nameInput.getText().toString();
-                        System.out.println("Adding Sub: " + subreddit);
-                        new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
+                        performAdd(subreddit);
                     }
                 });
-                viewHolder.searchIcon.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(SubredditSelectActivity.this, ViewAllSubredditsActivity.class);
-                        intent.setAction(ViewAllSubredditsActivity.ACTION_ADD_MULTI_SUB);
-                        intent.putExtra("multipath", multiPath);
-                        startActivityForResult(intent, 1);
-                    }
-                });
+                if (mode==MODE_MULTI) {
+                    viewHolder.searchIcon.setVisibility(View.VISIBLE);
+                    viewHolder.searchIcon.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(SubredditSelectActivity.this, ViewAllSubredditsActivity.class);
+                            intent.setAction(ViewAllSubredditsActivity.ACTION_ADD_MULTI_SUB);
+                            intent.putExtra("multipath", multiPath);
+                            startActivityForResult(intent, 1);
+                        }
+                    });
+                } else {
+                    // search isn't implemented here yet, you could if you want to but I don't see much point
+                    viewHolder.searchIcon.setVisibility(View.GONE);
+                }
             } else {
                 final String subreddit = getItem(position);
                 viewHolder.name.setText(subreddit);
                 viewHolder.removeIcon.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        System.out.println("Removing Sub: "+subreddit);
-                        new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
+                        performRemove(subreddit);
                     }
                 });
             }
             convertView.setTag(viewHolder);
 
             return convertView;
+        }
+
+        private ArrayList<String> getSubsList(){
+            return subsList;
+        }
+
+        private void performAdd(String subreddit){
+            System.out.println("Adding Sub: " + subreddit);
+            if (mode==MODE_MULTI) {
+                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
+            } else {
+                subsList.add(subreddit);
+                notifyDataSetChanged();
+            }
+        }
+
+        private void performRemove(String subreddit){
+            System.out.println("Removing Sub: "+subreddit);
+            if (mode==MODE_MULTI) {
+                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
+            } else {
+                subsList.remove(subreddit);
+                notifyDataSetChanged();
+            }
         }
 
         @Override
@@ -1002,19 +1088,19 @@ public class SubredditSelectActivity extends Activity {
 
         @Override
         public int getItemViewType(int position){
-            if (position==multiSubs.size())
+            if (position== subsList.size())
                 return 1;
             return 0;
         }
 
         @Override
         public int getCount(){
-            return multiSubs.size()+1;
+            return subsList.size()+1;
         }
 
         @Override
         public String getItem(int i) {
-            return multiSubs.get(i);
+            return subsList.get(i);
         }
 
         @Override
@@ -1190,13 +1276,13 @@ public class SubredditSelectActivity extends Activity {
                         subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
                         subreddits.add(params[1].toString());
                         global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
-                        multiSubsAdapter.refreshMultiSubreddits();
+                        multiSubsAdapter.refreshList();
                         break;
                     case ACTION_MULTI_SUB_REMOVE:
                         subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
                         subreddits.remove(params[1].toString());
                         global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
-                        multiSubsAdapter.refreshMultiSubreddits();
+                        multiSubsAdapter.refreshList();
                         break;
                     case ACTION_MULTI_DELETE:
                         global.getSubredditManager().removeMulti(params[0].toString());

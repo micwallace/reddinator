@@ -387,42 +387,42 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private void loadReddits(boolean loadMore) {
         String curFeed = global.getSubredditManager().getCurrentFeedPath(appWidgetId);
+        boolean isAll = global.getSubredditManager().getCurrentFeedName(appWidgetId).equals("all");
         String sort = mSharedPreferences.getString("sort-" + appWidgetId, "hot");
+        JSONArray tempArray;
+        endOfFeed = false;
         // Load more or initial load/reload?
         if (loadMore) {
             // fetch 25 more after current last item and append to the list
-            JSONArray tempData;
             try {
-                tempData = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+                tempArray = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
                 Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
-            if (tempData.length() == 0) {
+            if (tempArray.length() == 0) {
                 endOfFeed = true;
             } else {
-                endOfFeed = false;
+                if (isAll)
+                    tempArray = global.getSubredditManager().filterFeed(tempArray);
+
                 int i = 0;
-                while (i < tempData.length()) {
+                while (i < tempArray.length()) {
                     try {
-                        data.put(tempData.get(i));
+                        data.put(tempArray.get(i));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     i++;
                 }
-                // Save feed data
-                global.setFeed(mSharedPreferences, appWidgetId, data);
             }
         } else {
-            endOfFeed = false;
             // clear image cache
             clearImageCache();
             // reload feed
             int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-            JSONArray tempArray;
             try {
                 tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
             } catch (RedditData.RedditApiException e) {
@@ -431,23 +431,27 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
-            // check if data is valid; if the getredditfeed function fails to create a connection it returns -1 in the first value of the array
-            data = tempArray;
+            // check if end of feed, if not process & set feed data
             if (data.length() == 0) {
                 endOfFeed = true;
+            } else {
+                if (isAll)
+                    tempArray = global.getSubredditManager().filterFeed(tempArray);
             }
-            // Save feed data
-            global.setFeed(mSharedPreferences, appWidgetId, data);
+            data = tempArray;
         }
+        // Save feed data
+        global.setFeed(mSharedPreferences, appWidgetId, data);
         // set last item id for "loadmore use"
         // Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
-        if (data.length() == 0){
+        if (endOfFeed){
             lastItemId = "0";
         } else {
             try {
                 lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
             } catch (JSONException e) {
-                lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
+                lastItemId = "0"; // Could not get last item ID :(
+                endOfFeed = true;
                 e.printStackTrace();
             }
         }

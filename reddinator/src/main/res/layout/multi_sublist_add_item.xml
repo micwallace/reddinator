@@ -36,7 +36,7 @@
             android:shadowDy="4"
             android:shadowRadius="3"
             android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingRight="10dp"
             android:textSize="32sp"
             android:textColor="#25C48F"/>
 
@@ -44,7 +44,7 @@
             android:id="@+id/multi_sub_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
+            android:paddingLeft="4dp"
             android:paddingRight="10dp"
             android:contentDescription="@string/search"
             android:text="@string/fa_search"

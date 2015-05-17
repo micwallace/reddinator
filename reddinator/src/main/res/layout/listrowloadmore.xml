@@ -4,8 +4,8 @@
     android:id="@+id/listrowloadmore"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dip"
-    android:paddingTop="10dip"
+    android:paddingBottom="8dip"
+    android:paddingTop="8dip"
     android:gravity="center">
 
     <ImageView
