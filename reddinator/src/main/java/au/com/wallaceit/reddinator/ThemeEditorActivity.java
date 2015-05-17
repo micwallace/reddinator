@@ -31,6 +31,7 @@ public class ThemeEditorActivity extends ListActivity {
     private GlobalObjects global;
     private String themeId = "";
     private ThemeManager.Theme theme;
+    private boolean themeChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class ThemeEditorActivity extends ListActivity {
             // set a unique id & default name for the theme
             themeId = "theme-"+ UUID.randomUUID();
             theme.setName("My Awesome Theme");
+            themeChanged = true;
         }
 
         setContentView(R.layout.activity_theme_editor);
@@ -70,9 +72,12 @@ public class ThemeEditorActivity extends ListActivity {
 
     @Override
     public void onBackPressed(){
-        super.onBackPressed();
+        if (themeChanged)
+            global.mThemeManager.saveCustomTheme(themeId, theme);
 
-        global.mThemeManager.saveCustomTheme(themeId, theme);
+        setResult((themeChanged?3:0));
+
+        super.onBackPressed();
     }
 
     @Override
@@ -98,12 +103,16 @@ public class ThemeEditorActivity extends ListActivity {
         @Override
         public Object getItem(int position) {
             String key;
+            if (position==0){
+                return theme.getName();
+            }
             try {
                 key = (String) global.mThemeManager.getPreferenceOrder().get(position);
             } catch (JSONException e) {
                 e.printStackTrace();
                 return null;
             }
+
             return theme.getValues().get(key);
         }
 
@@ -121,13 +130,16 @@ public class ThemeEditorActivity extends ListActivity {
                 viewHolder = new ViewHolder();
                 viewHolder.settingName = (TextView) convertView.findViewById(R.id.theme_value_name);
                 viewHolder.settingValue = (TextView) convertView.findViewById(R.id.theme_value);
+                viewHolder.colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
+                viewHolder.simplePickBtn = (IconTextView) convertView.findViewById(R.id.simple_color_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             if (position==0){
                 viewHolder.settingName.setText("Name");
                 viewHolder.settingValue.setText(theme.getName());
-
+                viewHolder.colorPreview.setVisibility(View.GONE);
+                viewHolder.simplePickBtn.setVisibility(View.GONE);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -142,6 +154,7 @@ public class ThemeEditorActivity extends ListActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 theme.setName(input.getText().toString());
+                                themeChanged = true;
                                 refreshList();
                             }
                         })
@@ -161,15 +174,19 @@ public class ThemeEditorActivity extends ListActivity {
                     e.printStackTrace();
                     return null;
                 }
-                ImageView colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
-                IconTextView simplePickBtn = (IconTextView) convertView.findViewById(R.id.simple_color_btn);
                 String value = theme.getValue(key);
                 viewHolder.settingName.setText(global.mThemeManager.getThemePrefLabel(key));
                 viewHolder.settingValue.setText(value);
                 if (!value.equals("")) {
-                    colorPreview.setBackgroundColor(Color.parseColor(value));
-                    colorPreview.setVisibility(View.VISIBLE);
-                    simplePickBtn.setVisibility(View.VISIBLE);
+                    try {
+                        int color = Color.parseColor(value);
+                        viewHolder.colorPreview.setBackgroundColor(color);
+                        viewHolder.colorPreview.setVisibility(View.VISIBLE);
+
+                    } catch (IllegalArgumentException e){
+                        e.printStackTrace();
+                    }
+                    viewHolder.simplePickBtn.setVisibility(View.VISIBLE);
                 }
 
                 final String finalKey = key;
@@ -203,6 +220,7 @@ public class ThemeEditorActivity extends ListActivity {
                                 String hexColor = useAlpha?("#"+Integer.toHexString(picker.getColor())):String.format("#%06X", (0xFFFFFF & picker.getColor()));
                                 System.out.println(hexColor);
                                 theme.setValue(finalKey, hexColor.toUpperCase());
+                                themeChanged = true;
                                 refreshList();
                                 dialog.dismiss();
                             }
@@ -220,7 +238,7 @@ public class ThemeEditorActivity extends ListActivity {
                     }
                 });
 
-                simplePickBtn.setOnClickListener(new View.OnClickListener() {
+                viewHolder.simplePickBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ThemeEditorActivity.this);
@@ -235,6 +253,7 @@ public class ThemeEditorActivity extends ListActivity {
                                 }
                                 System.out.println(hexColor);
                                 theme.setValue(finalKey, hexColor);
+                                themeChanged = true;
                                 refreshList();
                                 dialogInterface.dismiss();
                             }
@@ -267,6 +286,8 @@ public class ThemeEditorActivity extends ListActivity {
         class ViewHolder {
             TextView settingName;
             TextView settingValue;
+            ImageView colorPreview;
+            IconTextView simplePickBtn;
         }
     }
 }

@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -228,6 +229,9 @@ public class SubredditSelectActivity extends Activity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        // set theme colors
+        setThemeColors();
+
         GlobalObjects.doShowWelcomeDialog(SubredditSelectActivity.this);
     }
 
@@ -259,8 +263,6 @@ public class SubredditSelectActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        // set theme colors
-        setThemeColors();
     }
 
     @Override
@@ -292,6 +294,11 @@ public class SubredditSelectActivity extends Activity {
                 e.printStackTrace();
                 Toast.makeText(SubredditSelectActivity.this, "Error reading subreddit data", Toast.LENGTH_LONG).show();
             }
+            return;
+        }
+        if (requestCode==2 && resultCode==3){
+            needsThemeUpdate = true;
+            setThemeColors();
         }
     }
 
@@ -309,7 +316,9 @@ public class SubredditSelectActivity extends Activity {
             appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
             appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
         } else {
-            setResult(2); // update feed prefs + reload feed
+            Intent intent = new Intent();
+            intent.putExtra("themeupdate", needsThemeUpdate);
+            setResult(2, intent); // update feed prefs + reload feed
         }
         finish();
     }
@@ -336,14 +345,23 @@ public class SubredditSelectActivity extends Activity {
                 }
                 appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
             } else {
+                Intent intent = new Intent();
+                intent.putExtra("themeupdate", needsThemeUpdate);
                 if (!curSort.equals(mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot"))) {
-                    setResult(2); // reload feed and prefs
+                    setResult(2, intent); // reload feed and prefs
                 } else {
-                    setResult(1); // tells main activity to update feed prefs
+                    setResult(1, intent); // tells main activity to update feed prefs
+                }
+                if (needsThemeUpdate){
+                    global.setRefreshView();
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
+                    int[] widgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(SubredditSelectActivity.this, WidgetProvider.class));
+                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, widgetIds, false);
+                    appWidgetManager.notifyAppWidgetViewDataChanged(widgetIds, R.id.listview);
                 }
             }
         } else {
-            setResult(0); // feed doesn't need updating
+            setResult(0);
         }
         finish();
     }
@@ -411,12 +429,12 @@ public class SubredditSelectActivity extends Activity {
 
             case R.id.menu_thememanager:
                 Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, 2);
                 break;
 
             case R.id.menu_prefs:
                 Intent intent2 = new Intent(SubredditSelectActivity.this, PrefsActivity.class);
-                startActivityForResult(intent2, 0);
+                startActivityForResult(intent2, 2);
                 break;
 
             case R.id.menu_about:
@@ -953,7 +971,7 @@ public class SubredditSelectActivity extends Activity {
                         dialogInterface.dismiss();
                         global.getSubredditManager().setAllFilter(filterSubsAdapter.getSubsList());
                     }
-                }).show().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);;
+                }).show().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 
     class SubsListAdapter extends BaseAdapter {

@@ -399,7 +399,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
-                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
             if (tempArray.length() == 0) {
@@ -428,7 +427,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 hideWidgetLoader(false, true); // don't go to top of list and show error icon
-                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
             // check if end of feed, if not process & set feed data

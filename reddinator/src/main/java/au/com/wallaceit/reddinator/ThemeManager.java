@@ -137,12 +137,13 @@ public class ThemeManager {
         if (themePrefKey==null)
             return getTheme(prefs.getString("appthemepref", "reddit_classic"));
 
-        String themeKey = prefs.getString(themePrefKey, "reddit_classic");
+        String themeKey = prefs.getString(themePrefKey, "app_select");
 
-        if (!themes.has(themeKey) && !customThemes.has(themeKey))
+        boolean appSelect = themeKey==null || themeKey.equals("app_select");
+        if (appSelect || (!themes.has(themeKey) && !customThemes.has(themeKey)))
             return getTheme(prefs.getString("appthemepref", "reddit_classic"));
 
-        return getTheme(prefs.getString(themePrefKey, "reddit_classic"));
+        return getTheme(themeKey);
     }
 
     public boolean isThemeEditable(String key){

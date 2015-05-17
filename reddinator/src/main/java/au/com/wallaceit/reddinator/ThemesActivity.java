@@ -49,11 +49,15 @@ public class ThemesActivity extends ListActivity {
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
         }
+        setResult(0);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        refreshList();
+        if (resultCode==3) {
+            refreshList();
+            setResult(3); // indicate theme edit
+        }
     }
 
     public void refreshList(){
@@ -138,7 +142,7 @@ public class ThemesActivity extends ListActivity {
                 public void onClick(View v) {
                 Intent intent = new Intent(ThemesActivity.this, ThemeEditorActivity.class);
                 intent.putExtra("themeId", themeId);
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, 0);
                 }
             });
             convertView.findViewById(R.id.subreddit_delete_btn).setOnClickListener(new View.OnClickListener() {

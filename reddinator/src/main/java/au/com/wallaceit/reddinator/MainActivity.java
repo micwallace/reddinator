@@ -124,7 +124,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent prefsintent = new Intent(context, PrefsActivity.class);
-                prefsintent.putExtra("fromapp", true);
                 startActivityForResult(prefsintent, 0);
             }
         };
@@ -218,12 +217,11 @@ public class MainActivity extends Activity {
                 listAdapter.loadFeedPrefs();
                 listAdapter.reloadReddits();
                 break;
-
-            case 3: // reload theme
-                setThemeColors();
-                listAdapter.loadTheme();
-                listView.invalidateViews();
-                break;
+        }
+        if (data!=null && data.getBooleanExtra("themeupdate", true)){
+            setThemeColors();
+            listAdapter.loadTheme();
+            listView.invalidateViews();
         }
     }
 

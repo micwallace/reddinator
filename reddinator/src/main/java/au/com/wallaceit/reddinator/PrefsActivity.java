@@ -136,7 +136,8 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (!(isfromappview = extras.getBoolean("fromapp", false))) {
+            isfromappview = !intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID);
+            if (!isfromappview) {
                 mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
                 mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             }
@@ -191,19 +192,21 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
             //System.out.println("Refresh preference changed, updating alarm");
             MailCheckReceiver.setAlarm(PrefsActivity.this);
         }
-        int result = 0;
         // check if theme or style has changed and update if needed
         if (themeChanged || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))) {
 
             if (mFirstTimeSetup == 0) { // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
                 updateWidget(); // Reloads widget without reloading feed items.
             }
-            // if we are returning to app view,set the result to 3, indicating a theme update is needed
-            result = 3;
+            // if we are returning to app view,set the result intent, indicating a theme update is needed
+            if (isfromappview) {
+                Intent intent = new Intent();
+                intent.putExtra("themeupdate", true);
+                setResult(3, intent);
+            }
         }
 
         if (isfromappview) {
-            setResult(result); // no update needed
             finish();
             return;
         }
