@@ -45,6 +45,7 @@ public class ThemeManager {
     static final int LISTMODE_ALL= 0;
     static final int LISTMODE_CUSTOM= 1;
     static final int LISTMODE_DEFAULT= 2;
+    private Theme defaultValues;
 
     public ThemeManager(Context context, SharedPreferences preferences){
         this.prefs = preferences;
@@ -175,6 +176,8 @@ public class ThemeManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        // load failsafe values
+        defaultValues = new Theme(getThemeJSON("reddit_classic"));
     }
 
     public void saveCustomTheme(String themeId, Theme theme){
@@ -259,7 +262,7 @@ public class ThemeManager {
             if (values.containsKey(key))
                 return values.get(key);
 
-            return (new Theme(getThemeJSON("reddit_classic"))).getValue(key);
+            return defaultValues.getValue(key);
         }
 
         public void setValue(String key, String newValue){
@@ -280,10 +283,24 @@ public class ThemeManager {
             HashMap<String, Integer>  themeColors = new HashMap<>();
             Iterator iterator = srcColors.keySet().iterator();
             String key;
+            int colorVal;
+            Exception colorException;
             while (iterator.hasNext()){
                 key = (String) iterator.next();
-                //System.out.println(key);
-                themeColors.put(key, Color.parseColor(srcColors.get(key)));
+                try {
+                    colorVal = Color.parseColor(srcColors.get(key));
+                } catch (IllegalArgumentException e){
+                    colorException = new Exception("Color value invalid: "+srcColors.get(key), e); // This will give us more info in g.play console.
+                    colorException.printStackTrace();
+                    try {
+                        colorVal = Color.parseColor(defaultValues.getValue(key)); // Use reddit_classic value if invalid.
+                    } catch (IllegalArgumentException e2){ // can possibly be remove eventually, getting illegal argument exception at the moment. Trying to figure out WHY! Want to rule out any issues with default themes aswell.
+                        colorException = new Exception("Color value invalid: "+srcColors.get(key), e2);
+                        colorException.printStackTrace();
+                        colorVal = Color.WHITE;
+                    }
+                }
+                themeColors.put(key, colorVal);
             }
             return themeColors;
         }

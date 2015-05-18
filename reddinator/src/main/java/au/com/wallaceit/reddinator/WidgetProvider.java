@@ -193,7 +193,7 @@ public class WidgetProvider extends AppWidgetProvider {
         if (action.equals(ITEM_CLICK)) {
             // check if its the load more button being clicked
             String redditId = intent.getExtras().getString(WidgetProvider.ITEM_ID);
-            if ("0".equals(redditId)) {
+            if (redditId.equals("0")) {
                 // LOAD MORE FEED ITEM CLICKED
                 //System.out.println("loading more feed items...");
                 int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);

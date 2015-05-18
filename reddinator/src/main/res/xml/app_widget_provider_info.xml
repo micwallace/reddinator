@@ -3,8 +3,10 @@
     android:initialLayout="@layout/widget"
     android:widgetCategory="home_screen|keyguard"
     android:resizeMode="vertical|horizontal"
-    android:minHeight="72dp"
+    android:minHeight="110dp"
     android:minWidth="250dp"
-    android:updatePeriodMillis="0" 
+    android:minResizeHeight="72dp"
+    android:minResizeWidth="200dp"
+    android:updatePeriodMillis="0"
     android:configure="au.com.wallaceit.reddinator.PrefsActivity">
 </appwidget-provider>

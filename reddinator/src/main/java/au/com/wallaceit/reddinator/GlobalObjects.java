@@ -248,7 +248,7 @@ public class GlobalObjects extends Application {
 
     public static void doShowWelcomeDialog(final Activity context){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean aboutDismissed = preferences.getBoolean("welcomeDialogShown-"+getPackageInfo(context).versionCode, false);
+        boolean aboutDismissed = preferences.getBoolean("welcomeDialogShown-"+getPackageInfo(context).versionName, false);
         if (!aboutDismissed){
             showInfoDialog(context, false);
         }
@@ -284,7 +284,7 @@ public class GlobalObjects extends Application {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (!isInfo)
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionCode, true).apply();
+                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionName, true).apply();
                 dialogInterface.dismiss();
             }
         }).show();

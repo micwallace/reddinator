@@ -177,17 +177,16 @@ public class ThemeEditorActivity extends ListActivity {
                 String value = theme.getValue(key);
                 viewHolder.settingName.setText(global.mThemeManager.getThemePrefLabel(key));
                 viewHolder.settingValue.setText(value);
-                if (!value.equals("")) {
-                    try {
-                        int color = Color.parseColor(value);
-                        viewHolder.colorPreview.setBackgroundColor(color);
-                        viewHolder.colorPreview.setVisibility(View.VISIBLE);
-
-                    } catch (IllegalArgumentException e){
-                        e.printStackTrace();
-                    }
-                    viewHolder.simplePickBtn.setVisibility(View.VISIBLE);
+                int color;
+                try {
+                    color = Color.parseColor(value);
+                } catch (IllegalArgumentException e){
+                    e.printStackTrace();
+                    color = Color.WHITE;
                 }
+                viewHolder.colorPreview.setBackgroundColor(color);
+                viewHolder.colorPreview.setVisibility(View.VISIBLE);
+                viewHolder.simplePickBtn.setVisibility(View.VISIBLE);
 
                 final String finalKey = key;
                 convertView.setOnClickListener(new View.OnClickListener() {
