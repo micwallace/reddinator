@@ -40,7 +40,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     private String mRefreshrate = "";
     private String mTitleFontSize = "";
     private String mAppTheme = "";
-    int mFirstTimeSetup = 0;
+    //int mFirstTimeSetup = 0;
     private String mMailRefresh = "";
     boolean isfromappview = false;
     private GlobalObjects global;
@@ -138,7 +138,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         if (extras != null) {
             isfromappview = !intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID);
             if (!isfromappview) {
-                mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
+                //mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
                 mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             }
         }
@@ -194,26 +194,16 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         }
         // check if theme or style has changed and update if needed
         if (themeChanged || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))) {
-
-            if (mFirstTimeSetup == 0) { // if its the first time setup (ie new widget added), reload the feed items as there will be no cached items for new widget
-                updateWidget(); // Reloads widget without reloading feed items.
-            }
             // if we are returning to app view,set the result intent, indicating a theme update is needed
             if (isfromappview) {
                 Intent intent = new Intent();
                 intent.putExtra("themeupdate", true);
                 setResult(3, intent);
+            } else {
+                updateWidget();
             }
         }
 
-        if (isfromappview) {
-            finish();
-            return;
-        }
-        // for first time setup, widget provider receives this intent in onWidgetOptionsChanged();
-        Intent resultValue = new Intent();
-        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-        setResult(RESULT_OK, resultValue);
         finish();
     }
 

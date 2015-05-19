@@ -51,6 +51,7 @@
     </string-array>
 
     <string-array name="widget_refresh_list">
+        <item>30 Minutes</item>
         <item>1 Hour</item>
         <item>2 Hours</item>
         <item>4 Hours</item>
@@ -62,6 +63,7 @@
     </string-array>
 
     <string-array name="widget_refresh_values">
+        <item>1800000</item>
         <item>3600000</item>
         <item>7200000</item>
         <item>14400000</item>

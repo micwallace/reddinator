@@ -8,5 +8,5 @@
     android:minResizeHeight="72dp"
     android:minResizeWidth="200dp"
     android:updatePeriodMillis="0"
-    android:configure="au.com.wallaceit.reddinator.PrefsActivity">
+    android:configure="au.com.wallaceit.reddinator.SubredditSelectActivity">
 </appwidget-provider>

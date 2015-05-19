@@ -245,12 +245,12 @@ public class WidgetProvider extends AppWidgetProvider {
         if (action.equals(APPWIDGET_AUTO_UPDATE)) {
             AppWidgetManager mgr = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+            // perform full update, just to refresh views
+            onUpdate(context, mgr, appWidgetIds);
             // set cache bypass
             setNoCache(context);
-            // perform full update
-            onUpdate(context, mgr, appWidgetIds);
-            // request update from service
-            mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview); // this might not be needed
+            // show loader and update data
+            showLoaderAndUpdate(context, intent, appWidgetIds, false);
         }
 
         if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_CHANGED")) {

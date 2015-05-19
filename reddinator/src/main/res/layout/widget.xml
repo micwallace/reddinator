@@ -73,7 +73,8 @@
             android:layout_toStartOf="@+id/refreshbutton"
             android:contentDescription="@string/error"
             android:scaleType="centerInside"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:background="@android:color/transparent" />
 
         <TextView
             android:id="@+id/subreddittxt"

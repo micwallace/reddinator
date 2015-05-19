@@ -82,6 +82,7 @@ public class SubredditSelectActivity extends Activity {
     private SharedPreferences mSharedPreferences;
     private GlobalObjects global;
     private Button sortBtn;
+    private boolean widgetFirstTimeSetup = false;
     private boolean needsThemeUpdate = false;
     private boolean needsFeedUpdate = false;
     private boolean needsFeedViewUpdate = false;
@@ -169,6 +170,9 @@ public class SubredditSelectActivity extends Activity {
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
                 mAppWidgetId = 0; // Id of 4 zeros indicates its the app view, not a widget, that is being updated
+            } else {
+                String action = getIntent().getAction();
+                widgetFirstTimeSetup = action!=null && action.equals("android.appwidget.action.APPWIDGET_CONFIGURE");
             }
         } else {
             mAppWidgetId = 0;
@@ -294,7 +298,10 @@ public class SubredditSelectActivity extends Activity {
     }
 
     private void updateFeedAndFinish() {
-
+        if (widgetFirstTimeSetup) {
+            finishWidgetSetup();
+            return;
+        }
         if (mAppWidgetId != 0) {
             // refresh widget and close activity (NOTE: put in function)
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
@@ -314,8 +321,20 @@ public class SubredditSelectActivity extends Activity {
         finish();
     }
 
+    private void finishWidgetSetup(){
+        // for first time setup, widget provider receives this intent in onWidgetOptionsChanged();
+        Intent resultValue = new Intent();
+        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
+        setResult(RESULT_OK, resultValue);
+        finish();
+    }
+
     // save changes on back press
     public void onBackPressed() {
+        if (widgetFirstTimeSetup) {
+            finishWidgetSetup();
+            return;
+        }
         // check if sort has changed
         if (needsFeedUpdate || needsFeedViewUpdate || needsThemeUpdate) {
             if (mAppWidgetId != 0) {
