@@ -98,7 +98,7 @@
             android:key="@string/comments_webview"
             android:title="Mobile Reddit Comments"
             android:defaultValue="false"
-            android:summary="View comments as seen at m.reddit.com" />
+            android:summary="View comments at m.reddit.com" />
         <ListPreference
             android:key="@string/preload_pref"
             android:title="Preload Content"
@@ -107,13 +107,19 @@
             android:entryValues="@array/preload_list_values"
             android:defaultValue="3"
             android:dialogTitle="Preload Content" />
+        <CheckBoxPreference
+            android:key="@string/back_button_pref"
+            android:title="Actionbar Back Action"
+            android:defaultValue="false"
+            android:summaryOn="Navigate backward \n(like the in-build back button)"
+            android:summaryOff="Exit to the last screen"/>
         <ListPreference
             android:key="@string/comment_font_pref"
             android:title="Comments Font Size"
             android:summary="Default font size for the comments view"
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
-            android:defaultValue="20"
+            android:defaultValue="18"
             android:dialogTitle="Reddit Font Size" />
 		<ListPreference
             android:key="@string/content_font_pref"
@@ -129,7 +135,7 @@
             android:summary="Default font size for mobile reddit webviews"
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
-            android:defaultValue="21"
+            android:defaultValue="20"
             android:dialogTitle="Reddit Mobile Font Size" />
     </PreferenceCategory>
 

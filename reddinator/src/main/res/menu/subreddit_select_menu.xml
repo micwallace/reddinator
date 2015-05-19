@@ -3,12 +3,6 @@
     xmlns:reddinator="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_submit"
-        android:title="@string/submit"
-        android:showAsAction="never"
-        reddinator:showAsAction="never"/>
-
-    <item
         android:id="@+id/menu_feedprefs"
         android:title="@string/feed_prefs"
         android:showAsAction="never"
@@ -23,6 +17,18 @@
     <item
         android:id="@+id/menu_thememanager"
         android:title="@string/menu_theme_manager"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_account"
+        android:title="@string/my_reddit"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_submit"
+        android:title="@string/submit"
         android:showAsAction="never"
         reddinator:showAsAction="never"/>
 

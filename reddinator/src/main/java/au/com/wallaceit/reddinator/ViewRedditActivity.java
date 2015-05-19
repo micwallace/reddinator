@@ -266,11 +266,15 @@ public class ViewRedditActivity extends FragmentActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
-                webFragment.mWebView.stopLoading();
-                webFragment.mWebView.loadData("", "text/html", "utf-8");
-                this.finish();
-                return true;
+                if (prefs.getBoolean("backbuttonpref", false)) {
+                    onBackPressed();
+                } else {
+                    TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
+                    webFragment.mWebView.stopLoading();
+                    webFragment.mWebView.loadData("", "text/html", "utf-8");
+                    this.finish();
+                }
+                break;
 
             case R.id.menu_upvote:
                 upVote();

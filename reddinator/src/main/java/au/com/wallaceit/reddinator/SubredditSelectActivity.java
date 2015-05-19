@@ -389,6 +389,7 @@ public class SubredditSelectActivity extends Activity {
         }
         (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
@@ -424,11 +425,6 @@ public class SubredditSelectActivity extends Activity {
                 onBackPressed();
                 break;
 
-            case R.id.menu_submit:
-                Intent submitIntent = new Intent(SubredditSelectActivity.this, SubmitActivity.class);
-                startActivity(submitIntent);
-                break;
-
             case R.id.menu_feedprefs:
                 showFeedPrefsDialog();
                 break;
@@ -440,6 +436,17 @@ public class SubredditSelectActivity extends Activity {
             case R.id.menu_thememanager:
                 Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
                 startActivityForResult(intent, 2);
+                break;
+
+            case R.id.menu_account:
+                Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
+                accnIntent.putExtra("url", "https://www.reddit.com/user/me/.compact");
+                startActivity(accnIntent);
+                break;
+
+            case R.id.menu_submit:
+                Intent submitIntent = new Intent(SubredditSelectActivity.this, SubmitActivity.class);
+                startActivity(submitIntent);
                 break;
 
             case R.id.menu_prefs:

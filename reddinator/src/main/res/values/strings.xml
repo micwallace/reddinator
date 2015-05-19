@@ -106,5 +106,6 @@
     <string name="fa_caret">{fa-caret-down}</string>
     <string name="filter_subreddits">Filter Subreddits</string>
     <string name="filter_subreddits_select">Select subreddits to exclude</string>
+    <string name="back_button_pref">backbuttonpref</string>
 
 </resources>

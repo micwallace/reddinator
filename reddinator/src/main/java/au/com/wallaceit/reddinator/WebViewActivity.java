@@ -46,6 +46,7 @@ public class WebViewActivity extends Activity {
     WebViewClient wvclient;
     Activity mActivity;
     GlobalObjects global;
+    SharedPreferences prefs;
 
     public static final String ACTION_CLEAR_INBOX_COUNT= "clearInboxCount";
 
@@ -78,7 +79,7 @@ public class WebViewActivity extends Activity {
             }
         });
         wv.getSettings().setJavaScriptEnabled(true);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
+        prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
         wv.getSettings().setDefaultFontSize(Integer.parseInt(prefs.getString("reddit_content_font_pref", "21")));
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
@@ -149,9 +150,13 @@ public class WebViewActivity extends Activity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                wv.stopLoading();
-                wv.loadData("", "text/html", "utf-8");
-                this.finish();
+                if (prefs.getBoolean("backbuttonpref", false)) {
+                    onBackPressed();
+                } else {
+                    wv.stopLoading();
+                    wv.loadData("", "text/html", "utf-8");
+                    this.finish();
+                }
                 break;
 
             case R.id.menu_open:
