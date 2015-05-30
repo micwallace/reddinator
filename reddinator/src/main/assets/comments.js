@@ -1,6 +1,7 @@
 // set article from document hash
 var articleId = document.location.hash.substring(1);
 var username;
+var subAuthor;
 
 function init(themeColors, user){
     username = user;
@@ -21,7 +22,8 @@ function setTheme(themeColors){
     $("body").show();
 }
 
-function populateComments(json){
+function populateComments(author, json){
+    subAuthor = author;
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
@@ -194,6 +196,10 @@ function populateChildComments(moreId, json){
     }
 }
 
+function noChildrenCallback(moreId){
+    $("#"+moreId+" h5").text("There's nothing more here");
+}
+
 function appendMoreButton(parentId, moreData){
     var moreElem = $("#more_template").clone().show();
     moreElem.attr("id", moreData.name);
@@ -215,10 +221,11 @@ function appendMoreButton(parentId, moreData){
 }
 
 function appendComment(parentId, commentData, prepend){
+    console.log(JSON.stringify(commentData));
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
-    var text = htmlDecode(commentData.body_html);
+    var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'http://www.reddit.com/u/'+commentData.author+'.compact');
     commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
@@ -232,8 +239,29 @@ function appendComment(parentId, commentData, prepend){
         }
     }
     // check if author
-    if (commentData.author==username){
+    if (commentData.author==username)
         commentElem.find(".user_option").show();
+    var flag = commentElem.find(".distinguish_flag");
+    if (commentData.author==subAuthor){
+        flag.text("[S]");
+        flag.css("visibility", "visible");
+    }
+    if (commentData.distinguished!=null){
+        switch(commentData.distinguished){
+            case "moderator":
+                flag.text("[M]");
+                flag.css("color", "#30925E");
+                break;
+            case "admin":
+                flag.text("[A]");
+                flag.css("color", "#F82330");
+                break;
+            case "special":
+                flag.text("[Δ]");
+                flag.css("color", "#C22344");
+                break;
+        }
+        flag.css("visibility", "visible");
     }
     if (parentId.indexOf("t3_")!==-1){
         if (prepend){

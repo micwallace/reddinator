@@ -11,12 +11,15 @@
 </head>
 <body style="display:none;">
 <div id="comment_template" class="comment_box" style="display: none;">
-    <div class="comment_info" style="text">
+    <div class="comment_info">
         <span style="display:inline;"><a class="comment_user" href=""></a></span>
-        <span><i class="fa fa-star"></i></span>
-        <span class="comment_score" style="padding:0;"></span>
-        <span><i class="fa fa-comment"></i></span>
-        <span class="comment_reply_count" style="padding:0;"></span>
+        <span class="distinguish_flag" style="visibility:hidden; display:inline; color:#4166E5; padding:0;"></span>
+        <div style="display:inline; padding:0; margin:0'">
+            <span><i class="fa fa-star"></i></span>
+            <span class="comment_score" style="padding:0;"></span>
+            <span><i class="fa fa-comment"></i></span>
+            <span class="comment_reply_count" style="padding:0;"></span>
+        </div>
     </div>
     <div class="comment_text">
     </div>
@@ -24,7 +27,7 @@
         <img class="comment_upvote" src="upvote.png" /><br/>
         <img class="comment_downvote" src="downvote.png" />
     </div>
-    <div class="option_container" style="height:30px;">
+    <div class="option_container">
         <div class="clearfix"></div>
         <div class="comment_options">
             <i class="user_option fa fa-pencil" onclick="startEdit($(this).parent().parent().parent().attr('id'));"></i>

@@ -877,15 +877,37 @@ public class SubredditSelectActivity extends Activity {
         }).show();
     }
 
+    private void showMultiRenameDialog(final String multiPath){
+        AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
+        final EditText nameInput = new EditText(SubredditSelectActivity.this);
+        nameInput.setHint("new multi name");
+        builder.setTitle("Rename Multi").setView(nameInput)
+        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_RENAME).execute(multiPath, nameInput.getText().toString().replaceAll("\\s+",""));
+            }
+        }).show();
+    }
+
     private SubsListAdapter multiSubsAdapter;
     private AlertDialog multiDialog;
+    private TextView multiName;
     private void showMultiEditDialog(final String multiPath){
         JSONObject multiObj = global.getSubredditManager().getMultiData(multiPath);
 
         @SuppressLint("InflateParams")
         LinearLayout dialogView =  (LinearLayout)  getLayoutInflater().inflate(R.layout.dialog_multi_edit, null); // passing null okay for dialog
         final Button saveButton = (Button) dialogView.findViewById(R.id.multi_save_button);
-        final EditText name = (EditText) dialogView.findViewById(R.id.multi_name);
+        final Button renameButton = (Button) dialogView.findViewById(R.id.multi_rename_button);
+        multiName = (TextView) dialogView.findViewById(R.id.multi_pname);
+        final EditText displayName = (EditText) dialogView.findViewById(R.id.multi_name);
         final EditText description = (EditText) dialogView.findViewById(R.id.multi_description);
         final EditText color = (EditText) dialogView.findViewById(R.id.multi_color);
         final Spinner icon = (Spinner) dialogView.findViewById(R.id.multi_icon);
@@ -903,7 +925,8 @@ public class SubredditSelectActivity extends Activity {
         weighting.setAdapter(weightsAdapter);
 
         try {
-            name.setText(multiObj.getString("display_name"));
+            multiName.setText(multiObj.getString("name"));
+            displayName.setText(multiObj.getString("display_name"));
             description.setText(multiObj.getString("description_md"));
             color.setText(multiObj.getString("key_color"));
             String iconName = multiObj.getString("icon_name");
@@ -929,8 +952,16 @@ public class SubredditSelectActivity extends Activity {
         ListView subList = (ListView) dialogView.findViewById(R.id.multi_subredditList);
         multiSubsAdapter = new SubsListAdapter(SubredditSelectActivity.this, multiPath);
         subList.setAdapter(multiSubsAdapter);
+        renameButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.MULTIPLY);
+        renameButton.setTextColor(headerText);
+        renameButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMultiRenameDialog(multiPath);
+            }
+        });
 
-        saveButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.MULTIPLY);
+                saveButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.MULTIPLY);
         saveButton.setTextColor(headerText);
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -939,7 +970,7 @@ public class SubredditSelectActivity extends Activity {
                 JSONObject multiObj = new JSONObject();
                 try {
                     multiObj.put("decription_md", description.getText().toString());
-                    multiObj.put("display_name", name.getText().toString());
+                    multiObj.put("display_name", displayName.getText().toString());
                     multiObj.put("icon_name", icon.getSelectedItem().toString().equals("none")?"":icon.getSelectedItem().toString());
                     multiObj.put("key_color", color.getText().toString());
                     multiObj.put("subreddits", global.getSubredditManager().getMultiData(multiPath).getJSONArray("subreddits"));
@@ -1061,6 +1092,10 @@ public class SubredditSelectActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         String subreddit = viewHolder.nameInput.getText().toString();
+                        if (subreddit.equals("")){
+                            Toast.makeText(SubredditSelectActivity.this, "Please enter a subreddit name", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         performAdd(subreddit);
                     }
                 });
@@ -1162,8 +1197,9 @@ public class SubredditSelectActivity extends Activity {
         public static final int ACTION_MULTI_SUB_ADD = 3;
         public static final int ACTION_MULTI_SUB_REMOVE = 4;
         public static final int ACTION_MULTI_DELETE = 5;
-        public static final int ACTION_SUBSCRIBE = 6;
-        public static final int ACTION_UNSUBSCRIBE = 7;
+        public static final int ACTION_MULTI_RENAME = 6;
+        public static final int ACTION_SUBSCRIBE = 7;
+        public static final int ACTION_UNSUBSCRIBE = 8;
         private JSONObject result;
         private Exception exception;
         private int action;
@@ -1186,6 +1222,7 @@ public class SubredditSelectActivity extends Activity {
                     loadingMessage = "Creating Multi...";
                     break;
                 case ACTION_MULTI_EDIT:
+                case ACTION_MULTI_RENAME:
                 case ACTION_MULTI_SUB_ADD:
                 case ACTION_MULTI_SUB_REMOVE:
                     loadingMessage = "Updating Multi...";
@@ -1249,6 +1286,10 @@ public class SubredditSelectActivity extends Activity {
 
                     case ACTION_MULTI_DELETE:
                         global.mRedditData.deleteMulti(strParams[0].toString());
+                        break;
+
+                    case ACTION_MULTI_RENAME:
+                        result = global.mRedditData.renameMulti(strParams[0].toString(), strParams[1].toString());
                         break;
                 }
                 return true;
@@ -1323,6 +1364,18 @@ public class SubredditSelectActivity extends Activity {
                         break;
                     case ACTION_MULTI_DELETE:
                         global.getSubredditManager().removeMulti(params[0].toString());
+                        mMultiAdapter.refreshMultis();
+                        break;
+                    case ACTION_MULTI_RENAME:
+                        global.getSubredditManager().removeMulti(params[0].toString());
+                        try {
+                            JSONObject multiObj = this.result.getJSONObject("data");
+                            String path = multiObj.getString("path");
+                            global.getSubredditManager().setMultiData(path, multiObj);
+                            multiName.setText(multiObj.getString("name"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         mMultiAdapter.refreshMultis();
                         break;
                 }

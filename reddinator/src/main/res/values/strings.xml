@@ -107,5 +107,6 @@
     <string name="filter_subreddits">Filter Subreddits</string>
     <string name="filter_subreddits_select">Select subreddits to exclude</string>
     <string name="back_button_pref">backbuttonpref</string>
+    <string name="rename">Rename</string>
 
 </resources>

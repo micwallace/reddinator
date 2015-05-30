@@ -144,11 +144,14 @@ public class ViewRedditActivity extends FragmentActivity {
     }
 
     private void updateTheme(){
-        //if (prefs.getString("widgetthemepref", "1").equals("1")) {
-        theme = global.mThemeManager.getActiveTheme("appthemepref");
+        theme = getCurrentTheme();
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
         tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
+    }
+
+    public ThemeManager.Theme getCurrentTheme(){
+        return global.mThemeManager.getActiveTheme("appthemepref");
     }
 
     public void onResume(){

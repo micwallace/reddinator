@@ -11,8 +11,7 @@ body {
     border-radius: 4px;
 }
 .comment_box {
-    margin: 10px 0 5px 0;
-    padding-bottom:5px;
+    margin: 8px 0 5px 0;
     position: relative;
 }
 .more_box {
@@ -29,6 +28,7 @@ body {
 }
 .comment_replies {
     margin-left:6px;
+    padding-bottom:4px;
     margin-right:-2px;
 }
 .comment_vote {
@@ -50,8 +50,9 @@ body {
     margin-left:6px;
     height:28px;
     margin-right:-2px;
-    margin-bottom:4px;
-    margin-top:0;
+    margin-bottom:-2px;
+    margin-top:6px;
+    padding-top:2px;
 }
 .reply_expand h5 {
     float:left;
@@ -63,9 +64,8 @@ h5, h6 {
     text-align: right;
     float:right;
     display:inline;
-    padding-right: 5px;
-    margin-top:4px;
-    margin-right:2px;
+    margin-top:10px;
+    margin-right:6px;
 }
 
 .post_reply {
@@ -212,7 +212,7 @@ a {
 }
 .md p {
     margin-top:5px;
-    margin-bottom:0;
+    margin-bottom:5px;
     padding-top:0;
     padding-bottom:0;
 }

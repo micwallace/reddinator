@@ -90,26 +90,9 @@ public class TabWebFragment extends Fragment {
             return null;
         }
         if (mFirstTime) {
-            // get shared preferences
-            //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-            // work out the url this instance should load
-            /*boolean commentswv = false;
-            if (this.getArguments() != null) {
-                commentswv = this.getArguments().getBoolean("loadcom", false);
-            }*/
             final boolean load = getArguments().getBoolean("load");
             int fontsize = getArguments().getInt("fontsize");
             url = getArguments().getString("url");
-            /*if (commentswv) {
-                url = "http://reddit.com" + getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK) + ".compact";
-                fontsize = Integer.parseInt(prefs.getString("commentfontpref", "22"));
-            } else {
-                url = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-                if (url.indexOf("http://www.reddit.com/")==0){
-                    url += ".compact";
-                }
-                fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
-            }*/
             // setup progressbar
             mActivity = this.getActivity();
             mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -118,21 +101,6 @@ public class TabWebFragment extends Fragment {
             // fixes for webview not taking keyboard input on some devices
             mWebView.getSettings().setLoadWithOverviewMode(true);
             mWebView.getSettings().setUseWideViewPort(true);
-            mWebView.requestFocus(View.FOCUS_DOWN);
-            mWebView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                        case MotionEvent.ACTION_UP:
-                            if (!v.hasFocus()) {
-                                v.requestFocus();
-                            }
-                            break;
-                    }
-                    return false;
-                }
-            });
             mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript
             mWebView.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
             mWebView.getSettings().setSupportZoom(true);

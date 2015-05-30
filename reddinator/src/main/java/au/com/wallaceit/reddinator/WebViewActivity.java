@@ -79,8 +79,11 @@ public class WebViewActivity extends Activity {
             }
         });
         wv.getSettings().setJavaScriptEnabled(true);
+        wv.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
+        wv.getSettings().setLoadWithOverviewMode(true);
+        wv.getSettings().setUseWideViewPort(true);
         prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        wv.getSettings().setDefaultFontSize(Integer.parseInt(prefs.getString("reddit_content_font_pref", "21")));
+        wv.getSettings().setDefaultFontSize(Integer.parseInt(prefs.getString("reddit_content_font_pref", "20")));
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
         // get url from extra

@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TabCommentsFragment extends Fragment {
@@ -52,6 +53,8 @@ public class TabCommentsFragment extends Fragment {
     public String permalink;
     private String currentSort = "best";
     CommentsLoader commentsLoader;
+    CommentsVoteTask commentsVoteTask;
+    CommentTask commentTask;
 
     static TabCommentsFragment init(boolean load) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
@@ -99,18 +102,23 @@ public class TabCommentsFragment extends Fragment {
         webSettings.setSupportZoom(false);
         webSettings.setBuiltInZoomControls(false);
         webSettings.setDisplayZoomControls(false);
-        int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "20"));
+        int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
         webSettings.setDefaultFontSize(fontSize);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        webSettings.setDisplayZoomControls(false);
 
         mSharedPreferences.getString("titlefontpref", "16");
 
-        final String themeStr = ((ViewRedditActivity) getActivity()).theme.getValuesString();
+        final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString();
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (url.indexOf("http://www.reddit.com/")==0){
+                boolean redditLink = false;
+                System.out.println(url);
+                if (url.indexOf("file://")==0){ // fix for short sub and user links
+                    url = url.replace("file://", "https://www.reddit.com")+"/.compact";
+                    redditLink = true;
+                }
+                if (redditLink || url.indexOf("https://www.reddit.com/")==0){
                     Intent i = new Intent(mContext, WebViewActivity.class);
                     i.putExtra("url", url);
                     startActivity(i);
@@ -136,7 +144,7 @@ public class TabCommentsFragment extends Fragment {
     }
 
     public void updateTheme() {
-        String themeStr = ((ViewRedditActivity) getActivity()).theme.getValuesString();
+        String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString();
         mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
@@ -171,6 +179,10 @@ public class TabCommentsFragment extends Fragment {
         super.onDestroy();
         if (commentsLoader!=null)
             commentsLoader.cancel(true);
+        if (commentsVoteTask!=null)
+            commentsVoteTask.cancel(false);
+        if (commentTask!=null)
+            commentTask.cancel(false);
     }
 
     public class WebInterface {
@@ -190,43 +202,43 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void loadChildren(String moreId, String children) {
-            CommentsLoader commentsLoader = new CommentsLoader(currentSort, moreId, children);
+            commentsLoader = new CommentsLoader(currentSort, moreId, children);
             commentsLoader.execute();
         }
 
         @JavascriptInterface
         public void vote(String thingId, int direction) {
             ((ViewRedditActivity) getActivity()).setTitleText("Voting...");
-            CommentsVoteTask voteTask = new CommentsVoteTask(thingId, direction);
-            voteTask.execute();
+            commentsVoteTask = new CommentsVoteTask(thingId, direction);
+            commentsVoteTask.execute();
         }
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
             ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
-            CommentTask commentTask = new CommentTask(parentId, text, 0);
+            commentTask = new CommentTask(parentId, text, 0);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
             ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
-            CommentTask commentTask = new CommentTask(thingId, text, 1);
+            commentTask = new CommentTask(thingId, text, 1);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void delete(String thingId) {
             ((ViewRedditActivity) getActivity()).setTitleText("Deleting...");
-            CommentTask commentTask = new CommentTask(thingId, null, -1);
+            commentTask = new CommentTask(thingId, null, -1);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void openCommentLink(String thingId) {
             Intent intent = new Intent(mContext, WebViewActivity.class);
-            intent.putExtra("url", "http://www.reddit.com"+permalink+thingId.substring(3)+".compact");
-            System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
+            intent.putExtra("url", "http://www.reddit.com" + permalink + thingId.substring(3) + ".compact");
+            //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
             startActivity(intent);
         }
     }
@@ -238,6 +250,7 @@ public class TabCommentsFragment extends Fragment {
         commentsLoader.execute();
     }
 
+    private JSONObject subData;
     class CommentsLoader extends AsyncTask<Void, Integer, String> {
 
         private boolean loadMore = false;
@@ -266,15 +279,14 @@ public class TabCommentsFragment extends Fragment {
 
             try {
                 if (loadMore) {
-                    String articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
                     data = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, mSort);
-
                 } else {
-                    String permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                     // reloading
-                    data = global.mRedditData.getCommentsFeed(permalink, mSort, 25);
+                    JSONArray commentObj = global.mRedditData.getCommentsFeed(permalink, mSort, 25);
+                    subData = commentObj.getJSONObject(0).getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data");
+                    data = commentObj.getJSONObject(1).getJSONObject("data").getJSONArray("children");
                 }
-            } catch (RedditData.RedditApiException e) {
+            } catch (JSONException | RedditData.RedditApiException e) {
                 e.printStackTrace();
                 lastError = e.getMessage();
                 return "-1"; // Indicate error
@@ -291,7 +303,11 @@ public class TabCommentsFragment extends Fragment {
         protected void onPostExecute(String result) {
             switch (result) {
                 case "":
-                    mWebView.loadUrl("javascript:showLoadingView('No comments here')");
+                    if (!loadMore) {
+                        mWebView.loadUrl("javascript:showLoadingView('No comments here')");
+                    } else {
+                        mWebView.loadUrl("javascript:noChildrenCallback()");
+                    }
                     break;
                 case "-1":
                     // show error
@@ -303,7 +319,13 @@ public class TabCommentsFragment extends Fragment {
                     if (loadMore) {
                         mWebView.loadUrl("javascript:populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
                     } else {
-                        mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                        String author = "";
+                        try {
+                            author = subData.getString("author");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mWebView.loadUrl("javascript:populateComments(\""+author+"\",\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
                     }
                     break;
             }

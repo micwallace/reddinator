@@ -164,24 +164,13 @@ public class RedditData {
     public JSONArray getCommentsFeed(String permalink, String sort, int limit) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?api_type=json&sort=" + sort + "&limit=" + String.valueOf(limit);
-        JSONArray result;
-        JSONArray feed = new JSONArray();
-        try {
-            result = redditApiGetArray(url, loggedIn); // use oauth if logged in
-            if (result != null) {
-                feed = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Parsing error: "+e.getMessage());
-        }
-        return feed;
+
+        return redditApiGetArray(url, loggedIn);
     }
 
     public JSONArray getChildComments(String moreId, String articleId, String children, String sort) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
-        System.out.println(url);
 
         JSONArray feed = new JSONArray();
 
@@ -442,6 +431,14 @@ public class RedditData {
         String url = OAUTH_ENDPOINT + "/api/multi"+multiPath;
 
         redditApiDelete(url);
+    }
+
+    public JSONObject renameMulti(String multiPath, String newName) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/api/multi/rename/?from="+multiPath+"&to=/user/"+username+"/m/"+newName;
+
+        return redditApiPost(url);
     }
 
     public JSONObject addMultiSubreddit(String multiPath, String subredditName) throws RedditApiException {

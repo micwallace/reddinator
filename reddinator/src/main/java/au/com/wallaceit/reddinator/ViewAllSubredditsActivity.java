@@ -189,8 +189,15 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 // get all popular subreddits
                 try {
                     srjson = global.mRedditData.getSubredditSearch(query);
-                } catch (RedditData.RedditApiException e) {
+                } catch (final RedditData.RedditApiException e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Toast.makeText(ViewAllSubredditsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            sdialog.dismiss();
+                        }
+                    });
+                    return;
                 }
                 // put into arraylist
                 sreddits = new ArrayList<>();
