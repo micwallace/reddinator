@@ -24,7 +24,7 @@
     <bookmark url="file://$PROJECT_DIR$/reddinator/src/main/java/au/com/wallaceit/reddinator/ThemesActivity.java" line="82" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="~ remove more whitespace from comments.">
+    <list default="true" id="fff9a869-299f-41ff-9995-f06f99df7b94" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/reddinator-release.apk" afterPath="$PROJECT_DIR$/reddinator/reddinator-release.apk" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
@@ -61,7 +61,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="125" column="43" selection-start-line="125" selection-start-column="43" selection-end-line="125" selection-end-column="43" />
-              <folding />
+              <folding>
+                <element signature="e#0#16560#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#7296#7297#0" expanded="false" />
+                <element signature="e#7332#7333#0" expanded="false" />
+                <element signature="e#7412#7413#0" expanded="false" />
+                <element signature="e#7454#7455#0" expanded="false" />
+                <element signature="e#9676#9677#0" expanded="false" />
+                <element signature="e#9712#9713#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -71,7 +80,13 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="168" column="29" selection-start-line="168" selection-start-column="29" selection-end-line="168" selection-end-column="29" />
-              <folding />
+              <folding>
+                <element signature="e#0#15943#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#2224#2256#0" expanded="false" />
+                <element signature="e#9501#9546#0" expanded="false" />
+                <element signature="e#11414#11455#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -82,7 +97,16 @@
             <state vertical-scroll-proportion="0.0">
               <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
               <folding>
-                <element signature="imports" expanded="true" />
+                <element signature="e#0#9489#0" expanded="false" />
+                <element signature="e#6093#6130#0" expanded="false" />
+                <element signature="e#6199#6234#0" expanded="false" />
+                <element signature="e#6426#6466#0" expanded="false" />
+                <element signature="e#7025#7059#0" expanded="false" />
+                <element signature="e#7331#7332#0" expanded="false" />
+                <element signature="e#7370#7371#0" expanded="false" />
+                <element signature="e#7798#7835#0" expanded="false" />
+                <element signature="e#8141#8181#0" expanded="false" />
+                <element signature="e#8497#8532#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -91,8 +115,8 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.24752475">
-              <caret line="12" column="42" selection-start-line="12" selection-start-column="42" selection-end-line="12" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.024752475">
+              <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -113,7 +137,20 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="168" column="5" selection-start-line="168" selection-start-column="5" selection-end-line="168" selection-end-column="5" />
-              <folding />
+              <folding>
+                <element signature="e#0#32434#0" expanded="false" />
+                <element signature="imports" expanded="false" />
+                <element signature="e#7649#7650#0" expanded="false" />
+                <element signature="e#7680#7681#0" expanded="false" />
+                <element signature="e#7713#7714#0" expanded="false" />
+                <element signature="e#7746#7747#0" expanded="false" />
+                <element signature="e#27474#27475#0" expanded="false" />
+                <element signature="e#27512#27513#0" expanded="false" />
+                <element signature="e#28001#28002#0" expanded="false" />
+                <element signature="e#28044#28045#0" expanded="false" />
+                <element signature="e#28108#28109#0" expanded="false" />
+                <element signature="e#28149#28150#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -2112,7 +2149,13 @@
       <option name="project" value="LOCAL" />
       <updated>1432991612103</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="~ updated manifest">
+      <created>1433426655658</created>
+      <option name="number" value="00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1433426655658</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TodoView">
@@ -2169,7 +2212,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="+ completed submissions." />
     <MESSAGE value="+ sorting to my subreddits list view&#10;+ html error content parsing to API wrapper&#10;+ subreddits list view description" />
     <MESSAGE value="+ started multi support." />
     <MESSAGE value="~ fixed icon issue" />
@@ -2194,7 +2236,8 @@
     <MESSAGE value="~ changed widget config activity to subredditSelect.&#10;+ added 30minute widget update option." />
     <MESSAGE value="+ added US &quot;translations&quot;&#10;~ added actionbar back button preference" />
     <MESSAGE value="+ added comment distinguish indicators&#10;~ optimised comments view, removed extra whitespace&#10;+ added multi rename function&#10;~ various bug fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="+ added comment distinguish indicators&#10;~ optimised comments view, removed extra whitespace&#10;+ added multi rename function&#10;~ various bug fixes" />
+    <MESSAGE value="~ updated manifest" />
+    <option name="LAST_COMMIT_MESSAGE" value="~ updated manifest" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2515,7 +2558,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="168" column="5" selection-start-line="168" selection-start-column="5" selection-end-line="168" selection-end-column="5" />
-          <folding />
+          <folding>
+            <element signature="e#0#32434#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#7649#7650#0" expanded="false" />
+            <element signature="e#7680#7681#0" expanded="false" />
+            <element signature="e#7713#7714#0" expanded="false" />
+            <element signature="e#7746#7747#0" expanded="false" />
+            <element signature="e#27474#27475#0" expanded="false" />
+            <element signature="e#27512#27513#0" expanded="false" />
+            <element signature="e#28001#28002#0" expanded="false" />
+            <element signature="e#28044#28045#0" expanded="false" />
+            <element signature="e#28108#28109#0" expanded="false" />
+            <element signature="e#28149#28150#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2563,7 +2619,16 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#0#9489#0" expanded="false" />
+            <element signature="e#6093#6130#0" expanded="false" />
+            <element signature="e#6199#6234#0" expanded="false" />
+            <element signature="e#6426#6466#0" expanded="false" />
+            <element signature="e#7025#7059#0" expanded="false" />
+            <element signature="e#7331#7332#0" expanded="false" />
+            <element signature="e#7370#7371#0" expanded="false" />
+            <element signature="e#7798#7835#0" expanded="false" />
+            <element signature="e#8141#8181#0" expanded="false" />
+            <element signature="e#8497#8532#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2587,7 +2652,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="168" column="29" selection-start-line="168" selection-start-column="29" selection-end-line="168" selection-end-column="29" />
-          <folding />
+          <folding>
+            <element signature="e#0#15943#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2224#2256#0" expanded="false" />
+            <element signature="e#9501#9546#0" expanded="false" />
+            <element signature="e#11414#11455#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -2603,14 +2674,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="125" column="43" selection-start-line="125" selection-start-column="43" selection-end-line="125" selection-end-column="43" />
-          <folding />
+          <folding>
+            <element signature="e#0#16560#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#7296#7297#0" expanded="false" />
+            <element signature="e#7332#7333#0" expanded="false" />
+            <element signature="e#7412#7413#0" expanded="false" />
+            <element signature="e#7454#7455#0" expanded="false" />
+            <element signature="e#9676#9677#0" expanded="false" />
+            <element signature="e#9712#9713#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/reddinator/src/main/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24752475">
-          <caret line="12" column="42" selection-start-line="12" selection-start-column="42" selection-end-line="12" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.024752475">
+          <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
           <folding />
         </state>
       </provider>
