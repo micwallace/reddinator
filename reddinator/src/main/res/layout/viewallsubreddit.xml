@@ -22,6 +22,8 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/searchbutton"
             android:layout_toStartOf="@+id/searchbutton"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
             android:ems="10"
             android:hint="@string/search" >
         </EditText>
