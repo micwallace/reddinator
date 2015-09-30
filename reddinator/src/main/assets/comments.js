@@ -95,7 +95,7 @@ function voteCallback(thingId, direction){
             downvote.attr("src", "downvote.png");
             break;
     }
-    console.log("vote callback received: "+thingId);
+    //console.log("vote callback received: "+thingId);
 }
 
 function comment(parentId, text){
@@ -104,12 +104,12 @@ function comment(parentId, text){
         commentCallback(parentId, false);
         return;
     }
-    console.log(parentId+" "+text);
+    //console.log(parentId+" "+text);
     Reddinator.comment(parentId, text);
 }
 
 function commentCallback(parentId, commentData){
-    console.log("comment callback called");
+    //console.log("comment callback called");
     var postElem;
     if (parentId.indexOf("t3_")!==-1){
         postElem = $("#post_comment_box");
@@ -121,6 +121,9 @@ function commentCallback(parentId, commentData){
         postElem.children("textarea").val("");
         if (parentId.indexOf("t3_")!==-1){
             $("#post_comment_button").show();
+            // in case of submitting first comment
+            $("#loading_view").hide();
+            $("#base").show();
         }
         postElem.children('textarea').val('');
         postElem.hide();
@@ -200,15 +203,30 @@ function noChildrenCallback(moreId){
     $("#"+moreId+" h5").text("There's nothing more here");
 }
 
+function resetMoreClickEvent(moreId){
+    var moreElem = $("#"+moreId);
+    moreElem.children("h5").text('Load '+moreElem.data('rlength')+' More');
+    moreElem.one('click',
+        {id: moreElem.data('rname'), children: moreElem.data('rchildren')},
+        function(event){
+            $(this).children("h5").text("Loading...");
+            loadChildComments(event.data.id, event.data.children);
+        }
+    );
+}
+
 function appendMoreButton(parentId, moreData){
     var moreElem = $("#more_template").clone().show();
     moreElem.attr("id", moreData.name);
     moreElem.children("h5").text("Load "+moreData.count+" more");
+    moreElem.data('rlength', moreData.count)
+    moreElem.data('rname', moreData.name);
+    moreElem.data('rchildren', moreData.children.join(","));
     moreElem.one('click',
-        {id: moreData.name, children: moreData.children},
+        {id: moreData.name, children: moreData.children.join(",")},
         function(event){
             $(this).children("h5").text("Loading...");
-            loadChildComments(event.data.id, event.data.children.join(","));
+            loadChildComments(event.data.id, event.data.children);
         }
     );
     if (parentId.indexOf("t3_")!==-1){
@@ -221,7 +239,7 @@ function appendMoreButton(parentId, moreData){
 }
 
 function appendComment(parentId, commentData, prepend){
-    console.log(JSON.stringify(commentData));
+    //console.log(JSON.stringify(commentData));
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");

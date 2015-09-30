@@ -274,7 +274,6 @@ public class TabCommentsFragment extends Fragment {
         private String lastError;
         @Override
         protected String doInBackground(Void... none) {
-            //String sort = mSharedPreferences.getString("sort-app", "hot");
             JSONArray data;
 
             try {
@@ -306,13 +305,17 @@ public class TabCommentsFragment extends Fragment {
                     if (!loadMore) {
                         mWebView.loadUrl("javascript:showLoadingView('No comments here')");
                     } else {
-                        mWebView.loadUrl("javascript:noChildrenCallback()");
+                        mWebView.loadUrl("javascript:noChildrenCallback('"+mMoreId+"')");
                     }
                     break;
                 case "-1":
                     // show error
-                    if (!loadMore)
+                    if (!loadMore) {
                         mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
+                    } else {
+                        // reset load more button
+                        mWebView.loadUrl("javascript:resetMoreClickEvent('"+mMoreId+"')");
+                    }
                     Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:
