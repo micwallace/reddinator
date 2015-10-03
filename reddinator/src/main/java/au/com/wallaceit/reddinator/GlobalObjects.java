@@ -290,7 +290,7 @@ public class GlobalObjects extends Application {
         aboutView.findViewById(R.id.gold).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com/gold?goldtype=gift&months=1&thing=t3_33zpng"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com/gold?goldtype=gift&months=1&thing=t3_33zpng"));
                 context.startActivity(intent);
             }
         });

@@ -12,8 +12,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 
-    <com.larswerkman.holocolorpicker.SVBar
-        android:id="@+id/svbar"
+    <com.larswerkman.holocolorpicker.SaturationBar
+        android:id="@+id/saturationbar"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.larswerkman.holocolorpicker.ValueBar
+        android:id="@+id/valuebar"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

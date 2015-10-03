@@ -263,7 +263,7 @@ public class MainActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com" + permalink));
+                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
                 context.startActivity(clickIntent3);
                 break;
         }
@@ -378,15 +378,15 @@ public class MainActivity extends Activity {
                     viewHolder = (ViewHolder) row.getTag();
                 }
                 // collect data
-                String name = "";
-                String thumbnail = "";
-                String domain = "";
-                String id = "";
-                String userLikes = "null";
-                String subreddit = "";
-                int score = 0;
-                int numcomments = 0;
-                boolean nsfw = false;
+                String name;
+                String thumbnail;
+                String domain;
+                String id;
+                String userLikes;
+                String subreddit;
+                int score;
+                int numcomments;
+                boolean nsfw;
                 try {
                     JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                     name = tempobj.getString("title");

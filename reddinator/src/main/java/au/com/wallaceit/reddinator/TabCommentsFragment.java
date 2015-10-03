@@ -113,7 +113,7 @@ public class TabCommentsFragment extends Fragment {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 boolean redditLink = false;
-                System.out.println(url);
+                //System.out.println(url);
                 if (url.indexOf("file://")==0){ // fix for short sub and user links
                     url = url.replace("file://", global.getDefaultMobileSite())+"/";
                     redditLink = true;

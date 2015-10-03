@@ -92,7 +92,7 @@ public class WebViewActivity extends Activity {
         // get url from extra
         String url = getIntent().getStringExtra("url");
         if (url==null){
-            url = "http://m.reddit.com/";
+            url = "https://m.reddit.com/";
         }
         wv.loadUrl(url);
         // check for clear inbox flag

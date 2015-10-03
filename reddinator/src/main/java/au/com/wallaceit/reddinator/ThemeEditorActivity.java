@@ -20,7 +20,8 @@ import android.widget.TextView;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
-import com.larswerkman.holocolorpicker.SVBar;
+import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ValueBar;
 
 import org.json.JSONException;
 
@@ -197,9 +198,11 @@ public class ThemeEditorActivity extends ListActivity {
                         dialog.setContentView(R.layout.color_picker_dialog);
                         // Initialise the color picker
                         final ColorPicker picker = (ColorPicker) dialog.findViewById(R.id.picker);
-                        SVBar svBar = (SVBar) dialog.findViewById(R.id.svbar);
+                        SaturationBar sBar = (SaturationBar) dialog.findViewById(R.id.saturationbar);
+                        ValueBar vBar = (ValueBar) dialog.findViewById(R.id.valuebar);
                         OpacityBar opacityBar = (OpacityBar) dialog.findViewById(R.id.opacitybar);
-                        picker.addSVBar(svBar);
+                        picker.addSaturationBar(sBar);
+                        picker.addValueBar(vBar);
                         // is opacity needed?
                         final boolean useAlpha = theme.getValue(finalKey).length()>7;
                         if (useAlpha) {

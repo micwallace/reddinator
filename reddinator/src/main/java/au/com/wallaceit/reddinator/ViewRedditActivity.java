@@ -362,7 +362,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 })
                 .setPositiveButton("Reddit Page", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        openUrlExternally("http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        openUrlExternally("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
                 });
         // Create the AlertDialog
@@ -378,12 +378,12 @@ public class ViewRedditActivity extends FragmentActivity {
                     }
                 }).setPositiveButton("Both", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL)+"\nhttp://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL)+"\nhttps://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
                 })
                 .setNeutralButton("Reddit Page", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        shareText("http://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        shareText("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
                 });
         // Create the AlertDialog

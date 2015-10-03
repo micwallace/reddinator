@@ -225,7 +225,7 @@ public class WidgetProvider extends AppWidgetProvider {
                     case 3:
                         // open reddit comments page in browser
                         String permalink = intent.getStringExtra(ITEM_PERMALINK);
-                        Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.reddit.com" + permalink));
+                        Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
                         clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(clickIntent3);
                         break;

@@ -76,31 +76,38 @@
             android:visibility="gone"
             android:background="@android:color/transparent" />
 
-        <TextView
-            android:id="@+id/subreddittxt"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/widget_logo"
             android:layout_toEndOf="@+id/widget_logo"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000"
-            android:ellipsize="end" />
+            android:layout_toStartOf="@+id/refreshbutton"
+            android:layout_toLeftOf="@+id/refreshbutton">
+            <TextView
+                android:id="@+id/subreddittxt"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text="@string/app_name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000"
+                android:singleLine="true"
+                android:ellipsize="marquee" />
 
-        <ImageView
-            android:id="@+id/srcaret"
-            android:layout_width="18dp"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/subreddittxt"
-            android:layout_toEndOf="@+id/subreddittxt"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:scaleType="centerInside"
-            android:paddingTop="2dp"
-            android:contentDescription="@string/subreddit" />
+            <ImageView
+                android:id="@+id/srcaret"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
+                android:scaleType="centerInside"
+                android:paddingTop="2dp"
+                android:contentDescription="@string/subreddit" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/widget_logo"

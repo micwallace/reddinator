@@ -381,11 +381,16 @@ public class SubredditSelectActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.subreddit_select_menu, menu);
         // set options menu view
-        int iconColor = Color.parseColor("#DBDBDB");
+        int iconColor;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            iconColor = Color.parseColor("#8F8F8F");
+        } else {
+            iconColor = Color.parseColor("#DBDBDB");
+        }
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
         if (mAppWidgetId==0) {
-            (menu.findItem(R.id.menu_widgettheme)).setEnabled(false);
+            (menu.findItem(R.id.menu_widgettheme)).setVisible(false);
         }
         (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
