@@ -38,6 +38,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -291,7 +292,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_account:
                 Intent accnIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", "https://www.reddit.com/user/me/.compact");
+                accnIntent.putExtra("url", global.getDefaultMobileSite()+"/u/"+global.mRedditData.getUsername()+"/");
                 startActivity(accnIntent);
                 break;
 
@@ -299,10 +300,10 @@ public class ViewRedditActivity extends FragmentActivity {
                 String url;
                 Intent inboxIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
                 if (global.mRedditData.getInboxCount()>0) {
-                    url = "https://www.reddit.com/message/unread/.compact";
+                    url = global.getDefaultMobileSite()+"/message/unread/";
                     inboxIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
                 } else {
-                    url = "https://www.reddit.com/message/inbox/.compact";
+                    url = global.getDefaultMobileSite()+"/message/inbox/";
                 }
                 inboxIntent.putExtra("url", url);
                 startActivity(inboxIntent);
@@ -538,16 +539,17 @@ public class ViewRedditActivity extends FragmentActivity {
                 default:
                 case 0: // content
                     url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+                    Log.w(getPackageName(), url);
                     // use reddit mobile view
-                    if (url.indexOf("http://www.reddit.com/")==0){
-                        url = url.replace("http://www.reddit.com/", "http://m.reddit.com/");
+                    if (url.contains("//www.reddit.com/")){
+                        url = url.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
                     return TabWebFragment.init(url, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
                 case 1: // comments
                     if (prefs.getBoolean("commentswebviewpref", false)) {
                         // reddit
-                        url = "http://m.reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+                        url = global.getDefaultCommentsMobileSite() + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                         fontsize = Integer.parseInt(prefs.getString("reddit_content_font_pref", "21"));
                         return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
                     } else {

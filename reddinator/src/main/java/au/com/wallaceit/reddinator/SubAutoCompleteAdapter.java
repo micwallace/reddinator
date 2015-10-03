@@ -23,6 +23,7 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +39,9 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
 
     @Override
     public int getCount() {
+        if (suggestions==null)
+            return 0;
+
         return suggestions.length();
     }
 
@@ -54,6 +58,7 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
     @Override
     public Filter getFilter() {
         return new Filter() {
+            private Exception exception;
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
@@ -66,6 +71,7 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
                         filterResults.count = suggestions.length();
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
+                        exception = e;
                         return null;
                     }
                 }
@@ -80,6 +86,8 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
                         notifyDataSetChanged();
                         return;
                     }
+                } else {
+                    Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                 }
                 notifyDataSetInvalidated();
             }};

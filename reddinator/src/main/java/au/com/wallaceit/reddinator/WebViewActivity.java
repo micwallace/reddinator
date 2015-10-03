@@ -82,6 +82,9 @@ public class WebViewActivity extends Activity {
         wv.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
         wv.getSettings().setLoadWithOverviewMode(true);
         wv.getSettings().setUseWideViewPort(true);
+        wv.getSettings().setSupportZoom(true);
+        wv.getSettings().setBuiltInZoomControls(true);
+        wv.getSettings().setDisplayZoomControls(false);
         prefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
         wv.getSettings().setDefaultFontSize(Integer.parseInt(prefs.getString("reddit_content_font_pref", "20")));
         // enable cookies

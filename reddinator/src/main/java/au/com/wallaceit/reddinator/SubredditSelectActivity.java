@@ -440,7 +440,7 @@ public class SubredditSelectActivity extends Activity {
 
             case R.id.menu_account:
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", "https://www.reddit.com/user/me/.compact");
+                accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
                 startActivity(accnIntent);
                 break;
 

@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -186,14 +187,13 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onEnabled(context);
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String action = intent.getAction();
         if (action.equals(ITEM_CLICK)) {
             // check if its the load more button being clicked
             String redditId = intent.getExtras().getString(WidgetProvider.ITEM_ID);
-            if (redditId.equals("0")) {
+            if (redditId!=null && redditId.equals("0")) {
                 // LOAD MORE FEED ITEM CLICKED
                 //System.out.println("loading more feed items...");
                 int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);

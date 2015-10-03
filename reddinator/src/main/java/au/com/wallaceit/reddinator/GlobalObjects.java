@@ -212,6 +212,22 @@ public class GlobalObjects extends Application {
                 .show();
     }
 
+    public String getRedditMobileSite(boolean beta){
+        if (beta){
+            return "https://m.reddit.com";
+        } else {
+            return "https://i.reddit.com";
+        }
+    }
+
+    public String getDefaultMobileSite(){
+        return getRedditMobileSite(mSharedPreferences.getBoolean("redditmobilepref", false));
+    }
+
+    public String getDefaultCommentsMobileSite(){
+        return getRedditMobileSite(mSharedPreferences.getBoolean("mobilecommentspref", true));
+    }
+
     public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize, int[] shadow) {
         fontSize = convertDiptoPix(context, fontSize);
         int pad = (fontSize / 9);

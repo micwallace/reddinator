@@ -237,7 +237,7 @@ public class TabCommentsFragment extends Fragment {
         @JavascriptInterface
         public void openCommentLink(String thingId) {
             Intent intent = new Intent(mContext, WebViewActivity.class);
-            intent.putExtra("url", "http://www.reddit.com" + permalink + thingId.substring(3) + ".compact");
+            intent.putExtra("url", global.getDefaultMobileSite() + permalink + thingId.substring(3));
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
             startActivity(intent);
         }

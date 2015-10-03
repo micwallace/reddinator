@@ -105,7 +105,7 @@ public class TabWebFragment extends Fragment {
             mWebView.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
             mWebView.getSettings().setSupportZoom(true);
             mWebView.getSettings().setBuiltInZoomControls(true);
-            mWebView.getSettings().setDisplayZoomControls(true);
+            mWebView.getSettings().setDisplayZoomControls(false);
             mWebView.getSettings().setDefaultFontSize(fontsize);
             // enable cookies
             CookieManager.getInstance().setAcceptCookie(true);

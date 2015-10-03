@@ -90,15 +90,16 @@
     <PreferenceCategory
             android:title="Reddinator View">
 		<CheckBoxPreference
-                android:key="@string/comments_first_pref"
-                android:title="Show Comments First"
-                android:defaultValue="false"
-                android:summary="Show the comments page first?" />
+            android:key="@string/comments_first_pref"
+            android:title="Show Comments First"
+            android:defaultValue="false"
+            android:summary="Show the comments tab first" />
         <CheckBoxPreference
             android:key="@string/comments_webview"
-            android:title="Mobile Reddit Comments"
+            android:title="Comments View"
             android:defaultValue="false"
-            android:summary="View comments at m.reddit.com" />
+            android:summaryOff="Use native comments view"
+            android:summaryOn="View mobile reddit comments view" />
         <ListPreference
             android:key="@string/preload_pref"
             android:title="Preload Content"
@@ -120,8 +121,23 @@
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
             android:defaultValue="18"
-            android:dialogTitle="Reddit Font Size" />
-		<ListPreference
+            android:dialogTitle="Comments Font Size" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Web Views">
+        <CheckBoxPreference
+            android:key="@string/reddit_mobile_site"
+            android:title="Inbox/Account mobile site"
+            android:defaultValue="false"
+            android:summaryOff="Using legacy mobile site (i.reddit.com)"
+            android:summaryOn="Using beta mobile site (m.reddit.com)" />
+        <CheckBoxPreference
+            android:key="@string/reddit_mobile_site_comments"
+            android:title="Content/Comments mobile site"
+            android:defaultValue="true"
+            android:summaryOff="Using legacy mobile site (i.reddit.com)"
+            android:summaryOn="Using beta mobile site (m.reddit.com)" />
+        <ListPreference
             android:key="@string/content_font_pref"
             android:title="Content Font Size"
             android:summary="Default font size for the content web view"
