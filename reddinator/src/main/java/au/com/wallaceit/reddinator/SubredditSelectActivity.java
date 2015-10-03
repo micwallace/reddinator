@@ -1086,6 +1086,7 @@ public class SubredditSelectActivity extends Activity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         String subreddit = viewHolder.nameInput.getText().toString();
                         performAdd(subreddit);
+                        viewHolder.nameInput.setText("");
                     }
                 });
                 viewHolder.addIcon.setOnClickListener(new OnClickListener() {
@@ -1097,6 +1098,7 @@ public class SubredditSelectActivity extends Activity {
                             return;
                         }
                         performAdd(subreddit);
+                        viewHolder.nameInput.setText("");
                     }
                 });
                 if (mode==MODE_MULTI) {

@@ -29,7 +29,7 @@ import org.json.JSONException;
 
 class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
     GlobalObjects global;
-    JSONArray suggestions;
+    JSONArray suggestions = new JSONArray();
 
     public SubAutoCompleteAdapter(Context context, int resource) {
         super(context, resource);
@@ -60,12 +60,13 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
                 if (constraint != null) {
                     // Retrieve the autocomplete results.
                     try {
-                        suggestions = global.mRedditData.searchRedditNames(constraint.toString());
+                        JSONArray suggestions = global.mRedditData.searchRedditNames(constraint.toString());
                         // Assign the data to the FilterResults
                         filterResults.values = suggestions;
                         filterResults.count = suggestions.length();
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
+                        return null;
                     }
                 }
                 return filterResults;
@@ -73,12 +74,14 @@ class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable 
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    notifyDataSetChanged();
+                if (results != null) {
+                    suggestions = (JSONArray) results.values;
+                    if (results.count > 0) {
+                        notifyDataSetChanged();
+                        return;
+                    }
                 }
-                else {
-                    notifyDataSetInvalidated();
-                }
+                notifyDataSetInvalidated();
             }};
     }
 }

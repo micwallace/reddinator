@@ -200,20 +200,20 @@ public class ViewAllSubredditsActivity extends ListActivity {
                     });
                     return;
                 }
-                // put into arraylist
-                sreddits = new ArrayList<>();
-                int i = 0;
-                while (i < srjson.length()) {
-                    try {
-                        sreddits.add(srjson.getJSONObject(i).getJSONObject("data"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    i++;
-                }
                 //System.out.println("search complete");
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        // put into arraylist
+                        sreddits.clear();
+                        int i = 0;
+                        while (i < srjson.length()) {
+                            try {
+                                sreddits.add(srjson.getJSONObject(i).getJSONObject("data"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            i++;
+                        }
                         listadapter.notifyDataSetChanged();
                         if (sreddits.size() == 0) {
                             // set no result text in no items view

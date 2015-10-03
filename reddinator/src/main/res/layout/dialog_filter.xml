@@ -31,6 +31,7 @@
     <ListView
         android:id="@+id/filter_subredditList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:descendantFocusability="afterDescendants" />
 
 </LinearLayout>

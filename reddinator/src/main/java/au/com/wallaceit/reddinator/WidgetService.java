@@ -27,11 +27,11 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
@@ -102,6 +102,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             data = new JSONArray(); // set empty data to prevent any NPE
         }
+        Log.w(context.getPackageName(), "New RemoteViewsFactory created");
     }
 
     @Override
@@ -132,7 +133,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDestroy() {
         // no-op
-        //System.out.println("Service detroyed");
+        System.out.println("RemoteViewsFactory destroyed");
     }
 
     @Override
