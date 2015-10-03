@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -121,7 +122,12 @@ public class WebViewActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.webviewmenu, menu);
         // set options menu view
-        int iconColor = Color.parseColor("#DBDBDB");
+        int iconColor;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            iconColor = Color.parseColor("#8F8F8F");
+        } else {
+            iconColor = Color.parseColor("#DBDBDB");
+        }
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());

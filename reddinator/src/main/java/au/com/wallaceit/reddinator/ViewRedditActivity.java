@@ -214,7 +214,12 @@ public class ViewRedditActivity extends FragmentActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.viewmenu, menu);
         // set options menu view
-        int iconColor = Color.parseColor("#DBDBDB");
+        int iconColor;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            iconColor = Color.parseColor("#8F8F8F");
+        } else {
+            iconColor = Color.parseColor("#DBDBDB");
+        }
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
