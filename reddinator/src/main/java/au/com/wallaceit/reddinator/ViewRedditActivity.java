@@ -126,10 +126,12 @@ public class ViewRedditActivity extends FragmentActivity {
             userLikes = "true";
         } else {
             JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
-            try {
-                userLikes = currentFeedItem.getString("likes");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (currentFeedItem!=null) {
+                try {
+                    userLikes = currentFeedItem.getString("likes");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         //System.out.println("User likes post: " + userLikes);

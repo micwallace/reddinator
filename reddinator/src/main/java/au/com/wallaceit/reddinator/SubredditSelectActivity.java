@@ -787,7 +787,7 @@ public class SubredditSelectActivity extends Activity {
                     canEdit = multiObj.getBoolean("can_edit");
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return null;
+                    return convertView;
                 }
                 // setup the row
                 viewHolder.name.setText(displayName);

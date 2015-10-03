@@ -172,7 +172,7 @@ public class ThemeEditorActivity extends ListActivity {
                     key = (String) global.mThemeManager.getPreferenceOrder().get(position-1);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    return null;
+                    return convertView;
                 }
                 String value = theme.getValue(key);
                 viewHolder.settingName.setText(global.mThemeManager.getThemePrefLabel(key));

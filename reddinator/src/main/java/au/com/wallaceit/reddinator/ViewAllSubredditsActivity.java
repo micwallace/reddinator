@@ -286,7 +286,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 description = sreddits.get(position).getString("public_description");
             } catch (JSONException e) {
                 e.printStackTrace();
-                return null;
+                return row;
             }
             viewHolder.name.setText(name);
             viewHolder.description.setText(description);

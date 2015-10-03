@@ -400,7 +400,7 @@ public class MainActivity extends Activity {
                     subreddit = tempobj.getString("subreddit");
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    // return null; // The view is invalid;
+                    return row; // The view is invalid;
                 }
                 // Update view
                 viewHolder.listheading.setText(Html.fromHtml(name).toString());

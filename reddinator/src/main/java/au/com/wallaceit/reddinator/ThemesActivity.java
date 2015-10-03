@@ -5,18 +5,15 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.IconTextView;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.joanzapata.android.iconify.IconDrawable;
@@ -133,10 +130,18 @@ public class ThemesActivity extends ListActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.myredditlistitem, parent, false);
+            ViewHolder viewHolder;
+            if (convertView==null || convertView.getTag()==null) {
+                convertView = getLayoutInflater().inflate(R.layout.myredditlistitem, parent, false);
+                viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) convertView.findViewById(R.id.subreddit_name);
+                viewHolder.delete = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
             // setup the row
             final String themeId = (String) themesList.keySet().toArray()[position];
-            ((TextView) convertView.findViewById(R.id.subreddit_name)).setText(themesList.get(themeId));
+            viewHolder.name.setText(themesList.get(themeId));
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,18 +150,18 @@ public class ThemesActivity extends ListActivity {
                 startActivityForResult(intent, 0);
                 }
             });
-            convertView.findViewById(R.id.subreddit_delete_btn).setOnClickListener(new View.OnClickListener() {
+            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
                     builder.setTitle("Delete Theme").setMessage("Are you sure you want to delete this theme?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            global.mThemeManager.deleteCustomTheme(themeId);
-                            refreshList();
-                        }
-                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    global.mThemeManager.deleteCustomTheme(themeId);
+                                    refreshList();
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -176,5 +181,10 @@ public class ThemesActivity extends ListActivity {
         public boolean isEmpty() {
             return themesList.size()==0;
         }
+    }
+
+    class ViewHolder {
+        TextView name;
+        IconTextView delete;
     }
 }
