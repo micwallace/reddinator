@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 public class RedditData {
     private SharedPreferences sharedPrefs;
     private OkHttpClient httpClient;
-    private static final String STANDARD_ENDPOINT = "http://www.reddit.com";
+    private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
     public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe";
@@ -170,7 +170,7 @@ public class RedditData {
 
     public JSONArray getChildComments(String moreId, String articleId, String children, String sort) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren.json?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
 
         JSONArray feed = new JSONArray();
 

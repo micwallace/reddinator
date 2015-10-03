@@ -188,6 +188,7 @@ function editCallback(thingId, commentData){
 }
 
 function populateChildComments(moreId, json){
+    //console.log(json)
     var data = JSON.parse(json);
     $("#"+moreId).remove();
     for (var i in data){
