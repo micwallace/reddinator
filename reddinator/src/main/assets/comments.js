@@ -246,7 +246,7 @@ function appendComment(parentId, commentData, prepend){
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
-    commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'http://www.reddit.com/u/'+commentData.author+'.compact');
+    commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
     commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
     commentElem.find(".comment_reply_count").text("0");
     // check if likes

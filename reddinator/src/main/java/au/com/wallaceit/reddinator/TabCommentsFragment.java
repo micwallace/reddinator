@@ -115,10 +115,14 @@ public class TabCommentsFragment extends Fragment {
                 boolean redditLink = false;
                 System.out.println(url);
                 if (url.indexOf("file://")==0){ // fix for short sub and user links
-                    url = url.replace("file://", "https://www.reddit.com")+"/.compact";
+                    url = url.replace("file://", global.getDefaultMobileSite())+"/";
                     redditLink = true;
                 }
-                if (redditLink || url.indexOf("https://www.reddit.com/")==0){
+                if (url.indexOf("https://www.reddit.com/")==0){ // catch other reddit links
+                    url = url.replace("https://www.reddit.com", global.getDefaultMobileSite());
+                    redditLink = true;
+                }
+                if (redditLink){
                     Intent i = new Intent(mContext, WebViewActivity.class);
                     i.putExtra("url", url);
                     startActivity(i);
