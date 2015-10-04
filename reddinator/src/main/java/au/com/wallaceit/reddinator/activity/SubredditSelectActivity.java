@@ -358,7 +358,7 @@ public class SubredditSelectActivity extends Activity {
                     global.setRefreshView();
                 }
                 if (needsThemeUpdate){
-                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, new int[]{mAppWidgetId}, false);
+                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, new int[]{mAppWidgetId});
                 } else {
                     appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
                 }
@@ -375,7 +375,7 @@ public class SubredditSelectActivity extends Activity {
                     global.setRefreshView();
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                     int[] widgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(SubredditSelectActivity.this, WidgetProvider.class));
-                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, widgetIds, false);
+                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, widgetIds);
                     appWidgetManager.notifyAppWidgetViewDataChanged(widgetIds, R.id.listview);
                 }
             }

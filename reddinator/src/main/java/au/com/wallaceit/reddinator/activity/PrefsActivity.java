@@ -216,7 +216,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     private void updateWidget() {
         AppWidgetManager mgr = AppWidgetManager.getInstance(PrefsActivity.this);
         int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
-        WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds, false);
+        WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds);
         Reddinator global = ((Reddinator) PrefsActivity.this.getApplicationContext());
         if (global != null) {
             global.setRefreshView();

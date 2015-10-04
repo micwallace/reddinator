@@ -59,13 +59,13 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        updateAppWidgets(context, appWidgetManager, appWidgetIds, true);
+        updateAppWidgets(context, appWidgetManager, appWidgetIds);
         // System.out.println("onUpdate();");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @SuppressWarnings("deprecation")
-    public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop) {
+    public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Reddinator global = (Reddinator) context.getApplicationContext();
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
@@ -138,9 +138,6 @@ public class WidgetProvider extends AppWidgetProvider {
                 views.setRemoteAdapter(R.id.listview, serviceIntent); // API 14 and above
             } else {
                 views.setRemoteAdapter(appWidgetId, R.id.listview, serviceIntent); // older version compatibility
-            }
-            if (scrolltotop) {
-                views.setScrollPosition(R.id.listview, 0); // in-case an auto update
             }
             // Tell the AppWidgetManager to perform an update on the current app widget
             appWidgetManager.updateAppWidget(appWidgetId, views);

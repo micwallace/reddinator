@@ -27,7 +27,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -106,7 +105,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             data = new JSONArray(); // set empty data to prevent any NPE
         }
-        Log.w(context.getPackageName(), "New RemoteViewsFactory created");
+        // System.out.println("New RemoteViewsFactory created");
     }
 
     @Override
@@ -137,7 +136,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public void onDestroy() {
         // no-op
-        System.out.println("RemoteViewsFactory destroyed");
+        // System.out.println("RemoteViewsFactory destroyed");
     }
 
     @Override
