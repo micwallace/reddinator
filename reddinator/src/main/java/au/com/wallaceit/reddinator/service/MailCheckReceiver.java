@@ -16,7 +16,7 @@
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -26,6 +26,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+
+import au.com.wallaceit.reddinator.R;
 
 public class MailCheckReceiver extends BroadcastReceiver {
 
@@ -43,7 +45,7 @@ public class MailCheckReceiver extends BroadcastReceiver {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         int refreshRate = Integer.valueOf(prefs.getString(context.getString(R.string.background_mail_pref), "43200000"));
         String token = prefs.getString("oauthtoken", "");
-        boolean loggedIn = (token!=null && !token.equals(""));
+        boolean loggedIn = (!token.equals(""));
         if (refreshRate == 0 || !loggedIn) {
             alarmManager.cancel(updateIntent); // cancel if disabled or not logged in
         } else {

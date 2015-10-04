@@ -17,7 +17,7 @@
  *
  * Created by michael on 14/05/15.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.ui;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
@@ -28,13 +28,16 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-    GlobalObjects global;
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.RedditData;
+
+public class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
+    Reddinator global;
     JSONArray suggestions = new JSONArray();
 
     public SubAutoCompleteAdapter(Context context, int resource) {
         super(context, resource);
-        global = (GlobalObjects) context.getApplicationContext();
+        global = (Reddinator) context.getApplicationContext();
     }
 
     @Override

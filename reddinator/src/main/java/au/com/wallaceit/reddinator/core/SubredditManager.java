@@ -19,7 +19,7 @@
  *
  * Subreddit Manager Provides a global interface for modifying the user subreddit & multi lists.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.core;
 
 import android.content.SharedPreferences;
 
@@ -123,7 +123,7 @@ public class SubredditManager {
 
     public JSONArray filterFeed(JSONArray feedArray){
         String allFilter = prefs.getString("allFilter", "");
-        if (allFilter==null || allFilter.equals(""))
+        if (allFilter.equals(""))
             return feedArray; // no filters applied
 
         JSONArray filtered = new JSONArray();

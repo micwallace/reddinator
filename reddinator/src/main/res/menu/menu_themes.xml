@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="au.com.wallaceit.reddinator.ThemesActivity">
+    tools:context="au.com.wallaceit.reddinator.activity.ThemesActivity">
     <item
         android:id="@+id/action_add"
         android:title="@string/add"

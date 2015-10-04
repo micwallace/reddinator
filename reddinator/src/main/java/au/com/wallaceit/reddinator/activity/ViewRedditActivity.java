@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -59,9 +59,19 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 import java.util.Date;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.service.MailCheckService;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
+import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
+import au.com.wallaceit.reddinator.ui.TabWebFragment;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+
 public class ViewRedditActivity extends FragmentActivity {
 
-    private GlobalObjects global;
+    private Reddinator global;
     private SharedPreferences prefs;
     private MenuItem upvote;
     private MenuItem downvote;
@@ -86,7 +96,7 @@ public class ViewRedditActivity extends FragmentActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        global = ((GlobalObjects) ViewRedditActivity.this.getApplicationContext());
+        global = ((Reddinator) ViewRedditActivity.this.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -334,7 +344,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 break;
 
             case R.id.menu_about:
-                GlobalObjects.showInfoDialog(this, true);
+                Reddinator.showInfoDialog(this, true);
                 break;
 
             default:

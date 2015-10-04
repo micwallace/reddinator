@@ -16,7 +16,7 @@
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.service;
 
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;

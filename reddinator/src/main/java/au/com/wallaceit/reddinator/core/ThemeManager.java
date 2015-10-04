@@ -18,7 +18,7 @@
  * Created by michael on 2/05/15.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.core;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,9 +42,9 @@ public class ThemeManager {
     private JSONObject themes;
     private JSONArray themeOrder;
     private JSONObject customThemes;
-    static final int LISTMODE_ALL= 0;
-    static final int LISTMODE_CUSTOM= 1;
-    static final int LISTMODE_DEFAULT= 2;
+    public static final int LISTMODE_ALL= 0;
+    public static final int LISTMODE_CUSTOM= 1;
+    public static final int LISTMODE_DEFAULT= 2;
     private Theme defaultValues;
 
     public ThemeManager(Context context, SharedPreferences preferences){
@@ -140,7 +140,7 @@ public class ThemeManager {
 
         String themeKey = prefs.getString(themePrefKey, "app_select");
 
-        boolean appSelect = themeKey==null || themeKey.equals("app_select");
+        boolean appSelect = themeKey.equals("app_select");
         if (appSelect || (!themes.has(themeKey) && !customThemes.has(themeKey)))
             return getTheme(prefs.getString("appthemepref", "reddit_classic"));
 

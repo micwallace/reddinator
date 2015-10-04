@@ -1,4 +1,4 @@
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -27,9 +27,13 @@ import org.json.JSONException;
 
 import java.util.UUID;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+
 
 public class ThemeEditorActivity extends ListActivity {
-    private GlobalObjects global;
+    private Reddinator global;
     private String themeId = "";
     private ThemeManager.Theme theme;
     private boolean themeChanged = false;
@@ -38,7 +42,7 @@ public class ThemeEditorActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        global = ((GlobalObjects) ThemeEditorActivity.this.getApplicationContext());
+        global = ((Reddinator) ThemeEditorActivity.this.getApplicationContext());
         if (getIntent().hasExtra("themeId")) {
             // edit existing theme
             themeId = getIntent().getStringExtra("themeId");

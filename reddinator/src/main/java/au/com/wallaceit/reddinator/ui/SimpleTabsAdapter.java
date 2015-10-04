@@ -17,7 +17,7 @@
  *
  * Created by michael on 14/05/15.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,7 +25,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
-class SimpleTabsAdapter extends PagerAdapter {
+public class SimpleTabsAdapter extends PagerAdapter {
 
     private View layout = null;
     private String[] labels;

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.service;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -47,6 +47,10 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.RedditData;
+
 public class WidgetService extends RemoteViewsService {
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
@@ -58,7 +62,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext = null;
     private int appWidgetId;
     private JSONArray data;
-    private GlobalObjects global;
+    private Reddinator global;
     private SharedPreferences mSharedPreferences;
     private String titleFontSize = "16";
     private HashMap<String, Integer> themeColors;
@@ -72,7 +76,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-        global = ((GlobalObjects) context.getApplicationContext());
+        global = ((Reddinator) context.getApplicationContext());
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         //System.out.println("New view factory created for widget ID:"+appWidgetId);
         // Set thread network policy to prevent network on main thread exceptions.
@@ -81,7 +85,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // if this is a user request (apart from 'loadmore') or an auto update, do not attempt to load cache.
         // when a user clicks load more and a new view factory needs to be created we don't want to bypass cache, we want to load the cached items
         int loadType = global.getLoadType();
-        if (!global.getBypassCache() || loadType == GlobalObjects.LOADTYPE_LOADMORE) {
+        if (!global.getBypassCache() || loadType == Reddinator.LOADTYPE_LOADMORE) {
             // load cached data
             data = global.getFeed(mSharedPreferences, appWidgetId);
             if (data.length() != 0) {
@@ -92,7 +96,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
                     e.printStackTrace();
                 }
-                if (loadType == GlobalObjects.LOADTYPE_LOAD) {
+                if (loadType == Reddinator.LOADTYPE_LOAD) {
                     loadCached = true; // this isn't a loadmore request, the cache is loaded and we're done
                     //System.out.println("Cache loaded, no user request received.");
                 }
@@ -119,8 +123,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         //int iconColor = Color.parseColor(themeColors[6]);
         int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
         images = new Bitmap[]{
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                GlobalObjects.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
 
@@ -356,12 +360,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         int loadType = global.getLoadType();
         if (!loadCached) {
-            loadCached = (loadType == GlobalObjects.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly but only check it if load cached is not already set true in the above constructor
+            loadCached = (loadType == Reddinator.LOADTYPE_REFRESH_VIEW); // see if its just a call to refresh view and set var accordingly but only check it if load cached is not already set true in the above constructor
         }
         //System.out.println("Loading type "+loadtype);
         if (!loadCached) {
             // refresh data
-            if (loadType == GlobalObjects.LOADTYPE_LOADMORE && !lastItemId.equals("0")) { // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
+            if (loadType == Reddinator.LOADTYPE_LOADMORE && !lastItemId.equals("0")) { // do not attempt a "loadmore" if we don't have a valid item ID; this would append items to the list, instead perform a full reload
                 global.setLoad();
                 loadMoreReddits();
             } else {

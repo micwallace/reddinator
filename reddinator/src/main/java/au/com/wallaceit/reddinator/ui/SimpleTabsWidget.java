@@ -17,7 +17,7 @@
  *
  * Created by michael on 12/05/15.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.ui;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -30,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import au.com.wallaceit.reddinator.R;
 
 public class SimpleTabsWidget {
     LayoutInflater inflater;

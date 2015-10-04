@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.appwidget.AppWidgetManager;
@@ -34,6 +34,12 @@ import android.widget.Toast;
 
 import java.util.LinkedHashMap;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.service.MailCheckReceiver;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+
 public class PrefsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     public int mAppWidgetId;
     private SharedPreferences mSharedPreferences;
@@ -43,7 +49,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     //int mFirstTimeSetup = 0;
     private String mMailRefresh = "";
     boolean isfromappview = false;
-    private GlobalObjects global;
+    private Reddinator global;
     private boolean themeChanged = false;
     private PreferenceCategory appearanceCat;
     private ListPreference themePref;
@@ -59,13 +65,13 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         }
         getListView().setBackgroundColor(Color.WHITE);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
-        global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
+        global = ((Reddinator) PrefsActivity.this.getApplicationContext());
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(PrefsActivity.this);
         String token = mSharedPreferences.getString("oauthtoken", "");
-        if (token!=null && !token.equals("")){
+        if (!token.equals("")){
             // Load the account preferences when logged in
             addPreferencesFromResource(R.xml.account_preferences);
             Preference logoutbtn = findPreference("logout");
@@ -211,7 +217,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         AppWidgetManager mgr = AppWidgetManager.getInstance(PrefsActivity.this);
         int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(PrefsActivity.this, WidgetProvider.class));
         WidgetProvider.updateAppWidgets(PrefsActivity.this, mgr, appWidgetIds, false);
-        GlobalObjects global = ((GlobalObjects) PrefsActivity.this.getApplicationContext());
+        Reddinator global = ((Reddinator) PrefsActivity.this.getApplicationContext());
         if (global != null) {
             global.setRefreshView();
         }

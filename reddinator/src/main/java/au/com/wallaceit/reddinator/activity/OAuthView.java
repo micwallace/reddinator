@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -34,17 +34,22 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.service.MailCheckReceiver;
+
 public class OAuthView extends Activity {
     WebView wv;
     WebViewClient wvclient;
     Activity mActivity;
-    GlobalObjects global;
+    Reddinator global;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        global = ((GlobalObjects) OAuthView.this.getApplicationContext());
+        global = ((Reddinator) OAuthView.this.getApplicationContext());
 
         String oauthstate = this.getIntent().getStringExtra("oauthstate");
         // request loading bar

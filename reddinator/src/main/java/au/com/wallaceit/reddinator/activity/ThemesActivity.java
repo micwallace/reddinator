@@ -1,4 +1,4 @@
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -21,16 +21,20 @@ import com.joanzapata.android.iconify.Iconify;
 
 import java.util.HashMap;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+
 
 public class ThemesActivity extends ListActivity {
-    GlobalObjects global;
+    Reddinator global;
     HashMap<String, String> themesList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        global = ((GlobalObjects) ThemesActivity.this.getApplicationContext());
+        global = ((Reddinator) ThemesActivity.this.getApplicationContext());
         themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_CUSTOM);
 
         setContentView(R.layout.activity_themes);
@@ -98,7 +102,7 @@ public class ThemesActivity extends ListActivity {
                 builder.show();
                 break;
             case R.id.menu_about:
-                GlobalObjects.showInfoDialog(this, true);
+                Reddinator.showInfoDialog(this, true);
                 break;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,4 +1,4 @@
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -34,10 +34,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
+import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
+import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+
 
 public class SubmitActivity extends Activity {
 
-    private GlobalObjects global;
+    private Reddinator global;
     private AutoCompleteTextView subreddit;
     private TextView charsLeft;
     private TextView submitText;
@@ -50,7 +59,7 @@ public class SubmitActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
-        global = (GlobalObjects) getApplicationContext();
+        global = (Reddinator) getApplicationContext();
 
         subreddit = (AutoCompleteTextView) findViewById(R.id.subreddit);
         subreddit.setAdapter(new SubAutoCompleteAdapter(this, R.layout.autocomplete_list_item));
@@ -127,8 +136,11 @@ public class SubmitActivity extends Activity {
                 if (!global.mRedditData.isLoggedIn()){
                     global.mRedditData.initiateLogin(SubmitActivity.this);
                 } else {
-                    if (validateInput())
-                        (new SubmitTask()).execute();
+                    if (validateInput()) {
+                        boolean isLink = link.isShown();
+                        String data = isLink ? link.getText().toString() : text.getText().toString();
+                        (new SubmitTask(subreddit.getText().toString(), title.getText().toString(), data, isLink)).execute();
+                    }
                 }
             }
         });
@@ -215,18 +227,23 @@ public class SubmitActivity extends Activity {
         String errorText;
         ProgressDialog progressDialog;
         boolean isLink;
+        String subreddit;
+        String title;
+        String data;
 
-        public SubmitTask(){
+        public SubmitTask(String subreddit, String title, String data, boolean isLink){
+            this.isLink = isLink;
+            this.title = title;
+            this.data = data;
+            this.subreddit = subreddit;
             progressDialog = ProgressDialog.show(SubmitActivity.this, "", ("Submitting..."), true);
         }
 
         @Override
         protected Boolean doInBackground(String... strings) {
 
-            isLink = link.isShown();
             try {
-                jsonResult = global.mRedditData.submit(subreddit.getText().toString(), isLink, title.getText().toString(), isLink?link.getText().toString():text.getText().toString());
-
+                jsonResult = global.mRedditData.submit(subreddit, isLink, title, data);
                 return true;
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();

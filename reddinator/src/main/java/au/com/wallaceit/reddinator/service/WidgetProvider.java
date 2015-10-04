@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.service;
 
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -39,6 +39,12 @@ import com.joanzapata.android.iconify.Iconify;
 
 import java.util.HashMap;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.activity.PrefsActivity;
+import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
+import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
+
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
     public static String ITEM_URL = "ITEM_URL";
@@ -60,7 +66,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @SuppressWarnings("deprecation")
     public static void updateAppWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, boolean scrolltotop) {
-        GlobalObjects global = (GlobalObjects) context.getApplicationContext();
+        Reddinator global = (Reddinator) context.getApplicationContext();
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             // CONFIG BUTTON
@@ -117,10 +123,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
             int iconColor = themeColors.get("default_icon");
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
-            views.setImageViewBitmap(R.id.prefsbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 28, shadow));
-            views.setImageViewBitmap(R.id.refreshbutton, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
-            views.setImageViewBitmap(R.id.srcaret, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
-            views.setImageViewBitmap(R.id.erroricon, GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
+            views.setImageViewBitmap(R.id.prefsbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.refreshbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.srcaret, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
+            views.setImageViewBitmap(R.id.erroricon, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
             // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
             // set current feed title
             String curFeed = global.getSubredditManager().getCurrentFeedName(appWidgetId);
@@ -281,14 +287,14 @@ public class WidgetProvider extends AppWidgetProvider {
 
     private void setLoadMore(Context context) {
         // set the loadmore indicator in global object, we also set bypass cache in case a new remoteviewsfactory is created
-        GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+        Reddinator global = ((Reddinator) context.getApplicationContext());
         global.setBypassCache(true);
         global.setLoadMore();
     }
 
     private void setNoCache(Context context) {
         // the bypass cache indicator is used when the last remoteviewfactory has been terminated. A new one is created so we need to tell it not to load the cached data
-        GlobalObjects global = ((GlobalObjects) context.getApplicationContext());
+        Reddinator global = ((Reddinator) context.getApplicationContext());
         global.setBypassCache(true);
     }
 }

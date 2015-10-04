@@ -16,7 +16,7 @@
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -60,11 +60,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+
 public class MainActivity extends Activity {
 
     private Context context;
     private SharedPreferences prefs;
-    private GlobalObjects global;
+    private Reddinator global;
     private ReddinatorListAdapter listAdapter;
     private AbsListView listView;
     private View appView;
@@ -80,7 +86,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = MainActivity.this;
-        global = ((GlobalObjects) context.getApplicationContext());
+        global = ((Reddinator) context.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         setContentView(R.layout.activity_main);
         // Setup actionbar
@@ -272,7 +278,7 @@ public class MainActivity extends Activity {
     public class ReddinatorListAdapter extends BaseAdapter {
 
         private JSONArray data;
-        private GlobalObjects global;
+        private Reddinator global;
         private SharedPreferences mSharedPreferences;
         private String titleFontSize = "16";
         private HashMap<String, Integer> themeColors;
@@ -282,7 +288,7 @@ public class MainActivity extends Activity {
         private boolean showItemSubreddit = false;
         private Bitmap[] images;
 
-        protected ReddinatorListAdapter(GlobalObjects gobjects, SharedPreferences prefs) {
+        protected ReddinatorListAdapter(Reddinator gobjects, SharedPreferences prefs) {
 
             global = gobjects;
             mSharedPreferences = prefs;
@@ -308,8 +314,8 @@ public class MainActivity extends Activity {
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             // load images
             images = new Bitmap[]{
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                    GlobalObjects.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
             };
 
             // get font size preference

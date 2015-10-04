@@ -16,7 +16,7 @@
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -43,12 +43,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
+import au.com.wallaceit.reddinator.activity.WebViewActivity;
+import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+
 public class TabCommentsFragment extends Fragment {
     private Context mContext;
     public WebView mWebView;
     private boolean mFirstTime = true;
     private LinearLayout ll;
-    private GlobalObjects global;
+    private Reddinator global;
     public String articleId;
     public String permalink;
     private String currentSort = "best";
@@ -56,7 +62,7 @@ public class TabCommentsFragment extends Fragment {
     CommentsVoteTask commentsVoteTask;
     CommentTask commentTask;
 
-    static TabCommentsFragment init(boolean load) {
+    public static TabCommentsFragment init(boolean load) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
         Bundle args = new Bundle();
         args.putBoolean("load", load);
@@ -83,7 +89,7 @@ public class TabCommentsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mContext = this.getActivity();
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        global = (GlobalObjects) mContext.getApplicationContext();
+        global = (Reddinator) mContext.getApplicationContext();
         final boolean load = getArguments().getBoolean("load");
 
         // get needed activity values

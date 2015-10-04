@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="au.com.wallaceit.reddinator.SubmitActivity">
+    tools:context="au.com.wallaceit.reddinator.activity.SubmitActivity">
     <include
         android:id="@+id/tab_widget"
         layout="@layout/tabs"

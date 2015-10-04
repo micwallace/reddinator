@@ -16,7 +16,7 @@
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
 
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,11 +29,16 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.activity.WebViewActivity;
+import au.com.wallaceit.reddinator.core.RedditData;
+
 public class MailCheckService extends Service {
     public static String MAIL_CHECK_COMPLETE = "reddinator.mail.check.complete";
     public static String ACTIVITY_CHECK_ACTION = "reddinator.mail.check";
     public static String NOTIFY_CHECK_ACTION = "reddinator.mail.check.notify";
-    private GlobalObjects global;
+    private Reddinator global;
     private String action;
 
     public static void checkMail(Context context, String action){
@@ -44,7 +49,7 @@ public class MailCheckService extends Service {
 
     @Override
     public void onCreate(){
-        global = ((GlobalObjects) getApplicationContext());
+        global = ((Reddinator) getApplicationContext());
     }
 
     @Override

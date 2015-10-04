@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  */
-package au.com.wallaceit.reddinator;
+package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
@@ -42,11 +42,14 @@ import com.joanzapata.android.iconify.Iconify;
 
 import java.lang.reflect.Method;
 
+import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.R;
+
 public class WebViewActivity extends Activity {
     WebView wv;
     WebViewClient wvclient;
     Activity mActivity;
-    GlobalObjects global;
+    Reddinator global;
     SharedPreferences prefs;
 
     public static final String ACTION_CLEAR_INBOX_COUNT= "clearInboxCount";
@@ -55,7 +58,7 @@ public class WebViewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        global = ((GlobalObjects) WebViewActivity.this.getApplicationContext());
+        global = ((Reddinator) WebViewActivity.this.getApplicationContext());
         // request loading bar
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
@@ -180,7 +183,7 @@ public class WebViewActivity extends Activity {
                 break;
 
             case R.id.menu_about:
-                GlobalObjects.showInfoDialog(this, true);
+                Reddinator.showInfoDialog(this, true);
                 break;
 
             default:

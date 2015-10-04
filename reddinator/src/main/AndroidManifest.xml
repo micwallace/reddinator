@@ -8,14 +8,14 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".GlobalObjects"
+        android:name=".Reddinator"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/reddit_icon_small"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -24,19 +24,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PrefsActivity"
+            android:name=".activity.PrefsActivity"
             android:label="@string/app_name">
         </activity>
         <activity
-            android:name=".ThemesActivity"
+            android:name=".activity.ThemesActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_themes" />
         <activity
-            android:name=".ThemeEditorActivity"
+            android:name=".activity.ThemeEditorActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_theme_editor" />
         <activity
-            android:name=".SubredditSelectActivity"
+            android:name=".activity.SubredditSelectActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>
@@ -44,19 +44,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ViewAllSubredditsActivity"
+            android:name=".activity.ViewAllSubredditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name=".ViewRedditActivity"
+            android:name=".activity.ViewRedditActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name=".WebViewActivity"
+            android:name=".activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
-            android:name=".SubmitActivity"
+            android:name=".activity.SubmitActivity"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/submit" >
@@ -68,20 +68,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OAuthView"
+            android:name=".activity.OAuthView"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
 
         <service
-            android:name=".WidgetService"
+            android:name=".service.WidgetService"
             android:enabled="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name=".MailCheckService"
+            android:name=".service.MailCheckService"
             android:enabled="true" />
 
         <receiver
-            android:name=".WidgetProvider"
+            android:name=".service.WidgetProvider"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="au.com.wallaceit.redinator.WidgetProvider.ITEM_CLICK" />
@@ -100,14 +100,14 @@
                 android:resource="@xml/app_widget_provider_info" />
         </receiver>
         <receiver
-            android:name=".MailCheckReceiver"
+            android:name=".service.MailCheckReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="reddinator.background.mailcheck" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".BootReceiver"
+            android:name=".service.BootReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
