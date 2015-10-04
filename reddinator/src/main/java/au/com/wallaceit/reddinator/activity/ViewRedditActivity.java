@@ -233,6 +233,7 @@ public class ViewRedditActivity extends FragmentActivity {
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_save)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
@@ -330,6 +331,11 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_share:
                 showShareDialog();
+                break;
+
+            case R.id.menu_save:
+                ViewRedditActivity.this.setTitleText("Saving..."); // reset title
+                (new SavePostTask()).execute("link", redditItemId);
                 break;
 
             case R.id.menu_submit:
@@ -513,6 +519,33 @@ public class ViewRedditActivity extends FragmentActivity {
                 global.setItemUpdate(feedposition, redditid, val);
                 // save in feed preferences
                 global.setItemVote(prefs, widgetId, feedposition, redditid, val);
+            }
+        }
+    }
+
+    class SavePostTask extends AsyncTask<String, Long, Boolean> {
+        private RedditData.RedditApiException exception;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            try {
+                global.mRedditData.save(params[0], params[1]);
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                exception = e;
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            ViewRedditActivity.this.setTitleText("Reddinator"); // reset title
+            if (!result){
+                // check login required
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this);
+                // show error
+                Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }

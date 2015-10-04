@@ -27,6 +27,12 @@
         reddinator:showAsAction="never"/>
 
     <item
+        android:id="@+id/menu_saved"
+        android:title="@string/saved_items"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
         android:id="@+id/menu_submit"
         android:title="@string/submit"
         android:showAsAction="never"

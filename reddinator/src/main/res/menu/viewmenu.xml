@@ -33,6 +33,11 @@
         android:showAsAction="never" />
 
     <item
+        android:id="@+id/menu_save"
+        android:title="@string/save"
+        android:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_submit"
         android:title="@string/submit"
         android:showAsAction="never" />

@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import au.com.wallaceit.reddinator.activity.OAuthView;
 
@@ -55,7 +57,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -485,6 +487,14 @@ public class RedditData {
         }
     }
 
+    public void save(String category, String name) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/api/save?category="+category+"&id="+name;
+
+        redditApiPost(url);
+    }
+
     // COMM FUNCTIONS
     // Create Http/s client
     private boolean createHttpClient() {
@@ -634,7 +644,7 @@ public class RedditData {
             Response response = httpClient.newCall(httpRequest.build()).execute();
             json = response.body().string();
             int errorCode = response.code();
-            if (errorCode<200 && errorCode>202) {
+            if (errorCode<200 || errorCode>202) {
                 String errorMsg = getErrorText(json);
                 throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+(errorMsg.equals("")?response.message():errorMsg)+(errorCode==403?" (Authorization with Reddit required)":""), errorCode==403, errorCode);
             }
@@ -661,17 +671,13 @@ public class RedditData {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            // attempt to get html error message (often returned by 403)
-            /*System.err.println(response);
+            // attempt to get html error message (often returned by 403/500)
+            //System.err.println(response);
             final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-            final Pattern patternh3 = Pattern.compile("<h3>(.+?)</h3>");
             Matcher matcher = patternh2.matcher(response);
             if (matcher.matches()) {
                 errorMsg = matcher.group(1);
-                matcher = patternh3.matcher(response);
-                if (matcher.group(1)!=null && !matcher.group(1).equals(""))
-                    errorMsg += ", " + matcher.group(1);
-            }*/
+            }
         }
         return errorMsg;
     }

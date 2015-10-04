@@ -404,6 +404,7 @@ public class SubredditSelectActivity extends Activity {
         (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_saved)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
@@ -456,6 +457,12 @@ public class SubredditSelectActivity extends Activity {
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
                 accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
                 startActivity(accnIntent);
+                break;
+
+            case R.id.menu_saved:
+                Intent savedIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
+                savedIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/saved");
+                startActivity(savedIntent);
                 break;
 
             case R.id.menu_submit:
