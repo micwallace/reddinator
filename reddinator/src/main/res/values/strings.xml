@@ -111,5 +111,6 @@
     <string name="reddit_mobile_site">redditmobilepref</string>
     <string name="reddit_mobile_site_comments">mobilecommentspref</string>
     <string name="saved_items">Saved Items</string>
+    <string name="rate_reddinator">Rate Reddinator</string>
 
 </resources>

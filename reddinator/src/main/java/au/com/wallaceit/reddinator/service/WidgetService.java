@@ -168,17 +168,23 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             loadmorerow.setOnClickFillInIntent(R.id.listrowloadmore, i);
             return loadmorerow;
         } else {
+            // create remote view from specified layout
+            if (bigThumbs) {
+                row = new RemoteViews(mContext.getPackageName(), R.layout.listrowbigthumb);
+            } else {
+                row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
+            }
             // build normal item
-            String title = "";
-            String url = "";
-            String permalink = "";
-            String thumbnail = "";
-            String domain = "";
-            String id = "";
-            String subreddit = "";
-            int score = 0;
-            int numcomments = 0;
-            boolean nsfw = false;
+            String title;
+            String url;
+            String permalink;
+            String thumbnail;
+            String domain;
+            String id;
+            String subreddit;
+            int score;
+            int numcomments;
+            boolean nsfw;
             try {
                 JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                 title = tempobj.getString("title");
@@ -194,12 +200,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 subreddit = tempobj.getString("subreddit");
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
-            // create remote view from specified layout
-            if (bigThumbs) {
-                row = new RemoteViews(mContext.getPackageName(), R.layout.listrowbigthumb);
-            } else {
-                row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
+                return row;
             }
             // build view
             row.setImageViewBitmap(R.id.votesicon, images[0]);

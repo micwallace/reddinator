@@ -53,6 +53,7 @@ public class SubmitActivity extends Activity {
     private EditText title;
     private EditText link;
     private EditText text;
+    private ViewPager pager;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -114,7 +115,7 @@ public class SubmitActivity extends Activity {
             view.setPadding(5, 0, 5, 0);
         }
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new SimpleTabsAdapter(new String[]{"Link", "Text"}, new int[]{R.id.link, R.id.text}, SubmitActivity.this, null));
         LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
         SimpleTabsWidget tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
@@ -137,7 +138,7 @@ public class SubmitActivity extends Activity {
                     global.mRedditData.initiateLogin(SubmitActivity.this);
                 } else {
                     if (validateInput()) {
-                        boolean isLink = link.isShown();
+                        boolean isLink = pager.getCurrentItem()==0;
                         String data = isLink ? link.getText().toString() : text.getText().toString();
                         (new SubmitTask(subreddit.getText().toString(), title.getText().toString(), data, isLink)).execute();
                     }
@@ -175,7 +176,7 @@ public class SubmitActivity extends Activity {
             return false;
         }
         String content;
-        if (link.getVisibility()==View.VISIBLE){
+        if (pager.getCurrentItem()==0){
             content = link.getText().toString();
         } else {
             content = text.getText().toString();

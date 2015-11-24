@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
+import com.kobakei.ratethisapp.RateThisApp;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,12 +147,23 @@ public class ViewRedditActivity extends FragmentActivity {
             }
         }
         //System.out.println("User likes post: " + userLikes);
+        // Init rate dialog
+        RateThisApp.Config config = new RateThisApp.Config();
+        config.setTitle(R.string.rate_reddinator);
+        RateThisApp.init(config);
+    }
+
+    public void onStart(){
+        super.onStart();
+        // Monitor launch times and interval from installation
+        RateThisApp.onStart(this);
+        RateThisApp.showRateDialogIfNeeded(this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 3) {
             updateTheme();
-            if (pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("TabCommentsFragment"))
+            if (pageAdapter.getRegisteredFragment(1)!=null && pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("TabCommentsFragment"))
                 ((TabCommentsFragment) pageAdapter.getRegisteredFragment(1)).updateTheme();
         }
     }

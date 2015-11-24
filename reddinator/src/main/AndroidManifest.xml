@@ -5,6 +5,8 @@
     android:versionName="2.8">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Needed by some webview HTML5 video implementations (Bug report received for Android 4.1) -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
