@@ -46,13 +46,13 @@
 
         <ProgressBar
             android:id="@+id/srloader"
-            style="?android:attr/progressBarStyleSmall"
+            style="@android:style/Widget.Holo.ProgressBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="26dp"
-            android:maxHeight="26dp"
-            android:minWidth="26dp"
-            android:maxWidth="26dp"
+            android:minHeight="28dp"
+            android:maxHeight="28dp"
+            android:minWidth="28dp"
+            android:maxWidth="28dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_marginStart="2dp"
