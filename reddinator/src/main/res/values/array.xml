@@ -81,6 +81,7 @@
         <item>Dark Holo</item>
         <item>Transparent</item>
     </string-array>
+
     <string-array name="widget_theme_values">
         <item>1</item>
         <item>2</item>

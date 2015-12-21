@@ -74,12 +74,15 @@
 .md code, .md pre {
     border: 1px solid #eeeed2;
     background-color: #fcfcf7;
+    color: #000000;
     border-radius: 2px
 }
 
 .md code {
     margin: 0 2px;
-    white-space: nowrap
+    white-space: nowrap;
+    width: 100%;
+    overflow-x:auto;
 }
 
 .md p code {

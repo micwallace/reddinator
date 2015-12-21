@@ -5,25 +5,25 @@
 
         <ListPreference
         android:key="@string/mail_check_pref"
-        android:title="Mail Indicator"
-        android:summary="When actively using Reddinator,\nupdate the new mail indicator after every..."
+        android:title="@string/mail_check_pref_title"
+        android:summary="@string/mail_check_pref_summary"
         android:entries="@array/mail_check_list"
         android:entryValues="@array/mail_check_values"
         android:defaultValue="300000"
-        android:dialogTitle="Mail Indicator" />
+        android:dialogTitle="@string/mail_check_pref_title" />
 
         <ListPreference
             android:key="@string/background_mail_pref"
-            android:title="Background Mail Check"
-            android:summary="Check &amp; notify me of new mail every..."
+            android:title="@string/background_mail_pref_title"
+            android:summary="@string/background_mail_pref_summary"
             android:entries="@array/widget_refresh_list"
             android:entryValues="@array/widget_refresh_values"
             android:defaultValue="43200000"
-            android:dialogTitle="Background Mail Check" />
+            android:dialogTitle="@string/background_mail_pref_title" />
 
-        <Preference android:title="Logout"
+        <Preference android:title="@string/logout_title"
             android:key="logout"
-            android:summary="Remove my saved account and session data"/>
+            android:summary="@string/logout_summary"/>
 
     </PreferenceCategory>
 </PreferenceScreen>

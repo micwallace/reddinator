@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- internal resources: not translated !-->
+    <!-- internal resources: not translated -->
     <string name="on_click_pref">onclickpref</string>
     <string name="num_item_load_pref">numitemloadpref</string>
     <string name="app_reload_pref">appreloadpref</string>
@@ -9,7 +9,7 @@
     <string name="title_font_pref">titlefontpref</string>
     <string name="title_color_pref">titlecolorpref</string>
     <string name="comments_first_pref">commentsfirstpref</string>
-    <string name="comments_webview">commentswebviewpref</string>
+    <string name="comments_webview_pref">commentswebviewpref</string>
     <string name="comment_font_pref">commentfontpref</string>
     <string name="content_font_pref">contentfontpref</string>
     <string name="preload_pref">preloadpref</string>
@@ -20,7 +20,6 @@
     <string name="reddit_content_font_pref">reddit_content_font_pref</string>
     <string name="app_theme_pref">appthemepref</string>
     <string name="back_button_pref">backbuttonpref</string>
-
     <string name="fa_search">{fa-search}</string>
     <string name="fa_list">{fa-list}</string>
     <string name="fa_plus_square">{fa-plus-square}</string>
@@ -32,10 +31,9 @@
     <string name="fa_refresh">{fa-refresh}</string>
     <string name="fa_error">{fa-exclamation-triangle}</string>
     <string name="fa_caret">{fa-caret-down}</string>
-
     <string name="nsfw_flag">[NSFW]</string>
     <string name="reddit_domain">reddit.com</string>
-    <!-- end internal resources !-->
+    <!-- end internal resources -->
 
     <string name="app_name">Reddinator</string>
     <string name="loading">Loading…</string>
@@ -189,9 +187,71 @@
     <string name="deleting">Deleting…</string>
     <string name="no_comments_here">No comments here</string>
     <string name="error_loading_comments">Error loading comments</string>
+    <string name="share_with_reddit">Share with Reddit</string>
     <plurals name="new_messages">
         <item quantity="one">%d New Message</item>
         <item quantity="other">%d New Messages</item>
     </plurals>
-
+    <!-- theme label strings -->
+    <string name="tl_widget_background_color">Widget Background</string>
+    <string name="tl_background_color">App Background</string>
+    <string name="tl_widget_header_color">Widget Header</string>
+    <string name="tl_header_color">App Tabs/Headers</string>
+    <string name="tl_header_text">Header Text</string>
+    <string name="tl_tab_indicator">Tab Indicator</string>
+    <string name="tl_headline_text">Post &amp; Comments Text</string>
+    <string name="tl_load_text">Load Button Text</string>
+    <string name="tl_divider">List Divider</string>
+    <string name="tl_default_icon">Default Icon</string>
+    <string name="tl_source_text">Article Source Text</string>
+    <string name="tl_votes_text">Votes Text</string>
+    <string name="tl_votes_icon">Votes Icon</string>
+    <string name="tl_comments_text">Comments Count Text</string>
+    <string name="tl_comments_icon">Comments Count Icon</string>
+    <string name="tl_icon_shadow">Icon Shadow</string>
+    <!-- preference label strings -->
+    <string name="on_click_pref_title">Click Action</string>
+    <string name="on_click_pref_summary">When I click on a widget post…</string>
+    <string name="refresh_rate_pref_title">Auto Refresh</string>
+    <string name="refresh_rate_pref_summary">Refresh the widget feed every…</string>
+    <string name="app_reload_pref_title">App Feed Refresh</string>
+    <string name="app_reload_pref_summary">Refresh the App feed when opening</string>
+    <string name="num_item_load_pref_title">Initial Items</string>
+    <string name="num_item_load_pref_summary">Initially load this many items…</string>
+    <string name="app_theme_pref_title">App Theme</string>
+    <string name="app_theme_pref_summary">App &amp; default widget theme</string>
+    <string name="app_theme_pref_dialog_title">Choose the app theme</string>
+    <string name="edit_theme_pref_title">Edit Theme</string>
+    <string name="edit_theme_pref_summary">Edit the current theme</string>
+    <string name="theme_manager_pref_title">Theme Manager</string>
+    <string name="theme_manager_pref_summary">Create &amp; edit custom themes</string>
+    <string name="title_font_pref_title">Item Title Size</string>
+    <string name="title_font_pref_summary">Font size for item titles</string>
+    <string name="comments_first_pref_title">Show Comments First</string>
+    <string name="comments_first_pref_summary">Show the comments tab first</string>
+    <string name="comments_webview_pref_title">Comments View</string>
+    <string name="comments_webview_pref_summary_off">Use native comments view</string>
+    <string name="comments_webview_pref_summary_on">Use mobile reddit comments view</string>
+    <string name="preload_pref_title">Preload Content</string>
+    <string name="preload_pref_summary">Preload content that isn\'t shown first</string>
+    <string name="back_button_pref_title">Actionbar Back Action</string>
+    <string name="back_button_pref_summary_on">Navigate backward \n(like the in-build back button)</string>
+    <string name="back_button_pref_summary_off">Exit to the last screen</string>
+    <string name="comment_font_pref_title">Comments Font Size</string>
+    <string name="comment_font_pref_summary">Default font size for the comments view</string>
+    <string name="reddit_mobile_site_pref_title">Inbox/Account mobile site</string>
+    <string name="reddit_mobile_site_pref_summary_off">Using legacy mobile site (i.reddit.com)</string>
+    <string name="reddit_mobile_site_pref_summary_on">Using beta mobile site (m.reddit.com)</string>
+    <string name="reddit_mobile_site_comments_pref_title">Content/Comments mobile site</string>
+    <string name="content_font_pref_title">Content Font Size</string>
+    <string name="content_font_pref_summary">Default font size for the content web view</string>
+    <string name="reddit_content_font_pref_title">Reddit Mobile Font Size</string>
+    <string name="reddit_content_font_pref_summary">Default font size for mobile reddit webviews</string>
+    <string name="mail_check_pref_title">Mail Indicator</string>
+    <string name="mail_check_pref_summary">When actively using Reddinator,\nupdate the new mail indicator after every…</string>
+    <string name="background_mail_pref_title">Background Mail Check</string>
+    <string name="background_mail_pref_summary">Check &amp; notify me of new mail every…</string>
+    <string name="logout_title">Logout</string>
+    <string name="logout_summary">Remove my saved account and session data</string>
+    <!-- end preference labels -->
 </resources>

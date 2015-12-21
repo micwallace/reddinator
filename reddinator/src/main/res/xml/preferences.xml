@@ -5,20 +5,20 @@
 
 			<ListPreference
                 android:key="@string/on_click_pref"
-                android:title="Click Action"
+                android:title="@string/on_click_pref_title"
                 android:defaultValue="1"
-                android:summary="When I click on a widget post.."
+                android:summary="@string/on_click_pref_summary"
                 android:entries="@array/onclick_list_preference"
                 android:entryValues="@array/onclick_values_list_preference"
-                android:dialogTitle="When I click on a widget post.." />
+                android:dialogTitle="@string/on_click_pref_summary" />
             <ListPreference
                 android:key="@string/refresh_rate_pref"
-                android:title="Auto Refresh"
+                android:title="@string/refresh_rate_pref_title"
                 android:defaultValue="43200000"
-                android:summary="Refresh the widget feed every.."
+                android:summary="@string/refresh_rate_pref_summary"
                 android:entries="@array/widget_refresh_list"
                 android:entryValues="@array/widget_refresh_values"
-                android:dialogTitle="Refresh the widget feed every.." />
+                android:dialogTitle="@string/refresh_rate_pref_summary" />
 
     </PreferenceCategory>
 
@@ -26,133 +26,117 @@
 
             <CheckBoxPreference
                 android:key="@string/app_reload_pref"
-                android:title="App Feed Refresh"
+                android:title="@string/app_reload_pref_title"
                 android:defaultValue="false"
-                android:summary="Refresh the App feed when opening" />
+                android:summary="@string/app_reload_pref_summary" />
 
 			<ListPreference
                 android:key="@string/num_item_load_pref"
-                android:title="Initial Items"
+                android:title="@string/num_item_load_pref_title"
                 android:defaultValue="25"
-                android:summary="Initially load this many items.."
+                android:summary="@string/num_item_load_pref_summary"
                 android:entries="@array/reddit_item_load"
                 android:entryValues="@array/reddit_item_load"
-                android:dialogTitle="Initially load this many items.." />
+                android:dialogTitle="@string/num_item_load_pref_summary" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:key="appearance" android:title="Appearance">
-        <!--<ListPreference
-            android:key="@string/widget_theme_pref"
-            android:title="App Theme"
-            android:defaultValue="1"
-            android:summary="Choose the app theme"
-            android:entries="@array/widget_theme_preference"
-            android:entryValues="@array/widget_theme_values"
-            android:dialogTitle="Choose the app theme" /> -->
 
         <ListPreference
             android:key="@string/app_theme_pref"
-            android:title="App Theme"
+            android:title="@string/app_theme_pref_title"
             android:defaultValue="reddit_classic"
-            android:summary="App &amp; default widget theme"
-            android:dialogTitle="Choose the app theme" />
+            android:summary="@string/app_theme_pref_summary"
+            android:dialogTitle="@string/app_theme_pref_dialog_title" />
 
         <Preference
-            android:title="Edit Theme"
+            android:title="@string/edit_theme_pref_title"
             android:key="theme_editor_button"
-            android:summary="Edit the current theme"/>
+            android:summary="@string/edit_theme_pref_summary"/>
 
         <Preference
-            android:title="Theme Manager"
+            android:title="@string/theme_manager_pref_title"
             android:key="theme_manager_button"
-            android:summary="Create &amp; edit custom themes"/>
+            android:summary="@string/theme_manager_pref_summary"/>
 
         <ListPreference
             android:key="@string/title_font_pref"
-            android:title="Item Title Size"
+            android:title="@string/title_font_pref_title"
             android:defaultValue="16"
-            android:summary="Font size for item titles"
+            android:summary="@string/title_font_pref_summary"
             android:entries="@array/widget_fontsize_preference"
             android:entryValues="@array/widget_fontsize_preference"
-            android:dialogTitle="Font size for item titles" />
+            android:dialogTitle="@string/title_font_pref_summary" />
 
-        <!--<ListPreference
-            android:key="@string/title_color_pref"
-            android:title="Item Title Color"
-            android:defaultValue="0"
-            android:summary="Font color for item titles"
-            android:entries="@array/widget_fontcolor_preference"
-            android:entryValues="@array/widget_fontcolor_values"
-            android:dialogTitle="Font color for item titles" /> -->
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="Reddinator View">
+    <PreferenceCategory android:title="Reddinator View">
+
 		<CheckBoxPreference
             android:key="@string/comments_first_pref"
-            android:title="Show Comments First"
+            android:title="@string/comments_first_pref_title"
             android:defaultValue="false"
-            android:summary="Show the comments tab first" />
+            android:summary="@string/comments_first_pref_summary" />
         <CheckBoxPreference
-            android:key="@string/comments_webview"
-            android:title="Comments View"
+            android:key="@string/comments_webview_pref"
+            android:title="@string/comments_webview_pref_title"
             android:defaultValue="false"
-            android:summaryOff="Use native comments view"
-            android:summaryOn="View mobile reddit comments view" />
+            android:summaryOff="@string/comments_webview_pref_summary_off"
+            android:summaryOn="@string/comments_webview_pref_summary_on" />
         <ListPreference
             android:key="@string/preload_pref"
-            android:title="Preload Content"
-            android:summary="Preload content that isn't shown first"
+            android:title="@string/preload_pref_title"
+            android:summary="@string/preload_pref_summary"
             android:entries="@array/preload_list_preference"
             android:entryValues="@array/preload_list_values"
             android:defaultValue="3"
-            android:dialogTitle="Preload Content" />
+            android:dialogTitle="@string/preload_pref_title" />
         <CheckBoxPreference
             android:key="@string/back_button_pref"
-            android:title="Actionbar Back Action"
+            android:title="@string/back_button_pref_title"
             android:defaultValue="false"
-            android:summaryOn="Navigate backward \n(like the in-build back button)"
-            android:summaryOff="Exit to the last screen"/>
+            android:summaryOn="@string/back_button_pref_summary_on"
+            android:summaryOff="@string/back_button_pref_summary_off"/>
         <ListPreference
             android:key="@string/comment_font_pref"
-            android:title="Comments Font Size"
-            android:summary="Default font size for the comments view"
+            android:title="@string/comment_font_pref_title"
+            android:summary="@string/comment_font_pref_summary"
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
             android:defaultValue="18"
-            android:dialogTitle="Comments Font Size" />
+            android:dialogTitle="@string/comment_font_pref_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Web Views">
         <CheckBoxPreference
             android:key="@string/reddit_mobile_site_pref"
-            android:title="Inbox/Account mobile site"
+            android:title="@string/reddit_mobile_site_pref_title"
             android:defaultValue="false"
-            android:summaryOff="Using legacy mobile site (i.reddit.com)"
-            android:summaryOn="Using beta mobile site (m.reddit.com)" />
+            android:summaryOff="@string/reddit_mobile_site_pref_summary_off"
+            android:summaryOn="@string/reddit_mobile_site_pref_summary_on" />
         <CheckBoxPreference
             android:key="@string/reddit_mobile_site_comments_pref"
-            android:title="Content/Comments mobile site"
+            android:title="@string/reddit_mobile_site_comments_pref_title"
             android:defaultValue="true"
-            android:summaryOff="Using legacy mobile site (i.reddit.com)"
-            android:summaryOn="Using beta mobile site (m.reddit.com)" />
+            android:summaryOff="@string/reddit_mobile_site_pref_summary_off"
+            android:summaryOn="@string/reddit_mobile_site_pref_summary_on" />
         <ListPreference
             android:key="@string/content_font_pref"
-            android:title="Content Font Size"
-            android:summary="Default font size for the content web view"
+            android:title="@string/content_font_pref_title"
+            android:summary="@string/content_font_pref_summary"
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
             android:defaultValue="18"
-            android:dialogTitle="Content Font Size" />
+            android:dialogTitle="@string/content_font_pref_title" />
         <ListPreference
             android:key="@string/reddit_content_font_pref"
-            android:title="Reddit Mobile Font Size"
-            android:summary="Default font size for mobile reddit webviews"
+            android:title="@string/reddit_content_font_pref_title"
+            android:summary="@string/reddit_content_font_pref_summary"
             android:entries="@array/fontsize_list_preference"
             android:entryValues="@array/fontsize_list_preference"
             android:defaultValue="20"
-            android:dialogTitle="Reddit Mobile Font Size" />
+            android:dialogTitle="@string/reddit_content_font_pref_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

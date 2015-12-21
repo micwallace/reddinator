@@ -1,22 +1,4 @@
 {
-    "labels":{
-        "widget_background_color":     "Widget Background",
-        "background_color":     "App Background",
-        "widget_header_color":  "Widget Header",
-        "header_color":         "App Tabs/Headers",
-        "header_text":          "Header Text",
-        "tab_indicator":        "Tab Indicator",
-        "headline_text":        "Post & Comments Text",
-        "load_text":            "Load Button Text",
-        "divider":              "List Divider",
-        "default_icon":         "Default Icon",
-        "source_text":          "Article Source Text",
-        "votes_text":           "Votes Text",
-        "votes_icon":           "Votes Icon",
-        "comments_text":        "Comments Count Text",
-        "comments_icon":        "Comments Count Icon",
-        "icon_shadow":          "Icon Shadow"
-    },
     "label_order":[
         "widget_background_color",
         "background_color",

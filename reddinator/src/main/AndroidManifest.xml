@@ -63,7 +63,7 @@
             android:windowSoftInputMode="adjustPan"
             android:label="@string/submit" >
             <intent-filter
-                android:label="Share with Reddit">
+                android:label="@string/share_with_reddit">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />

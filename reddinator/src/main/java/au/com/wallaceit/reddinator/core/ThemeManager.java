@@ -37,7 +37,6 @@ import java.util.LinkedHashMap;
 public class ThemeManager {
     private Context context;
     private SharedPreferences prefs;
-    private JSONObject valueLabels;
     private JSONArray valueOrder;
     private JSONObject themes;
     private JSONArray themeOrder;
@@ -82,12 +81,8 @@ public class ThemeManager {
     }
 
     public String getThemePrefLabel(String key) {
-        try {
-            return valueLabels.getString(key);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return "";
+        int resId = context.getResources().getIdentifier("tl_"+key, "string", context.getPackageName());
+        return context.getResources().getString(resId);
     }
 
     public JSONArray getPreferenceOrder(){
@@ -165,7 +160,6 @@ public class ThemeManager {
             JSONObject themeData = new JSONObject(json);
             themes = themeData.getJSONObject("themes");
             themeOrder = themeData.getJSONArray("theme_order");
-            valueLabels = themeData.getJSONObject("labels");
             valueOrder = themeData.getJSONArray("label_order");
         } catch (IOException | JSONException e) {
             e.printStackTrace();
