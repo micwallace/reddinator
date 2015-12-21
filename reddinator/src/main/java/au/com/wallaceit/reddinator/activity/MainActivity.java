@@ -346,15 +346,15 @@ public class MainActivity extends Activity {
                 View loadmorerow = getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
                 TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
                 if (endOfFeed) {
-                    loadtxtview.setText("There's nothing more here");
+                    loadtxtview.setText(R.string.nothing_more_here);
                 } else {
-                    loadtxtview.setText("Load more...");
+                    loadtxtview.setText(R.string.load_more);
                 }
                 loadtxtview.setTextColor(themeColors.get("load_text"));
                 loadmorerow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ((TextView) view.findViewById(R.id.loadmoretxt)).setText("Loading...");
+                        ((TextView) view.findViewById(R.id.loadmoretxt)).setText(R.string.loading);
                         loadMoreReddits();
                     }
                 });
@@ -412,7 +412,8 @@ public class MainActivity extends Activity {
                 viewHolder.listheading.setText(Html.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
-                viewHolder.sourcetxt.setText((showItemSubreddit?subreddit+" - ":"")+domain);
+                String sourceText = (showItemSubreddit?subreddit+" - ":"")+domain;
+                viewHolder.sourcetxt.setText(sourceText);
                 viewHolder.sourcetxt.setTextColor(themeColors.get("source_text"));
                 viewHolder.votestxt.setText(String.valueOf(score));
                 viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));

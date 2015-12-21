@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 
 public class ThemesActivity extends ListActivity {
     Reddinator global;
+    Resources resources;
     HashMap<String, String> themesList;
 
     @Override
@@ -35,6 +37,7 @@ public class ThemesActivity extends ListActivity {
         super.onCreate(savedInstanceState);
 
         global = ((Reddinator) ThemesActivity.this.getApplicationContext());
+        resources = getResources();
         themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_CUSTOM);
 
         setContentView(R.layout.activity_themes);
@@ -89,7 +92,7 @@ public class ThemesActivity extends ListActivity {
                 // open template picker dialog
                 final HashMap<String,String> themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
                 AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
-                builder.setTitle("Choose A Template to Start")
+                builder.setTitle(resources.getString(R.string.choose_template))
                         .setItems(themesList.values().toArray(new CharSequence[themesList.values().size()]), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
@@ -158,14 +161,14 @@ public class ThemesActivity extends ListActivity {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
-                    builder.setTitle("Delete Theme").setMessage("Are you sure you want to delete this theme?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    builder.setTitle(resources.getString(R.string.delete_theme)).setMessage(resources.getString(R.string.delete_theme_message))
+                            .setPositiveButton(resources.getString(R.string.yes), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     global.mThemeManager.deleteCustomTheme(themeId);
                                     refreshList();
                                 }
-                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(resources.getString(R.string.no), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

@@ -91,13 +91,13 @@ public class MailCheckService extends Service {
     }
 
     private void setNotification(){
-        int message = global.mRedditData.getInboxCount();
+        int nummessages = global.mRedditData.getInboxCount();
         Intent notifyIntent = new Intent(this, WebViewActivity.class);
         notifyIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
         notifyIntent.putExtra("url", global.getDefaultMobileSite()+"/message/unread/");
         Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(message+ " New Messages")
-                .setContentText("Click to view reddit messages")
+                .setContentTitle(getResources().getQuantityString(R.plurals.new_messages, nummessages))
+                .setContentText(getResources().getString(R.string.new_messages_text))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.reddit_icon_small))
                 .setSmallIcon(R.drawable.ic_notify)
                 .setContentIntent(PendingIntent.getActivity(this, 0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT))

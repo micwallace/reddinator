@@ -126,13 +126,13 @@
 
     <PreferenceCategory android:title="Web Views">
         <CheckBoxPreference
-            android:key="@string/reddit_mobile_site"
+            android:key="@string/reddit_mobile_site_pref"
             android:title="Inbox/Account mobile site"
             android:defaultValue="false"
             android:summaryOff="Using legacy mobile site (i.reddit.com)"
             android:summaryOn="Using beta mobile site (m.reddit.com)" />
         <CheckBoxPreference
-            android:key="@string/reddit_mobile_site_comments"
+            android:key="@string/reddit_mobile_site_comments_pref"
             android:title="Content/Comments mobile site"
             android:defaultValue="true"
             android:summaryOff="Using legacy mobile site (i.reddit.com)"

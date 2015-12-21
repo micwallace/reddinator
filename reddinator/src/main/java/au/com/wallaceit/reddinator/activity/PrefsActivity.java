@@ -85,7 +85,7 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                     MailCheckReceiver.setAlarm(PrefsActivity.this);
                     // remove account prefs
                     getPreferenceScreen().removePreference(accountSettings);
-                    Toast.makeText(PrefsActivity.this, "Account Disconnected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PrefsActivity.this, getResources().getString(R.string.account_disconnected), Toast.LENGTH_LONG).show();
                     return true;
                 }
             });
@@ -144,13 +144,11 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
         if (extras != null) {
             isfromappview = !intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_ID);
             if (!isfromappview) {
-                //mFirstTimeSetup = extras.getInt("firsttimeconfig", 1);
                 mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             }
         }
         mRefreshrate = mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000");
         mTitleFontSize = mSharedPreferences.getString(getString(R.string.title_font_pref), "16");
-        /*mTitleFontColor = mSharedPreferences.getString(getString(R.string.title_color_pref), "0");*/
         setupThemePrefs();
 
         mMailRefresh = mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000");

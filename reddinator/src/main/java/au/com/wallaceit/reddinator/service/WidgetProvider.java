@@ -274,7 +274,7 @@ public class WidgetProvider extends AppWidgetProvider {
         views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
         // load more text
         if (loadmore) {
-            views.setTextViewText(R.id.loadmoretxt, "Loading...");
+            views.setTextViewText(R.id.loadmoretxt, context.getResources().getString(R.string.loading));
         }
         // update view
         mgr.partiallyUpdateAppWidget(widgetid, views);

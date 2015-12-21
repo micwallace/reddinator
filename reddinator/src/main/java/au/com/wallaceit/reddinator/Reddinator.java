@@ -276,7 +276,7 @@ public class Reddinator extends Application {
 
     public static void showInfoDialog(final Activity context, final boolean isInfo){
         LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(dialog_info, null);
-        ((TextView) aboutView.findViewById(R.id.version)).setText("version "+getPackageInfo(context).versionName);
+        ((TextView) aboutView.findViewById(R.id.version)).setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));
         aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -299,7 +299,7 @@ public class Reddinator extends Application {
             }
         });
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(isInfo?"About":"Welcome to Reddinator").setView(aboutView)
+        builder.setView(aboutView)
         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

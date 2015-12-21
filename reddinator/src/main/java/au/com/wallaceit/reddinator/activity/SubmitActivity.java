@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -54,6 +55,7 @@ public class SubmitActivity extends Activity {
     private EditText link;
     private EditText text;
     private ViewPager pager;
+    private Resources resources;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -61,6 +63,7 @@ public class SubmitActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit);
         global = (Reddinator) getApplicationContext();
+        resources = getResources();
 
         subreddit = (AutoCompleteTextView) findViewById(R.id.subreddit);
         subreddit.setAdapter(new SubAutoCompleteAdapter(this, R.layout.autocomplete_list_item));
@@ -96,7 +99,7 @@ public class SubmitActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                charsLeft.setText((300 - title.getText().toString().length()) + " characters left");
+                charsLeft.setText(resources.getString(R.string.characters_left, (300 - title.getText().toString().length())));
             }
         });
 
@@ -116,7 +119,7 @@ public class SubmitActivity extends Activity {
         }
 
         pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SimpleTabsAdapter(new String[]{"Link", "Text"}, new int[]{R.id.link, R.id.text}, SubmitActivity.this, null));
+        pager.setAdapter(new SimpleTabsAdapter(new String[]{resources.getString(R.string.link), resources.getString(R.string.text)}, new int[]{R.id.link, R.id.text}, SubmitActivity.this, null));
         LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
         SimpleTabsWidget tabs = new SimpleTabsWidget(SubmitActivity.this, tabsLayout);
         tabs.setViewPager(pager);
@@ -154,7 +157,7 @@ public class SubmitActivity extends Activity {
             try {
                 return super.onTouchEvent( widget, buffer, event ) ;
             } catch( Exception ex ) {
-                Toast.makeText( SubmitActivity.this, "Could not load link", Toast.LENGTH_LONG ).show();
+                Toast.makeText( SubmitActivity.this, resources.getString(R.string.load_link_error), Toast.LENGTH_LONG ).show();
                 return true;
             }
         }
@@ -164,15 +167,15 @@ public class SubmitActivity extends Activity {
     private boolean validateInput(){
         String subText = title.getText().toString();
         if (subText.equals("")){
-            global.showAlertDialog(SubmitActivity.this, "Whoa!", "You'll to select a subreddit first");
+            global.showAlertDialog(SubmitActivity.this, resources.getString(R.string.whoa), resources.getString(R.string.no_subreddit_error));
             return false;
         }
         String titleText = title.getText().toString();
         if (titleText.equals("")){
-            global.showAlertDialog(SubmitActivity.this, "Whoa!", "You'll need a title first");
+            global.showAlertDialog(SubmitActivity.this, resources.getString(R.string.whoa), resources.getString(R.string.no_title_error));
             return false;
         } else if (titleText.length()>300){
-            global.showAlertDialog(SubmitActivity.this, "Whoa!", "Such title, please reduce to 300 character or less");
+            global.showAlertDialog(SubmitActivity.this, resources.getString(R.string.whoa), resources.getString(R.string.title_too_long_error));
             return false;
         }
         String content;
@@ -182,7 +185,7 @@ public class SubmitActivity extends Activity {
             content = text.getText().toString();
         }
         if (content.equals("")){
-            global.showAlertDialog(SubmitActivity.this, "Whoa!", "You'll need some content first");
+            global.showAlertDialog(SubmitActivity.this, resources.getString(R.string.whoa), resources.getString(R.string.no_content_error));
             return false;
         }
 
@@ -219,7 +222,7 @@ public class SubmitActivity extends Activity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            submitText.setText(Html.fromHtml(result?Html.fromHtml(submitHtml).toString():"<strong><font color=\"red\">That subreddit does not look valid</font></strong>"));
+            submitText.setText(Html.fromHtml(result?Html.fromHtml(submitHtml).toString():"<strong><font color=\"red\">"+resources.getString(R.string.sub_doesnt_look_valid)+"</font></strong>"));
         }
     }
 
@@ -237,7 +240,7 @@ public class SubmitActivity extends Activity {
             this.title = title;
             this.data = data;
             this.subreddit = subreddit;
-            progressDialog = ProgressDialog.show(SubmitActivity.this, "", ("Submitting..."), true);
+            progressDialog = ProgressDialog.show(SubmitActivity.this, "", resources.getString(R.string.submitting), true);
         }
 
         @Override
@@ -291,7 +294,7 @@ public class SubmitActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                     // show api error
-                    Toast.makeText(SubmitActivity.this, "Could not open submitted post: "+errorText, Toast.LENGTH_LONG).show();
+                    Toast.makeText(SubmitActivity.this, resources.getString(R.string.cannot_open_post_error)+errorText, Toast.LENGTH_LONG).show();
                     finish();
                 }
             } else {

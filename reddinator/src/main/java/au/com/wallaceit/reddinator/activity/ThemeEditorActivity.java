@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -37,12 +38,15 @@ public class ThemeEditorActivity extends ListActivity {
     private String themeId = "";
     private ThemeManager.Theme theme;
     private boolean themeChanged = false;
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         global = ((Reddinator) ThemeEditorActivity.this.getApplicationContext());
+        resources = getResources();
+
         if (getIntent().hasExtra("themeId")) {
             // edit existing theme
             themeId = getIntent().getStringExtra("themeId");
@@ -52,7 +56,7 @@ public class ThemeEditorActivity extends ListActivity {
             theme = global.mThemeManager.cloneTheme(getIntent().getStringExtra("templateId"));
             // set a unique id & default name for the theme
             themeId = "theme-"+ UUID.randomUUID();
-            theme.setName("My Awesome Theme");
+            theme.setName(resources.getString(R.string.my_awesome_theme));
             themeChanged = true;
         }
 
@@ -141,7 +145,7 @@ public class ThemeEditorActivity extends ListActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
             if (position==0){
-                viewHolder.settingName.setText("Name");
+                viewHolder.settingName.setText(resources.getString(R.string.name));
                 viewHolder.settingValue.setText(theme.getName());
                 viewHolder.colorPreview.setVisibility(View.GONE);
                 viewHolder.simplePickBtn.setVisibility(View.GONE);
@@ -153,9 +157,9 @@ public class ThemeEditorActivity extends ListActivity {
                         input.setInputType(InputType.TYPE_CLASS_TEXT);
                         input.setText(theme.getName());
                         input.selectAll();
-                        builder.setTitle("Theme Name")
+                        builder.setTitle(resources.getString(R.string.theme_name))
                         .setView(input)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        .setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 theme.setName(input.getText().toString());
@@ -163,7 +167,7 @@ public class ThemeEditorActivity extends ListActivity {
                                 refreshList();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -198,7 +202,7 @@ public class ThemeEditorActivity extends ListActivity {
                     @Override
                     public void onClick(View v) {
                         final Dialog dialog = new Dialog(ThemeEditorActivity.this);
-                        dialog.setTitle("Select Color");
+                        dialog.setTitle(resources.getString(R.string.select_color));
                         dialog.setContentView(R.layout.color_picker_dialog);
                         // Initialise the color picker
                         final ColorPicker picker = (ColorPicker) dialog.findViewById(R.id.picker);
@@ -248,7 +252,7 @@ public class ThemeEditorActivity extends ListActivity {
                     @Override
                     public void onClick(View view) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ThemeEditorActivity.this);
-                        builder.setTitle("Pick a simple color")
+                        builder.setTitle(resources.getString(R.string.pick_basic_color))
                         .setItems(R.array.fontcolor_names, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -264,7 +268,7 @@ public class ThemeEditorActivity extends ListActivity {
                                 dialogInterface.dismiss();
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();

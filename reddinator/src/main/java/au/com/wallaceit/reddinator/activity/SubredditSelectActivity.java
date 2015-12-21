@@ -30,6 +30,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
@@ -99,6 +100,7 @@ public class SubredditSelectActivity extends Activity {
     private SimpleTabsWidget tabs;
     private Button refreshButton;
     private Button addButton;
+    private Resources resources;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +109,7 @@ public class SubredditSelectActivity extends Activity {
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);
         global = ((Reddinator) SubredditSelectActivity.this.getApplicationContext());
+        resources = getResources();
 
         // get subreddit list and set adapter
         subredditList = global.getSubredditManager().getSubredditNames();
@@ -141,17 +144,17 @@ public class SubredditSelectActivity extends Activity {
                     LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, parent, false);
                     final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
                     AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-                    builder.setTitle("Create A Multi").setView(layout)
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    builder.setTitle(resources.getString(R.string.create_a_multi)).setView(layout)
+                    .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             dialogInterface.dismiss();
                         }
-                    }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            if (name.getText().toString().equals("")){
-                                Toast.makeText(SubredditSelectActivity.this, "Please enter a name for the multi", Toast.LENGTH_LONG).show();
+                            if (name.getText().toString().equals("")) {
+                                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
                                 return;
                             }
                             new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
@@ -167,7 +170,7 @@ public class SubredditSelectActivity extends Activity {
                         updateFeedAndFinish();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(SubredditSelectActivity.this, "Error setting multi.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.multi_open_error), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -188,7 +191,7 @@ public class SubredditSelectActivity extends Activity {
         }
 
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SimpleTabsAdapter(new String[]{"My Subreddits", "My Multis"}, new int[]{R.id.sublist, R.id.multilist}, SubredditSelectActivity.this, null));
+        pager.setAdapter(new SimpleTabsAdapter(new String[]{resources.getString(R.string.my_subreddits), resources.getString(R.string.my_multis)}, new int[]{R.id.sublist, R.id.multilist}, SubredditSelectActivity.this, null));
 
         LinearLayout tabsLayout = (LinearLayout) findViewById(R.id.tab_widget);
         tabs = new SimpleTabsWidget(SubredditSelectActivity.this, tabsLayout);
@@ -219,7 +222,7 @@ public class SubredditSelectActivity extends Activity {
         });
         // sort button
         sortBtn = (Button) findViewById(R.id.sortselect);
-        String sortTxt = "Sort:  " + mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
+        String sortTxt = resources.getString(R.string.sort_label) + mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "hot");
         sortBtn.setText(sortTxt);
         sortBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -296,7 +299,7 @@ public class SubredditSelectActivity extends Activity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(SubredditSelectActivity.this, "Error reading subreddit data", Toast.LENGTH_LONG).show();
+                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.sub_data_error), Toast.LENGTH_LONG).show();
             }
             return;
         }
@@ -488,7 +491,7 @@ public class SubredditSelectActivity extends Activity {
     // show sort select dialog
     private void showSortDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        builder.setTitle("Pick a sort, any sort");
+        builder.setTitle(resources.getString(R.string.select_sort));
         builder.setItems(R.array.reddit_sorts, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Editor prefsedit = mSharedPreferences.edit();
@@ -514,7 +517,7 @@ public class SubredditSelectActivity extends Activity {
                 prefsedit.putString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), sort);
                 prefsedit.apply();
                 // set new text in button
-                String sorttxt = "Sort:  " + sort;
+                String sorttxt = resources.getString(R.string.sort_label) + sort;
                 sortBtn.setText(sorttxt);
                 needsFeedUpdate = true; // mark feed for updating
                 dialog.dismiss();
@@ -524,10 +527,10 @@ public class SubredditSelectActivity extends Activity {
     }
 
     private void showFeedPrefsDialog(){
-        final CharSequence[] names = {"Thumbnails", "Thumbs On Top", "Hide Post Info"};
+        final CharSequence[] names = {resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
         final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        builder.setTitle("Feed Options");
+        builder.setTitle(resources.getString(R.string.feed_prefs));
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialogInterface, int item, boolean state) {
                 Editor prefsedit = mSharedPreferences.edit();
@@ -546,7 +549,7 @@ public class SubredditSelectActivity extends Activity {
                 needsFeedViewUpdate = true;
             }
         });
-        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(resources.getString(R.string.close), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
@@ -558,7 +561,7 @@ public class SubredditSelectActivity extends Activity {
 
         // set themes list
         LinkedHashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
-        themeList.put("app_select", "Use App theme");
+        themeList.put("app_select", resources.getString(R.string.use_app_theme));
         final String[] keys = themeList.keySet().toArray(new String[themeList.keySet().size()]);
         String curTheme = mSharedPreferences.getString("widgettheme-"+mAppWidgetId, "app_select");
         int curIndex = 0;
@@ -569,7 +572,7 @@ public class SubredditSelectActivity extends Activity {
             }
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Widget Theme")
+        builder.setTitle(resources.getString(R.string.select_widget_theme))
         .setSingleChoiceItems(themeList.values().toArray(new String[themeList.values().size()]), curIndex,
             new DialogInterface.OnClickListener() {
                 @Override
@@ -582,7 +585,7 @@ public class SubredditSelectActivity extends Activity {
                     dialogInterface.cancel();
                 }
             }
-        ).setPositiveButton("Close", new DialogInterface.OnClickListener() {
+        ).setPositiveButton(resources.getString(R.string.close), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
@@ -594,7 +597,7 @@ public class SubredditSelectActivity extends Activity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "Refreshing Subreddits", "One moment...", true);
+        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, resources.getString(R.string.refreshing_subreddits), resources.getString(R.string.one_moment), true);
         Thread t = new Thread() {
             public void run() {
 
@@ -619,7 +622,7 @@ public class SubredditSelectActivity extends Activity {
                     public void run() {
                         sdialog.dismiss();
                         if (listLength==0) {
-                            Toast.makeText(SubredditSelectActivity.this, "No subscriptions in your account, \nSuscribe to some subreddits", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.no_subreddits_message), Toast.LENGTH_LONG).show();
                         }
                         refreshSubredditsList();
                     }
@@ -633,7 +636,7 @@ public class SubredditSelectActivity extends Activity {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, "Refreshing Multis", "One moment...", true);
+        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, resources.getString(R.string.refreshing_multis), resources.getString(R.string.one_moment), true);
         Thread t = new Thread() {
             public void run() {
 
@@ -658,7 +661,7 @@ public class SubredditSelectActivity extends Activity {
                     public void run() {
                         sdialog.dismiss();
                         if (listLength == 0) {
-                            Toast.makeText(SubredditSelectActivity.this, "No multis in your account \nClick the add multi button to create some", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.no_multis_message), Toast.LENGTH_LONG).show();
                         }
                         mMultiAdapter.refreshMultis();
                     }
@@ -711,13 +714,13 @@ public class SubredditSelectActivity extends Activity {
                 public void onClick(View v) {
                     final String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
                     if (global.mRedditData.isLoggedIn() && (!sreddit.equals("Front Page") && !sreddit.equals("all"))) {
-                        new AlertDialog.Builder(SubredditSelectActivity.this).setTitle("Unsubscribe")
-                                .setMessage("Are you sure you want to unsubscribe from " + sreddit + "?")
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        new AlertDialog.Builder(SubredditSelectActivity.this).setTitle(resources.getString(R.string.unsubscribe))
+                                .setMessage(resources.getString(R.string.confirm_unsubscribe, sreddit))
+                                .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                     }
-                                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 new SubscriptionEditTask(SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
@@ -883,13 +886,13 @@ public class SubredditSelectActivity extends Activity {
 
     private void showMultiDeleteDialog(final String multiPath){
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        builder.setTitle("Delete Multi").setMessage("Are you sure you want to delete this multi from your account?");
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setTitle(resources.getString(R.string.delete_multi)).setMessage(resources.getString(R.string.delete_multi_message));
+        builder.setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
-        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -901,14 +904,14 @@ public class SubredditSelectActivity extends Activity {
     private void showMultiRenameDialog(final String multiPath){
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         final EditText nameInput = new EditText(SubredditSelectActivity.this);
-        nameInput.setHint("new multi name");
-        builder.setTitle("Rename Multi").setView(nameInput)
-        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        nameInput.setHint(resources.getString(R.string.multi_name_hint));
+        builder.setTitle(resources.getString(R.string.rename_multi)).setView(nameInput)
+        .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
             }
-        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -960,7 +963,7 @@ public class SubredditSelectActivity extends Activity {
 
         ViewPager pager = (ViewPager) dialogView.findViewById(R.id.multi_pager);
         LinearLayout tabsWidget = (LinearLayout) dialogView.findViewById(R.id.multi_tab_widget);
-        pager.setAdapter(new SimpleTabsAdapter(new String[]{"Subreddits", "Settings"}, new int[]{R.id.multi_subreddits, R.id.multi_settings}, SubredditSelectActivity.this, dialogView));
+        pager.setAdapter(new SimpleTabsAdapter(new String[]{resources.getString(R.string.subreddits), resources.getString(R.string.settings)}, new int[]{R.id.multi_subreddits, R.id.multi_settings}, SubredditSelectActivity.this, dialogView));
         SimpleTabsWidget simpleTabsWidget = new SimpleTabsWidget(SubredditSelectActivity.this, tabsWidget);
         simpleTabsWidget.setViewPager(pager);
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
@@ -1029,13 +1032,13 @@ public class SubredditSelectActivity extends Activity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         builder.setView(dialogView)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
                     }
                 })
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -1115,7 +1118,7 @@ public class SubredditSelectActivity extends Activity {
                     public void onClick(View view) {
                         String subreddit = viewHolder.nameInput.getText().toString();
                         if (subreddit.equals("")){
-                            Toast.makeText(SubredditSelectActivity.this, "Please enter a subreddit name", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.sub_name_error), Toast.LENGTH_SHORT).show();
                             return;
                         }
                         performAdd(subreddit);
@@ -1157,7 +1160,7 @@ public class SubredditSelectActivity extends Activity {
         }
 
         private void performAdd(String subreddit){
-            System.out.println("Adding Sub: " + subreddit);
+            //System.out.println("Adding Sub: " + subreddit);
             if (mode==MODE_MULTI) {
                 new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
             } else {
@@ -1167,7 +1170,7 @@ public class SubredditSelectActivity extends Activity {
         }
 
         private void performRemove(String subreddit){
-            System.out.println("Removing Sub: "+subreddit);
+            //System.out.println("Removing Sub: "+subreddit);
             if (mode==MODE_MULTI) {
                 new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
             } else {
@@ -1233,25 +1236,25 @@ public class SubredditSelectActivity extends Activity {
             String loadingMessage = "";
             switch (action) {
                 case ACTION_SUBSCRIBE:
-                    loadingMessage = "Subscribing...";
+                    loadingMessage = resources.getString(R.string.subscribing);
                     break;
                 case ACTION_UNSUBSCRIBE:
-                    loadingMessage = "Unsubscribing...";
+                    loadingMessage = resources.getString(R.string.unsubscribing);
                     break;
                 case ACTION_MULTI_COPY:
-                    loadingMessage = "Copying Multi...";
+                    loadingMessage = resources.getString(R.string.copying_multi);
                     break;
                 case ACTION_MULTI_CREATE:
-                    loadingMessage = "Creating Multi...";
+                    loadingMessage = resources.getString(R.string.creating_multi);
                     break;
                 case ACTION_MULTI_EDIT:
                 case ACTION_MULTI_RENAME:
                 case ACTION_MULTI_SUB_ADD:
                 case ACTION_MULTI_SUB_REMOVE:
-                    loadingMessage = "Updating Multi...";
+                    loadingMessage = resources.getString(R.string.updating_multi);
                     break;
                 case ACTION_MULTI_DELETE:
-                    loadingMessage = "Deleting Multi...";
+                    loadingMessage = resources.getString(R.string.deleting_multi);
                     break;
             }
             progressDialog = ProgressDialog.show(SubredditSelectActivity.this, loadingMessage, loadingMessage, true);

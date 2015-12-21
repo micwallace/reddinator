@@ -23,6 +23,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -65,11 +66,13 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private SubredditsAdapter listadapter;
     private EditText searchbox;
     private TextView emptyview;
+    private Resources resources;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         action = getIntent().getAction();
         global = ((Reddinator) getApplicationContext());
+        resources = getResources();
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -106,7 +109,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 if (!query.equals("")) {
                     search(query);
                 } else {
-                    new AlertDialog.Builder(ViewAllSubredditsActivity.this).setTitle("No Query").setMessage("Please enter something to search for").show();
+                    new AlertDialog.Builder(ViewAllSubredditsActivity.this).setTitle(resources.getString(R.string.no_query)).setMessage(resources.getString(R.string.no_query_message)).show();
                 }
             }
         });
@@ -139,7 +142,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 sreddits.addAll(global.getSrList());
                 listadapter.notifyDataSetChanged();
             } else {
-                emptyview.setText("Loading popular...");
+                emptyview.setText(resources.getString(R.string.loading_popular));
                 sreddits.clear();
                 listadapter.notifyDataSetChanged();
                 if (dlpopulartask == null) {
@@ -188,7 +191,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             dlpopulartask.cancel(true);
         }
         // use a thread for searching
-        final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubredditsActivity.this, "", ("Searching..."), true);
+        final ProgressDialog sdialog = ProgressDialog.show(ViewAllSubredditsActivity.this, "", resources.getString(R.string.searching), true);
         Thread t = new Thread() {
             public void run() {
                 // get all popular subreddits
@@ -221,7 +224,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
                         listadapter.notifyDataSetChanged();
                         if (sreddits.size() == 0) {
                             // set no result text in no items view
-                            emptyview.setText("No subreddits found");
+                            emptyview.setText(resources.getString(R.string.no_subreddits_found));
                         }
                         sdialog.dismiss();
                     }
@@ -346,7 +349,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
 
         protected void onPostExecute(ArrayList<JSONObject> resultlist) {
             if (resultlist==null){
-                Toast.makeText(ViewAllSubredditsActivity.this, "Error loading subreddits: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ViewAllSubredditsActivity.this, resources.getString(R.string.subreddit_load_failed) + exception.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
             if (!this.isCancelled() || cancelrevert) {

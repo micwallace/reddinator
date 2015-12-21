@@ -202,7 +202,7 @@ public class WebViewActivity extends Activity {
         sendintent.setAction(Intent.ACTION_SEND);
         sendintent.putExtra(Intent.EXTRA_TEXT, txt);
         sendintent.setType("text/plain");
-        startActivity(Intent.createChooser(sendintent, "Share URL with..."));
+        startActivity(Intent.createChooser(sendintent, getResources().getString(R.string.share_with)));
     }
 }
 

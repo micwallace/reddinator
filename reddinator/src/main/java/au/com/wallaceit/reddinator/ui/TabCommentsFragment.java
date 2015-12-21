@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
@@ -51,6 +53,7 @@ import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class TabCommentsFragment extends Fragment {
     private Context mContext;
+    private Resources resources;
     public WebView mWebView;
     private boolean mFirstTime = true;
     private LinearLayout ll;
@@ -90,6 +93,7 @@ public class TabCommentsFragment extends Fragment {
         mContext = this.getActivity();
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (Reddinator) mContext.getApplicationContext();
+        resources = getResources();
         final boolean load = getArguments().getBoolean("load");
 
         // get needed activity values
@@ -218,28 +222,28 @@ public class TabCommentsFragment extends Fragment {
 
         @JavascriptInterface
         public void vote(String thingId, int direction) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Voting...");
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.voting));
             commentsVoteTask = new CommentsVoteTask(thingId, direction);
             commentsVoteTask.execute();
         }
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(parentId, text, 0);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Submitting...");
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(thingId, text, 1);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void delete(String thingId) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Deleting...");
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.deleting));
             commentTask = new CommentTask(thingId, null, -1);
             commentTask.execute();
         }
@@ -313,7 +317,7 @@ public class TabCommentsFragment extends Fragment {
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        mWebView.loadUrl("javascript:showLoadingView('No comments here')");
+                        mWebView.loadUrl("javascript:showLoadingView('"+resources.getString(R.string.no_comments_here)+"')");
                     } else {
                         mWebView.loadUrl("javascript:noChildrenCallback('"+mMoreId+"')");
                     }
@@ -321,7 +325,7 @@ public class TabCommentsFragment extends Fragment {
                 case "-1":
                     // show error
                     if (!loadMore) {
-                        mWebView.loadUrl("javascript:showLoadingView('Error loading comments')");
+                        mWebView.loadUrl("javascript:showLoadingView('"+resources.getString(R.string.error_loading_comments)+"')");
                     } else {
                         // reset load more button
                         mWebView.loadUrl("javascript:resetMoreClickEvent('"+mMoreId+"')");
@@ -346,7 +350,6 @@ public class TabCommentsFragment extends Fragment {
     }
 
     class CommentsVoteTask extends AsyncTask<String, Integer, Boolean> {
-        JSONObject item;
         private String redditId;
         private int direction;
         private RedditData.RedditApiException exception;
@@ -370,7 +373,7 @@ public class TabCommentsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Reddinator"); // reset title
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
             if (result) {
                 mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
             } else {
@@ -384,7 +387,6 @@ public class TabCommentsFragment extends Fragment {
     }
 
     class CommentTask extends AsyncTask<String, Integer, JSONObject> {
-        JSONObject item;
         private String redditId;
         private String messageText;
         private int action = 0; // 0=add, 1=edit, -1=delete
@@ -424,7 +426,7 @@ public class TabCommentsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            ((ViewRedditActivity) getActivity()).setTitleText("Reddinator"); // reset title
+            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
             if (result!=null){
                 switch (action){
                     case -1:

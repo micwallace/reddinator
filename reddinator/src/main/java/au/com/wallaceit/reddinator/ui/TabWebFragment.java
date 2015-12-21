@@ -154,7 +154,7 @@ public class TabWebFragment extends Fragment {
         public void onProgressChanged(WebView view, int progress) {
             boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
             //Make the bar disappear after URL is loaded, and changes string to Loading...
-            if (!voteinprogress) mActivity.setTitle("Loading..."); // supress if vote in progress
+            if (!voteinprogress) mActivity.setTitle(getResources().getString(R.string.loading)); // supress if vote in progress
             mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
             // Return the app name after finish loading
             if (progress == 100) {

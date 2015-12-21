@@ -21,6 +21,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -156,9 +157,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             //System.out.println("load more getViewAt("+position+") firing");
             RemoteViews loadmorerow = new RemoteViews(mContext.getPackageName(), R.layout.listrowloadmore);
             if (endOfFeed) {
-                loadmorerow.setTextViewText(R.id.loadmoretxt, "There's nothing more here");
+                loadmorerow.setTextViewText(R.id.loadmoretxt, mContext.getResources().getString(R.string.nothing_more_here));
             } else {
-                loadmorerow.setTextViewText(R.id.loadmoretxt, "Load more...");
+                loadmorerow.setTextViewText(R.id.loadmoretxt, mContext.getResources().getString(R.string.load_more));
             }
             loadmorerow.setTextColor(R.id.loadmoretxt, themeColors.get("load_text"));
             Intent i = new Intent();

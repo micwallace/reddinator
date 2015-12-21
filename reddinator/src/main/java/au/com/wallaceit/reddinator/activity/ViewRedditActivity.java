@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -87,7 +88,8 @@ public class ViewRedditActivity extends FragmentActivity {
     private BroadcastReceiver inboxReceiver;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
-    public ThemeManager.Theme theme;
+    private ThemeManager.Theme theme;
+    private Resources resources;
 
     /**
      * (non-Javadoc)
@@ -99,6 +101,7 @@ public class ViewRedditActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         global = ((Reddinator) ViewRedditActivity.this.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
+        resources = getResources();
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
@@ -346,7 +349,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 break;
 
             case R.id.menu_save:
-                ViewRedditActivity.this.setTitleText("Saving..."); // reset title
+                ViewRedditActivity.this.setTitleText(resources.getString(R.string.saving)); // reset title
                 (new SavePostTask()).execute("link", redditItemId);
                 break;
 
@@ -382,18 +385,18 @@ public class ViewRedditActivity extends FragmentActivity {
         sendintent.setAction(Intent.ACTION_SEND);
         sendintent.putExtra(Intent.EXTRA_TEXT, txt);
         sendintent.setType("text/plain");
-        startActivity(Intent.createChooser(sendintent, "Share Url to..."));
+        startActivity(Intent.createChooser(sendintent, resources.getString(R.string.share_with)));
     }
 
     public void showOpenDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
-        builder.setMessage("Open Url")
-                .setNegativeButton("Content", new DialogInterface.OnClickListener() {
+        builder.setMessage(resources.getString(R.string.open_link))
+                .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         openUrlExternally(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
                     }
                 })
-                .setPositiveButton("Reddit Page", new DialogInterface.OnClickListener() {
+                .setPositiveButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         openUrlExternally("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
@@ -404,17 +407,17 @@ public class ViewRedditActivity extends FragmentActivity {
 
     public void showShareDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
-        builder.setMessage("Share Url")
-                .setNegativeButton("Content", new DialogInterface.OnClickListener() {
+        builder.setMessage(resources.getString(R.string.share_url))
+                .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
                     }
-                }).setPositiveButton("Both", new DialogInterface.OnClickListener() {
+                }).setPositiveButton(resources.getString(R.string.both), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL)+"\nhttps://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
                 })
-                .setNeutralButton("Reddit Page", new DialogInterface.OnClickListener() {
+                .setNeutralButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         shareText("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                     }
@@ -452,7 +455,7 @@ public class ViewRedditActivity extends FragmentActivity {
             //System.out.println("Upvote");
         }
         voteinprogress = true;
-        ViewRedditActivity.this.setTitleText("Voting...");
+        ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
         task.execute();
     }
 
@@ -466,7 +469,7 @@ public class ViewRedditActivity extends FragmentActivity {
             //System.out.println("Downvote");
         }
         voteinprogress = true;
-        ViewRedditActivity.this.setTitleText("Voting...");
+        ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
         task.execute();
     }
 
@@ -495,7 +498,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            ViewRedditActivity.this.setTitleText("Reddinator"); // reset title
+            ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
             voteinprogress = false;
             if (result) {
                 curvote = direction;
@@ -552,7 +555,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            ViewRedditActivity.this.setTitleText("Reddinator"); // reset title
+            ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
             if (!result){
                 // check login required
                 if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this);
@@ -583,10 +586,10 @@ public class ViewRedditActivity extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return "Content";
-                case 1: return "Reddit";
+                case 0: return resources.getString(R.string.content);
+                case 1: return resources.getString(R.string.reddit);
             }
-            return "Reddinator";
+            return resources.getString(R.string.app_name);
         }
 
         @Override

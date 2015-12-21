@@ -21,6 +21,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -44,12 +45,14 @@ public class OAuthView extends Activity {
     WebViewClient wvclient;
     Activity mActivity;
     Reddinator global;
+    Resources resources;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         global = ((Reddinator) OAuthView.this.getApplicationContext());
+        resources = getResources();
 
         String oauthstate = this.getIntent().getStringExtra("oauthstate");
         // request loading bar
@@ -94,7 +97,7 @@ public class OAuthView extends Activity {
                     if (oauthUri.getQueryParameter("error").equals("access_denied")) {
                         OAuthView.this.finish();
                     } else {
-                        Toast.makeText(OAuthView.this, "Login to Reddit failed: " + oauthUri.getQueryParameter("error"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OAuthView.this, resources.getString(R.string.reddit_login_failed) + oauthUri.getQueryParameter("error"), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     new LoginTask().execute(oauthUri);
@@ -112,7 +115,7 @@ public class OAuthView extends Activity {
         @Override
         protected void onPreExecute() {
             wv.setVisibility(View.INVISIBLE);
-            loginDialog = ProgressDialog.show(OAuthView.this, "Authenticating", "Connecting to your reddit account", true);
+            loginDialog = ProgressDialog.show(OAuthView.this, resources.getString(R.string.authenticating), resources.getString(R.string.connecting_reddit_account), true);
         }
 
         protected Boolean doInBackground(Uri... uris) {
@@ -122,9 +125,9 @@ public class OAuthView extends Activity {
                 global.mRedditData.retrieveToken(code, state);
                 loginSuccess = true;
                 // load subreddits & multis
-                publishProgress("Loading your subreddits...");
+                publishProgress(resources.getString(R.string.loading_subreddits));
                 global.loadAccountSubreddits();
-                publishProgress("Loading your multis...");
+                publishProgress(resources.getString(R.string.loading_multis));
                 global.loadAccountMultis();
                 return true;
             } catch (RedditData.RedditApiException e) {
@@ -136,7 +139,7 @@ public class OAuthView extends Activity {
 
         @Override
         protected void onProgressUpdate(String... statusText){
-            loginDialog.setTitle("Loading");
+            loginDialog.setTitle(resources.getString(R.string.loading));
             loginDialog.setMessage(statusText[0]);
         }
 
@@ -144,10 +147,10 @@ public class OAuthView extends Activity {
             OAuthView.this.loginDialog.dismiss();
             if (!success){
                 if (!loginSuccess){
-                    Toast.makeText(OAuthView.this, "Login to Reddit failed:\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(OAuthView.this, resources.getString(R.string.reddit_login_failed) + "\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                     return;
                 } else {
-                    Toast.makeText(OAuthView.this, "Failed to load subscriptions:\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(OAuthView.this, resources.getString(R.string.account_sub_load_failed) + "\n" + exception.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
             // add mail check alarm
