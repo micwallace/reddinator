@@ -121,21 +121,47 @@ public class SubredditManager {
         prefs.edit().putString("allFilter", StringUtils.join(filter.toArray(new String[filter.size()]), ",")).apply();
     }
 
-    public JSONArray filterFeed(JSONArray feedArray){
-        String allFilter = prefs.getString("allFilter", "");
-        if (allFilter.equals(""))
+    public JSONArray filterFeed(JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
+        // determine filter requirements
+        boolean filterDuplicates = prefs.getBoolean("filterduplicatespref", true) && currentFeed!=null;
+        if (filterAll) {
+            filterAll = !prefs.getString("allFilter", "").equals("");
+        }
+        if (!filterAll && !filterDuplicates)
             return feedArray; // no filters applied
-
+        // collect current ids
+        ArrayList<String> ids = new ArrayList<>();
+        if (filterDuplicates){
+            for (int i=0; i<currentFeed.length(); i++){
+                try {
+                    ids.add(currentFeed.getJSONObject(i).getJSONObject("data").getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        // filter the new feed
         JSONArray filtered = new JSONArray();
-        ArrayList<String> filter = getAllFilter();
+        ArrayList<String> filter = null;
+        if (filterAll)
+            filter = getAllFilter();
         JSONObject feedObj;
         String subreddit;
         for (int i=0; i<feedArray.length(); i++){
             try {
                 feedObj = feedArray.getJSONObject(i);
-                subreddit = feedObj.getJSONObject("data").getString("subreddit");
-                if (!filter.contains(subreddit)) // add item if not exlcuded (in filter)
-                    filtered.put(feedObj);
+                if (filterDuplicates){
+                    if (ids.contains(feedObj.getJSONObject("data").getString("name"))) {
+                        continue;
+                    }
+                }
+                if (filterAll) {
+                    subreddit = feedObj.getJSONObject("data").getString("subreddit");
+                    if (filter.contains(subreddit)) { // add item if not exlcuded (in filter)
+                        continue;
+                    }
+                }
+                filtered.put(feedObj);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -152,16 +152,19 @@ public class TabWebFragment extends Fragment {
     WebChromeClient newchromeclient = new WebChromeClient() {
         ActionBar actionBar;
         public void onProgressChanged(WebView view, int progress) {
-            boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
-            //Make the bar disappear after URL is loaded, and changes string to Loading...
-            if (!voteinprogress) mActivity.setTitle(getResources().getString(R.string.loading)); // supress if vote in progress
-            mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
-            // Return the app name after finish loading
-            if (progress == 100) {
+            if(isAdded()) {
+                boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
+                //Make the bar disappear after URL is loaded, and changes string to Loading...
                 if (!voteinprogress)
-                    mActivity.setTitle(R.string.app_name); // dont reset title if vote in prog. voting function will do that.
+                    mActivity.setTitle(getResources().getString(R.string.loading)); // supress if vote in progress
+                mActivity.setProgress(progress * 100); //Make the bar disappear after URL is loaded
+                // Return the app name after finish loading
+                if (progress == 100) {
+                    if (!voteinprogress)
+                        mActivity.setTitle(R.string.app_name); // dont reset title if vote in prog. voting function will do that.
+                }
+                actionBar = mActivity.getActionBar();
             }
-            actionBar = mActivity.getActionBar();
         }
 
         FrameLayout.LayoutParams LayoutParameters = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);

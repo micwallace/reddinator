@@ -79,7 +79,7 @@ public class ViewRedditActivity extends FragmentActivity {
     private MenuItem downvote;
     private MenuItem messageIcon;
 
-    private String userLikes = null; // string version of curvote, parsed when options menu generated.
+    private String userLikes = "null"; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
     private int curvote = 0;
     private int feedposition = 0;

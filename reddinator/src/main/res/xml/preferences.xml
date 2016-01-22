@@ -30,6 +30,12 @@
                 android:defaultValue="false"
                 android:summary="@string/app_reload_pref_summary" />
 
+            <CheckBoxPreference
+                android:key="@string/filter_duplicates_pref"
+                android:title="@string/feed_filter_duplicates_title"
+                android:defaultValue="true"
+                android:summary="@string/feed_filter_duplicates_summary" />
+
 			<ListPreference
                 android:key="@string/num_item_load_pref"
                 android:title="@string/num_item_load_pref_title"

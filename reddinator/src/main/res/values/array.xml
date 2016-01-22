@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+    <!-- Translate -->
     <string-array name="onclick_list_preference">
         <item>Open Reddinator View</item>
         <item>Open Content Page</item>
@@ -50,6 +51,7 @@
         <item>100</item>
     </string-array>
 
+    <!-- Translate -->
     <string-array name="widget_refresh_list">
         <item>30 Minutes</item>
         <item>1 Hour</item>
@@ -74,6 +76,7 @@
         <item>0</item>
     </string-array>
 
+    <!-- Translate -->
     <string-array name="widget_theme_preference">
         <item>Reddit Classic</item>
         <item>Reddit Dark</item>
@@ -90,6 +93,7 @@
         <item>5</item>
     </string-array>
 
+    <!-- Translate -->
     <string-array name="fontcolor_names">
         <item>Reddit Blue</item>
         <item>Reddit Dark Blue</item>
@@ -102,8 +106,8 @@
         <item>Blue</item>
         <item>Indigo</item>
         <item>Violet</item>
-
     </string-array>
+
     <string-array name="fontcolor_values">
         <item>#CEE3F8</item>
         <item>#5F99CF</item>
@@ -118,12 +122,14 @@
         <item>#8B00FF</item>
     </string-array>
 
+    <!-- Translate -->
     <string-array name="preload_list_preference">
         <item>Content &amp; Comments</item>
         <item>Comments</item>
         <item>Content</item>
         <item>None</item>
     </string-array>
+
     <string-array name="preload_list_values">
         <item>3</item>
         <item>2</item>
@@ -131,6 +137,7 @@
         <item>0</item>
     </string-array>
 
+    <!-- Translate -->
     <string-array name="mail_check_list">
         <item>2 Minutes</item>
         <item>5 Minutes</item>

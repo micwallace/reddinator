@@ -410,8 +410,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (tempArray.length() == 0) {
                 endOfFeed = true;
             } else {
-                if (isAll)
-                    tempArray = global.getSubredditManager().filterFeed(tempArray);
+                tempArray = global.getSubredditManager().filterFeed(tempArray, data, isAll);
 
                 int i = 0;
                 while (i < tempArray.length()) {
@@ -439,8 +438,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (data.length() == 0) {
                 endOfFeed = true;
             } else {
-                if (isAll)
-                    tempArray = global.getSubredditManager().filterFeed(tempArray);
+                tempArray = global.getSubredditManager().filterFeed(tempArray, null, isAll);
             }
             data = tempArray;
         }
