@@ -28,9 +28,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -249,6 +251,13 @@ public class Reddinator extends Application {
         Canvas canvas = new Canvas(bitmap);
         canvas.drawText(text, (float) pad, fontSize, paint);
         return bitmap;
+    }
+
+    public static int getActionbarIconColor(){
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return Color.parseColor("#A5A5A5");
+        }
+        return Color.parseColor("#DBDBDB");
     }
 
     public static int convertDiptoPix(Context context, float dip) {

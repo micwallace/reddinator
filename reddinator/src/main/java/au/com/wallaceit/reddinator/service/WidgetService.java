@@ -21,10 +21,11 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
@@ -124,7 +126,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
         images = new Bitmap[]{
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow)
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_cogs.character()), themeColors.get("default_icon"), 26, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), themeColors.get("default_icon"), 26, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor("#FF8B60"), 26, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), themeColors.get("default_icon"), 26, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor("#9494FF"), 26, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
 
@@ -183,13 +190,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             String domain;
             String id;
             String subreddit;
+            String userLikes;
             int score;
             int numcomments;
             boolean nsfw;
             try {
                 JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                 title = tempobj.getString("title");
-                //userlikes = tempobj.getString("likes");
+                userLikes = tempobj.getString("likes");
                 domain = tempobj.getString("domain");
                 id = tempobj.getString("name");
                 url = tempobj.getString("url");
@@ -206,6 +214,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // build view
             row.setImageViewBitmap(R.id.votesicon, images[0]);
             row.setImageViewBitmap(R.id.commentsicon, images[1]);
+            row.setBitmap(R.id.widget_item_options, "setImageBitmap", images[2]);
             row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors.get("headline_text"));
@@ -217,15 +226,50 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
             row.setInt(R.id.listdivider, "setBackgroundColor", themeColors.get("divider"));
             row.setViewVisibility(R.id.nsfwflag, nsfw ? TextView.VISIBLE : TextView.GONE);
+            // set vote icons
+            if (!userLikes.equals("null")) {
+                if (userLikes.equals("true")) {
+                    row.setBitmap(R.id.widget_upvote, "setImageBitmap", images[4]);
+                    row.setBitmap(R.id.widget_downvote, "setImageBitmap", images[5]);
+                } else {
+                    row.setBitmap(R.id.widget_upvote, "setImageBitmap", images[3]);
+                    row.setBitmap(R.id.widget_downvote, "setImageBitmap", images[6]);
+                }
+            } else {
+                row.setBitmap(R.id.widget_upvote, "setImageBitmap", images[3]);
+                row.setBitmap(R.id.widget_downvote, "setImageBitmap", images[5]);
+            }
             // add extras and set click intent
             Intent i = new Intent();
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, id);
-            extras.putInt("itemposition", position);
+            extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
             extras.putString(WidgetProvider.ITEM_URL, url);
             extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
+            extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
+            extras.putString(WidgetProvider.ITEM_SUBREDDIT, subreddit);
+            extras.putString(WidgetProvider.ITEM_USERLIKES, userLikes);
+            extras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_OPEN);
             i.putExtras(extras);
             row.setOnClickFillInIntent(R.id.listrow, i);
+            // add intent for upvote
+            Intent uvintent =  new Intent();
+            Bundle uvextras = (Bundle) extras.clone();
+            uvextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_UPVOTE);
+            uvintent.putExtras(uvextras);
+            row.setOnClickFillInIntent(R.id.widget_upvote, uvintent);
+            // add intent for downvote
+            Intent dvintent =  new Intent();
+            Bundle dvextras = (Bundle) extras.clone();
+            dvextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_DOWNVOTE);
+            dvintent.putExtras(dvextras);
+            row.setOnClickFillInIntent(R.id.widget_downvote, dvintent);
+            // add intent for post options
+            Intent ointent =  new Intent();
+            Bundle oextras = (Bundle) extras.clone();
+            oextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_OPTIONS);
+            ointent.putExtras(oextras);
+            row.setOnClickFillInIntent(R.id.widget_item_options, ointent);
             // load thumbnail if they are enabled for this widget
             if (loadThumbnails) {
                 // load big image if preference is set
@@ -377,8 +421,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             loadCached = false;
             global.setLoad();
+            data = global.getFeed(mSharedPreferences, appWidgetId);
             // hide loader
-            hideWidgetLoader(false, false); // don't go to top as the user is probably interacting with the list
+            hideWidgetLoader(false, false, null); // don't go to top as the user is probably interacting with the list
         }
 
     }
@@ -404,7 +449,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 tempArray = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                hideWidgetLoader(false, true); // don't go to top of list and show error icon
+                hideWidgetLoader(false, true, e.getMessage()); // don't go to top of list and show error icon
                 return;
             }
             if (tempArray.length() == 0) {
@@ -431,7 +476,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                hideWidgetLoader(false, true); // don't go to top of list and show error icon
+                hideWidgetLoader(false, true, e.getMessage()); // don't go to top of list and show error icon
                 return;
             }
             // check if end of feed, if not process & set feed data
@@ -460,14 +505,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
         // hide loader
         if (loadMore) {
-            hideWidgetLoader(false, false); // don't go to top of list
+            hideWidgetLoader(false, false, null); // don't go to top of list
         } else {
-            hideWidgetLoader(true, false); // go to top
+            hideWidgetLoader(true, false, null); // go to top
         }
     }
 
     // hide appwidget loader
-    private void hideWidgetLoader(boolean goToTopOfList, boolean showError) {
+    private void hideWidgetLoader(boolean goToTopOfList, boolean showError, final String errorTxt) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(mContext);
         // hide loader
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget);
@@ -480,5 +525,15 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             views.setViewVisibility(R.id.erroricon, View.VISIBLE);
         }
         mgr.partiallyUpdateAppWidget(appWidgetId, views);
+        // show error text if available
+        if (errorTxt!=null) {
+            Handler handler = new Handler(mContext.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(mContext, errorTxt, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

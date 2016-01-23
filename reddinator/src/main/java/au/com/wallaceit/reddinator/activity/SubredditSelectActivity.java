@@ -129,6 +129,11 @@ public class SubredditSelectActivity extends Activity {
         subsAdapter.sort(new Comparator<String>() {
             @Override
             public int compare(String s, String t1) {
+                if (s.equals("Front Page") || s.equals("all")){
+                    return -100;
+                } else if (t1.equals("Front Page") || t1.equals("all")){
+                    return 100;
+                }
                 return s.compareToIgnoreCase(t1);
             }
         });
@@ -316,15 +321,7 @@ public class SubredditSelectActivity extends Activity {
         }
         if (mAppWidgetId != 0) {
             // refresh widget and close activity (NOTE: put in function)
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-            RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
-            views.setTextViewText(R.id.subreddittxt, global.getSubredditManager().getCurrentFeedName(mAppWidgetId));
-            views.setViewVisibility(R.id.srloader, View.VISIBLE);
-            views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
-            // bypass cache if service not loaded
-            global.setBypassCache(true);
-            appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
-            appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+            WidgetProvider.showLoaderAndUpdate(this, mAppWidgetId, false);
         } else {
             Intent intent = new Intent();
             intent.putExtra("themeupdate", needsThemeUpdate);
@@ -393,12 +390,7 @@ public class SubredditSelectActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.subreddit_select_menu, menu);
         // set options menu view
-        int iconColor;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            iconColor = Color.parseColor("#8F8F8F");
-        } else {
-            iconColor = Color.parseColor("#DBDBDB");
-        }
+        int iconColor = Reddinator.getActionbarIconColor();
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
         if (mAppWidgetId==0) {
@@ -1072,12 +1064,6 @@ public class SubredditSelectActivity extends Activity {
             } else {
                 subsList = global.getSubredditManager().getAllFilter();
             }
-            Collections.sort(subsList, new Comparator<String>() {
-                @Override
-                public int compare(String s, String t1) {
-                    return s.compareToIgnoreCase(t1);
-                }
-            });
             this.notifyDataSetChanged();
         }
 
@@ -1332,7 +1318,7 @@ public class SubredditSelectActivity extends Activity {
         protected void onPostExecute(Boolean result) {
             progressDialog.dismiss();
             ArrayList<String> subreddits;
-            if (result) {
+            if (result || (action==ACTION_UNSUBSCRIBE)) {
                 //if (this.result!=null)
                     //System.out.println("resultData: "+this.result.toString());
                 switch (action) {
@@ -1405,7 +1391,8 @@ public class SubredditSelectActivity extends Activity {
                         mMultiAdapter.refreshMultis();
                         break;
                 }
-            } else {
+            }
+            if (!result){
                 // check login required
                 if (exception instanceof RedditData.RedditApiException && ((RedditData.RedditApiException)exception).isAuthError())
                     global.mRedditData.initiateLogin(SubredditSelectActivity.this);

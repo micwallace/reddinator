@@ -32,6 +32,8 @@
     <string name="fa_refresh">{fa-refresh}</string>
     <string name="fa_error">{fa-exclamation-triangle}</string>
     <string name="fa_caret">{fa-caret-down}</string>
+    <string name="fa_arrow_up">{fa-arrow-up}</string>
+    <string name="fa_arrow_down">{fa-arrow-down}</string>
     <string name="nsfw_flag">[NSFW]</string>
     <string name="reddit_domain">reddit.com</string>
     <!-- end internal resources -->
@@ -256,5 +258,6 @@
     <string name="logout_summary">Remove my saved account and session data</string>
     <string name="feed_filter_duplicates_title">Filter Duplicate Posts</string>
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
+    <string name="post_options">Post Options</string>
     <!-- end preference labels -->
 </resources>

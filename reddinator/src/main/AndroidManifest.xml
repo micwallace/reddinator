@@ -19,16 +19,16 @@
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.PrefsActivity"
-            android:label="@string/app_name">
-        </activity>
+            android:label="@string/app_name"/>
         <activity
             android:name=".activity.ThemesActivity"
             android:configChanges="orientation|screenSize"
@@ -60,10 +60,9 @@
         <activity
             android:name=".activity.SubmitActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/submit" >
-            <intent-filter
-                android:label="@string/share_with_reddit">
+            android:label="@string/submit"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter android:label="@string/share_with_reddit">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
@@ -84,7 +83,7 @@
 
         <receiver
             android:name=".service.WidgetProvider"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="au.com.wallaceit.redinator.WidgetProvider.ITEM_CLICK" />
                 <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE" />
@@ -103,22 +102,26 @@
         </receiver>
         <receiver
             android:name=".service.MailCheckReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="reddinator.background.mailcheck" />
             </intent-filter>
         </receiver>
         <receiver
             android:name=".service.BootReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <action android:name="android.intent.action.PACKAGE_RESTARTED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".activity.WidgetItemDialogActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>

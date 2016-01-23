@@ -88,8 +88,8 @@ public class ViewRedditActivity extends FragmentActivity {
     private BroadcastReceiver inboxReceiver;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
-    private ThemeManager.Theme theme;
     private Resources resources;
+    private int actionbarIconColor = Reddinator.getActionbarIconColor();
 
     /**
      * (non-Javadoc)
@@ -135,7 +135,7 @@ public class ViewRedditActivity extends FragmentActivity {
         // setup needed members
         redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-        feedposition = getIntent().getIntExtra("itemposition", -1);
+        feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
         // Get selected item from feed and user vote preference
         if (getIntent().getBooleanExtra("submitted", false)){
             userLikes = "true";
@@ -149,7 +149,6 @@ public class ViewRedditActivity extends FragmentActivity {
                 }
             }
         }
-        //System.out.println("User likes post: " + userLikes);
         // Init rate dialog
         RateThisApp.Config config = new RateThisApp.Config();
         config.setTitle(R.string.rate_reddinator);
@@ -172,7 +171,7 @@ public class ViewRedditActivity extends FragmentActivity {
     }
 
     private void updateTheme(){
-        theme = getCurrentTheme();
+        ThemeManager.Theme theme = getCurrentTheme();
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
         tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
@@ -230,6 +229,12 @@ public class ViewRedditActivity extends FragmentActivity {
         } else {
             webFragment.mWebView.stopLoading();
             webFragment.mWebView.loadData("", "text/html", "utf-8");
+            // update widget voting icons if a vote has been placed
+            if (widgetId!=0){
+                if (global.getItemUpdate()!=null){
+                    WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
+                }
+            }
             this.finish();
         }
     }
@@ -239,28 +244,31 @@ public class ViewRedditActivity extends FragmentActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.viewmenu, menu);
         // set options menu view
-        int iconColor;
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            iconColor = Color.parseColor("#8F8F8F");
-        } else {
-            iconColor = Color.parseColor("#DBDBDB");
-        }
-        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_save)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
+
+        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_save)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(actionbarIconColor).actionBarSize());
         // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
-        if (userLikes.equals("true")) {
-            upvote.setIcon(R.drawable.upvote_active);
-            curvote = 1;
-        } else if (userLikes.equals("false")) {
-            downvote.setIcon(R.drawable.downvote_active);
-            curvote = -1;
+        if (!userLikes.equals("null")){
+            if (userLikes.equals("true")) {
+                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor("#FF8B60")).actionBarSize());
+                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
+                curvote = 1;
+            } else if (userLikes.equals("false")) {
+                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
+                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor("#9494FF")).actionBarSize());
+                curvote = -1;
+            }
+        } else {
+            upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
+            downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
+            curvote = 0;
         }
         // set inbox icon color based on inbox count
         messageIcon = (menu.findItem(R.id.menu_inbox));
@@ -271,7 +279,7 @@ public class ViewRedditActivity extends FragmentActivity {
 
     private void setInboxIcon(){
         if (messageIcon!=null){
-            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"):Color.parseColor("#DBDBDB");
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): actionbarIconColor;
             messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         }
     }
@@ -501,23 +509,24 @@ public class ViewRedditActivity extends FragmentActivity {
             ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
             voteinprogress = false;
             if (result) {
+                int iconColor = Reddinator.getActionbarIconColor();
                 curvote = direction;
                 switch (direction) {
                     case -1:
-                        upvote.setIcon(R.drawable.upvote);
-                        downvote.setIcon(R.drawable.downvote_active);
+                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
+                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor("#9494FF")).actionBarSize());
                         setUpdateRecord("false");
                         break;
 
                     case 0:
-                        upvote.setIcon(R.drawable.upvote);
-                        downvote.setIcon(R.drawable.downvote);
+                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
+                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
                         setUpdateRecord("null");
                         break;
 
                     case 1:
-                        upvote.setIcon(R.drawable.upvote_active);
-                        downvote.setIcon(R.drawable.downvote);
+                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor("#FF8B60")).actionBarSize());
+                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
                         setUpdateRecord("true");
                         break;
                 }

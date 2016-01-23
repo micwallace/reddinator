@@ -88,7 +88,8 @@ public class SubredditManager {
             return false;
         }
     }
-
+    // this sets the current feed using the supplied name, reddit url path and isMulti value.
+    // isMulti is used to determine whether the items are from a different subreddit, in order to show that value to the user
     public void setFeed(int feedId, String name, String path, boolean isMulti){
         JSONObject data = new JSONObject();
         try {
@@ -102,10 +103,14 @@ public class SubredditManager {
         editor.putString("currentfeed-"+String.valueOf(feedId), data.toString());
         editor.apply();
     }
-
+    // shortcut method for setting the feed to a subreddit
     public void setFeedSubreddit(int feedId, String subreddit){
         boolean isMulti = (subreddit.equals("Front Page") || subreddit.equals("all"));
         setFeed(feedId, subreddit, subreddit.equals("Front Page") ? "" : "/r/" + subreddit, isMulti);
+    }
+    // shortcut method for setting the feed to a domain
+    public void setFeedDomain(int feedId, String domain){
+        setFeed(feedId, domain, "/domain/" + domain, true);
     }
 
     private JSONObject getCurrentFeed(int feedId) throws JSONException {
@@ -120,7 +125,9 @@ public class SubredditManager {
     public void setAllFilter(ArrayList<String> filter){
         prefs.edit().putString("allFilter", StringUtils.join(filter.toArray(new String[filter.size()]), ",")).apply();
     }
-
+    // TODO: per subreddit domain filtering
+    // TODO: hidden post filter
+    // apply filters to the new feed data
     public JSONArray filterFeed(JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
         // determine filter requirements
         boolean filterDuplicates = prefs.getBoolean("filterduplicatespref", true) && currentFeed!=null;

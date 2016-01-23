@@ -44,15 +44,25 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.PrefsActivity;
 import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
+import au.com.wallaceit.reddinator.activity.WidgetItemDialogActivity;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
-    public static String ITEM_URL = "ITEM_URL";
-    public static String ITEM_PERMALINK = "ITEM_PERMALINK";
-    public static String ITEM_ID = "ITEM_ID";
-    public static String ITEM_CLICK = "ITEM_CLICK";
-    public static String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
-    public static String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
+    public static final String ITEM_URL = "ITEM_URL";
+    public static final String ITEM_PERMALINK = "ITEM_PERMALINK";
+    public static final String ITEM_ID = "ITEM_ID";
+    public static final String ITEM_DOMAIN = "ITEM_DOMAIN";
+    public static final String ITEM_SUBREDDIT = "ITEM_SUBREDDIT";
+    public static final String ITEM_USERLIKES = "ITEM_USERLIKES";
+    public static final String ITEM_CLICK = "ITEM_CLICK";
+    public static final String ITEM_CLICK_MODE = "ITEM_CLICK_MODE";
+    public static final int ITEM_CLICK_OPEN = 0;
+    public static final int ITEM_CLICK_UPVOTE = 1;
+    public static final int ITEM_CLICK_DOWNVOTE = 2;
+    public static final int ITEM_CLICK_OPTIONS = 3;
+    public static final String ITEM_FEED_POSITION = "ITEM_FEED_POSITION";
+    public static final String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
+    public static final String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
 
     public WidgetProvider() {
     }
@@ -83,7 +93,7 @@ public class WidgetProvider extends AppWidgetProvider {
             subredditIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             subredditIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             subredditIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            subredditIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            subredditIntent.setData(Uri.parse(subredditIntent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent subredditPendingIntent = PendingIntent.getActivity(context, 0, subredditIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // REMOTE DATA
@@ -96,14 +106,14 @@ public class WidgetProvider extends AppWidgetProvider {
             refreshIntent.setAction(APPWIDGET_UPDATE_FEED);
             refreshIntent.setPackage(context.getPackageName());
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            refreshIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            refreshIntent.setData(Uri.parse(refreshIntent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // ITEM CLICK
             Intent clickIntent = new Intent(context, WidgetProvider.class);
             clickIntent.setAction(ITEM_CLICK);
             clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            clickIntent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            clickIntent.setData(Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // ADD ALL TO REMOTE VIEWS
@@ -200,37 +210,67 @@ public class WidgetProvider extends AppWidgetProvider {
                 // LOAD MORE FEED ITEM CLICKED
                 //System.out.println("loading more feed items...");
                 int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-                // set loadmore indicator so the notifydatasetchanged function knows what to do
-                setLoadMore(context);
                 // show loader
-                showLoaderAndUpdate(context, intent, new int[]{widgetid}, true);
+                showLoaderAndUpdate(context, widgetid, true);
             } else {
-                // NORMAL FEED ITEM CLICK
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
-                int clickPref = Integer.valueOf(clickPrefString);
-                switch (clickPref) {
-                    case 1:
-                        // open in the reddinator view
-                        Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                        clickIntent1.putExtras(intent.getExtras());
-                        clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        context.startActivity(clickIntent1);
+                int clickMode = intent.getExtras().getInt(WidgetProvider.ITEM_CLICK_MODE);
+                switch (clickMode) {
+                    // NORMAL FEED ITEM CLICK
+                    case WidgetProvider.ITEM_CLICK_OPEN:
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                        String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
+                        int clickPref = Integer.valueOf(clickPrefString);
+                        switch (clickPref) {
+                            case 1:
+                                // open in the reddinator view
+                                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
+                                clickIntent1.putExtras(intent.getExtras());
+                                clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                context.startActivity(clickIntent1);
+                                break;
+                            case 2:
+                                // open link in browser
+                                String url = intent.getStringExtra(ITEM_URL);
+                                Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(clickIntent2);
+                                break;
+                            case 3:
+                                // open reddit comments page in browser
+                                String permalink = intent.getStringExtra(ITEM_PERMALINK);
+                                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
+                                clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(clickIntent3);
+                                break;
+                        }
                         break;
-                    case 2:
-                        // open link in browser
-                        String url = intent.getStringExtra(ITEM_URL);
-                        Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(clickIntent2);
+                    // upvote
+                    case WidgetProvider.ITEM_CLICK_UPVOTE:
+                        new WidgetVoteTask(
+                                context,
+                                intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1),
+                                1,
+                                intent.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
+                                intent.getStringExtra(WidgetProvider.ITEM_ID)
+                        ).execute();
                         break;
-                    case 3:
-                        // open reddit comments page in browser
-                        String permalink = intent.getStringExtra(ITEM_PERMALINK);
-                        Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
-                        clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(clickIntent3);
+                    // downvote
+                    case WidgetProvider.ITEM_CLICK_DOWNVOTE:
+                        new WidgetVoteTask(
+                                context,
+                                intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1),
+                                -1,
+                                intent.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
+                                intent.getStringExtra(WidgetProvider.ITEM_ID)
+                        ).execute();
+                        break;
+                    // post options
+                    case WidgetProvider.ITEM_CLICK_OPTIONS:
+                        Intent ointent = new Intent(context, WidgetItemDialogActivity.class);
+                        ointent.putExtras(intent.getExtras());
+                        ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(ointent);
                         break;
                 }
             }
@@ -239,10 +279,8 @@ public class WidgetProvider extends AppWidgetProvider {
         if (action.equals(APPWIDGET_UPDATE_FEED)) {
             // get widget id
             int widgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-            // set cache bypass incase widget needs new view factory
-            setNoCache(context);
             // show loader and update data
-            showLoaderAndUpdate(context, intent, new int[]{widgetId}, false);
+            showLoaderAndUpdate(context, widgetId, false);
         }
 
         if (action.equals(APPWIDGET_AUTO_UPDATE)) {
@@ -250,10 +288,8 @@ public class WidgetProvider extends AppWidgetProvider {
             int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
             // perform full update, just to refresh views
             onUpdate(context, mgr, appWidgetIds);
-            // set cache bypass
-            setNoCache(context);
             // show loader and update data
-            showLoaderAndUpdate(context, intent, appWidgetIds, false);
+            updateAllWidgets(context, appWidgetIds);
         }
 
         if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_CHANGED")) {
@@ -262,36 +298,59 @@ public class WidgetProvider extends AppWidgetProvider {
             // perform full widget update
             onUpdate(context, mgr2, appWidgetIds);
         }
-        // System.out.println("broadcast received: " + action);
+        //System.out.println("broadcast received: " + action);
         super.onReceive(context, intent);
     }
 
-    private void showLoaderAndUpdate(Context context, Intent intent, int[] widgetid, boolean loadmore) {
+    public static void updateAllWidgets(Context context, int[] widgetIds) {
+        for (int widgetId : widgetIds) {
+            showLoaderAndUpdate(context, widgetId, false);
+        }
+    }
+
+    public static void showLoaderAndUpdate(Context context, int widgetId, boolean loadmore) {
+        Reddinator global = ((Reddinator) context.getApplicationContext());
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         // show loader
-        RemoteViews views = new RemoteViews(intent.getPackage(), R.layout.widget);
+        RemoteViews views = new RemoteViews((new Intent(context, WidgetProvider.class)).getPackage(), R.layout.widget);
         views.setViewVisibility(R.id.srloader, View.VISIBLE);
         views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
+        views.setTextViewText(R.id.subreddittxt, global.getSubredditManager().getCurrentFeedName(widgetId));
         // load more text
         if (loadmore) {
             views.setTextViewText(R.id.loadmoretxt, context.getResources().getString(R.string.loading));
+            // set loadmore indicator so the notifydatasetchanged function knows what to do
+            global.setLoadMore();
         }
+        // set cache bypass incase widget needs new view factory
+        global.setBypassCache(true);
         // update view
-        mgr.partiallyUpdateAppWidget(widgetid, views);
+        mgr.partiallyUpdateAppWidget(widgetId, views);
         // request update of listview data
-        mgr.notifyAppWidgetViewDataChanged(widgetid, R.id.listview);
+        mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.listview);
     }
 
-    private void setLoadMore(Context context) {
-        // set the loadmore indicator in global object, we also set bypass cache in case a new remoteviewsfactory is created
-        Reddinator global = ((Reddinator) context.getApplicationContext());
-        global.setBypassCache(true);
-        global.setLoadMore();
+    public static void showLoaderAndRefreshViews(Context context, int widgetId){
+        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+        // show loader
+        RemoteViews views = new RemoteViews((new Intent(context, WidgetProvider.class)).getPackage(), R.layout.widget);
+        views.setViewVisibility(R.id.srloader, View.VISIBLE);
+        views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
+        // update view
+        mgr.partiallyUpdateAppWidget(widgetId, views);
     }
 
-    private void setNoCache(Context context) {
-        // the bypass cache indicator is used when the last remoteviewfactory has been terminated. A new one is created so we need to tell it not to load the cached data
+    public static void hideLoaderAndRefreshViews(Context context, int widgetId, boolean showerror){
         Reddinator global = ((Reddinator) context.getApplicationContext());
-        global.setBypassCache(true);
+        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+        // show loader
+        RemoteViews views = new RemoteViews((new Intent(context, WidgetProvider.class)).getPackage(), R.layout.widget);
+        views.setViewVisibility(R.id.srloader, View.GONE);
+        views.setViewVisibility(R.id.erroricon, (showerror ? View.VISIBLE : View.GONE)); // make sure we hide the error icon
+        // update view
+        global.setRefreshView();
+        mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.listview);
+        mgr.partiallyUpdateAppWidget(widgetId, views);
     }
+
 }

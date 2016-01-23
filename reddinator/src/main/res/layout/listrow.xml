@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/listrow"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
 
     <RelativeLayout
         android:id="@+id/headcontainer"
@@ -10,12 +11,58 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp">
 
+        <LinearLayout
+            android:id="@+id/widget_votecontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp">
+
+            <ImageButton
+                android:id="@+id/widget_upvote"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/upvote"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:paddingBottom="0dp"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
+
+            <ImageButton
+                android:id="@+id/widget_downvote"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/downvote"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:paddingTop="0dp"
+                android:layout_marginTop="-6dp"
+                android:layout_marginBottom="2dp"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
+
+            <ImageButton
+                android:id="@+id/widget_item_options"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:contentDescription="@string/preferences"
+                android:background="@null"
+                android:scaleType="centerInside"
+                android:focusableInTouchMode="true"
+                android:clickable="true"/>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/listheading"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
+            android:layout_toLeftOf="@+id/widget_votecontainer"
+            android:layout_toStartOf="@+id/widget_votecontainer"
             android:layout_toRightOf="@+id/thumbnail"
             android:layout_toEndOf="@+id/thumbnail"
             android:gravity="top"
@@ -23,12 +70,12 @@
             android:paddingBottom="4dp"
             android:layout_marginLeft="6dip"
             android:layout_marginStart="6dip"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="#000000"
             android:textIsSelectable="false"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <ImageView
             android:id="@+id/thumbnail"

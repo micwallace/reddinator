@@ -3,13 +3,11 @@
     <item
         android:id="@+id/menu_upvote"
         android:title="@string/upvote"
-        android:icon="@drawable/upvote"
         android:showAsAction="always" />
 
     <item
         android:id="@+id/menu_downvote"
         android:title="@string/downvote"
-        android:icon="@drawable/downvote"
         android:showAsAction="always" />
 
     <item
