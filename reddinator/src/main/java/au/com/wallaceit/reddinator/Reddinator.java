@@ -58,6 +58,8 @@ public class Reddinator extends Application {
     public final static int LOADTYPE_LOAD = 0;
     public final static int LOADTYPE_LOADMORE = 1;
     public final static int LOADTYPE_REFRESH_VIEW = 3;
+    public final static String COLOR_UPVOTE_ACTIVE = "#FF8B60";
+    public final static String COLOR_DOWNVOTE_ACTIVE = "#9494FF";
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;

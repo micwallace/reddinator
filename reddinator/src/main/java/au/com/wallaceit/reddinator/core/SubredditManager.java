@@ -38,13 +38,14 @@ public class SubredditManager {
     //private ArrayList<String> subreddits;
     private JSONObject subreddits;
     private JSONObject multis;
+    private JSONObject postFilters;
+    private JSONObject urlFilters;
     private final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
     public SubredditManager(SharedPreferences prefs){
-        // load subreddits & multis
         this.prefs = prefs;
-
+        // load subreddits & multis
         try {
             subreddits = new JSONObject(prefs.getString("userSubreddits", "{}"));
             if (subreddits.length()==0){
@@ -56,6 +57,17 @@ public class SubredditManager {
         }
         try {
             multis = new JSONObject(prefs.getString("userMultis", "{}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // load hidden post filters
+        try {
+            postFilters = new JSONObject(prefs.getString("postFilters", "{}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            urlFilters = new JSONObject(prefs.getString("urlFilters", "{}"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -126,7 +138,8 @@ public class SubredditManager {
         prefs.edit().putString("allFilter", StringUtils.join(filter.toArray(new String[filter.size()]), ",")).apply();
     }
     // TODO: per subreddit domain filtering
-    // TODO: hidden post filter
+    // hidden post filters
+
     // apply filters to the new feed data
     public JSONArray filterFeed(JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
         // determine filter requirements

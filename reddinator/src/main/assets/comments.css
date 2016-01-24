@@ -36,6 +36,7 @@ body {
     position: absolute;
     right: 0;
     top: 5px;
+    align: right;
 }
 .comment_vote img {
     width: 25px;
@@ -193,6 +194,13 @@ a {
 }
 .fa-trash {
     color:#E06B6C;
+}
+.fa-arrow-up {
+    color:#A5A5A5;
+    margin-bottom: 4px;
+}
+.fa-arrow-down {
+    color:#A5A5A5;
 }
 .comment_options i {
     font-size: 24px;

@@ -126,9 +126,9 @@ public class WidgetItemDialogActivity extends Activity {
         IconTextView downvote = (IconTextView) dialog.findViewById(R.id.opt_downvote);
         if (!userLikes.equals("null")) {
             if (userLikes.equals("true")) {
-                upvote.setTextColor(Color.parseColor("#FF8B60"));
+                upvote.setTextColor(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE));
             } else {
-                downvote.setTextColor(Color.parseColor("#9494FF"));
+                downvote.setTextColor(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE));
             }
         }
         upvote.setOnClickListener(new View.OnClickListener() {

@@ -257,12 +257,12 @@ public class ViewRedditActivity extends FragmentActivity {
         downvote = menu.findItem(R.id.menu_downvote);
         if (!userLikes.equals("null")){
             if (userLikes.equals("true")) {
-                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor("#FF8B60")).actionBarSize());
+                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
                 downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
                 curvote = 1;
             } else if (userLikes.equals("false")) {
                 upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
-                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor("#9494FF")).actionBarSize());
+                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
                 curvote = -1;
             }
         } else {
@@ -514,7 +514,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 switch (direction) {
                     case -1:
                         upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
-                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor("#9494FF")).actionBarSize());
+                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
                         setUpdateRecord("false");
                         break;
 
@@ -525,7 +525,7 @@ public class ViewRedditActivity extends FragmentActivity {
                         break;
 
                     case 1:
-                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor("#FF8B60")).actionBarSize());
+                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
                         downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
                         setUpdateRecord("true");
                         break;
