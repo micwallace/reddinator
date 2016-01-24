@@ -75,7 +75,16 @@ public class WidgetItemDialogActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-
+                        String redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                        int feedPos = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, 0);
+                        global.getSubredditManager().addPostFilter(widgetId, redditId);
+                        global.removePostFromFeed(widgetId, feedPos, redditId);
+                        if (widgetId!=0) {
+                            WidgetProvider.hideLoaderAndRefreshViews(WidgetItemDialogActivity.this, widgetId, false);
+                        } else {
+                            close(5); // tell main activity to refresh views
+                            return;
+                        }
                         break;
                     case 1:
 

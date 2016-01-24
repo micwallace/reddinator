@@ -28,18 +28,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class SubredditManager {
     private SharedPreferences prefs;
-    //private ArrayList<String> subreddits;
     private JSONObject subreddits;
     private JSONObject multis;
     private JSONObject postFilters;
-    private JSONObject urlFilters;
     private final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
@@ -63,11 +60,6 @@ public class SubredditManager {
         // load hidden post filters
         try {
             postFilters = new JSONObject(prefs.getString("postFilters", "{}"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            urlFilters = new JSONObject(prefs.getString("urlFilters", "{}"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -139,15 +131,72 @@ public class SubredditManager {
     }
     // TODO: per subreddit domain filtering
     // hidden post filters
+    public void addPostFilter(int feedId, String redditId){
+        String feedPath = getCurrentFeedPath(feedId);
+        JSONObject arr;
+        try {
+            if (postFilters.has(feedPath)){
+                arr = postFilters.getJSONObject(feedPath);
+            } else {
+                arr = new JSONObject();
+            }
+            arr.put(redditId, redditId);
+            postFilters.put(feedPath, arr);
+            savePostFilters();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public JSONObject getPostFilters(String feedPath){
+        // return all for front page and all otherwise just return the path specific filters
+        JSONObject finalarr = new JSONObject();
+        if (feedPath.equals("") || feedPath.equals("/r/all")){
+            Iterator it = postFilters.keys();
+            while (it.hasNext()){
+                try {
+                    JSONObject arr = postFilters.getJSONObject((String) it.next());
+                    Iterator it2 = arr.keys();
+                    while (it2.hasNext()){
+                        String id = arr.getString((String) it2.next());
+                        finalarr.put(id, id);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return finalarr;
+        } else {
+            try {
+                finalarr = postFilters.getJSONObject(feedPath);
+                return finalarr;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return new JSONObject();
+    }
+
+    public void clearPostFilters(){
+        postFilters = new JSONObject();
+        savePostFilters();
+    }
+
+    private void savePostFilters(){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("postFilters", postFilters.toString());
+        editor.apply();
+    }
     // apply filters to the new feed data
-    public JSONArray filterFeed(JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
+    public JSONArray filterFeed(int feedId, JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
         // determine filter requirements
         boolean filterDuplicates = prefs.getBoolean("filterduplicatespref", true) && currentFeed!=null;
+        JSONObject postFilters = getPostFilters(getCurrentFeedPath(feedId));
+        boolean filterPosts = postFilters.length()>0;
         if (filterAll) {
             filterAll = !prefs.getString("allFilter", "").equals("");
         }
-        if (!filterAll && !filterDuplicates)
+        if (!filterAll && !filterDuplicates && !filterPosts)
             return feedArray; // no filters applied
         // collect current ids
         ArrayList<String> ids = new ArrayList<>();
@@ -170,9 +219,17 @@ public class SubredditManager {
         for (int i=0; i<feedArray.length(); i++){
             try {
                 feedObj = feedArray.getJSONObject(i);
-                if (filterDuplicates){
-                    if (ids.contains(feedObj.getJSONObject("data").getString("name"))) {
-                        continue;
+                if (filterPosts || filterDuplicates) {
+                    String currentId = feedObj.getJSONObject("data").getString("name");
+                    if (filterDuplicates) {
+                        if (ids.contains(currentId)) {
+                            continue;
+                        }
+                    }
+                    if (filterPosts) {
+                        if (postFilters.has(currentId)) {
+                            continue;
+                        }
                     }
                 }
                 if (filterAll) {

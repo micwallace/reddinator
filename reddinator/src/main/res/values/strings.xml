@@ -259,5 +259,8 @@
     <string name="feed_filter_duplicates_title">Filter Duplicate Posts</string>
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
     <string name="post_options">Post Options</string>
+    <string name="clear_post_filter_title">Clear post filters</string>
+    <string name="clear_post_filter_summary">Clear filtered/hidden posts</string>
+    <string name="clear_post_filter_message">Hidden post filters cleared</string>
     <!-- end preference labels -->
 </resources>

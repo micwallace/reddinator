@@ -222,6 +222,11 @@ public class MainActivity extends Activity {
                     listvote.execute();
                 }
                 break;
+            // reload feed data from cache
+            case 5:
+                listAdapter.reloadFeedData();
+                listView.invalidateViews();
+                break;
         }
         if (data!=null && data.getBooleanExtra("themeupdate", true)){
             setThemeColors();
@@ -630,6 +635,10 @@ public class MainActivity extends Activity {
             loadReddits(true);
         }
 
+        public void reloadFeedData() {
+            data = global.getFeed(mSharedPreferences, 0);
+        }
+
         public void reloadReddits() {
             clearImageCache();
             loadReddits(false);
@@ -668,7 +677,7 @@ public class MainActivity extends Activity {
                     if (tempArray.length() == 0) {
                         endOfFeed = true;
                     } else {
-                        tempArray = global.getSubredditManager().filterFeed(tempArray, data, isAll);
+                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, data, isAll);
 
                         int i = 0;
                         while (i < tempArray.length()) {
@@ -694,7 +703,7 @@ public class MainActivity extends Activity {
                     if (data.length() == 0) {
                         endOfFeed = true;
                     } else {
-                        tempArray = global.getSubredditManager().filterFeed(tempArray, null, isAll);
+                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll);
                     }
                     data = tempArray;
                 }

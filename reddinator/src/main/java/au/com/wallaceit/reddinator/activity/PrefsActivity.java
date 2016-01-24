@@ -46,7 +46,6 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     private String mRefreshrate = "";
     private String mTitleFontSize = "";
     private String mAppTheme = "";
-    //int mFirstTimeSetup = 0;
     private String mMailRefresh = "";
     boolean isfromappview = false;
     private Reddinator global;
@@ -55,7 +54,6 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
     private ListPreference themePref;
     private Preference themeEditorButton;
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +108,16 @@ public class PrefsActivity extends PreferenceActivity implements SharedPreferenc
                 Intent intent = new Intent(PrefsActivity.this, ThemeEditorActivity.class);
                 intent.putExtra("themeId", mAppTheme);
                 startActivity(intent);
+                return true;
+            }
+        });
+
+        Preference clearFilterButton = findPreference("clear_post_filter");
+        clearFilterButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                global.getSubredditManager().clearPostFilters();
+                Toast.makeText(PrefsActivity.this, getString(R.string.clear_post_filter_message), Toast.LENGTH_LONG).show();
                 return true;
             }
         });

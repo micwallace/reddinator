@@ -133,8 +133,8 @@ public class Reddinator extends Application {
     }
 
     public JSONObject getFeedObject(SharedPreferences prefs, int widgetId, int position, String redditId) {
+        JSONArray data = getFeed(prefs, widgetId);
         try {
-            JSONArray data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
             JSONObject item = data.getJSONObject(position).getJSONObject("data");
             if (item.getString("name").equals(redditId)) {
                 return item;
@@ -143,6 +143,26 @@ public class Reddinator extends Application {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public void removePostFromFeed(int widgetId, int position, String redditId){
+        JSONArray data = getFeed(mSharedPreferences, widgetId);
+        try {
+            JSONObject item = data.getJSONObject(position).getJSONObject("data");
+            if (item.getString("name").equals(redditId)) {
+                // remove post: fuck android for not having REMOVE in JSONArray until API 19.
+                JSONArray finalData = new JSONArray();
+                for (int i = 0; i<data.length(); i++){
+                    if (i!=position)
+                        finalData.put(data.get(i));
+                }
+                // save new feed
+                setFeed(mSharedPreferences, widgetId, finalData);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // cached popular subreddits
