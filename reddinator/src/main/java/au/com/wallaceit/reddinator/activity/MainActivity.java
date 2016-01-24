@@ -199,7 +199,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onActivityResult(int reqcode, int resultcode, Intent data) {
-        System.out.println("Post dialog result: "+resultcode);
         switch (resultcode) {
             // reload feed prefs
             case 1:
