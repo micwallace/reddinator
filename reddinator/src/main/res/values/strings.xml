@@ -262,5 +262,8 @@
     <string name="clear_post_filter_title">Clear post filters</string>
     <string name="clear_post_filter_summary">Clear filtered/hidden posts</string>
     <string name="clear_post_filter_message">Hidden post filters cleared</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- end preference labels -->
 </resources>
