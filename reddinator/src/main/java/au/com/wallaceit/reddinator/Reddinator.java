@@ -65,7 +65,7 @@ public class Reddinator extends Application {
     public RedditData mRedditData;
     public ThemeManager mThemeManager;
     private SubredditManager mSubManager;
-    private SharedPreferences mSharedPreferences;
+    public SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate() {

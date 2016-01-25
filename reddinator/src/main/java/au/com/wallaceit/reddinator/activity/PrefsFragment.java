@@ -91,6 +91,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         });
 
         Preference clearFilterButton = findPreference("clear_post_filter");
+        clearFilterButton.setSummary(getString(R.string.clear_post_filter_summary, global.getSubredditManager().getPostFilterCount()));
         clearFilterButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -111,6 +112,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             case "appthemepref":
                 setupThemePrefs();
             case "userThemes":
+            case "logoopenpref":
                 themeChanged = true;
                 break;
         }

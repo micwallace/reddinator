@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:reddinator="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_submit"
+        android:title="@string/submit"
+        android:showAsAction="always"
+        reddinator:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_saved"
+        android:title="@string/saved_items"
+        android:showAsAction="always"
+        reddinator:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_account"
+        android:title="@string/my_reddit"
+        android:showAsAction="ifRoom"
+        reddinator:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/menu_viewdomain"
+        android:title="@string/view_domain"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_feedprefs"
@@ -17,24 +40,6 @@
     <item
         android:id="@+id/menu_thememanager"
         android:title="@string/menu_theme_manager"
-        android:showAsAction="never"
-        reddinator:showAsAction="never"/>
-
-    <item
-        android:id="@+id/menu_account"
-        android:title="@string/my_reddit"
-        android:showAsAction="never"
-        reddinator:showAsAction="never"/>
-
-    <item
-        android:id="@+id/menu_saved"
-        android:title="@string/saved_items"
-        android:showAsAction="never"
-        reddinator:showAsAction="never"/>
-
-    <item
-        android:id="@+id/menu_submit"
-        android:title="@string/submit"
         android:showAsAction="never"
         reddinator:showAsAction="never"/>
 

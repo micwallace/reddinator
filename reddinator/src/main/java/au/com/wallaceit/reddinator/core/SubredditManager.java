@@ -177,6 +177,19 @@ public class SubredditManager {
         return new JSONObject();
     }
 
+    public int getPostFilterCount(){
+        int count = 0;
+        Iterator it = postFilters.keys();
+        while (it.hasNext()){
+            try {
+                count += postFilters.getJSONObject((String) it.next()).length();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
+    }
+
     public void clearPostFilters(){
         postFilters = new JSONObject();
         savePostFilters();

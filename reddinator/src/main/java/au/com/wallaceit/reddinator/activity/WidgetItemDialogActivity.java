@@ -25,13 +25,17 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.IconTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
@@ -59,22 +63,16 @@ public class WidgetItemDialogActivity extends Activity {
             }
         });
         // check if it is a self post and remove view domain option
-        String[] options = getResources().getStringArray(R.array.post_option_items);
-        options[4] = String.format(options[4], getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT));
-        String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
-        if (domain.indexOf("self.")==0){
-            options = new String[]{options[0],options[1],options[2],options[3],options[4]};
-        } else {
-            options[5] = String.format(options[5], domain);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.widget_item_dialog_row, R.id.item_text, options);
+
+        final ItemOptionsAdapter adapter = new ItemOptionsAdapter();
         ListView listview = (ListView) dialog.findViewById(R.id.opt_list);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
-                    case 0:
+                String key = adapter.getItemKey(position);
+                switch (key){
+                    case "hide_post":
                         String redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
                         int feedPos = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, 0);
                         global.getSubredditManager().addPostFilter(widgetId, redditId);
@@ -86,24 +84,21 @@ public class WidgetItemDialogActivity extends Activity {
                             return;
                         }
                         break;
-                    case 1:
-
-                        break;
-                    case 2:
+                    case "open_post":
                         // open link in browser
                         String url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
                         Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         WidgetItemDialogActivity.this.startActivity(clickIntent2);
                         break;
-                    case 3:
+                    case "open_comments":
                         // open reddit comments page in browser
                         String permalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                         Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
                         clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         WidgetItemDialogActivity.this.startActivity(clickIntent3);
                         break;
-                    case 4:
+                    case "view_subreddit":
                         // view subreddit of this item
                         String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
                         global.getSubredditManager().setFeedSubreddit(widgetId, subreddit);
@@ -114,7 +109,7 @@ public class WidgetItemDialogActivity extends Activity {
                             return;
                         }
                         break;
-                    case 5:
+                    case "view_domain":
                         // view listings for the domain of this item
                         String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
                         global.getSubredditManager().setFeedDomain(widgetId, domain);
@@ -172,6 +167,63 @@ public class WidgetItemDialogActivity extends Activity {
         });
         // show the dialog
         dialog.show();
+    }
+
+    private class ItemOptionsAdapter extends BaseAdapter {
+        LayoutInflater inflater;
+        ArrayList<String[]> options;
+
+        public ItemOptionsAdapter(){
+            inflater = LayoutInflater.from(WidgetItemDialogActivity.this);
+
+            options = new ArrayList<>();
+            options.add(new String[]{"hide_post", getString(R.string.item_option_hide_post)});
+            options.add(new String[]{"open_post", getString(R.string.item_option_open_post)});
+            options.add(new String[]{"open_comments", getString(R.string.item_option_open_comments)});
+
+            if (global.getSubredditManager().isFeedMulti(widgetId))
+                options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT))});
+
+            String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
+            if (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain))
+                options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});
+        }
+
+        @Override
+        public int getCount() {
+            return options.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return options.get(position)[1];
+        }
+
+        public String getItemKey(int position) {
+            return options.get(position)[0];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view;
+            TextView text;
+
+            if (convertView == null) {
+                view = inflater.inflate(R.layout.widget_item_dialog_row, parent, false);
+            } else {
+                view = convertView;
+            }
+
+            text = (TextView) view.findViewById(R.id.item_text);
+            text.setText((String) getItem(position));
+
+            return view;
+        }
     }
 
     private void close(int result){

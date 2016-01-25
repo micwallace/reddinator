@@ -294,10 +294,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         // check if the image is in cache
                         if (new File(fileurl).exists()) {
                             bitmap = BitmapFactory.decodeFile(fileurl);
-                            saveImageToStorage(bitmap, id);
                         } else {
                             // download the image
-                            bitmap = loadImage(thumbnail);
+                            bitmap = loadImage(thumbnail, id);
                         }
                         if (bitmap != null) {
                             row.setImageViewBitmap(R.id.thumbnail, bitmap);
@@ -324,7 +323,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         return row;
     }
 
-    private Bitmap loadImage(String urlstr) {
+    private Bitmap loadImage(String urlstr, String redditId) {
         URL url;
         Bitmap bmp;
         try {
@@ -333,6 +332,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             con.setConnectTimeout(8000);
             con.setReadTimeout(8000);
             bmp = BitmapFactory.decodeStream(con.getInputStream());
+            saveImageToStorage(bmp, redditId);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return null;

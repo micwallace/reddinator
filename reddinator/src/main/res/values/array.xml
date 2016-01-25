@@ -198,13 +198,4 @@
         <item>fresh</item>
     </string-array>
 
-    <!-- Translate -->
-    <string-array name="post_option_items">
-        <item>Hide this post</item>
-        <item>Hide this domain</item>
-        <item>Open content in browser</item>
-        <item>Open comments in browser</item>
-        <item>View /r/%1$s</item>
-        <item>View all from %1$s</item>
-    </string-array>
 </resources>

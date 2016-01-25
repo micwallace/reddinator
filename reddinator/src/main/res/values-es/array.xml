@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- Translate -->
+    <string-array name="onclick_list_preference">
+        <item>Abrir Vista Reddinator</item>
+        <item>Abrir Pagina de Contenido</item>
+        <item>Abrir Pagina Reddit</item>
+    </string-array>
+
+    <!-- needs coding work as this is used in reddit urls
+    <string-array name="reddit_sorts">
+        <item>hot</item>
+        <item>nuevo</item>
+        <item>en ascenso</item>
+        <item>controversial</item>
+        <item>top</item>
+    </string-array>!-->
+
+    <!-- Translate -->
+    <string-array name="widget_refresh_list">
+        <item>30 Minutos</item>
+        <item>1 Hora</item>
+        <item>2 Horas</item>
+        <item>4 Horas</item>
+        <item>6 Horas</item>
+        <item>12 Horas</item>
+        <item>24 Horas</item>
+        <item>48 Horas</item>
+        <item>Nunca</item>
+    </string-array>
+
+    <!-- Translate -->
+    <string-array name="widget_theme_preference">
+        <item>Reddit Clasico</item>
+        <item>Reddit Oscuro</item>
+        <item>Android Holo</item>
+        <item>Holo Oscuro</item>
+        <item>Transparente</item>
+    </string-array>
+
+    <!-- Translate -->
+    <string-array name="fontcolor_names">
+        <item>Reddit Azul</item>
+        <item>Reddit Azul Oscuro</item>
+        <item>Reddit Naranja</item>
+        <item>Reddit Naranja claro</item>
+        <item>Rojo</item>
+        <item>Naranja</item>
+        <item>Amarillo</item>
+        <item>Verde</item>
+        <item>Azul</item>
+        <item>Indigo</item>
+        <item>Violeta</item>
+    </string-array>
+
+    <!-- Translate -->
+    <string-array name="preload_list_preference">
+        <item>Contenido &amp; Comentarios</item>
+        <item>Comentarios</item>
+        <item>Contenido</item>
+        <item>Nada</item>
+    </string-array>
+
+    <!-- Translate -->
+    <string-array name="mail_check_list">
+        <item>2 Minutos</item>
+        <item>5 Minutos</item>
+        <item>10 Minutos</item>
+        <item>30 Minutos</item>
+        <item>Nunca</item>
+    </string-array>
+
+    <!-- needs coding work as this is used in reddit api interaction
+    <string-array name="multi_icons">
+        <item>Arte y dise�o</item>
+        <item>pedir</item>
+        <item>libros</item>
+        <item>negocios</item>
+        <item>autos</item>
+        <item>comics</item>
+        <item>animales lindos</item>
+        <item>bricolaje</item>
+        <item>entretenimiento</item>
+        <item>comida y bebida</item>
+        <item>divertido</item>
+        <item>juegos</item>
+        <item>aseo</item>
+        <item>salud</item>
+        <item>consejos de vida</item>
+        <item>militar</item>
+        <item>modelos pinup</item>
+        <item>musica</item>
+        <item>noticias</item>
+        <item>filosofia</item>
+        <item>imagenes y gifs</item>
+        <item>ciencia</item>
+        <item>compras</item>
+        <item>deportes</item>
+        <item>estilo</item>
+        <item>tecnologia</item>
+        <item>viajes</item>
+        <item>historias inusuales</item>
+        <item>video</item>
+        <item>nada</item>
+    </string-array>
+
+    <string-array name="multi_visibility">
+        <item>privado</item>
+        <item>publico</item>
+        <item>oculto</item>
+    </string-array>
+
+    <string-array name="multi_weights">
+        <item>clasico</item>
+        <item>fresco</item>
+    </string-array>!-->
+</resources>

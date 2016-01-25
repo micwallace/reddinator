@@ -19,6 +19,11 @@
                 android:entries="@array/widget_refresh_list"
                 android:entryValues="@array/widget_refresh_values"
                 android:dialogTitle="@string/refresh_rate_pref_summary" />
+            <CheckBoxPreference
+                android:key="@string/logo_open_pref"
+                android:title="@string/logo_open_pref_title"
+                android:defaultValue="true"
+                android:summary="@string/logo_open_pref_summary" />
 
     </PreferenceCategory>
 

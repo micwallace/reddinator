@@ -39,6 +39,7 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,6 +76,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
@@ -320,7 +323,6 @@ public class SubredditSelectActivity extends Activity {
             return;
         }
         if (mAppWidgetId != 0) {
-            // refresh widget and close activity (NOTE: put in function)
             WidgetProvider.showLoaderAndUpdate(this, mAppWidgetId, false);
         } else {
             Intent intent = new Intent();
@@ -346,6 +348,7 @@ public class SubredditSelectActivity extends Activity {
         }
         // check if sort has changed
         if (needsFeedUpdate || needsFeedViewUpdate || needsThemeUpdate) {
+            // refresh widget and close activity (NOTE: clean this up and use updateFeedAndFinish function or methods in WidgetProvider to handle widget update)
             if (mAppWidgetId != 0) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
@@ -400,6 +403,7 @@ public class SubredditSelectActivity extends Activity {
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_saved)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_viewdomain)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
@@ -435,19 +439,6 @@ public class SubredditSelectActivity extends Activity {
                 onBackPressed();
                 break;
 
-            case R.id.menu_feedprefs:
-                showFeedPrefsDialog();
-                break;
-
-            case R.id.menu_widgettheme:
-                showWidgetThemeDialog();
-                break;
-
-            case R.id.menu_thememanager:
-                Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
-                startActivityForResult(intent, 2);
-                break;
-
             case R.id.menu_account:
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
                 accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
@@ -465,6 +456,23 @@ public class SubredditSelectActivity extends Activity {
                 startActivity(submitIntent);
                 break;
 
+            case R.id.menu_viewdomain:
+                showViewDomainDialog();
+                break;
+
+            case R.id.menu_feedprefs:
+                showFeedPrefsDialog();
+                break;
+
+            case R.id.menu_widgettheme:
+                showWidgetThemeDialog();
+                break;
+
+            case R.id.menu_thememanager:
+                Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
+                startActivityForResult(intent, 2);
+                break;
+
             case R.id.menu_prefs:
                 Intent intent2 = new Intent(SubredditSelectActivity.this, PrefsActivity.class);
                 startActivityForResult(intent2, 2);
@@ -478,6 +486,31 @@ public class SubredditSelectActivity extends Activity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void showViewDomainDialog(){
+        final EditText input = new EditText(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.view_domain_posts));
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String domain = input.getText().toString();
+                String pattern = "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$";
+                Pattern r = Pattern.compile(pattern);
+                Matcher m = r.matcher(domain);
+                if (m.find()){
+                    dialog.dismiss();
+                    global.getSubredditManager().setFeedDomain(mAppWidgetId, domain);
+                    updateFeedAndFinish();
+                } else {
+                    Toast.makeText(SubredditSelectActivity.this, getString(R.string.enter_valid_domain), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        builder.show();
     }
 
     // show sort select dialog

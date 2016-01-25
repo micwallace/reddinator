@@ -41,6 +41,7 @@ import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.PrefsActivity;
 import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
@@ -121,10 +122,21 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setPendingIntentTemplate(R.id.listview, clickPendingIntent);
             views.setOnClickPendingIntent(R.id.srcaret, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.subreddittxt, subredditPendingIntent);
-            views.setOnClickPendingIntent(R.id.widget_logo, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, refreshPendingIntent);
             views.setOnClickPendingIntent(R.id.prefsbutton, pendIntent);
             views.setEmptyView(R.id.listview, R.id.empty_list_view);
+
+            // setup app open intent
+            if (global.mSharedPreferences.getBoolean("logoopenpref", true)){
+                Intent appIntent = new Intent(context, MainActivity.class);
+                appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                appIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                appIntent.setData(Uri.parse(subredditIntent.toUri(Intent.URI_INTENT_SCHEME)));
+                PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                views.setOnClickPendingIntent(R.id.widget_logo, appPendingIntent);
+            } else {
+                views.setOnClickPendingIntent(R.id.widget_logo, subredditPendingIntent);
+            }
 
             // setup theme
             HashMap<String, Integer> themeColors = global.mThemeManager.getActiveTheme("widgettheme-"+appWidgetId).getIntColors();
@@ -137,7 +149,7 @@ public class WidgetProvider extends AppWidgetProvider {
             views.setImageViewBitmap(R.id.refreshbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
             views.setImageViewBitmap(R.id.srcaret, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
             views.setImageViewBitmap(R.id.erroricon, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
-            // views.setViewVisibility(R.id.srloader, View.VISIBLE); // loader is hidden by default (to stop it displaying on screen rotation) so we need to show it when updating.
+
             // set current feed title
             String curFeed = global.getSubredditManager().getCurrentFeedName(appWidgetId);
             views.setTextViewText(R.id.subreddittxt, curFeed);

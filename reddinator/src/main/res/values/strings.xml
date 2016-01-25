@@ -2,6 +2,7 @@
 <resources>
     <!-- internal resources: not translated -->
     <string name="on_click_pref">onclickpref</string>
+    <string name="logo_open_pref">logoopenpref</string>
     <string name="num_item_load_pref">numitemloadpref</string>
     <string name="app_reload_pref">appreloadpref</string>
     <string name="filter_duplicates_pref">filterduplicatespref</string>
@@ -256,14 +257,21 @@
     <string name="background_mail_pref_summary">Check &amp; notify me of new mail every…</string>
     <string name="logout_title">Logout</string>
     <string name="logout_summary">Remove my saved account and session data</string>
+
     <string name="feed_filter_duplicates_title">Filter Duplicate Posts</string>
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
     <string name="post_options">Post Options</string>
     <string name="clear_post_filter_title">Clear post filters</string>
-    <string name="clear_post_filter_summary">Clear filtered/hidden posts</string>
+    <string name="clear_post_filter_summary">Clear %1$s filtered/hidden posts</string>
     <string name="clear_post_filter_message">Hidden post filters cleared</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <!-- end preference labels -->
+    <string name="logo_open_pref_title">Open app on logo click</string>
+    <string name="logo_open_pref_summary">Open the app when clicking on Snoo</string>
+    <string name="item_option_hide_post">Hide this post</string>
+    <string name="item_option_open_post">Open content in browser</string>
+    <string name="item_option_open_comments">Open comments in browser</string>
+    <string name="item_option_view_subreddit">View /r/%1$s</string>
+    <string name="item_option_view_domain">View all from %1$s</string>
+    <string name="view_domain_posts">View Domain Posts</string>
+    <string name="enter_valid_domain">Please enter a valid domain name</string>
+    <string name="view_domain">View Domain</string>
 </resources>
