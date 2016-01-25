@@ -233,5 +233,6 @@
     <string name="item_option_view_subreddit">Ver /r/%1$s</string>
     <string name="item_option_view_domain">Ver todas las de %1$s</string>
     <string name="view_domain_posts">Ver Mensajes de dominio</string>
+    <string name="enter_valid_domain">Por favor, introduzca un nombre de dominio válido</string>
     <string name="view_domain">Vista de dominio</string>
 </resources>

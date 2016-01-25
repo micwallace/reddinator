@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- internal resources: not translated -->
-    <string name="on_click_pref">onclickpref</string>
-    <string name="logo_open_pref">logoopenpref</string>
-    <string name="num_item_load_pref">numitemloadpref</string>
-    <string name="app_reload_pref">appreloadpref</string>
-    <string name="filter_duplicates_pref">filterduplicatespref</string>
-    <string name="refresh_rate_pref">refreshrate</string>
-    <string name="widget_theme_pref">widgetthemepref</string>
-    <string name="title_font_pref">titlefontpref</string>
-    <string name="title_color_pref">titlecolorpref</string>
-    <string name="comments_first_pref">commentsfirstpref</string>
-    <string name="comments_webview_pref">commentswebviewpref</string>
-    <string name="comment_font_pref">commentfontpref</string>
-    <string name="content_font_pref">contentfontpref</string>
-    <string name="preload_pref">preloadpref</string>
-    <string name="reddit_mobile_site_pref">redditmobilepref</string>
-    <string name="reddit_mobile_site_comments_pref">mobilecommentspref</string>
-    <string name="background_mail_pref">background_mail_pref</string>
-    <string name="mail_check_pref">mail_check_pref</string>
-    <string name="reddit_content_font_pref">reddit_content_font_pref</string>
-    <string name="app_theme_pref">appthemepref</string>
-    <string name="back_button_pref">backbuttonpref</string>
-    <string name="fa_search">{fa-search}</string>
-    <string name="fa_list">{fa-list}</string>
-    <string name="fa_plus_square">{fa-plus-square}</string>
-    <string name="fa_trash">{fa-trash}</string>
-    <string name="fa_filter">{fa-filter}</string>
-    <string name="fa_pencil">{fa-pencil}</string>
-    <string name="fa_plus">{fa-plus}</string>
-    <string name="fa_wrench">{fa-wrench}</string>
-    <string name="fa_refresh">{fa-refresh}</string>
-    <string name="fa_error">{fa-exclamation-triangle}</string>
-    <string name="fa_caret">{fa-caret-down}</string>
-    <string name="fa_arrow_up">{fa-arrow-up}</string>
-    <string name="fa_arrow_down">{fa-arrow-down}</string>
-    <string name="nsfw_flag">[NSFW]</string>
-    <string name="reddit_domain">reddit.com</string>
+    <string name="on_click_pref" translatable="false">onclickpref</string>
+    <string name="logo_open_pref" translatable="false">logoopenpref</string>
+    <string name="num_item_load_pref" translatable="false">numitemloadpref</string>
+    <string name="app_reload_pref" translatable="false">appreloadpref</string>
+    <string name="filter_duplicates_pref" translatable="false">filterduplicatespref</string>
+    <string name="refresh_rate_pref" translatable="false">refreshrate</string>
+    <string name="widget_theme_pref" translatable="false">widgetthemepref</string>
+    <string name="title_font_pref" translatable="false">titlefontpref</string>
+    <string name="title_color_pref" translatable="false">titlecolorpref</string>
+    <string name="comments_first_pref" translatable="false">commentsfirstpref</string>
+    <string name="comments_webview_pref" translatable="false">commentswebviewpref</string>
+    <string name="comment_font_pref" translatable="false">commentfontpref</string>
+    <string name="content_font_pref" translatable="false">contentfontpref</string>
+    <string name="preload_pref" translatable="false">preloadpref</string>
+    <string name="reddit_mobile_site_pref" translatable="false">redditmobilepref</string>
+    <string name="reddit_mobile_site_comments_pref" translatable="false">mobilecommentspref</string>
+    <string name="background_mail_pref" translatable="false">background_mail_pref</string>
+    <string name="mail_check_pref" translatable="false">mail_check_pref</string>
+    <string name="reddit_content_font_pref" translatable="false">reddit_content_font_pref</string>
+    <string name="app_theme_pref" translatable="false">appthemepref</string>
+    <string name="back_button_pref" translatable="false">backbuttonpref</string>
+    <string name="fa_search" translatable="false">{fa-search}</string>
+    <string name="fa_list" translatable="false">{fa-list}</string>
+    <string name="fa_plus_square" translatable="false">{fa-plus-square}</string>
+    <string name="fa_trash" translatable="false">{fa-trash}</string>
+    <string name="fa_filter" translatable="false">{fa-filter}</string>
+    <string name="fa_pencil" translatable="false">{fa-pencil}</string>
+    <string name="fa_plus" translatable="false">{fa-plus}</string>
+    <string name="fa_wrench" translatable="false">{fa-wrench}</string>
+    <string name="fa_refresh" translatable="false">{fa-refresh}</string>
+    <string name="fa_error" translatable="false">{fa-exclamation-triangle}</string>
+    <string name="fa_caret" translatable="false">{fa-caret-down}</string>
+    <string name="fa_arrow_up" translatable="false">{fa-arrow-up}</string>
+    <string name="fa_arrow_down" translatable="false">{fa-arrow-down}</string>
+    <string name="nsfw_flag" translatable="false">[NSFW]</string>
+    <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->
 
     <string name="app_name">Reddinator</string>
