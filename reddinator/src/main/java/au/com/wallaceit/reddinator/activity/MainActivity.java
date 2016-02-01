@@ -51,7 +51,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -454,7 +453,7 @@ public class MainActivity extends Activity {
                             //System.out.println("Loading default image: "+thumbnail);
                         } else {
                             // check if the image is in cache
-                            String fileurl = getCacheDir() + "/thumbcache-app/" + id + ".png";
+                            String fileurl = getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + ".png";
                             if (new File(fileurl).exists()) {
                                 Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
                                 if (bitmap == null) {
@@ -519,39 +518,6 @@ public class MainActivity extends Activity {
             new ImageLoader(itempos, urlstr, redditid).execute();
         }
 
-        private void clearImageCache() {
-            // delete all images in the cache folder.
-            DeleteRecursive(new File(getCacheDir() + "/thumbcache-app"));
-        }
-
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        private void DeleteRecursive(File fileOrDirectory) {
-
-            if (fileOrDirectory.isDirectory())
-                for (File child : fileOrDirectory.listFiles())
-                    DeleteRecursive(child);
-
-            fileOrDirectory.delete();
-
-        }
-
-        @SuppressWarnings("ResultOfMethodCallIgnored")
-        private boolean saveImageToStorage(Bitmap image, String redditid) {
-            try {
-                File file = new File(context.getCacheDir().getPath() + "/thumbcache-app/", redditid + ".png");
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                FileOutputStream fos = new FileOutputStream(file);
-                image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                // 100 means no compression, the lower you go, the stronger the compression
-                fos.close();
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
         class ViewHolder {
             TextView listheading;
             TextView sourcetxt;
@@ -600,7 +566,7 @@ public class MainActivity extends Activity {
                     return;
                 }
                 // save bitmap to cache, the item name will be the reddit id
-                saveImageToStorage(result, redditid);
+                global.saveThumbnailToCache(result, redditid);
                 // update view if it's being shown
                 ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
                 if (img != null) {
@@ -640,7 +606,7 @@ public class MainActivity extends Activity {
         }
 
         public void reloadReddits() {
-            clearImageCache();
+            global.triggerThunbnailCacheClean();
             loadReddits(false);
         }
 

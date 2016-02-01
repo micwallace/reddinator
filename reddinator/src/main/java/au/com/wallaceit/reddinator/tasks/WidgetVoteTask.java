@@ -107,6 +107,6 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
             // show error
             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
         }
-        WidgetProvider.hideLoaderAndRefreshViews(context, widgetId, !result);
+        WidgetProvider.hideLoaderAndRefreshViews(context, widgetId, (!result && !exception.isAuthError()));
     }
 }

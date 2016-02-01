@@ -44,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -55,6 +57,7 @@ import static au.com.wallaceit.reddinator.R.layout.dialog_info;
 public class Reddinator extends Application {
 
     private ArrayList<JSONObject> mSubredditList; // cached popular subreddits
+    public final static String THUMB_CACHE_DIR = "/thumbnail_cache/";
     public final static int LOADTYPE_LOAD = 0;
     public final static int LOADTYPE_LOADMORE = 1;
     public final static int LOADTYPE_REFRESH_VIEW = 3;
@@ -340,5 +343,31 @@ public class Reddinator extends Application {
                 dialogInterface.dismiss();
             }
         }).show();
+    }
+
+    public boolean saveThumbnailToCache(Bitmap image, String redditId){
+        try {
+            File file = new File(getCacheDir().getPath() + Reddinator.THUMB_CACHE_DIR, redditId + ".png");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(file);
+            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            // 100 means no compression, the lower you go, the stronger the compression
+            fos.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void triggerThunbnailCacheClean(){
+        File cacheDir = new File(getCacheDir() + THUMB_CACHE_DIR);
+        if (cacheDir.exists() && cacheDir.isDirectory())
+            for (File file : cacheDir.listFiles()) {
+                long diff = System.currentTimeMillis() - file.lastModified();
+                if (diff > 86400000) // delete cached images older than 24 hours
+                    file.delete();
+            }
     }
 }
