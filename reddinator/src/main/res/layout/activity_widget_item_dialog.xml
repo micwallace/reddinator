@@ -7,7 +7,7 @@
     android:background="#5F99CF"
     android:padding="0dp"
     android:layout_margin="0dp"
-    tools:context="au.com.wallaceit.reddinator.activity.WidgetItemDialogActivity">
+    tools:context=".activity.FeedItemDialogActivity">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

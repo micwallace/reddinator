@@ -17,7 +17,7 @@
  *
  * Created by michael on 23/01/16.
  */
-package au.com.wallaceit.reddinator.service;
+package au.com.wallaceit.reddinator.tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     private Context context;
@@ -102,7 +103,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
             global.setItemVote(prefs, widgetId, listposition, redditid, value);
         } else {
             // check login required
-            if (exception.isAuthError()) global.mRedditData.initiateLogin(context);
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(context, true);
             // show error
             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
         }

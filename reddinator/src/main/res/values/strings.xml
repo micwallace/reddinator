@@ -257,7 +257,6 @@
     <string name="background_mail_pref_summary">Check &amp; notify me of new mail every…</string>
     <string name="logout_title">Logout</string>
     <string name="logout_summary">Remove my saved account and session data</string>
-
     <string name="feed_filter_duplicates_title">Filter Duplicate Posts</string>
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
     <string name="post_options">Post Options</string>
@@ -267,6 +266,7 @@
     <string name="logo_open_pref_title">Open app on logo click</string>
     <string name="logo_open_pref_summary">Open the app when clicking on Snoo</string>
     <string name="item_option_hide_post">Hide this post</string>
+    <string name="item_option_save_post">Save this post</string>
     <string name="item_option_open_post">Open content in browser</string>
     <string name="item_option_open_comments">Open comments in browser</string>
     <string name="item_option_view_subreddit">View /r/%1$s</string>
@@ -274,4 +274,5 @@
     <string name="view_domain_posts">View Domain Posts</string>
     <string name="enter_valid_domain">Please enter a valid domain name</string>
     <string name="view_domain">View Domain</string>
+    <string name="post_saved">Post Saved</string>
 </resources>

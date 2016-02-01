@@ -154,7 +154,7 @@ public class MainActivity extends Activity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent ointent = new Intent(MainActivity.this, WidgetItemDialogActivity.class);
+                Intent ointent = new Intent(MainActivity.this, FeedItemDialogActivity.class);
                 ointent.putExtras(getItemExtras(position));
                 MainActivity.this.startActivityForResult(ointent, 1);
                 return true;
@@ -835,7 +835,7 @@ public class MainActivity extends Activity {
                 global.setItemVote(prefs, 0, listposition, redditid, value);
             } else {
                 // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(MainActivity.this);
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(MainActivity.this, false);
                 // show error
                 Toast.makeText(MainActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }

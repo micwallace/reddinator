@@ -93,10 +93,12 @@ public class RedditData {
     }
 
     // ACCOUNT CONTROL
-    public void initiateLogin(Context context) {
+    public void initiateLogin(Context context, boolean newTask) {
         Intent loginintent = new Intent(context, OAuthView.class);
         oauthstate = UUID.randomUUID().toString();
         loginintent.putExtra("oauthstate", oauthstate);
+        if (newTask) // widget requires new task as its intent is not an activity intent (causes runtime exception)
+            loginintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(loginintent);
     }
 

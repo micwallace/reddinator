@@ -224,7 +224,7 @@ public class SubredditSelectActivity extends Activity {
                         refreshSubreddits();
                     }
                 } else {
-                    global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
                 }
             }
         });
@@ -636,7 +636,7 @@ public class SubredditSelectActivity extends Activity {
                             sdialog.dismiss();
                             // check login required
                             if (e.isAuthError())
-                                global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                                global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
                             // show error
                             Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -675,7 +675,7 @@ public class SubredditSelectActivity extends Activity {
                             sdialog.dismiss();
                             // check login required
                             if (e.isAuthError())
-                                global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                                global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
                             // show error
                             Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -1428,7 +1428,7 @@ public class SubredditSelectActivity extends Activity {
             if (!result){
                 // check login required
                 if (exception instanceof RedditData.RedditApiException && ((RedditData.RedditApiException)exception).isAuthError())
-                    global.mRedditData.initiateLogin(SubredditSelectActivity.this);
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
                 // show error
                 Toast.makeText(SubredditSelectActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }

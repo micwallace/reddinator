@@ -138,7 +138,7 @@ public class SubmitActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (!global.mRedditData.isLoggedIn()){
-                    global.mRedditData.initiateLogin(SubmitActivity.this);
+                    global.mRedditData.initiateLogin(SubmitActivity.this, false);
                 } else {
                     if (validateInput()) {
                         boolean isLink = pager.getCurrentItem()==0;

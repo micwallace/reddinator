@@ -34,14 +34,16 @@ import android.widget.BaseAdapter;
 import android.widget.IconTextView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
-import au.com.wallaceit.reddinator.service.WidgetVoteTask;
+import au.com.wallaceit.reddinator.tasks.SavePostTask;
+import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
-public class WidgetItemDialogActivity extends Activity {
+public class FeedItemDialogActivity extends Activity {
     Reddinator global;
     Dialog dialog;
     int widgetId;
@@ -71,39 +73,44 @@ public class WidgetItemDialogActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String key = adapter.getItemKey(position);
+                String redditId;
                 switch (key){
                     case "hide_post":
-                        String redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                        redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
                         int feedPos = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, 0);
                         global.getSubredditManager().addPostFilter(widgetId, redditId);
                         global.removePostFromFeed(widgetId, feedPos, redditId);
                         if (widgetId!=0) {
-                            WidgetProvider.hideLoaderAndRefreshViews(WidgetItemDialogActivity.this, widgetId, false);
+                            WidgetProvider.hideLoaderAndRefreshViews(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(5); // tell main activity to refresh views
                             return;
                         }
+                        break;
+                    case "save_post":
+                        redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                        (new SavePostTask(FeedItemDialogActivity.this, widgetId>0, null)).execute("link", redditId);
                         break;
                     case "open_post":
                         // open link in browser
                         String url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
                         Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        WidgetItemDialogActivity.this.startActivity(clickIntent2);
+                        FeedItemDialogActivity.this.startActivity(clickIntent2);
                         break;
                     case "open_comments":
                         // open reddit comments page in browser
                         String permalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
                         Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
                         clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        WidgetItemDialogActivity.this.startActivity(clickIntent3);
+                        FeedItemDialogActivity.this.startActivity(clickIntent3);
                         break;
                     case "view_subreddit":
                         // view subreddit of this item
                         String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
                         global.getSubredditManager().setFeedSubreddit(widgetId, subreddit);
                         if (widgetId!=0) {
-                            WidgetProvider.showLoaderAndUpdate(WidgetItemDialogActivity.this, widgetId, false);
+                            WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(2); // tell main activity to update
                             return;
@@ -114,7 +121,7 @@ public class WidgetItemDialogActivity extends Activity {
                         String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
                         global.getSubredditManager().setFeedDomain(widgetId, domain);
                         if (widgetId!=0) {
-                            WidgetProvider.showLoaderAndUpdate(WidgetItemDialogActivity.this, widgetId, false);
+                            WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(2);
                             return;
@@ -140,7 +147,7 @@ public class WidgetItemDialogActivity extends Activity {
             public void onClick(View v) {
                 if (widgetId!=0) {
                     new WidgetVoteTask(
-                            WidgetItemDialogActivity.this,
+                            FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
                             1,
                             getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
@@ -155,7 +162,7 @@ public class WidgetItemDialogActivity extends Activity {
             public void onClick(View v) {
                 if (widgetId!=0) {
                     new WidgetVoteTask(
-                            WidgetItemDialogActivity.this,
+                            FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
                             -1,
                             getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
@@ -174,10 +181,11 @@ public class WidgetItemDialogActivity extends Activity {
         ArrayList<String[]> options;
 
         public ItemOptionsAdapter(){
-            inflater = LayoutInflater.from(WidgetItemDialogActivity.this);
+            inflater = LayoutInflater.from(FeedItemDialogActivity.this);
 
             options = new ArrayList<>();
             options.add(new String[]{"hide_post", getString(R.string.item_option_hide_post)});
+            options.add(new String[]{"save_post", getString(R.string.item_option_save_post)});
             options.add(new String[]{"open_post", getString(R.string.item_option_open_post)});
             options.add(new String[]{"open_comments", getString(R.string.item_option_open_comments)});
 

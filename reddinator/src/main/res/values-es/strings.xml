@@ -228,6 +228,7 @@
     <string name="logo_open_pref_title">Aplicación abierta en el logo click</string>
     <string name="logo_open_pref_summary">Abre la aplicación al hacer clic en Snoo</string>
     <string name="item_option_hide_post">Ocultar esta entrada</string>
+    <string name="item_option_save_post">Guardar este comentario</string>
     <string name="item_option_open_post">El contenido abierto en el navegador</string>
     <string name="item_option_open_comments">Comentarios abiertas en el navegador</string>
     <string name="item_option_view_subreddit">Ver /r/%1$s</string>
@@ -235,4 +236,5 @@
     <string name="view_domain_posts">Ver Mensajes de dominio</string>
     <string name="enter_valid_domain">Por favor, introduzca un nombre de dominio válido</string>
     <string name="view_domain">Vista de dominio</string>
+    <string name="post_saved">Publicar guardadas</string>
 </resources>

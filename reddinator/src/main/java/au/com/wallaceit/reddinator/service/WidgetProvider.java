@@ -45,7 +45,8 @@ import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.PrefsActivity;
 import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
-import au.com.wallaceit.reddinator.activity.WidgetItemDialogActivity;
+import au.com.wallaceit.reddinator.activity.FeedItemDialogActivity;
+import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class WidgetProvider extends AppWidgetProvider {
@@ -279,7 +280,7 @@ public class WidgetProvider extends AppWidgetProvider {
                         break;
                     // post options
                     case WidgetProvider.ITEM_CLICK_OPTIONS:
-                        Intent ointent = new Intent(context, WidgetItemDialogActivity.class);
+                        Intent ointent = new Intent(context, FeedItemDialogActivity.class);
                         ointent.putExtras(intent.getExtras());
                         ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(ointent);

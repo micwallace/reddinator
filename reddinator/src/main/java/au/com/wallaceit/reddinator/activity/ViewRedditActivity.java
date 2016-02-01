@@ -65,6 +65,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
 import au.com.wallaceit.reddinator.ui.TabWebFragment;
@@ -358,7 +359,12 @@ public class ViewRedditActivity extends FragmentActivity {
 
             case R.id.menu_save:
                 ViewRedditActivity.this.setTitleText(resources.getString(R.string.saving)); // reset title
-                (new SavePostTask()).execute("link", redditItemId);
+                (new SavePostTask(ViewRedditActivity.this, false, new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
+                    }
+                })).execute("link", redditItemId);
                 break;
 
             case R.id.menu_submit:
@@ -532,7 +538,7 @@ public class ViewRedditActivity extends FragmentActivity {
                 }
             } else {
                 // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this);
+                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
                 // show error
                 Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -543,33 +549,6 @@ public class ViewRedditActivity extends FragmentActivity {
                 global.setItemUpdate(feedposition, redditid, val);
                 // save in feed preferences
                 global.setItemVote(prefs, widgetId, feedposition, redditid, val);
-            }
-        }
-    }
-
-    class SavePostTask extends AsyncTask<String, Long, Boolean> {
-        private RedditData.RedditApiException exception;
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                global.mRedditData.save(params[0], params[1]);
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
-            if (!result){
-                // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this);
-                // show error
-                Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
