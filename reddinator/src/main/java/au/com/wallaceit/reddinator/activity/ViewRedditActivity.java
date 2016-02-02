@@ -215,6 +215,12 @@ public class ViewRedditActivity extends FragmentActivity {
 
     @Override
     public void finish() {
+        // update widget voting icons if a vote has been placed
+        if (widgetId!=0){
+            if (global.getItemUpdate()!=null){
+                WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
+            }
+        }
         ViewGroup view = (ViewGroup) getWindow().getDecorView();
         view.removeAllViews();
         super.finish();
@@ -230,12 +236,6 @@ public class ViewRedditActivity extends FragmentActivity {
         } else {
             webFragment.mWebView.stopLoading();
             webFragment.mWebView.loadData("", "text/html", "utf-8");
-            // update widget voting icons if a vote has been placed
-            if (widgetId!=0){
-                if (global.getItemUpdate()!=null){
-                    WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
-                }
-            }
             this.finish();
         }
     }
