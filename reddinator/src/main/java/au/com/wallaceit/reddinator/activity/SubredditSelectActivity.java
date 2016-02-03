@@ -553,7 +553,8 @@ public class SubredditSelectActivity extends Activity {
 
     private void showFeedPrefsDialog(){
         final CharSequence[] names = {resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
-        final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), true), mSharedPreferences.getBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false), mSharedPreferences.getBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), false)};
+        String widgetId = (mAppWidgetId == 0 ? "app" : String.valueOf(mAppWidgetId));
+        final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + widgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + widgetId, false), mSharedPreferences.getBoolean("hideinf-" + widgetId, false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         builder.setTitle(resources.getString(R.string.feed_prefs));
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {

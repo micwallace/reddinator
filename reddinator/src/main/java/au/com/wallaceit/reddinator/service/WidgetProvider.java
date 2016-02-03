@@ -175,7 +175,11 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
-        //System.out.println("onDeleted();");
+        // Cleaup widget data
+        Reddinator global = (Reddinator) context.getApplicationContext();
+        for (int widgetId : appWidgetIds){
+            global.clearFeedData(widgetId);
+        }
         super.onDeleted(context, appWidgetIds);
     }
 

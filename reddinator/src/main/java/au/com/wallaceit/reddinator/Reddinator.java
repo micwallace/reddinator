@@ -149,7 +149,6 @@ public class Reddinator extends Application {
         return null;
     }
 
-
     public void removePostFromFeed(int widgetId, int position, String redditId){
         JSONArray data = getFeed(mSharedPreferences, widgetId);
         try {
@@ -167,6 +166,19 @@ public class Reddinator extends Application {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    // used when appwidgets are destroyed
+    public void clearFeedData(int widgetId){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.remove("currentfeed-" + widgetId);
+        editor.remove("widgettheme-"+ widgetId);
+        String widgetIdStr = (widgetId == 0 ? "app" : String.valueOf(widgetId));
+        editor.remove("feeddata-" + widgetIdStr);
+        editor.remove("sort-" + widgetIdStr);
+        editor.remove("thumbnails-" + widgetIdStr);
+        editor.remove("bigthumbs-" + widgetIdStr);
+        editor.remove("hideinf-" + widgetIdStr);
+        editor.apply();
     }
 
     // cached popular subreddits
