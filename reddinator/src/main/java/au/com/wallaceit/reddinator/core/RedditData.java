@@ -57,7 +57,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -495,6 +495,40 @@ public class RedditData {
         String url = OAUTH_ENDPOINT + "/api/save?category="+category+"&id="+name;
 
         redditApiPost(url);
+    }
+
+    public JSONArray getAccountFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/" + username + "/" + type + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        JSONObject result;
+        JSONArray feed;
+
+        result = redditApiGet(url, true); // use oauth if logged in
+        try {
+            feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return feed;
+    }
+
+    public JSONArray getMessageFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/message/" + type + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        JSONObject result;
+        JSONArray feed;
+
+        result = redditApiGet(url, true); // use oauth if logged in
+        try {
+            feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return feed;
     }
 
     // COMM FUNCTIONS
