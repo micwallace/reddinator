@@ -26,6 +26,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,26 +35,29 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 
 public class SimpleTabsWidget {
-    LayoutInflater inflater;
-    LinearLayout tabWidget;
-    ViewPager viewPager;
-    //TableRow tabs;
-    //TableRow indicators;
-    ArrayList<LinearLayout> indicatorItems = new ArrayList<>();
-    ArrayList<TextView> tabItems = new ArrayList<>();
-    int[] colors = new int[]{Color.WHITE, Color.BLACK};
+    private LayoutInflater inflater;
+    private LinearLayout tabWidget;
+    private HorizontalScrollView scrollView = null;
+    private ViewPager viewPager;
+    private ArrayList<LinearLayout> indicatorItems = new ArrayList<>();
+    private ArrayList<TextView> tabItems = new ArrayList<>();
+    private int[] colors = new int[]{Color.WHITE, Color.BLACK};
 
     public SimpleTabsWidget(Context context, LinearLayout tabView) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         tabWidget = tabView;
-        //tabs = (TableRow) tabWidget.findViewById(R.id.tabs);
-        //indicators = (TableRow) tabWidget.findViewById(R.id.indicators);
+    }
+
+    public SimpleTabsWidget(Context context, LinearLayout tabView, HorizontalScrollView scrollView) {
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        tabWidget = tabView;
+        this.scrollView = scrollView;
     }
 
     public void setViewPager(ViewPager viewPager){
         this.viewPager = viewPager;
         initTabs();
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -107,6 +111,8 @@ public class SimpleTabsWidget {
                 indicatorItems.get(i).setVisibility(View.INVISIBLE);
             }
         }
+        if (scrollView!=null)
+            scrollView.smoothScrollTo(tabWidget.getChildAt(position).getRight() - (tabWidget.getWidth() / 2), 0);
     }
 
     class TabClickListener implements View.OnClickListener {
@@ -124,13 +130,17 @@ public class SimpleTabsWidget {
 
     public void setBackgroundColor(int color){
         tabWidget.setBackgroundColor(color);
+        if (scrollView!=null)
+            scrollView.setBackgroundColor(color);
     }
+
     public void setTextColor(int color){
         colors[0] = color;
         for (int i=0; i<tabItems.size(); i++){
             tabItems.get(i).setTextColor(color);
         }
     }
+
     public void setInidicatorColor(int color){
         colors[1] = color;
         for (int i=0; i<indicatorItems.size(); i++){

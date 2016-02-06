@@ -57,7 +57,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -500,7 +500,7 @@ public class RedditData {
     public JSONArray getAccountFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
         checkLogin();
 
-        String url = OAUTH_ENDPOINT + "/" + username + "/" + type + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        String url = OAUTH_ENDPOINT + "/user/" + username + "/" + type + "/.json?sort=" + sort + "&limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed;
 
@@ -514,10 +514,10 @@ public class RedditData {
         return feed;
     }
 
-    public JSONArray getMessageFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
+    public JSONArray getMessageFeed(String type, int limit, String afterid) throws RedditApiException {
         checkLogin();
 
-        String url = OAUTH_ENDPOINT + "/message/" + type + ".json?sort=" + sort + "&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        String url = OAUTH_ENDPOINT + "/message/" + type + ".json?limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed;
 

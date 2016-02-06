@@ -441,15 +441,11 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             case R.id.menu_account:
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
                 startActivity(accnIntent);
-                /* Old webview account view
-                Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
-                startActivity(accnIntent);*/
                 break;
 
             case R.id.menu_saved:
-                Intent savedIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
-                savedIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/saved");
+                Intent savedIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
+                savedIntent.setAction(AccountActivity.ACTION_SAVED);
                 startActivity(savedIntent);
                 break;
 

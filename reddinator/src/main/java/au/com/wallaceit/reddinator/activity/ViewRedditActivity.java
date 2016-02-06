@@ -331,21 +331,15 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
                 break;
 
             case R.id.menu_account:
-                Intent accnIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", global.getDefaultMobileSite()+"/u/"+global.mRedditData.getUsername()+"/");
+                Intent accnIntent = new Intent(ViewRedditActivity.this, AccountActivity.class);
                 startActivity(accnIntent);
                 break;
 
             case R.id.menu_inbox:
-                String url;
-                Intent inboxIntent = new Intent(ViewRedditActivity.this, WebViewActivity.class);
+                Intent inboxIntent = new Intent(ViewRedditActivity.this, MessagesActivity.class);
                 if (global.mRedditData.getInboxCount()>0) {
-                    url = global.getDefaultMobileSite()+"/message/unread/";
-                    inboxIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
-                } else {
-                    url = global.getDefaultMobileSite()+"/message/inbox/";
+                    inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
                 }
-                inboxIntent.putExtra("url", url);
                 startActivity(inboxIntent);
                 break;
 

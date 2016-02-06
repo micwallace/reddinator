@@ -53,7 +53,7 @@ function showLoadingView(text){
 function reloadComments(){
     showLoadingView("Loading...");
     $("#base").html('');
-    Reddinator.reloadComments($("#sort_select").val());
+    Reddinator.reloadFeed($("#sort_select").val());
 }
 
 function loadMoreComments(moreId){
@@ -210,7 +210,7 @@ function appendMoreButton(lastItemId){
     var moreElem = $("#more_template").clone().show();
     moreElem.attr("id", "more");
     moreElem.children("h5").text("Load more");
-    moreElem.data('rname', lastItemIde);
+    moreElem.data('rname', lastItemId);
     moreElem.one('click',
         {lastItemId: lastItemId},
         function(event){

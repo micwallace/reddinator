@@ -58,7 +58,8 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
     private boolean mFirstTime = true;
     private LinearLayout ll;
     private Reddinator global;
-    private String type; // end part of the reddit url ie. overview, upvoted, downvoted, etc
+    private boolean isMessages = false;
+    private String type; // end part of the reddit url ie. overview, upvoted, downvoted, inbox, sent etc
     private String currentSort = "new";
     FeedLoader feedLoader;
     VoteTask commentsVoteTask;
@@ -145,6 +146,9 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         WebInterface webInterface = new WebInterface(mContext);
         mWebView.addJavascriptInterface(webInterface, "Reddinator");
 
+        if (type.equals("unread") || type.equals("inbox") || type.equals("sent"))
+            isMessages = true;
+
         mWebView.loadUrl("file:///android_asset/account.html");
     }
 
@@ -160,8 +164,6 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         }
         if (mFirstTime) {
             mFirstTime = false;
-        } else {
-            ((ViewGroup) ll.getParent()).removeView(ll);
         }
 
         return ll;
@@ -242,7 +244,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             loadComments(sort);
         }
 
-        //@JavascriptInterface
+        @JavascriptInterface
         public void loadMore(String moreId) {
             feedLoader = new FeedLoader(currentSort, moreId);
             feedLoader.execute();
@@ -276,13 +278,13 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             commentTask.execute();
         }
 
-        //@JavascriptInterface
-        /*public void openCommentLink(String thingId) {
+        @JavascriptInterface
+        public void openCommentLink(String link) {
             Intent intent = new Intent(mContext, WebViewActivity.class);
-            intent.putExtra("url", global.getDefaultMobileSite() + permalink + thingId.substring(3));
+            intent.putExtra("url", global.getDefaultMobileSite() + link);
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
             startActivity(intent);
-        }*/
+        }
     }
 
     private void loadComments(String sort) {
@@ -296,7 +298,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
         private boolean loadMore = false;
         private String mSort = "best";
-        private String mMoreId;
+        private String mMoreId = null;
         private RedditData.RedditApiException exception;
 
         public FeedLoader(String sort){
@@ -311,20 +313,18 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             }
         }
 
-        private String lastError;
         @Override
         protected String doInBackground(Void... none) {
             JSONArray data;
             try {
-                if (loadMore) {
-                    data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
+                if (isMessages) {
+                    data = global.mRedditData.getMessageFeed(type, 25, mMoreId);
                 } else {
-                    // reloading
-                    data = global.mRedditData.getAccountFeed(type, mSort, 25, null);
+                    data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
                 }
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
-                lastError = e.getMessage();
+                exception = e;
                 return "-1"; // Indicate error
             }
 
@@ -356,7 +356,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                     // check login required
                     if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
 
-                    Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
                     break;
                 default:
                     if (loadMore) {

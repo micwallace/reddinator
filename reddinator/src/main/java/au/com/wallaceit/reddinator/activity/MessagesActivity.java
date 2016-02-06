@@ -19,16 +19,13 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -44,35 +41,29 @@ import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
-public class AccountActivity extends FragmentActivity {
+public class MessagesActivity extends FragmentActivity {
 
     private Reddinator global;
-    private SharedPreferences prefs;
-    private MenuItem messageIcon;
     private ActionBar actionBar;
     private BroadcastReceiver inboxReceiver;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
-    public static final String ACTION_SAVED = "saved";
-    private ViewPager viewPager;
+    public static final String ACTION_UNREAD = "unread";
 
     /**
      * (non-Javadoc)
@@ -82,13 +73,12 @@ public class AccountActivity extends FragmentActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        global = ((Reddinator) AccountActivity.this.getApplicationContext());
+        global = ((Reddinator) MessagesActivity.this.getApplicationContext());
         if (!global.mRedditData.isLoggedIn()){
-            global.mRedditData.initiateLogin(AccountActivity.this, false);
-            Toast.makeText(AccountActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+            global.mRedditData.initiateLogin(MessagesActivity.this, false);
+            Toast.makeText(MessagesActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
             this.finish();
         }
-        prefs = PreferenceManager.getDefaultSharedPreferences(AccountActivity.this);
         resources = getResources();
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -105,27 +95,24 @@ public class AccountActivity extends FragmentActivity {
             view.setPadding(5, 0, 5, 0);
         }
         // set content view
-        setContentView(R.layout.view_account);
+        setContentView(R.layout.view_messages);
         // Setup View Pager and widget
         ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
-        LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tabs);
-        final HorizontalScrollView scrollView = (HorizontalScrollView) findViewById(R.id.tab_widget);
-        tabsIndicator = new SimpleTabsWidget(AccountActivity.this, tabLayout, scrollView);
+        LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
+        tabsIndicator = new SimpleTabsWidget(MessagesActivity.this, tabLayout);
         tabsIndicator.setViewPager(viewPager);
         // theme
         updateTheme();
 
-        if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_SAVED)){
-            viewPager.setCurrentItem(6);
-            tabsIndicator.setTab(6);
-            scrollView.post(new Runnable() {
-                @Override
-                public void run() {
-                    scrollView.fullScroll(ScrollView.FOCUS_RIGHT);
-                }
-            });
+        if (getIntent().getAction()==null || !getIntent().getAction().equals(ACTION_UNREAD)){
+            viewPager.setCurrentItem(1);
+            tabsIndicator.setTab(1);
+            global.mRedditData.clearStoredInboxCount();
+            // Also clear notification that may be present (created in CheckMailService)
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.cancel(1);
         }
     }
 
@@ -152,29 +139,6 @@ public class AccountActivity extends FragmentActivity {
         return global.mThemeManager.getActiveTheme("appthemepref");
     }
 
-    public void onResume(){
-        super.onResume();
-        // Register receiver & check for new messages if logged in, enabled and due
-        int checkPref = Integer.parseInt(prefs.getString("mail_check_pref", "300000"));
-        if (global.mRedditData.isLoggedIn() || checkPref!=0)
-        if ((global.mRedditData.getLastUserUpdateTime()+checkPref)<(new Date()).getTime()) {
-            inboxReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    // update inbox indicator
-                    setInboxIcon();
-                }
-            };
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MailCheckService.MAIL_CHECK_COMPLETE);
-            registerReceiver(inboxReceiver, filter);
-
-            MailCheckService.checkMail(AccountActivity.this, MailCheckService.ACTIVITY_CHECK_ACTION);
-        }
-
-        setInboxIcon();
-    }
-
     public void onPause(){
         super.onPause();
         if (inboxReceiver!=null) {
@@ -195,23 +159,14 @@ public class AccountActivity extends FragmentActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.accountmenu, menu);
         // set options menu view
-        (menu.findItem(R.id.menu_account)).setVisible(false);
+        (menu.findItem(R.id.menu_inbox)).setVisible(false);
+        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_viewonreddit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(actionbarIconColor).actionBarSize());
-        // set inbox icon color based on inbox count
-        messageIcon = (menu.findItem(R.id.menu_inbox));
-        setInboxIcon();
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private void setInboxIcon(){
-        if (messageIcon!=null){
-            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): actionbarIconColor;
-            messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
-        }
     }
 
     @Override
@@ -244,27 +199,24 @@ public class AccountActivity extends FragmentActivity {
                 this.finish();
                 break;
 
-            case R.id.menu_inbox:
-                Intent inboxIntent = new Intent(AccountActivity.this, MessagesActivity.class);
-                if (global.mRedditData.getInboxCount()>0) {
-                    inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
-                }
-                startActivity(inboxIntent);
+            case R.id.menu_account:
+                Intent accnIntent = new Intent(MessagesActivity.this, AccountActivity.class);
+                startActivity(accnIntent);
                 break;
 
             case R.id.menu_submit:
-                Intent submitIntent = new Intent(AccountActivity.this, SubmitActivity.class);
+                Intent submitIntent = new Intent(MessagesActivity.this, SubmitActivity.class);
                 startActivity(submitIntent);
                 break;
 
             case R.id.menu_viewonreddit:
-                Intent accnIntent = new Intent(AccountActivity.this, WebViewActivity.class);
-                accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
-                startActivity(accnIntent);
+                Intent inboxIntent = new Intent(MessagesActivity.this, WebViewActivity.class);
+                inboxIntent.putExtra("url", global.getDefaultMobileSite()+"/message/inbox/");
+                startActivity(inboxIntent);
                 break;
 
             case R.id.menu_prefs:
-                Intent intent = new Intent(AccountActivity.this, PrefsActivity.class);
+                Intent intent = new Intent(MessagesActivity.this, PrefsActivity.class);
                 intent.putExtra("fromapp", true);
                 startActivityForResult(intent, 0);
                 break;
@@ -309,14 +261,9 @@ public class AccountActivity extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return resources.getString(R.string.overview);
-                case 1: return resources.getString(R.string.submitted);
-                case 2: return resources.getString(R.string.comments);
-                case 3: return resources.getString(R.string.upvoted);
-                case 4: return resources.getString(R.string.downvoted);
-                case 5: return resources.getString(R.string.hidden);
-                case 6: return resources.getString(R.string.saved);
-                case 7: return resources.getString(R.string.gilded);
+                case 0: return resources.getString(R.string.unread);
+                case 1: return resources.getString(R.string.inbox);
+                case 2: return resources.getString(R.string.sent);
             }
             return resources.getString(R.string.app_name);
         }
@@ -326,27 +273,17 @@ public class AccountActivity extends FragmentActivity {
             switch (position) {
                 default:
                 case 0:
-                    return AccountFeedFragment.init("overview", true);
+                    return AccountFeedFragment.init("unread", (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_UNREAD)));
                 case 1:
-                    return AccountFeedFragment.init("submitted", true);
+                    return AccountFeedFragment.init("inbox", getIntent().getAction()==null);
                 case 2:
-                    return AccountFeedFragment.init("comments", true);
-                case 3:
-                    return AccountFeedFragment.init("upvoted", true);
-                case 4:
-                    return AccountFeedFragment.init("downvoted", true);
-                case 5:
-                    return AccountFeedFragment.init("hidden", true);
-                case 6:
-                    return AccountFeedFragment.init("saved", true);
-                case 7:
-                    return AccountFeedFragment.init("gilded", true);
+                    return AccountFeedFragment.init("sent", false);
             }
         }
 
         @Override
         public int getCount() {
-            return 8;
+            return 3;
         }
 
         @Override
