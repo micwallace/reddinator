@@ -275,4 +275,12 @@
     <string name="enter_valid_domain">Please enter a valid domain name</string>
     <string name="view_domain">View Domain</string>
     <string name="post_saved">Post Saved</string>
+    <string name="overview">Overview</string>
+    <string name="submitted">Submitted</string>
+    <string name="comments">Comments</string>
+    <string name="upvoted">Upvoted</string>
+    <string name="downvoted">Downvoted</string>
+    <string name="hidden">Hidden</string>
+    <string name="saved">Saved</string>
+    <string name="gilded">Gilded</string>
 </resources>

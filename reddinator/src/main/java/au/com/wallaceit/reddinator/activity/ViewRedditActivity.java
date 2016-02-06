@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -66,13 +65,14 @@ import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
+import au.com.wallaceit.reddinator.tasks.VoteTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
 import au.com.wallaceit.reddinator.ui.TabWebFragment;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
-public class ViewRedditActivity extends FragmentActivity {
+public class ViewRedditActivity extends FragmentActivity implements VoteTask.Callback {
 
     private Reddinator global;
     private SharedPreferences prefs;
@@ -462,10 +462,10 @@ public class ViewRedditActivity extends FragmentActivity {
     private void upVote() {
         VoteTask task;
         if (curvote == 1) {
-            task = new VoteTask(feedposition, redditItemId, 0);
+            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 0);
             //System.out.println("Neutral Vote");
         } else {
-            task = new VoteTask(feedposition, redditItemId, 1);
+            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 1);
             //System.out.println("Upvote");
         }
         voteinprogress = true;
@@ -476,10 +476,10 @@ public class ViewRedditActivity extends FragmentActivity {
     private void downVote() {
         VoteTask task;
         if (curvote == -1) {
-            task = new VoteTask(feedposition, redditItemId, 0);
+            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 0);
             //System.out.println("Neutral Vote");
         } else {
-            task = new VoteTask(feedposition, redditItemId, -1);
+            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, -1);
             //System.out.println("Downvote");
         }
         voteinprogress = true;
@@ -487,69 +487,45 @@ public class ViewRedditActivity extends FragmentActivity {
         task.execute();
     }
 
-    class VoteTask extends AsyncTask<String, Integer, Boolean> {
-        private String redditid;
-        private int direction;
-        private int feedposition;
-        private RedditData.RedditApiException exception;
+    @Override
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
+        ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
+        voteinprogress = false;
+        if (result) {
+            int iconColor = Reddinator.getActionbarIconColor();
+            curvote = direction;
+            switch (direction) {
+                case -1:
+                    upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
+                    downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
+                    setVoteUpdateRecord(redditId, "false");
+                    break;
 
-        public VoteTask(int position, String id, int dir) {
-            redditid = id;
-            direction = dir;
-            feedposition = position;
-        }
+                case 0:
+                    upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
+                    downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
+                    setVoteUpdateRecord(redditId, "null");
+                    break;
 
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            try {
-                return global.mRedditData.vote(redditid, direction);
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-                return false;
+                case 1:
+                    upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
+                    downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
+                    setVoteUpdateRecord(redditId, "true");
+                    break;
             }
+        } else {
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
+            // show error
+            Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
 
-        @Override
-        protected void onPostExecute(Boolean result) {
-            ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
-            voteinprogress = false;
-            if (result) {
-                int iconColor = Reddinator.getActionbarIconColor();
-                curvote = direction;
-                switch (direction) {
-                    case -1:
-                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
-                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
-                        setUpdateRecord("false");
-                        break;
-
-                    case 0:
-                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
-                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
-                        setUpdateRecord("null");
-                        break;
-
-                    case 1:
-                        upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
-                        downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
-                        setUpdateRecord("true");
-                        break;
-                }
-            } else {
-                // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
-                // show error
-                Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
-
-        private void setUpdateRecord(String val) {
-            if (feedposition>=0) {
-                global.setItemUpdate(feedposition, redditid, val);
-                // save in feed preferences
-                global.setItemVote(prefs, widgetId, feedposition, redditid, val);
-            }
+    private void setVoteUpdateRecord(String redditId, String val) {
+        if (feedposition>=0) {
+            global.setItemUpdate(feedposition, redditId, val);
+            // save in feed data
+            global.setItemVote(prefs, widgetId, feedposition, redditId, val);
         }
     }
 

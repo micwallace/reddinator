@@ -288,7 +288,7 @@ public class RedditData {
                     oauthToken = null; // bearer token invalid, nullify
                     throw new RedditApiException("Authentication Error, Reddit Login Required", true); // creds invalid re-authenticate.
                 }
-                throw new RedditApiException("API Error: "+firsterror.get(1), true);
+                throw new RedditApiException("API Error: "+firsterror.get(1), false);
             } else {
                 return resultjson.getJSONObject("data").getJSONArray("things").getJSONObject(0).getJSONObject("data");
             }

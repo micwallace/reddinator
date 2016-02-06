@@ -50,8 +50,10 @@ import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.CommentTask;
+import au.com.wallaceit.reddinator.tasks.VoteTask;
 
-public class TabCommentsFragment extends Fragment {
+public class TabCommentsFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
     private Context mContext;
     private Resources resources;
     public WebView mWebView;
@@ -62,7 +64,7 @@ public class TabCommentsFragment extends Fragment {
     public String permalink;
     private String currentSort = "best";
     CommentsLoader commentsLoader;
-    CommentsVoteTask commentsVoteTask;
+    VoteTask commentsVoteTask;
     CommentTask commentTask;
 
     public static TabCommentsFragment init(boolean load) {
@@ -199,6 +201,43 @@ public class TabCommentsFragment extends Fragment {
             commentTask.cancel(false);
     }
 
+    @Override
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
+        ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+        if (result) {
+            mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
+        } else {
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
+            // show error
+            Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onCommentComplete(JSONObject result, RedditData.RedditApiException exception, int action, String redditId) {
+        ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+        if (result!=null){
+            switch (action){
+                case -1:
+                    mWebView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
+                    break;
+                case 0:
+                    mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    break;
+                case 1:
+                    mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    break;
+            }
+        } else {
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
+            // show error
+            Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+            mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
+        }
+    }
+
     public class WebInterface {
         Context mContext;
 
@@ -223,28 +262,28 @@ public class TabCommentsFragment extends Fragment {
         @JavascriptInterface
         public void vote(String thingId, int direction) {
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.voting));
-            commentsVoteTask = new CommentsVoteTask(thingId, direction);
+            commentsVoteTask = new VoteTask(global, TabCommentsFragment.this, thingId, direction);
             commentsVoteTask.execute();
         }
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
-            commentTask = new CommentTask(parentId, text, 0);
+            commentTask = new CommentTask(global, parentId, text, 0, TabCommentsFragment.this);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
-            commentTask = new CommentTask(thingId, text, 1);
+            commentTask = new CommentTask(global, thingId, text, 1, TabCommentsFragment.this);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void delete(String thingId) {
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.deleting));
-            commentTask = new CommentTask(thingId, null, -1);
+            commentTask = new CommentTask(global, thingId, null, -1, TabCommentsFragment.this);
             commentTask.execute();
         }
 
@@ -345,106 +384,6 @@ public class TabCommentsFragment extends Fragment {
                         mWebView.loadUrl("javascript:populateComments(\""+author+"\",\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
                     }
                     break;
-            }
-        }
-    }
-
-    class CommentsVoteTask extends AsyncTask<String, Integer, Boolean> {
-        private String redditId;
-        private int direction;
-        private RedditData.RedditApiException exception;
-
-        public CommentsVoteTask(String thingId, int dir) {
-            direction = dir;
-            redditId = thingId;
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            // Do the vote
-            try {
-                return global.mRedditData.vote(redditId, direction);
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
-            if (result) {
-                mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
-            } else {
-                // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
-                // show error
-                Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
-            }
-            //listAdapter.hideAppLoader(false, false);
-        }
-    }
-
-    class CommentTask extends AsyncTask<String, Integer, JSONObject> {
-        private String redditId;
-        private String messageText;
-        private int action = 0; // 0=add, 1=edit, -1=delete
-        private RedditData.RedditApiException exception;
-
-        public CommentTask(String thingId, String text, int mode) {
-            messageText = text;
-            redditId = thingId;
-            action = mode;
-        }
-
-        @Override
-        protected JSONObject doInBackground(String... strings) {
-            // Do the vote
-            JSONObject result = null;
-            try {
-                switch (action){
-                    case -1:
-                        result = global.mRedditData.deleteComment(redditId)?new JSONObject():null;
-                        break;
-                    case 0:
-                        result = global.mRedditData.postComment(redditId, messageText);
-                        break;
-                    case 1:
-                        result = global.mRedditData.editComment(redditId, messageText);
-                        break;
-                }
-
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-                return null;
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject result) {
-            ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
-            if (result!=null){
-                switch (action){
-                    case -1:
-                        mWebView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
-                        break;
-                    case 0:
-                        mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
-                        break;
-                    case 1:
-                        mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
-                        break;
-                }
-            } else {
-                // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
-                // show error
-                Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
-                mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
             }
         }
     }

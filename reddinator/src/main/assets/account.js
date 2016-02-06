@@ -23,24 +23,20 @@ function setTheme(themeColors){
     $("body").show();
 }
 
-function populateComments(author, json){
-    subAuthor = author;
+function populateComments(json){
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
-    recursivePopulate(data);
-}
-
-function recursivePopulate(data){
+    var lastItemId = 0;
     for (var i in data){
-        if (data[i].kind!="more"){
-            appendComment(data[i].data.parent_id, data[i].data, false);
-            if (data[i].data.replies!="" && data[i].data.replies.data.children!=null)
-                recursivePopulate(data[i].data.replies.data.children);
-        } else {
-            appendMoreButton(data[i].data.parent_id, data[i].data);
+        lastItemId = data[i].data.name;
+        if (data[i].kind=="t1"){
+            appendComment(data[i].data, false);
+        } else if (data[i].kind=="t3") {
+            appendPost(data[i].data, false);
         }
     }
+    appendMoreButton(lastItemId);
 }
 
 function clearComments(){
@@ -54,14 +50,14 @@ function showLoadingView(text){
     loading.show();
 }
 // java bind functions
-function reloadComments(sort){
+function reloadComments(){
     showLoadingView("Loading...");
     $("#base").html('');
     Reddinator.reloadComments($("#sort_select").val());
 }
 
-function loadChildComments(moreId, children){
-    Reddinator.loadChildren(moreId, children);
+function loadMoreComments(moreId){
+    Reddinator.loadMore(moreId);
 }
 
 function vote(thingId, direction){
@@ -188,57 +184,52 @@ function editCallback(thingId, commentData){
     }
 }
 
-function populateChildComments(moreId, json){
+function populateMoreComments(json){
     //console.log(json)
-    var data = JSON.parse(json);
-    $("#"+moreId).remove();
-    for (var i in data){
-        if (data[i].kind!="more"){
-            appendComment(data[i].data.parent_id, data[i].data, false);
-        } else {
-            appendMoreButton(data[i].data.parent_id, data[i].data);
-        }
-    }
+    $("#more").remove();
+    populateComments(json);
 }
 
 function noChildrenCallback(moreId){
-    $("#"+moreId+" h5").text("There's nothing more here");
+    $("#more h5").text("There's nothing more here");
 }
 
 function resetMoreClickEvent(moreId){
-    var moreElem = $("#"+moreId);
+    var moreElem = $("#more");
     moreElem.children("h5").text('Load '+moreElem.data('rlength')+' More');
     moreElem.one('click',
-        {id: moreElem.data('rname'), children: moreElem.data('rchildren')},
+        {lastItemId: moreElem.data('rname')},
         function(event){
             $(this).children("h5").text("Loading...");
-            loadChildComments(event.data.id, event.data.children);
+            loadChildComments(event.data.lastItemId);
         }
     );
 }
 
-function appendMoreButton(parentId, moreData){
+function appendMoreButton(lastItemId){
     var moreElem = $("#more_template").clone().show();
-    moreElem.attr("id", moreData.name);
-    moreElem.children("h5").text("Load "+moreData.count+" more");
-    moreElem.data('rlength', moreData.count)
-    moreElem.data('rname', moreData.name);
-    moreElem.data('rchildren', moreData.children.join(","));
+    moreElem.attr("id", "more");
+    moreElem.children("h5").text("Load more");
+    moreElem.data('rname', lastItemIde);
     moreElem.one('click',
-        {id: moreData.name, children: moreData.children.join(",")},
+        {lastItemId: lastItemId},
         function(event){
             $(this).children("h5").text("Loading...");
-            loadChildComments(event.data.id, event.data.children);
+            loadMoreComments(event.data.lastItemId);
         }
     );
     moreElem.css("margin-right", "0").appendTo("#base");
 }
 
-function appendComment(parentId, commentData, prepend){
+function appendPost(postData, prepend){
+    var postElem = $("#post_template").clone().show();
+    postElem.appendTo("#base");
+}
+
+function appendComment(commentData, prepend){
     //console.log(JSON.stringify(commentData));
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
-    commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
@@ -256,7 +247,7 @@ function appendComment(parentId, commentData, prepend){
     if (commentData.author==username)
         commentElem.find(".user_option").show();
     var flag = commentElem.find(".distinguish_flag");
-    if (commentData.author==subAuthor){
+    if (commentData.link_author==username){
         flag.text("[S]");
         flag.css("visibility", "visible");
     }

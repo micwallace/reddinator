@@ -57,8 +57,6 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
-import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
-import au.com.wallaceit.reddinator.ui.TabWebFragment;
 
 public class AccountActivity extends FragmentActivity {
 
@@ -118,8 +116,12 @@ public class AccountActivity extends FragmentActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 3) {
             updateTheme();
-            if (pageAdapter.getRegisteredFragment(1)!=null && pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("AccountFeedFragment"))
-                ((TabCommentsFragment) pageAdapter.getRegisteredFragment(1)).updateTheme();
+            Fragment fragment;
+            for (int i =0; i<pageAdapter.registeredFragments.size(); i++) {
+                fragment = pageAdapter.getRegisteredFragment(i);
+                if (fragment != null && fragment.getClass().getSimpleName().equals("AccountFeedFragment"))
+                    ((AccountFeedFragment) fragment).updateTheme();
+            }
         }
     }
 
@@ -172,20 +174,6 @@ public class AccountActivity extends FragmentActivity {
         super.finish();
     }
 
-    public void onBackPressed() {
-        TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
-        if (webFragment != null)
-        if (webFragment.mFullSView != null) {
-            webFragment.mChromeClient.onHideCustomView();
-        } else if (webFragment.mWebView.canGoBack()) {
-            webFragment.mWebView.goBack();
-        } else {
-            webFragment.mWebView.stopLoading();
-            webFragment.mWebView.loadData("", "text/html", "utf-8");
-            this.finish();
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -235,14 +223,7 @@ public class AccountActivity extends FragmentActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (prefs.getBoolean("backbuttonpref", false)) {
-                    onBackPressed();
-                } else {
-                    TabWebFragment webFragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
-                    webFragment.mWebView.stopLoading();
-                    webFragment.mWebView.loadData("", "text/html", "utf-8");
-                    this.finish();
-                }
+                this.finish();
                 break;
 
             case R.id.menu_inbox:
@@ -309,8 +290,14 @@ public class AccountActivity extends FragmentActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position){
-                case 0: return resources.getString(R.string.content);
-                case 1: return resources.getString(R.string.reddit);
+                case 0: return resources.getString(R.string.overview);
+                case 1: return resources.getString(R.string.submitted);
+                case 2: return resources.getString(R.string.comments);
+                case 3: return resources.getString(R.string.upvoted);
+                case 4: return resources.getString(R.string.downvoted);
+                case 5: return resources.getString(R.string.hidden);
+                case 6: return resources.getString(R.string.saved);
+                case 7: return resources.getString(R.string.gilded);
             }
             return resources.getString(R.string.app_name);
         }
@@ -332,7 +319,7 @@ public class AccountActivity extends FragmentActivity {
                 case 5:
                     return AccountFeedFragment.init("hidden", false);
                 case 6:
-                    return AccountFeedFragment.init("save", false);
+                    return AccountFeedFragment.init("saved", false);
                 case 7:
                     return AccountFeedFragment.init("gilded", false);
             }

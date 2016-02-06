@@ -33,7 +33,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -67,7 +66,6 @@ import android.widget.Toast;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,13 +80,14 @@ import java.util.regex.Pattern;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 
-public class SubredditSelectActivity extends Activity {
+public class SubredditSelectActivity extends Activity implements SubscriptionEditTask.Callback {
     private ArrayList<String> subredditList;
     private ArrayAdapter<String> subsAdapter;
     private MyMultisAdapter mMultiAdapter;
@@ -165,7 +164,7 @@ public class SubredditSelectActivity extends Activity {
                                 Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
                                 return;
                             }
-                            new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
+                            new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
                             dialogInterface.dismiss();
                         }
                     }).show();
@@ -289,7 +288,7 @@ public class SubredditSelectActivity extends Activity {
                 switch (resultCode) {
                     case ViewAllSubredditsActivity.RESULT_ADD_SUBREDDIT:
                         if (global.mRedditData.isLoggedIn() && (!name.equals("Front Page") && !name.equals("all"))) {
-                            new SubscriptionEditTask(SubscriptionEditTask.ACTION_SUBSCRIBE).execute(subreddit);
+                            new SubscriptionEditTask(global, this, this, SubscriptionEditTask.ACTION_SUBSCRIBE).execute(subreddit);
                         } else {
                             global.getSubredditManager().addSubreddit(subreddit);
                             subredditList.add(name);
@@ -302,7 +301,7 @@ public class SubredditSelectActivity extends Activity {
                         break;
 
                     case ViewAllSubredditsActivity.RESULT_ADD_TO_MULTI:
-                        new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(data.getStringExtra("multipath"), name);
+                        new SubscriptionEditTask(global, this, this, SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(data.getStringExtra("multipath"), name);
                         break;
                 }
             } catch (JSONException e) {
@@ -440,9 +439,12 @@ public class SubredditSelectActivity extends Activity {
                 break;
 
             case R.id.menu_account:
+                Intent accnIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
+                startActivity(accnIntent);
+                /* Old webview account view
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, WebViewActivity.class);
                 accnIntent.putExtra("url", global.getDefaultMobileSite()+"/user/"+global.mRedditData.getUsername()+"/");
-                startActivity(accnIntent);
+                startActivity(accnIntent);*/
                 break;
 
             case R.id.menu_saved:
@@ -501,7 +503,7 @@ public class SubredditSelectActivity extends Activity {
                 String pattern = "^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\\.[a-zA-Z]{2,3})$";
                 Pattern r = Pattern.compile(pattern);
                 Matcher m = r.matcher(domain);
-                if (m.find()){
+                if (m.find()) {
                     dialog.dismiss();
                     global.getSubredditManager().setFeedDomain(mAppWidgetId, domain);
                     updateFeedAndFinish();
@@ -589,7 +591,7 @@ public class SubredditSelectActivity extends Activity {
         LinkedHashMap<String, String> themeList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_ALL);
         themeList.put("app_select", resources.getString(R.string.use_app_theme));
         final String[] keys = themeList.keySet().toArray(new String[themeList.keySet().size()]);
-        String curTheme = mSharedPreferences.getString("widgettheme-"+mAppWidgetId, "app_select");
+        String curTheme = mSharedPreferences.getString("widgettheme-" + mAppWidgetId, "app_select");
         int curIndex = 0;
         for (int i=0; i<keys.length; i++){
             if (keys[i].equals(curTheme)) {
@@ -749,7 +751,7 @@ public class SubredditSelectActivity extends Activity {
                                 }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                new SubscriptionEditTask(SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
+                                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
                             }
                         }).show();
                     } else {
@@ -922,7 +924,7 @@ public class SubredditSelectActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_DELETE).execute(multiPath);
+                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_DELETE).execute(multiPath);
             }
         }).show();
     }
@@ -941,7 +943,7 @@ public class SubredditSelectActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
-                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_RENAME).execute(multiPath, nameInput.getText().toString().replaceAll("\\s+",""));
+                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_RENAME).execute(multiPath, nameInput.getText().toString().replaceAll("\\s+",""));
             }
         }).show();
     }
@@ -1027,7 +1029,7 @@ public class SubredditSelectActivity extends Activity {
                     multiObj.put("visibility", visibility.getSelectedItem().toString());
                     multiObj.put("weighting_scheme", weighting.getSelectedItem().toString());
 
-                    new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_EDIT).execute(multiPath, multiObj);
+                    new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_EDIT).execute(multiPath, multiObj);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1182,7 +1184,7 @@ public class SubredditSelectActivity extends Activity {
         private void performAdd(String subreddit){
             //System.out.println("Adding Sub: " + subreddit);
             if (mode==MODE_MULTI) {
-                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
+                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
             } else {
                 subsList.add(subreddit);
                 notifyDataSetChanged();
@@ -1192,7 +1194,7 @@ public class SubredditSelectActivity extends Activity {
         private void performRemove(String subreddit){
             //System.out.println("Removing Sub: "+subreddit);
             if (mode==MODE_MULTI) {
-                new SubscriptionEditTask(SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
+                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
             } else {
                 subsList.remove(subreddit);
                 notifyDataSetChanged();
@@ -1236,203 +1238,88 @@ public class SubredditSelectActivity extends Activity {
 
     }
 
-    class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
-        public static final int ACTION_MULTI_COPY = 0;
-        public static final int ACTION_MULTI_CREATE = 1;
-        public static final int ACTION_MULTI_EDIT = 2;
-        public static final int ACTION_MULTI_SUB_ADD = 3;
-        public static final int ACTION_MULTI_SUB_REMOVE = 4;
-        public static final int ACTION_MULTI_DELETE = 5;
-        public static final int ACTION_MULTI_RENAME = 6;
-        public static final int ACTION_SUBSCRIBE = 7;
-        public static final int ACTION_UNSUBSCRIBE = 8;
-        private JSONObject result;
-        private Exception exception;
-        private int action;
-        private Object[] params;
-        ProgressDialog progressDialog;
-
-        public SubscriptionEditTask(int action){
-            String loadingMessage = "";
+    @Override
+    public void onSubscriptionEditComplete(boolean result, RedditData.RedditApiException exception, int action, Object[] params, JSONObject data) {
+        ArrayList<String> subreddits;
+        if (result || (action==SubscriptionEditTask.ACTION_UNSUBSCRIBE)) {
+            //if (this.data!=null)
+            //System.out.println("resultData: "+this.data.toString());
             switch (action) {
-                case ACTION_SUBSCRIBE:
-                    loadingMessage = resources.getString(R.string.subscribing);
+                case SubscriptionEditTask.ACTION_SUBSCRIBE:
+                    global.getSubredditManager().addSubreddit((JSONObject) params[0]);
+                    try {
+                        subredditList.add(0, ((JSONObject) params[0]).getString("display_name"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    refreshSubredditsList();
                     break;
-                case ACTION_UNSUBSCRIBE:
-                    loadingMessage = resources.getString(R.string.unsubscribing);
+                case SubscriptionEditTask.ACTION_UNSUBSCRIBE:
+                    global.getSubredditManager().removeSubreddit(params[0].toString());
+                    subredditList.remove(params[0].toString());
+                    refreshSubredditsList();
                     break;
-                case ACTION_MULTI_COPY:
-                    loadingMessage = resources.getString(R.string.copying_multi);
+                case SubscriptionEditTask.ACTION_MULTI_COPY:
+
                     break;
-                case ACTION_MULTI_CREATE:
-                    loadingMessage = resources.getString(R.string.creating_multi);
+                case SubscriptionEditTask.ACTION_MULTI_CREATE:
+                    try {
+                        if (data ==null) return;
+                        JSONObject multiObj = data.getJSONObject("data");
+                        String path = multiObj.getString("path");
+                        global.getSubredditManager().setMultiData(path, multiObj);
+                        showMultiEditDialog(path);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mMultiAdapter.refreshMultis();
                     break;
-                case ACTION_MULTI_EDIT:
-                case ACTION_MULTI_RENAME:
-                case ACTION_MULTI_SUB_ADD:
-                case ACTION_MULTI_SUB_REMOVE:
-                    loadingMessage = resources.getString(R.string.updating_multi);
+                case SubscriptionEditTask.ACTION_MULTI_EDIT:
+                    try {
+                        if (data ==null) return;
+                        JSONObject multiObj = data.getJSONObject("data");
+                        global.getSubredditManager().setMultiData(params[0].toString(), multiObj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    multiDialog.dismiss();
+                    mMultiAdapter.refreshMultis();
                     break;
-                case ACTION_MULTI_DELETE:
-                    loadingMessage = resources.getString(R.string.deleting_multi);
+                case SubscriptionEditTask.ACTION_MULTI_SUB_ADD:
+                    subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
+                    subreddits.add(params[1].toString());
+                    global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
+                    multiSubsAdapter.refreshList();
+                    break;
+                case SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE:
+                    subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
+                    subreddits.remove(params[1].toString());
+                    global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
+                    multiSubsAdapter.refreshList();
+                    break;
+                case SubscriptionEditTask.ACTION_MULTI_DELETE:
+                    global.getSubredditManager().removeMulti(params[0].toString());
+                    mMultiAdapter.refreshMultis();
+                    break;
+                case SubscriptionEditTask.ACTION_MULTI_RENAME:
+                    global.getSubredditManager().removeMulti(params[0].toString());
+                    try {
+                        JSONObject multiObj = data.getJSONObject("data");
+                        String path = multiObj.getString("path");
+                        global.getSubredditManager().setMultiData(path, multiObj);
+                        multiName.setText(multiObj.getString("name"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    mMultiAdapter.refreshMultis();
                     break;
             }
-            progressDialog = ProgressDialog.show(SubredditSelectActivity.this, loadingMessage, loadingMessage, true);
-            this.action = action;
         }
-
-        @Override
-        protected Boolean doInBackground(Object... strParams) {
-            this.params = strParams;
-            String id;
-            try {
-                switch (action){
-                    case ACTION_SUBSCRIBE:
-                        id = ((JSONObject) strParams[0]).getString("name");
-                        result = global.mRedditData.subscribe(id, true);
-                        break;
-
-                    case ACTION_UNSUBSCRIBE:
-                        id = global.getSubredditManager().getSubredditData(strParams[0].toString()).getString("name");
-                        result = global.mRedditData.subscribe(id, false);
-                        break;
-
-                    case ACTION_MULTI_COPY:
-                        result = global.mRedditData.copyMulti(strParams[0].toString(), strParams[1].toString());
-                        break;
-
-                    case ACTION_MULTI_CREATE:
-                        try {
-                            JSONObject multiObj = new JSONObject();
-                            multiObj.put("display_name", strParams[0].toString());
-                            multiObj.put("decription_md", "");
-                            multiObj.put("icon_name", "");
-                            multiObj.put("key_color", "#CEE3F8");
-                            multiObj.put("subreddits", new JSONArray());
-                            multiObj.put("visibility", "private");
-                            multiObj.put("weighting_scheme", "classic");
-                            result = global.mRedditData.createMulti(strParams[0].toString(), multiObj);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            return false;
-                        }
-                        break;
-
-                    case ACTION_MULTI_EDIT:
-                        result = global.mRedditData.editMulti(strParams[0].toString(), (JSONObject) strParams[1]);
-                        break;
-
-                    case ACTION_MULTI_SUB_ADD:
-                        result = global.mRedditData.addMultiSubreddit(strParams[0].toString(), strParams[1].toString());
-                        break;
-
-                    case ACTION_MULTI_SUB_REMOVE:
-                        global.mRedditData.removeMultiSubreddit(strParams[0].toString(), strParams[1].toString());
-                        break;
-
-                    case ACTION_MULTI_DELETE:
-                        global.mRedditData.deleteMulti(strParams[0].toString());
-                        break;
-
-                    case ACTION_MULTI_RENAME:
-                        result = global.mRedditData.renameMulti(strParams[0].toString(), strParams[1].toString());
-                        break;
-                }
-                return true;
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            progressDialog.dismiss();
-            ArrayList<String> subreddits;
-            if (result || (action==ACTION_UNSUBSCRIBE)) {
-                //if (this.result!=null)
-                    //System.out.println("resultData: "+this.result.toString());
-                switch (action) {
-                    case ACTION_SUBSCRIBE:
-                        global.getSubredditManager().addSubreddit((JSONObject) params[0]);
-                        try {
-                            subredditList.add(0, ((JSONObject) params[0]).getString("display_name"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        refreshSubredditsList();
-                        break;
-                    case ACTION_UNSUBSCRIBE:
-                        global.getSubredditManager().removeSubreddit(params[0].toString());
-                        subredditList.remove(params[0].toString());
-                        refreshSubredditsList();
-                        break;
-                    case ACTION_MULTI_COPY:
-
-                        break;
-                    case ACTION_MULTI_CREATE:
-                        try {
-                            if (this.result==null) return;
-                            JSONObject multiObj = this.result.getJSONObject("data");
-                            String path = multiObj.getString("path");
-                            global.getSubredditManager().setMultiData(path, multiObj);
-                            showMultiEditDialog(path);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        mMultiAdapter.refreshMultis();
-                        break;
-                    case ACTION_MULTI_EDIT:
-                        try {
-                            if (this.result==null) return;
-                            JSONObject multiObj = this.result.getJSONObject("data");
-                            global.getSubredditManager().setMultiData(params[0].toString(), multiObj);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        multiDialog.dismiss();
-                        mMultiAdapter.refreshMultis();
-                        break;
-                    case ACTION_MULTI_SUB_ADD:
-                        subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
-                        subreddits.add(params[1].toString());
-                        global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
-                        multiSubsAdapter.refreshList();
-                        break;
-                    case ACTION_MULTI_SUB_REMOVE:
-                        subreddits = global.getSubredditManager().getMultiSubreddits(params[0].toString());
-                        subreddits.remove(params[1].toString());
-                        global.getSubredditManager().setMultiSubs(params[0].toString(), subreddits);
-                        multiSubsAdapter.refreshList();
-                        break;
-                    case ACTION_MULTI_DELETE:
-                        global.getSubredditManager().removeMulti(params[0].toString());
-                        mMultiAdapter.refreshMultis();
-                        break;
-                    case ACTION_MULTI_RENAME:
-                        global.getSubredditManager().removeMulti(params[0].toString());
-                        try {
-                            JSONObject multiObj = this.result.getJSONObject("data");
-                            String path = multiObj.getString("path");
-                            global.getSubredditManager().setMultiData(path, multiObj);
-                            multiName.setText(multiObj.getString("name"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        mMultiAdapter.refreshMultis();
-                        break;
-                }
-            }
-            if (!result){
-                // check login required
-                if (exception instanceof RedditData.RedditApiException && ((RedditData.RedditApiException)exception).isAuthError())
-                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
-                // show error
-                Toast.makeText(SubredditSelectActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        if (!result){
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
+            // show error
+            Toast.makeText(SubredditSelectActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }
