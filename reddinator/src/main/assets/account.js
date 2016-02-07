@@ -218,6 +218,9 @@ function appendMoreButton(lastItemId){
 function appendPost(postData, prepend){
     var postElem = $("#post_template").clone().show();
         postElem.attr("id", postData.name);
+        postElem.data('url', postData.url);
+        postElem.data('permalink', postData.permalink);
+        postElem.data('likes', postData.likes);
         postElem.find(".post_text").html(postData.title);
         postElem.find(".post_domain").text(postData.subreddit+" - "+postData.domain);
         postElem.find(".post_score").text(postData.hide_score?'hidden':postData.score);
@@ -388,11 +391,13 @@ $(function(){
     // Layout testing code
     //$("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
     //$("#comment_template").clone().show().attr("id", 'test1').appendTo("#test .comment_replies");
-    $(document).on('click', ".upvote", function(){
+    $(document).on('click', ".upvote", function(e){
         vote($(this).parent().parent().attr("id"), 1);
+        e.stopPropagation();
     });
-    $(document).on('click', ".downvote", function(){
+    $(document).on('click', ".downvote", function(e){
         vote($(this).parent().parent().attr("id"), -1);
+        e.stopPropagation();
     });
     $(document).on('click', ".post_toggle", function(){
         var elem = $(this).parent().parent().parent().children(".post_reply");
@@ -402,5 +407,10 @@ $(function(){
             $('.post_reply').hide();
             elem.show();
         }
+    });
+    $(document).on('click', ".post_main", function(e){
+        var elem = $(this).parent();
+        Reddinator.openRedditPost(elem.attr("id"), elem.data('url'), elem.data('permalink'), elem.data('likes'));
+        e.stopImPropagation();
     });
 });

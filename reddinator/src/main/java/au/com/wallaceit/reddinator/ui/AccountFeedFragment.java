@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.AccountActivity;
+import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
@@ -287,6 +288,17 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             Intent intent = new Intent(mContext, WebViewActivity.class);
             intent.putExtra("url", global.getDefaultMobileSite() + link);
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
+            startActivity(intent);
+        }
+
+        @JavascriptInterface
+        public void openRedditPost(String redditId, String postUrl, String permaLink, String userLikes) {
+            Intent intent = new Intent(mContext, ViewRedditActivity.class);
+            intent.setAction(ViewRedditActivity.ACTION_VIEW_POST);
+            intent.putExtra("id", redditId);
+            intent.putExtra("url", postUrl);
+            intent.putExtra("permalink", permaLink);
+            intent.putExtra("likes", userLikes);
             startActivity(intent);
         }
     }

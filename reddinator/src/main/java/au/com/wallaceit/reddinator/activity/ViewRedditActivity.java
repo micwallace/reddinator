@@ -79,18 +79,21 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
     private MenuItem upvote;
     private MenuItem downvote;
     private MenuItem messageIcon;
-
     private String userLikes = "null"; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
+    private String postUrl;
+    private String postPermalink;
     private int curvote = 0;
-    private int feedposition = 0;
-    private int widgetId = 0;
+    private int feedposition = -1;
+    private int widgetId = -1;
     private ActionBar actionBar;
     private BroadcastReceiver inboxReceiver;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
+
+    public static final String ACTION_VIEW_POST = "view_post";
 
     /**
      * (non-Javadoc)
@@ -149,19 +152,28 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         // theme
         updateTheme();
         // setup needed members
-        redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-        widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-        feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
-        // Get selected item from feed and user vote preference
-        if (getIntent().getBooleanExtra("submitted", false)){
-            userLikes = "true";
+        if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_VIEW_POST)){
+            redditItemId = getIntent().getStringExtra("id");
+            postUrl = getIntent().getStringExtra("url");
+            postPermalink = getIntent().getStringExtra("permalink");
+            userLikes = getIntent().getStringExtra("likes");
         } else {
-            JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
-            if (currentFeedItem!=null) {
-                try {
-                    userLikes = currentFeedItem.getString("likes");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+            postUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+            postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+            // Get selected item from feed and user vote preference
+            if (getIntent().getBooleanExtra("submitted", false)){
+                userLikes = "true";
+            } else {
+                JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
+                if (currentFeedItem!=null) {
+                    try {
+                        userLikes = currentFeedItem.getString("likes");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -576,23 +588,23 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
             switch (position) {
                 default:
                 case 0: // content
-                    url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-                    Log.w(getPackageName(), url);
+
+                    Log.w(getPackageName(), postUrl);
                     // use reddit mobile view
-                    if (url.contains("//www.reddit.com/")){
-                        url = url.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
+                    if (postUrl.contains("//www.reddit.com/")){
+                        postUrl = postUrl.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
-                    return TabWebFragment.init(url, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
+                    return TabWebFragment.init(postUrl, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
                 case 1: // comments
                     if (prefs.getBoolean("commentswebviewpref", false)) {
                         // reddit
-                        url = global.getDefaultCommentsMobileSite() + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+                        url = global.getDefaultCommentsMobileSite() + postPermalink;
                         fontsize = Integer.parseInt(prefs.getString("reddit_content_font_pref", "21"));
                         return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
                     } else {
                         // native
-                        return TabCommentsFragment.init((commentsPref || preloadPref>1));
+                        return TabCommentsFragment.init(redditItemId, postPermalink, (commentsPref || preloadPref>1));
                     }
             }
         }

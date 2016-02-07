@@ -30,8 +30,6 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;

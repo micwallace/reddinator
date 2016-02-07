@@ -19,7 +19,6 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.res.Resources;

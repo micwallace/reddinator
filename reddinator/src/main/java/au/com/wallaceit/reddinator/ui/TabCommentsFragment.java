@@ -49,7 +49,6 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
@@ -67,9 +66,11 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
     VoteTask commentsVoteTask;
     CommentTask commentTask;
 
-    public static TabCommentsFragment init(boolean load) {
+    public static TabCommentsFragment init(String id, String permalink, boolean load) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
         Bundle args = new Bundle();
+        args.putString("id", id);
+        args.putString("permalink", permalink);
         args.putBoolean("load", load);
         commentsTab.setArguments(args);
         return commentsTab;
@@ -99,8 +100,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         final boolean load = getArguments().getBoolean("load");
 
         // get needed activity values
-        articleId = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-        permalink = getActivity().getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+        articleId = getArguments().getString("id");
+        permalink = getArguments().getString("permalink");
 
         ll = new LinearLayout(mContext);
         ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));

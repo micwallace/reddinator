@@ -222,9 +222,8 @@ public class Reddinator extends Application {
         mSharedPreferences.edit().putString("unreadMail", messages.toString()).apply();
     }
     public JSONArray getUnreadMessages(){
-        JSONArray messages;
         try {
-            messages = new JSONArray(mSharedPreferences.getString("unreadMail", "[]"));
+            return new JSONArray(mSharedPreferences.getString("unreadMail", "[]"));
         } catch (JSONException e) {
             e.printStackTrace();
 
