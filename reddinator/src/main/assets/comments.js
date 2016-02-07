@@ -69,11 +69,11 @@ function loadChildComments(moreId, children){
 function vote(thingId, direction){
     // determine if neutral vote
     if (direction == 1) {
-        if ($("#"+thingId+" .comment_upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
+        if ($("#"+thingId+" .upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
             direction = 0;
         }
     } else { // downvote
-        if ($("#"+thingId+" .comment_downvote").css("color")=="rgb(148, 148, 255)") {
+        if ($("#"+thingId+" .downvote").css("color")=="rgb(148, 148, 255)") {
             direction = 0;
         }
     }
@@ -82,8 +82,8 @@ function vote(thingId, direction){
 }
 
 function voteCallback(thingId, direction){
-    var upvote = $("#"+thingId).children(".comment_vote").children(".comment_upvote");
-    var downvote = $("#"+thingId).children(".comment_vote").children(".comment_downvote");
+    var upvote = $("#"+thingId).children(".vote").children(".upvote");
+    var downvote = $("#"+thingId).children(".vote").children(".downvote");
     switch(direction){
         case "-1":
             upvote.css("color", color_vote);
@@ -255,9 +255,9 @@ function appendComment(parentId, commentData, prepend){
     // check if likes
     if (commentData.hasOwnProperty('likes')){
         if (commentData.likes==true){
-            commentElem.find(".comment_upvote").css("color", color_upvote_active);
+            commentElem.find(".upvote").css("color", color_upvote_active);
         } else if (commentData.likes==false) {
-            commentElem.find(".comment_downvote").css("color", color_downvote_active);
+            commentElem.find(".downvote").css("color", color_downvote_active);
         }
     }
     // check if author
@@ -327,10 +327,10 @@ $(function(){
     // Layout testing code
     //$("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
     //$("#comment_template").clone().show().attr("id", 'test1').appendTo("#test .comment_replies");
-    $(document).on('click', ".comment_upvote", function(){
+    $(document).on('click', ".upvote", function(){
         vote($(this).parent().parent().attr("id"), 1);
     });
-    $(document).on('click', ".comment_downvote", function(){
+    $(document).on('click', ".downvote", function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
     $(document).on('click', ".post_toggle", function(){

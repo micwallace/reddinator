@@ -24,6 +24,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Base64;
 
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -34,6 +35,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -225,7 +228,6 @@ public class RedditData {
     }
 
     private JSONObject getUserInfo() throws RedditApiException {
-
         checkLogin();
 
         JSONObject resultjson;
@@ -245,7 +247,6 @@ public class RedditData {
     }
 
     public boolean vote(String id, int direction) throws RedditApiException {
-
         checkLogin();
 
         JSONObject resultjson;
@@ -269,6 +270,50 @@ public class RedditData {
             throw new RedditApiException("Parsing error: "+e.getMessage());
         }
     }
+
+    public JSONArray getAccountFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/user/" + username + "/" + type + "/.json?sort=" + sort + "&limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
+        JSONObject result;
+        JSONArray feed;
+
+        result = redditApiGet(url, true); // use oauth if logged in
+        try {
+            feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return feed;
+    }
+
+    public JSONArray getMessageFeed(String type, int limit, String afterid) throws RedditApiException {
+        checkLogin();
+
+        String url = OAUTH_ENDPOINT + "/message/" + type + ".json?limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
+        JSONObject result;
+        JSONArray feed;
+
+        result = redditApiGet(url, true); // use oauth if logged in
+        try {
+            feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return feed;
+    }
+
+    public void markMessagesRead(ArrayList<String> redditIds) throws RedditApiException {
+        checkLogin();
+        redditApiPost(OAUTH_ENDPOINT + "/api/read_message?id="+ TextUtils.join(",", redditIds));
+    }
+
+    /*public void markAllMessagesRead() throws RedditApiException {
+        checkLogin();
+        redditApiPost(OAUTH_ENDPOINT + "/api/read_all_messages");
+    }*/
 
     public JSONObject postComment(String parentId, String text) throws RedditApiException {
 
@@ -479,7 +524,7 @@ public class RedditData {
         checkLogin();
 
         try {
-            content = URLEncoder.encode(content,"UTF-8");
+            content = URLEncoder.encode(content, "UTF-8");
             String url = OAUTH_ENDPOINT + "/api/submit?api_type=json&extension=json&then=comments&sr=" + URLEncoder.encode(subreddit, "UTF-8") + "&kind=" + (isLink?"link":"self") + "&title=" + URLEncoder.encode(title, "UTF-8") + "&" + (isLink?"url="+content:"text="+content);
 
             return redditApiPost(url).getJSONObject("json");
@@ -495,40 +540,6 @@ public class RedditData {
         String url = OAUTH_ENDPOINT + "/api/save?category="+category+"&id="+name;
 
         redditApiPost(url);
-    }
-
-    public JSONArray getAccountFeed(String type, String sort, int limit, String afterid) throws RedditApiException {
-        checkLogin();
-
-        String url = OAUTH_ENDPOINT + "/user/" + username + "/" + type + "/.json?sort=" + sort + "&limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
-        JSONObject result;
-        JSONArray feed;
-
-        result = redditApiGet(url, true); // use oauth if logged in
-        try {
-            feed = result.getJSONObject("data").getJSONArray("children");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Parsing error: "+e.getMessage());
-        }
-        return feed;
-    }
-
-    public JSONArray getMessageFeed(String type, int limit, String afterid) throws RedditApiException {
-        checkLogin();
-
-        String url = OAUTH_ENDPOINT + "/message/" + type + ".json?limit=" + String.valueOf(limit) + (afterid!=null ? "&after=" + afterid : "");
-        JSONObject result;
-        JSONArray feed;
-
-        result = redditApiGet(url, true); // use oauth if logged in
-        try {
-            feed = result.getJSONObject("data").getJSONArray("children");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RedditApiException("Parsing error: "+e.getMessage());
-        }
-        return feed;
     }
 
     // COMM FUNCTIONS

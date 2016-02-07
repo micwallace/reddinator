@@ -20,6 +20,7 @@ package au.com.wallaceit.reddinator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -215,6 +216,28 @@ public class Reddinator extends Application {
         JSONArray list = mRedditData.getMyMultis();
         getSubredditManager().addMultis(list, true);
         return list.length();
+    }
+    // unread message storage
+    public void setUnreadMessages(JSONArray messages){
+        mSharedPreferences.edit().putString("unreadMail", messages.toString()).apply();
+    }
+    public JSONArray getUnreadMessages(){
+        JSONArray messages;
+        try {
+            messages = new JSONArray(mSharedPreferences.getString("unreadMail", "[]"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+        return new JSONArray();
+    }
+    public void clearUnreadMessages(){
+        // clear unread message cache and count
+        mSharedPreferences.edit().remove("unreadMail").apply();
+        mRedditData.clearStoredInboxCount();
+        // Also clear notification that may be present (created in CheckMailService)
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(1);
     }
 
     // widget data loadtype functions; a bypass for androids restrictive widget api

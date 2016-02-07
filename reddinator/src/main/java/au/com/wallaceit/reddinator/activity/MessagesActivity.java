@@ -108,10 +108,6 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
         if (getIntent().getAction()==null || !getIntent().getAction().equals(ACTION_UNREAD)){
             viewPager.setCurrentItem(1);
             tabsIndicator.setTab(1);
-            global.mRedditData.clearStoredInboxCount();
-            // Also clear notification that may be present (created in CheckMailService)
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.cancel(1);
         }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

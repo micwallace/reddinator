@@ -41,7 +41,10 @@ import android.widget.Toast;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
@@ -49,6 +52,7 @@ import au.com.wallaceit.reddinator.activity.AccountActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
+import au.com.wallaceit.reddinator.tasks.MarkMessageTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
@@ -303,6 +307,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         private boolean loadMore = false;
         private String mSort = "best";
         private String mMoreId = null;
+        private ArrayList<String> unreadIds = null;
         private RedditData.RedditApiException exception;
 
         public FeedLoader(String sort){
@@ -324,7 +329,23 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                 if (isMessages) {
                     data = global.mRedditData.getMessageFeed(type, 25, mMoreId);
                 } else {
-                    data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
+                    JSONArray cached = global.getUnreadMessages();
+                    if (type.equals("unread") && cached.length()>0){
+                        data = cached;
+                    } else {
+                        data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
+                    }
+                    // collect ids of unread messages to mark them read below
+                    if (type.equals("unread") && data.length()>0){
+                        unreadIds = new ArrayList<>();
+                        for (int i=0; i<data.length(); i++){
+                            try {
+                                unreadIds.add(data.getJSONObject(i).getJSONObject("data").getString("name"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                 }
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
@@ -367,6 +388,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                         mWebView.loadUrl("javascript:populateFeed(\"" + StringEscapeUtils.escapeJavaScript(result) + "\", true)");
                     } else {
                         mWebView.loadUrl("javascript:populateFeed(\"" + StringEscapeUtils.escapeJavaScript(result) + "\", false)");
+                    }
+                    // Mark messages read; this clears cached messages and count once completed
+                    if (unreadIds!=null && unreadIds.size()>0){
+                        new MarkMessageTask(global, unreadIds).execute();
                     }
                     break;
             }

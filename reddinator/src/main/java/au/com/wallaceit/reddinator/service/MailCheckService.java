@@ -29,6 +29,10 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
@@ -66,12 +70,26 @@ public class MailCheckService extends Service {
 
         @Override
         protected Boolean doInBackground(String... params) {
+            int oldCount = global.mRedditData.getInboxCount();
             try {
                 global.mRedditData.updateUserInfo();
                 System.out.println("Mail check completed "+global.mRedditData.getInboxCount());
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 return false;
+            }
+            // update stored unread messages if the count has changed
+            int newCount = global.mRedditData.getInboxCount();
+            if (newCount>0 && newCount!=oldCount){
+                try {
+                    JSONArray messages = global.mRedditData.getMessageFeed("unread", 25, null);
+                    global.setUnreadMessages(messages);
+                } catch (RedditData.RedditApiException e) {
+                    // user may not be authorised for the new api scope, ignore
+                    e.printStackTrace();
+                }
+            } else {
+                if (oldCount>0) global.clearUnreadMessages();
             }
             return true;
         }
