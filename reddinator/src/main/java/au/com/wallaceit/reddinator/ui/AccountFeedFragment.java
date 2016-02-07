@@ -116,15 +116,15 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 boolean redditLink = false;
                 //System.out.println(url);
-                if (url.indexOf("file://")==0){ // fix for short sub and user links
-                    url = url.replace("file://", global.getDefaultMobileSite())+"/";
+                if (url.indexOf("file://") == 0) { // fix for short sub and user links
+                    url = url.replace("file://", global.getDefaultMobileSite()) + "/";
                     redditLink = true;
                 }
-                if (url.indexOf("https://www.reddit.com/")==0){ // catch other reddit links
+                if (url.indexOf("https://www.reddit.com/") == 0) { // catch other reddit links
                     url = url.replace("https://www.reddit.com", global.getDefaultMobileSite());
                     redditLink = true;
                 }
-                if (redditLink){
+                if (redditLink) {
                     Intent i = new Intent(mContext, WebViewActivity.class);
                     i.putExtra("url", url);
                     startActivity(i);
@@ -136,7 +136,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             }
 
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
+                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \"" + global.mRedditData.getUsername() + "\")");
                 if (load) load();
             }
         });
@@ -149,7 +149,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         if (type.equals("unread") || type.equals("inbox") || type.equals("sent"))
             isMessages = true;
 
-        mWebView.loadUrl("file:///android_asset/account.html");
+        mWebView.loadUrl("file:///android_asset/"+(isMessages?"messages":"account")+".html");
     }
 
     public void updateTheme() {
@@ -194,7 +194,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     @Override
     public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
-        ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+        ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result) {
             mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
         } else {
@@ -207,7 +207,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     @Override
     public void onCommentComplete(JSONObject result, RedditData.RedditApiException exception, int action, String redditId) {
-        ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+        ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result!=null){
             switch (action){
                 case -1:
@@ -252,28 +252,28 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void vote(String thingId, int direction) {
-            ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.voting));
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.voting));
             commentsVoteTask = new VoteTask(global, AccountFeedFragment.this, thingId, direction);
             commentsVoteTask.execute();
         }
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
-            ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(global, parentId, text, CommentTask.ACTION_ADD, AccountFeedFragment.this);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
-            ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(global, thingId, text, CommentTask.ACTION_EDIT, AccountFeedFragment.this);
             commentTask.execute();
         }
 
         @JavascriptInterface
         public void delete(String thingId) {
-            ((AccountActivity) getActivity()).setTitleText(resources.getString(R.string.deleting));
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.deleting));
             commentTask = new CommentTask(global, thingId, null, CommentTask.ACTION_DELETE, AccountFeedFragment.this);
             commentTask.execute();
         }
@@ -285,6 +285,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
             startActivity(intent);
         }
+    }
+
+    public interface ActivityInterface {
+        void setTitleText(String titleText);
     }
 
     private void loadComments(String sort) {
@@ -340,7 +344,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        mWebView.loadUrl("javascript:showLoadingView('"+resources.getString(R.string.no_comments_here)+"')");
+                        mWebView.loadUrl("javascript:showLoadingView(\""+StringEscapeUtils.escapeJavaScript(resources.getString(R.string.nothing_more_here))+"\")");
                     } else {
                         mWebView.loadUrl("javascript:noChildrenCallback('"+mMoreId+"')");
                     }
@@ -360,9 +364,9 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                     break;
                 default:
                     if (loadMore) {
-                        mWebView.loadUrl("javascript:populateMoreComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                        mWebView.loadUrl("javascript:populateFeed(\"" + StringEscapeUtils.escapeJavaScript(result) + "\", true)");
                     } else {
-                        mWebView.loadUrl("javascript:populateComments(\"" + StringEscapeUtils.escapeJavaScript(result) + "\")");
+                        mWebView.loadUrl("javascript:populateFeed(\"" + StringEscapeUtils.escapeJavaScript(result) + "\", false)");
                     }
                     break;
             }

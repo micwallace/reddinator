@@ -23,10 +23,12 @@ function setTheme(themeColors){
     $("body").show();
 }
 
-function populateComments(json){
+function populateFeed(json, append){
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
+    if (append)
+        $("#more").remove();
     var lastItemId = 0;
     for (var i in data){
         lastItemId = data[i].data.name;
@@ -34,13 +36,11 @@ function populateComments(json){
             appendComment(data[i].data, false);
         } else if (data[i].kind=="t3") {
             appendPost(data[i].data, false);
+        } else if (data[i].kind=="t4") {
+            appendMessage(data[i].data, false);
         }
     }
     appendMoreButton(lastItemId);
-}
-
-function clearComments(){
-    $("#base").html();
 }
 
 function showLoadingView(text){
@@ -50,24 +50,24 @@ function showLoadingView(text){
     loading.show();
 }
 // java bind functions
-function reloadComments(){
+function reloadFeed(){
     showLoadingView("Loading...");
     $("#base").html('');
     Reddinator.reloadFeed($("#sort_select").val());
 }
 
-function loadMoreComments(moreId){
+function loadMore(moreId){
     Reddinator.loadMore(moreId);
 }
 
 function vote(thingId, direction){
     // determine if neutral vote
     if (direction == 1) {
-        if ($("#"+thingId+" .comment_upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
+        if ($("#"+thingId+" .upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
             direction = 0;
         }
     } else { // downvote
-        if ($("#"+thingId+" .comment_downvote").css("color")=="rgb(148, 148, 255)") {
+        if ($("#"+thingId+" .downvote").css("color")=="rgb(148, 148, 255)") {
             direction = 0;
         }
     }
@@ -76,8 +76,8 @@ function vote(thingId, direction){
 }
 
 function voteCallback(thingId, direction){
-    var upvote = $("#"+thingId).children(".comment_vote").children(".comment_upvote");
-    var downvote = $("#"+thingId).children(".comment_vote").children(".comment_downvote");
+    var upvote = $("#"+thingId).children(".vote").children(".upvote");
+    var downvote = $("#"+thingId).children(".vote").children(".downvote");
     switch(direction){
         case "-1":
             upvote.css("color", color_vote);
@@ -184,12 +184,6 @@ function editCallback(thingId, commentData){
     }
 }
 
-function populateMoreComments(json){
-    //console.log(json)
-    $("#more").remove();
-    populateComments(json);
-}
-
 function noChildrenCallback(moreId){
     $("#more h5").text("There's nothing more here");
 }
@@ -201,7 +195,7 @@ function resetMoreClickEvent(moreId){
         {lastItemId: moreElem.data('rname')},
         function(event){
             $(this).children("h5").text("Loading...");
-            loadChildComments(event.data.lastItemId);
+            loadMore(event.data.lastItemId);
         }
     );
 }
@@ -215,7 +209,7 @@ function appendMoreButton(lastItemId){
         {lastItemId: lastItemId},
         function(event){
             $(this).children("h5").text("Loading...");
-            loadMoreComments(event.data.lastItemId);
+            loadMore(event.data.lastItemId);
         }
     );
     moreElem.css("margin-right", "0").appendTo("#base");
@@ -223,7 +217,68 @@ function appendMoreButton(lastItemId){
 
 function appendPost(postData, prepend){
     var postElem = $("#post_template").clone().show();
-    postElem.appendTo("#base");
+        postElem.attr("id", postData.name);
+        postElem.find(".post_text").html(postData.title);
+        postElem.find(".post_domain").text(postData.subreddit+" - "+postData.domain);
+        postElem.find(".post_score").text(postData.hide_score?'hidden':postData.score);
+        postElem.find(".comment_count").text(postData.num_comments);
+        // check if likes
+        if (postData.hasOwnProperty('likes')){
+            if (postData.likes==true){
+                postElem.find(".upvote").css("color", color_upvote_active);
+            } else if (postData.likes==false) {
+                postElem.find(".downvote").css("color", color_downvote_active);
+            }
+        }
+        // check thumbnail
+        var thumbnail = postData.thumbnail;
+        if (thumbnail && thumbnail!=""){
+            if (thumbnail=="nsfw" || thumbnail=="self" || thumbnail=="default") {
+                switch (thumbnail) {
+                    case "nsfw":
+                        thumbnail = "images/nsfw.png";
+                        break;
+                    case "default":
+                    case "self":
+                    default:
+                        thumbnail = "images/self_default.png";
+                        break;
+                }
+            }
+            postElem.find(".post_thumb").attr("src", thumbnail).show();
+            postElem.find(".post_text").css('margin-left', '76px');
+            postElem.find(".post_main").css('min-height', '75px')
+        }
+        // check if author
+        /*if (postData.author==username)
+            postElem.find(".user_option").show();*/
+        var flag = postElem.find(".distinguish_flag");
+        if (postData.author==username){
+            flag.text("[S]");
+            flag.css("visibility", "visible");
+        }
+        if (postData.distinguished!=null){
+            switch(postData.distinguished){
+                case "moderator":
+                    flag.text("[M]");
+                    flag.css("color", "#30925E");
+                    break;
+                case "admin":
+                    flag.text("[A]");
+                    flag.css("color", "#F82330");
+                    break;
+                case "special":
+                    flag.text("[Δ]");
+                    flag.css("color", "#C22344");
+                    break;
+            }
+            flag.css("visibility", "visible");
+        }
+        if (prepend){
+            postElem.prependTo("#base");
+        } else {
+            postElem.appendTo("#base");
+        }
 }
 
 function appendComment(commentData, prepend){
@@ -237,10 +292,10 @@ function appendComment(commentData, prepend){
     commentElem.find(".comment_reply_count").text("0");
     // check if likes
     if (commentData.hasOwnProperty('likes')){
-        if (commentData.likes==1){
-            commentElem.find(".comment_upvote").css("color", color_upvote_active);
-        } else if (commentData.likes==-1) {
-            commentElem.find(".comment_downvote").css("color", color_downvote_active);
+        if (commentData.likes==true){
+            commentElem.find(".upvote").css("color", color_upvote_active);
+        } else if (commentData.likes==false) {
+            commentElem.find(".downvote").css("color", color_downvote_active);
         }
     }
     // check if author
@@ -275,6 +330,54 @@ function appendComment(commentData, prepend){
     }
 }
 
+function appendMessage(messageData, prepend){
+    //console.log(JSON.stringify(messageData));
+    var messageElem = $("#message_template").clone().show();
+    messageElem.attr("id", messageData.name);
+    var text = htmlDecode(messageData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
+    messageElem.find(".message_text").html(text);
+    messageElem.find(".message_user").text('/u/'+messageData.author).attr('href', 'https://www.reddit.com/u/'+messageData.author);
+    // check if likes
+    /*if (messageData.hasOwnProperty('likes')){
+        if (messageData.likes==1){
+            messageElem.find(".upvote").css("color", color_upvote_active);
+        } else if (messageData.likes==-1) {
+            messageElem.find(".downvote").css("color", color_downvote_active);
+        }
+    }*/
+    // check if author
+    /*if (messageData.author==username)
+        messageElem.find(".user_option").show();*/
+
+    /*if (messageData.link_author==username){
+        flag.text("[S]");
+        flag.css("visibility", "visible");
+    }*/
+    var flag = messageElem.find(".distinguish_flag");
+    if (messageData.distinguished!=null){
+        switch(messageData.distinguished){
+            case "moderator":
+                flag.text("[M]");
+                flag.css("color", "#30925E");
+                break;
+            case "admin":
+                flag.text("[A]");
+                flag.css("color", "#F82330");
+                break;
+            case "special":
+                flag.text("[Δ]");
+                flag.css("color", "#C22344");
+                break;
+        }
+        flag.css("visibility", "visible");
+    }
+    if (prepend){
+        messageElem.prependTo("#base");
+    } else {
+        messageElem.appendTo("#base");
+    }
+}
+
 function htmlDecode(input){
     var e = document.createElement('div');
     e.innerHTML = input;
@@ -285,10 +388,10 @@ $(function(){
     // Layout testing code
     //$("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
     //$("#comment_template").clone().show().attr("id", 'test1').appendTo("#test .comment_replies");
-    $(document).on('click', ".comment_upvote", function(){
+    $(document).on('click', ".upvote", function(){
         vote($(this).parent().parent().attr("id"), 1);
     });
-    $(document).on('click', ".comment_downvote", function(){
+    $(document).on('click', ".downvote", function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
     $(document).on('click', ".post_toggle", function(){

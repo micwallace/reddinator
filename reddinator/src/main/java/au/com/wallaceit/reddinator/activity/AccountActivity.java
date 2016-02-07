@@ -60,7 +60,7 @@ import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
-public class AccountActivity extends FragmentActivity {
+public class AccountActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
 
     private Reddinator global;
     private SharedPreferences prefs;
@@ -72,7 +72,7 @@ public class AccountActivity extends FragmentActivity {
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
     public static final String ACTION_SAVED = "saved";
-    private ViewPager viewPager;
+    private String section = "overview";
 
     /**
      * (non-Javadoc)
@@ -118,6 +118,7 @@ public class AccountActivity extends FragmentActivity {
         updateTheme();
 
         if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_SAVED)){
+            section = ACTION_SAVED;
             viewPager.setCurrentItem(6);
             tabsIndicator.setTab(6);
             scrollView.post(new Runnable() {
@@ -127,6 +128,19 @@ public class AccountActivity extends FragmentActivity {
                 }
             });
         }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = pageAdapter.getRegisteredFragment(position);
+                if (fragment!=null)
+                    ((AccountFeedFragment) fragment).load();
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -326,21 +340,21 @@ public class AccountActivity extends FragmentActivity {
             switch (position) {
                 default:
                 case 0:
-                    return AccountFeedFragment.init("overview", true);
+                    return AccountFeedFragment.init("overview", section.equals("overview"));
                 case 1:
-                    return AccountFeedFragment.init("submitted", true);
+                    return AccountFeedFragment.init("submitted", section.equals("submitted"));
                 case 2:
-                    return AccountFeedFragment.init("comments", true);
+                    return AccountFeedFragment.init("comments", section.equals("comments"));
                 case 3:
-                    return AccountFeedFragment.init("upvoted", true);
+                    return AccountFeedFragment.init("upvoted", section.equals("upvoted"));
                 case 4:
-                    return AccountFeedFragment.init("downvoted", true);
+                    return AccountFeedFragment.init("downvoted", section.equals("downvoted"));
                 case 5:
-                    return AccountFeedFragment.init("hidden", true);
+                    return AccountFeedFragment.init("hidden", section.equals("hidden"));
                 case 6:
-                    return AccountFeedFragment.init("saved", true);
+                    return AccountFeedFragment.init("saved", section.equals("saved"));
                 case 7:
-                    return AccountFeedFragment.init("gilded", true);
+                    return AccountFeedFragment.init("gilded", section.equals("gilded"));
             }
         }
 

@@ -38,7 +38,6 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -54,7 +53,7 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
-public class MessagesActivity extends FragmentActivity {
+public class MessagesActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
 
     private Reddinator global;
     private ActionBar actionBar;
@@ -97,7 +96,7 @@ public class MessagesActivity extends FragmentActivity {
         // set content view
         setContentView(R.layout.view_messages);
         // Setup View Pager and widget
-        ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
@@ -114,6 +113,19 @@ public class MessagesActivity extends FragmentActivity {
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.cancel(1);
         }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = pageAdapter.getRegisteredFragment(position);
+                if (fragment!=null)
+                    ((AccountFeedFragment) fragment).load();
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -2,7 +2,6 @@ body {
     margin:0;
 }
 #container {
-    padding-top:10px;
     padding-left:7px;
     padding-right:7px;
 }
@@ -20,26 +19,62 @@ body {
     text-align:center;
     height:30px;
 }
-.comment_text {
+.comment_text, .post_text, .message_text {
     padding-left:5px;
     padding-right:5px;
     margin-right: 30px;
     min-height: 50px;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
+
+.post_text {
+    display:inline-block;
+    vertical-align:top;
+    padding-top:0;
+    margin-top:0;
+}
+
+.post_thumb {
+    position: absolute;
+    left: 0;
+    width:70px;
+    height:auto;
+    padding-left: 6px;
+    padding-top: 3px;
+}
+
+.post_container {
+    padding-top: 3px;
+}
+
+.post_info {
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.post_info i, .post_info .distinguish_flag {
+    font-size: 12px;
+}
+
+.post_domain, .post_score, .comment_count {
+    font-size: 12px;
+}
+
 .comment_replies {
     margin-left:6px;
     padding-bottom:4px;
     margin-right:-2px;
 }
-.comment_vote {
+.vote {
     width: 30px;
     position: absolute;
     right: 0;
     top: 5px;
     align: right;
-}
-.comment_vote img {
-    width: 25px;
 }
 .comment_info span {
     font-size: 16px;
@@ -118,11 +153,12 @@ button:active {
 
 #loading_view {
     position: fixed;
-    left: 50%;
     top: 200px;
-    width: 180px;
-    margin-left:-90px;
+    width: 100%;
     height: 50px;
+    text-align: center;
+}
+#loading_view h4 {
     text-align: center;
 }
 #header {
@@ -156,13 +192,6 @@ button:active {
     position: absolute;
     right: 5px;
     margin-right: 10px;
-}
-.comment_text {
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 *:focus {
     outline:0px none transparent;
@@ -216,7 +245,8 @@ a {
     height: 30px;
 }
 #post_comment {
-    margin-bottom:0;
+    margin-top: 10px;
+    margin-bottom: 0;
 }
 .md p {
     margin-top:5px;

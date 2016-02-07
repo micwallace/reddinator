@@ -254,9 +254,9 @@ function appendComment(parentId, commentData, prepend){
     commentElem.find(".comment_reply_count").text("0");
     // check if likes
     if (commentData.hasOwnProperty('likes')){
-        if (commentData.likes==1){
+        if (commentData.likes==true){
             commentElem.find(".comment_upvote").css("color", color_upvote_active);
-        } else if (commentData.likes==-1) {
+        } else if (commentData.likes==false) {
             commentElem.find(".comment_downvote").css("color", color_downvote_active);
         }
     }

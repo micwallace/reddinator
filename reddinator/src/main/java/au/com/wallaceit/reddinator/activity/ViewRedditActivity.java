@@ -126,6 +126,21 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
         tabsIndicator = new SimpleTabsWidget(ViewRedditActivity.this, tabLayout);
         tabsIndicator.setViewPager(viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = pageAdapter.getRegisteredFragment(position);
+                if (fragment!=null && fragment instanceof TabWebFragment) {
+                    ((TabWebFragment) fragment).load();
+                } else if (fragment instanceof TabCommentsFragment) {
+                    ((TabCommentsFragment) fragment).load();
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
         if (prefs.getBoolean("commentsfirstpref", false)) {
             viewPager.setCurrentItem(1);
         } else {
@@ -552,6 +567,8 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
 
         @Override
         public Fragment getItem(int position) {
+            if (registeredFragments.indexOfKey(position)>-1)
+                return registeredFragments.get(position);
             String url;
             int fontsize;
             boolean commentsPref = prefs.getBoolean("commentsfirstpref", false);

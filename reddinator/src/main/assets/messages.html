@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
-    <title>Reddinator Account</title>
+    <title>Reddinator Messages</title>
     <link href="font-awesome.min.css" rel="stylesheet">
     <link href="reddit-markdown.css" rel="stylesheet">
     <link href="comments.css" rel="stylesheet">
@@ -45,24 +45,23 @@
         <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
     </div>
 </div>
-<div id="post_template" class="post_container comment_box" style="display: none;">
-    <div class="post_main" style="white-space: nowrap;">
-        <img class="post_thumb" style="display:none;" src="" />
-        <div class="post_text comment_text"></div>
-    </div>
-    <div class="vote">
-        <i class="upvote fa fa-lg fa-arrow-up"></i><br/>
-        <i class="downvote fa fa-lg fa-arrow-down"></i>
-    </div>
-    <div class="post_info" style="width:100%;">
-        <span class="post_domain comment_user" style="display:inline;"></span>
+<div id="message_template" class="comment_box" style="display: none;">
+    <div class="message_info">
+        <span style="display:inline;"><a class="message_user" href=""></a></span>
         <span class="distinguish_flag" style="visibility:hidden; display:inline; color:#4166E5; padding:0;"></span>
-        <div style="display:inline; padding:0; margin:0; right:0px;">
-            <span><i class="fa fa-star"></i></span>
-            <span class="comment_score post_score" style="padding:0;"></span>
-            <span><i class="fa fa-comment"></i></span>
-            <span class="comment_reply_count comment_count" style="padding:0;"></span>
+    </div>
+    <div class="message_text comment_text">
+    </div>
+    <div class="option_container">
+        <div class="clearfix"></div>
+        <div class="message_options" style="position:relative; right:0;">
+            <i class="post_toggle fa fa-reply"></i>
+            <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
         </div>
+    </div>
+    <div class="message_reply post_box" style="display:none;">
+        <textarea rows="5"></textarea>
+        <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
     </div>
 </div>
 <div id="more_template" class="more_box" style="display:none;">
@@ -74,16 +73,7 @@
     <button onclick="cancelEdit($(this).parent().parent().attr('id'));">Cancel</button>
 </div>
 <div id="header">
-    <label>Sort:</label>
     <i onclick="reloadFeed();" class="fa fa-refresh"></i>
-    <div>
-        <select id="sort_select" onchange="reloadComments();">
-            <option value="new">New</option>
-            <option value="top">Top</option>
-            <option value="hot">Hot</option>
-            <option value="controversial">Controversial</option>
-        </select>
-    </div>
 </div>
 <div id="container">
     <div id="base">
