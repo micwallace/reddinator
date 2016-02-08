@@ -103,6 +103,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
     private Button refreshButton;
     private Button addButton;
     private Resources resources;
+    private MenuItem messageIcon;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -249,6 +250,14 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         Reddinator.doShowWelcomeDialog(SubredditSelectActivity.this);
     }
 
+    public void onResume(){
+        super.onResume();
+        if (messageIcon!=null){
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Reddinator.getActionbarIconColor();
+            messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setThemeColors(){
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
@@ -393,6 +402,9 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         inflater.inflate(R.menu.subreddit_select_menu, menu);
         // set options menu view
         int iconColor = Reddinator.getActionbarIconColor();
+        int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
+        messageIcon = (menu.findItem(R.id.menu_inbox));
+        messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
         if (mAppWidgetId==0) {
@@ -436,6 +448,14 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                break;
+
+            case R.id.menu_inbox:
+                Intent inboxIntent = new Intent(SubredditSelectActivity.this, MessagesActivity.class);
+                if (global.mRedditData.getInboxCount()>0) {
+                    inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                }
+                startActivity(inboxIntent);
                 break;
 
             case R.id.menu_account:

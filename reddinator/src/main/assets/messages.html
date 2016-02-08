@@ -54,12 +54,12 @@
     </div>
     <div class="option_container" style="width:100%;">
         <div class="clearfix"></div>
-        <div class="message_options" style="position:relative; right:0;">
+        <div class="message_options">
             <i class="post_toggle fa fa-reply"></i>
             <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
         </div>
     </div>
-    <div class="message_reply post_box" style="display:none;">
+    <div class="message_reply post_reply post_box" style="display:none;">
         <textarea rows="5"></textarea>
         <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
     </div>
@@ -71,9 +71,6 @@
     <textarea rows="5" style=""></textarea>
     <button onclick="$(this).prop('disabled', true).next('button').prop('disabled', true); edit($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Save</button>
     <button onclick="cancelEdit($(this).parent().parent().attr('id'));">Cancel</button>
-</div>
-<div id="header">
-    <i onclick="reloadFeed();" class="fa fa-refresh"></i>
 </div>
 <div id="container">
     <div id="base">

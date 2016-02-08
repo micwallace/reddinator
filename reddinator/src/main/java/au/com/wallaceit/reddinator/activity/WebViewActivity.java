@@ -121,7 +121,7 @@ public class WebViewActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.webviewmenu, menu);
+        inflater.inflate(R.menu.web_view_menu, menu);
         // set options menu view
         int iconColor = Reddinator.getActionbarIconColor();
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());

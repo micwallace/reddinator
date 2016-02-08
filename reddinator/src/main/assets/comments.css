@@ -96,7 +96,8 @@ body {
 h5, h6 {
     margin:0;padding:5px;
 }
-.comment_options {
+
+.comment_options, .message_options {
     text-align: right;
     float:right;
     display:inline;

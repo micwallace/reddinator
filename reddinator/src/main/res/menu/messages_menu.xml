@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_submit"
+        android:title="@string/submit"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="@string/submit"
+        android:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_account"
+        android:title="@string/my_reddit"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_viewonreddit"
+        android:title="@string/view_on_reddit"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_prefs"
+        android:title="@string/preferences"
+        android:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_about"
+        android:title="@string/about"
+        android:showAsAction="never" />
+
+</menu>

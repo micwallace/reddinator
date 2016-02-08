@@ -8,10 +8,16 @@
         reddinator:showAsAction="always"/>
 
     <item
-        android:id="@+id/menu_saved"
-        android:title="@string/saved_items"
+        android:id="@+id/menu_inbox"
+        android:title="@string/inbox"
         android:showAsAction="always"
         reddinator:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_saved"
+        android:title="@string/saved_items"
+        android:showAsAction="ifRoom"
+        reddinator:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/menu_account"

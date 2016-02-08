@@ -270,7 +270,7 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.viewmenu, menu);
+        inflater.inflate(R.menu.view_menu, menu);
         // set options menu view
 
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(actionbarIconColor).actionBarSize());
@@ -283,7 +283,7 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
-        if (!userLikes.equals("null")){
+        if (userLikes!=null && !userLikes.equals("null")){
             if (userLikes.equals("true")) {
                 upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
                 downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());

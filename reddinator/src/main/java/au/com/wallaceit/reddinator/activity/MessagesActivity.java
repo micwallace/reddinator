@@ -57,6 +57,7 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
     private Reddinator global;
     private ActionBar actionBar;
     private BroadcastReceiver inboxReceiver;
+    private ViewPager viewPager;
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
@@ -95,7 +96,7 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
         // set content view
         setContentView(R.layout.view_messages);
         // Setup View Pager and widget
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
+        viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
@@ -164,11 +165,11 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.accountmenu, menu);
+        inflater.inflate(R.menu.messages_menu, menu);
         // set options menu view
-        (menu.findItem(R.id.menu_inbox)).setVisible(false);
-        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_refresh)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_refresh).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_viewonreddit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(actionbarIconColor).actionBarSize());
@@ -206,14 +207,18 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
                 this.finish();
                 break;
 
+            case R.id.menu_submit:
+                Intent submitIntent = new Intent(MessagesActivity.this, SubmitActivity.class);
+                startActivity(submitIntent);
+                break;
+
             case R.id.menu_account:
                 Intent accnIntent = new Intent(MessagesActivity.this, AccountActivity.class);
                 startActivity(accnIntent);
                 break;
 
-            case R.id.menu_submit:
-                Intent submitIntent = new Intent(MessagesActivity.this, SubmitActivity.class);
-                startActivity(submitIntent);
+            case R.id.menu_refresh:
+                ((AccountFeedFragment) pageAdapter.getRegisteredFragment(viewPager.getCurrentItem())).reload();
                 break;
 
             case R.id.menu_viewonreddit:
@@ -280,9 +285,9 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
             switch (position) {
                 default:
                 case 0:
-                    return AccountFeedFragment.init("unread", (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_UNREAD)));
+                    return AccountFeedFragment.init("unread", (getIntent().getAction() != null && getIntent().getAction().equals(ACTION_UNREAD)));
                 case 1:
-                    return AccountFeedFragment.init("inbox", getIntent().getAction()==null);
+                    return AccountFeedFragment.init("inbox", getIntent().getAction() == null);
                 case 2:
                     return AccountFeedFragment.init("sent", false);
             }

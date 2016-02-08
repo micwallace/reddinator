@@ -33,6 +33,7 @@ import org.json.JSONArray;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 
@@ -108,9 +109,8 @@ public class MailCheckService extends Service {
 
     private void setNotification(){
         int nummessages = global.mRedditData.getInboxCount();
-        Intent notifyIntent = new Intent(this, WebViewActivity.class);
-        notifyIntent.setAction(WebViewActivity.ACTION_CLEAR_INBOX_COUNT);
-        notifyIntent.putExtra("url", global.getDefaultMobileSite()+"/message/unread/");
+        Intent notifyIntent = new Intent(this, MessagesActivity.class);
+        notifyIntent.setAction(MessagesActivity.ACTION_UNREAD);
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(getResources().getQuantityString(R.plurals.new_messages, nummessages, nummessages))
                 .setContentText(getResources().getString(R.string.new_messages_text))

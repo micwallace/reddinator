@@ -87,6 +87,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         }
     }
 
+    public void reload(){
+        mWebView.loadUrl("javascript:loadFeedStart();");
+        loadComments(null);
+    }
+
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -339,13 +344,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             JSONArray data;
             try {
                 if (isMessages) {
-                    data = global.mRedditData.getMessageFeed(type, 25, mMoreId);
-                } else {
                     JSONArray cached = global.getUnreadMessages();
                     if (type.equals("unread") && cached.length()>0){
                         data = cached;
                     } else {
-                        data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
+                        data = global.mRedditData.getMessageFeed(type, 25, mMoreId);
                     }
                     // collect ids of unread messages to mark them read below
                     if (type.equals("unread") && data.length()>0){
@@ -358,6 +361,8 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                             }
                         }
                     }
+                } else {
+                    data = global.mRedditData.getAccountFeed(type, mSort, 25, mMoreId);
                 }
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
@@ -379,7 +384,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                     if (!loadMore) {
                         mWebView.loadUrl("javascript:showLoadingView(\""+StringEscapeUtils.escapeJavaScript(resources.getString(R.string.nothing_more_here))+"\")");
                     } else {
-                        mWebView.loadUrl("javascript:noChildrenCallback('"+mMoreId+"')");
+                        mWebView.loadUrl("javascript:noMoreCallback('"+mMoreId+"')");
                     }
                     break;
                 case "-1":

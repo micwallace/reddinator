@@ -56,6 +56,11 @@ function reloadFeed(){
     Reddinator.reloadFeed($("#sort_select").val());
 }
 
+function loadFeedStart(){
+    showLoadingView("Loading...");
+    $("#base").html('');
+}
+
 function loadMore(moreId){
     Reddinator.loadMore(moreId);
 }
@@ -184,7 +189,7 @@ function editCallback(thingId, commentData){
     }
 }
 
-function noChildrenCallback(moreId){
+function noMoreCallback(moreId){
     $("#more h5").text("There's nothing more here");
 }
 

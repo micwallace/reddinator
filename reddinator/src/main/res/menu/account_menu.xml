@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_inbox"
-        android:title="@string/inbox"
+        android:id="@+id/menu_submit"
+        android:title="@string/submit"
         android:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_account"
-        android:title="@string/my_reddit"
-        android:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_submit"
-        android:title="@string/submit"
+        android:id="@+id/menu_inbox"
+        android:title="@string/inbox"
         android:showAsAction="always" />
 
     <item

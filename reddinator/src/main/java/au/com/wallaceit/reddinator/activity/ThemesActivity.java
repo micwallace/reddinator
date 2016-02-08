@@ -72,7 +72,7 @@ public class ThemesActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_themes, menu);
+        getMenuInflater().inflate(R.menu.themes_menu, menu);
         int iconColor = Color.parseColor("#25C48F");
         (menu.findItem(R.id.action_add)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
