@@ -49,6 +49,7 @@ import java.lang.reflect.Method;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
@@ -208,7 +209,7 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
                 break;
 
             case R.id.menu_submit:
-                Intent submitIntent = new Intent(MessagesActivity.this, SubmitActivity.class);
+                Intent submitIntent = new Intent(MessagesActivity.this, ComposeMessageActivity.class);
                 startActivity(submitIntent);
                 break;
 

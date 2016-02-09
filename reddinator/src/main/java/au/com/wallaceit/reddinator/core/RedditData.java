@@ -314,6 +314,19 @@ public class RedditData {
         redditApiPost(OAUTH_ENDPOINT + "/api/read_all_messages");
     }*/
 
+    public void composeMessage(String to, String subject, String text, String fromSubreddit) throws RedditApiException {
+        checkLogin();
+        String url;
+        try {
+            url = OAUTH_ENDPOINT + "/api/compose?api_type=json&to=" + to + "&subject=" + URLEncoder.encode(subject, "UTF-8") + "&text=" + URLEncoder.encode(text, "UTF-8") + (fromSubreddit!=null ? "&from_sr=" + fromSubreddit : "");
+        } catch (UnsupportedEncodingException e) {
+            throw new RedditApiException("Encoding error: "+e.getMessage());
+        }
+        JSONObject result = redditApiPost(url);
+        System.out.println("Message compose returned:");
+        System.out.println(result.toString());
+    }
+
     public JSONObject postComment(String parentId, String text) throws RedditApiException {
 
         checkLogin();
@@ -753,6 +766,7 @@ public class RedditData {
             this.httpErrorCode = httpErrorCode;
         }
 
+        @SuppressWarnings("unused")
         public int getHttpErrorCode() { return httpErrorCode; }
 
         public boolean isAuthError(){

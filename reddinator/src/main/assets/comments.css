@@ -64,7 +64,7 @@ body {
     font-size: 12px;
 }
 
-.comment_replies {
+.comment_replies, .message_replies {
     margin-left:6px;
     padding-bottom:4px;
     margin-right:-2px;
@@ -97,15 +97,22 @@ h5, h6 {
     margin:0;padding:5px;
 }
 
-.comment_options, .message_options {
+.comment_options {
     text-align: right;
     float:right;
     display:inline;
-    margin-top:10px;
+    margin-top:12px;
     margin-right:6px;
 }
 
-.post_reply {
+.message_comment_options, .message_options {
+    text-align: right;
+    margin-top:6px;
+    margin-right:6px;
+    margin-bottom:4px;
+}
+
+.post_reply, .message_reply {
     margin-left:6px;
     margin-right:5px;
     margin-top:8px;
@@ -232,7 +239,7 @@ a {
 .fa-arrow-down {
     color:#A5A5A5;
 }
-.comment_options i {
+.comment_options i, .message_options i, .message_comment_options i {
     font-size: 24px;
 }
 .user_option {

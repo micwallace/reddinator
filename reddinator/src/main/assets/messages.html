@@ -29,20 +29,19 @@
     </div>
     <div class="option_container">
         <div class="clearfix"></div>
-        <div class="comment_options">
+        <div class="message_comment_options">
             <i class="user_option fa fa-pencil" onclick="startEdit($(this).parent().parent().parent().attr('id'));"></i>
             <i class="user_option fa fa-trash" onclick="deleteComment($(this).parent().parent().parent().attr('id'));"></i>
             <i class="post_toggle fa fa-reply"></i>
             <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
         </div>
-        <div class="reply_expand" onclick="toggleReplies(this);">
-            <h5>-</h5>
-            <h6>hide replies</h6>
-        </div>
     </div>
     <div class="post_reply post_box" style="display:none;">
         <textarea rows="5"></textarea>
         <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
+    </div>
+    <div class="comment_replies" style="display:none;">
+
     </div>
 </div>
 <div id="message_template" class="comment_box" style="display: none;">
@@ -52,16 +51,19 @@
     </div>
     <div class="message_text comment_text">
     </div>
-    <div class="option_container" style="width:100%;">
+    <div class="option_container">
         <div class="clearfix"></div>
         <div class="message_options">
-            <i class="post_toggle fa fa-reply"></i>
+            <i class="message_reply_toggle fa fa-reply"></i>
             <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
         </div>
     </div>
-    <div class="message_reply post_reply post_box" style="display:none;">
+    <div class="message_reply post_box" style="display:none;">
         <textarea rows="5"></textarea>
-        <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
+        <button onclick="$(this).prop('disabled', true); reply();">Reply</button>
+    </div>
+    <div class="message_replies" style="display:none;">
+
     </div>
 </div>
 <div id="more_template" class="more_box" style="display:none;">

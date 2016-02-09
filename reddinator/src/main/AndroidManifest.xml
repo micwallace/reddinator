@@ -66,6 +66,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" />
         <activity
+            android:name=".activity.ComposeMessageActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name" />
+        <activity
             android:name=".activity.SubmitActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/submit"

@@ -112,12 +112,7 @@ function comment(parentId, text){
 
 function commentCallback(parentId, commentData){
     //console.log("comment callback called");
-    var postElem;
-    if (parentId.indexOf("t3_")!==-1){
-        postElem = $("#post_comment_box");
-    } else {
-        postElem = $("#"+parentId+" > .post_box");
-    }
+    var postElem = $("#"+parentId+" > .post_box");
     if (commentData){
         commentData = JSON.parse(commentData);
         postElem.children("textarea").val("");
@@ -129,7 +124,7 @@ function commentCallback(parentId, commentData){
         }
         postElem.children('textarea').val('');
         postElem.hide();
-        appendComment(parentId, commentData, true)
+        appendComment(commentData, true, parentId)
     }
     postElem.children("button").prop("disabled", false);
 }
@@ -289,7 +284,7 @@ function appendPost(postData, prepend){
         }
 }
 
-function appendComment(commentData, prepend){
+function appendComment(commentData, prepend, parentId){
     //console.log(JSON.stringify(commentData));
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
@@ -331,10 +326,16 @@ function appendComment(commentData, prepend){
         }
         flag.css("visibility", "visible");
     }
-    if (prepend){
-        commentElem.prependTo("#base");
+    if (parentId==null){
+        parentId = "#base";
     } else {
-        commentElem.appendTo("#base");
+        parentId = "#"+parentId+" .comment_replies";
+        $(parentId).show();
+    }
+    if (prepend){
+        commentElem.prependTo(parentId);
+    } else {
+        commentElem.appendTo(parentId);
     }
 }
 
@@ -394,6 +395,8 @@ function htmlDecode(input){
 
 $(function(){
     // Layout testing code
+    //$("#message_template").clone().show().attr("id", 'test').appendTo("#base");
+    //$("#post_template").clone().show().attr("id", 'test').appendTo("#base");
     //$("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
     //$("#comment_template").clone().show().attr("id", 'test1').appendTo("#test .comment_replies");
     $(document).on('click', ".upvote", function(e){
@@ -409,9 +412,18 @@ $(function(){
         if (elem.is(":visible")){
             elem.hide();
         } else {
-            $('.post_reply').hide();
+            $('.message_reply, .post_reply').hide();
             elem.show();
         }
+    });
+    $(document).on('click', ".message_reply_toggle", function(){
+            var elem = $(this).parent().parent().parent().children(".message_reply");
+            if (elem.is(":visible")){
+                elem.hide();
+            } else {
+                $('.message_reply, .post_reply').hide();
+                elem.show();
+            }
     });
     $(document).on('click', ".post_main", function(e){
         var elem = $(this).parent();

@@ -53,10 +53,11 @@ import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
+import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
 import au.com.wallaceit.reddinator.tasks.MarkMessageTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
-public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
+public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback, ComposeMessageTask.Callback {
     private Context mContext;
     private Resources resources;
     public WebView mWebView;
@@ -237,6 +238,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
             mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
         }
+    }
+
+    @Override
+    public void onMessageSent(boolean result, RedditData.RedditApiException exception, String[] args) {
+
     }
 
     public class WebInterface {

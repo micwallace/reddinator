@@ -57,8 +57,7 @@
     <string name="add">Add</string>
     <string name="my_subreddits">My Subreddits</string>
     <string name="sr_import">Import</string>
-    <string name="username">username</string>
-    <string name="password">password</string>
+    <string name="username">Username</string>
     <string name="replace_current_list">Replace current list</string>
     <string name="share">Share</string>
     <string name="feed_prefs">Feed Preferences</string>
@@ -102,6 +101,7 @@
     <string name="title">Title</string>
     <string name="characters_left">%d characters left</string>
     <string name="characters_left_300">300 characters left</string>
+    <string name="characters_left_100">100 characters left</string>
     <string name="text">Text</string>
     <string name="link">Link</string>
     <string name="about">About</string>
@@ -127,10 +127,14 @@
     <string name="account_disconnected">Account Disconnected</string>
     <string name="load_link_error">Could not load link</string>
     <string name="whoa">Whoa!</string>
-    <string name="no_subreddit_error">You\'ll to select a subreddit first</string>
+    <string name="no_subreddit_error">You\'ll need to select a subreddit first</string>
+    <string name="no_recipient_error">You\'ll need to provide a recipient username first</string>
     <string name="no_title_error">You\'ll need a title first</string>
+    <string name="no_subject_error">You\'ll need a subject first</string>
     <string name="title_too_long_error">Such title, please reduce to 300 character or less</string>
+    <string name="subject_too_long_error">Such subject, please reduce to 100 character or less</string>
     <string name="no_content_error">You\'ll need some content first</string>
+    <string name="no_message_text_error">You\'ll need some message text first</string>
     <string name="sub_doesnt_look_valid">That subreddit does not look valid</string>
     <string name="submitting">Submitting…</string>
     <string name="cannot_open_post_error">Could not open submitted post:</string>
@@ -286,4 +290,6 @@
     <string name="view_on_reddit">View on Reddit</string>
     <string name="unread">Unread</string>
     <string name="sent">Sent</string>
+    <string name="subject">Subject</string>
+    <string name="message_sent">Message Sent</string>
 </resources>
