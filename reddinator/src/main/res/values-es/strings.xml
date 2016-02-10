@@ -19,7 +19,7 @@
     <string name="my_subreddits">Mi Subreddits</string>
     <string name="sr_import">Importar</string>
     <string name="username">Usuario</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="replace_current_list">Reemplazar la lista Actual</string>
     <string name="share">Compartir</string>
     <string name="feed_prefs">Preferencias del Feed</string>
@@ -237,4 +237,25 @@
     <string name="enter_valid_domain">Por favor, introduzca un nombre de dominio válido</string>
     <string name="view_domain">Vista de dominio</string>
     <string name="post_saved">Publicar guardadas</string>
+    <string name="characters_left_100">100 caracteres restantes</string>
+    <string name="comments">Comentarios</string>
+    <string name="custom_hex_color">El color de encargo Hex</string>
+    <string name="downvoted">votedAbajo</string>
+    <string name="message_sent">Mensaje enviado</string>
+    <string name="messages">Mensajes</string>
+    <string name="no_message_text_error">Usted necesitará algún texto del mensaje primero</string>
+    <string name="no_recipient_error">Usted tendrá que proporcionar un nombre de usuario destinatario primera</string>
+    <string name="no_subject_error">Usted necesitará primero un sujeto</string>
+    <string name="overview">Visión de conjunto</string>
+    <string name="saved">Salvado</string>
+    <string name="send_message">Enviar mensaje</string>
+    <string name="sent">Expedido</string>
+    <string name="subject">Tema</string>
+    <string name="subject_too_long_error">Dicho tema, por favor, a reducir a 100 caracteres o menos</string>
+    <string name="submitted">Presentada</string>
+    <string name="unread">No leído</string>
+    <string name="upvoted">votedArriba</string>
+    <string name="gilded">Dorado</string>
+    <string name="hidden">Oculto</string>
+    <string name="view_on_reddit">Ver en Reddit</string>
 </resources>

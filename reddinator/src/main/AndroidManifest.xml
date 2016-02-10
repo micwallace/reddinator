@@ -64,11 +64,11 @@
         <activity
             android:name=".activity.MessagesActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" />
+            android:label="@string/messages" />
         <activity
             android:name=".activity.ComposeMessageActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" />
+            android:label="@string/send_message" />
         <activity
             android:name=".activity.SubmitActivity"
             android:configChanges="orientation|screenSize"
@@ -115,9 +115,6 @@
         <receiver
             android:name=".service.MailCheckReceiver"
             android:enabled="true">
-            <intent-filter>
-                <action android:name="reddinator.background.mailcheck" />
-            </intent-filter>
         </receiver>
         <receiver
             android:name=".service.BootReceiver"

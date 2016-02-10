@@ -293,4 +293,7 @@
     <string name="subject">Subject</string>
     <string name="message_sent">Message Sent</string>
     <string name="custom_hex_color">Custom Hex Color</string>
+    <string name="send_message">Send Message</string>
+    <string name="messages">Messages</string>
+    <string name="password">Password</string>
 </resources>
