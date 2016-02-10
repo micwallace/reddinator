@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -107,7 +108,9 @@ public class TabWebFragment extends Fragment {
             mWebView.getSettings().setDomStorageEnabled(true); // some video sites require dom storage
             mWebView.getSettings().setSupportZoom(true);
             mWebView.getSettings().setBuiltInZoomControls(true);
-            mWebView.getSettings().setDisplayZoomControls(false);
+            // always display on screen zoom when no multitouch
+            boolean multi = getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
+            mWebView.getSettings().setDisplayZoomControls(!multi);
             mWebView.getSettings().setDefaultFontSize(fontsize);
             // enable cookies
             CookieManager.getInstance().setAcceptCookie(true);

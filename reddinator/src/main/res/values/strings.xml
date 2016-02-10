@@ -292,4 +292,5 @@
     <string name="sent">Sent</string>
     <string name="subject">Subject</string>
     <string name="message_sent">Message Sent</string>
+    <string name="custom_hex_color">Custom Hex Color</string>
 </resources>

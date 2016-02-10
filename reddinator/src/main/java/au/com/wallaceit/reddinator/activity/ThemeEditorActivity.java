@@ -17,7 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.IconTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.OpacityBar;
@@ -140,7 +142,9 @@ public class ThemeEditorActivity extends ListActivity {
                 viewHolder.settingName = (TextView) convertView.findViewById(R.id.theme_value_name);
                 viewHolder.settingValue = (TextView) convertView.findViewById(R.id.theme_value);
                 viewHolder.colorPreview = (ImageView) convertView.findViewById(R.id.color_preview);
+                viewHolder.colorOptions = (LinearLayout) convertView.findViewById(R.id.color_options);
                 viewHolder.simplePickBtn = (IconTextView) convertView.findViewById(R.id.simple_color_btn);
+                viewHolder.customPickBtn = (IconTextView) convertView.findViewById(R.id.custom_color_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -148,7 +152,7 @@ public class ThemeEditorActivity extends ListActivity {
                 viewHolder.settingName.setText(resources.getString(R.string.name));
                 viewHolder.settingValue.setText(theme.getName());
                 viewHolder.colorPreview.setVisibility(View.GONE);
-                viewHolder.simplePickBtn.setVisibility(View.GONE);
+                viewHolder.colorOptions.setVisibility(View.GONE);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -183,7 +187,7 @@ public class ThemeEditorActivity extends ListActivity {
                     e.printStackTrace();
                     return convertView;
                 }
-                String value = theme.getValue(key);
+                final String value = theme.getValue(key);
                 viewHolder.settingName.setText(global.mThemeManager.getThemePrefLabel(key));
                 viewHolder.settingValue.setText(value);
                 int color;
@@ -195,7 +199,7 @@ public class ThemeEditorActivity extends ListActivity {
                 }
                 viewHolder.colorPreview.setBackgroundColor(color);
                 viewHolder.colorPreview.setVisibility(View.VISIBLE);
-                viewHolder.simplePickBtn.setVisibility(View.VISIBLE);
+                viewHolder.colorOptions.setVisibility(View.VISIBLE);
 
                 final String finalKey = key;
                 convertView.setOnClickListener(new View.OnClickListener() {
@@ -261,11 +265,43 @@ public class ThemeEditorActivity extends ListActivity {
                                     // Add alpha values if needed
                                     hexColor = "#FF"+hexColor.substring(1);
                                 }
-                                System.out.println(hexColor);
                                 theme.setValue(finalKey, hexColor);
                                 themeChanged = true;
                                 refreshList();
                                 dialogInterface.dismiss();
+                            }
+                        })
+                        .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).show();
+                    }
+                });
+                viewHolder.customPickBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ThemeEditorActivity.this);
+                        final EditText input = new EditText(ThemeEditorActivity.this);
+                        input.setText(value);
+                        builder.setView(input);
+                        builder.setTitle(resources.getString(R.string.custom_hex_color))
+                        .setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // validate input
+                                String hexCode = input.getText().toString();
+                                dialogInterface.dismiss();
+                                try {
+                                    Color.parseColor(hexCode);
+                                    theme.setValue(finalKey, hexCode);
+                                    themeChanged = true;
+                                    refreshList();
+                                } catch (IllegalArgumentException iae) {
+                                    // This color string is not valid
+                                    Toast.makeText(ThemeEditorActivity.this, "Please enter a valid hex color code", Toast.LENGTH_LONG).show();
+                                }
                             }
                         })
                         .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -297,7 +333,9 @@ public class ThemeEditorActivity extends ListActivity {
             TextView settingName;
             TextView settingValue;
             ImageView colorPreview;
+            LinearLayout colorOptions;
             IconTextView simplePickBtn;
+            IconTextView customPickBtn;
         }
     }
 }

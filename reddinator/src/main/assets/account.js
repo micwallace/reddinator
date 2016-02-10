@@ -328,6 +328,9 @@ function appendComment(commentData, prepend, parentId){
     } else {
         commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
         commentElem.find(".comment_reply_count").text("0");
+        // no context available
+        if (isMessages)
+            commentElem.find(".comment_context_link").hide();
     }
     // check if likes
     if (commentData.hasOwnProperty('likes')){

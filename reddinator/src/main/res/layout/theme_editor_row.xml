@@ -27,22 +27,44 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="" />
     </LinearLayout>
-    <IconTextView
-        android:id="@+id/simple_color_btn"
+    <LinearLayout
+        android:id="@+id/color_options"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/select_color"
-        android:text="@string/fa_list"
-        android:shadowColor="#33000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
-        android:shadowRadius="3"
-        android:paddingTop="4dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp"
-        android:textSize="36sp"
-        android:textColor="#ff696969"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+        <IconTextView
+            android:id="@+id/simple_color_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/select_color"
+            android:text="@string/fa_list"
+            android:shadowColor="#33000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:paddingBottom="2dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
+            android:textSize="22sp"
+            android:textColor="#ff696969"
+            />
+        <IconTextView
+            android:id="@+id/custom_color_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/select_color"
+            android:text="@string/fa_wrench"
+            android:shadowColor="#33000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
+            android:textSize="22sp"
+            android:textColor="#ff696969"/>
+    </LinearLayout>
     <ImageView
         android:contentDescription="@string/color_preview"
         android:id="@+id/color_preview"

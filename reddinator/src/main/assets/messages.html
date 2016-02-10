@@ -35,7 +35,7 @@
             <i class="user_option fa fa-pencil" onclick="startEdit($(this).parent().parent().parent().attr('id'));"></i>
             <i class="user_option fa fa-trash" onclick="deleteComment($(this).parent().parent().parent().attr('id'));"></i>
             <i class="post_toggle fa fa-reply"></i>
-            <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().data('context'));"></i>
+            <i class="fa fa-globe comment_context_link" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().data('context'));"></i>
         </div>
     </div>
     <div class="post_reply post_box" style="display:none;">
