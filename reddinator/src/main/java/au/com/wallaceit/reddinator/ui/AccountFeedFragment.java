@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.AccountActivity;
+import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -147,7 +148,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             }
 
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \"" + global.mRedditData.getUsername() + "\")");
+                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \"" + global.mRedditData.getUsername() + "\", \""+type+"\")");
                 if (load) load();
             }
         });
@@ -242,7 +243,16 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     @Override
     public void onMessageSent(boolean result, RedditData.RedditApiException exception, String[] args) {
-
+        ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+        if (result){
+            mWebView.loadUrl("javascript:messageCallback(\"" + args[4] + "\", true);");
+            // reload sent feed
+            if (isMessages)
+                ((MessagesActivity) getActivity()).reloadSentMessages();
+            Toast.makeText(getActivity(), resources.getString(R.string.message_sent), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     public class WebInterface {
@@ -271,6 +281,13 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.voting));
             commentsVoteTask = new VoteTask(global, AccountFeedFragment.this, thingId, direction);
             commentsVoteTask.execute();
+        }
+
+        @JavascriptInterface
+        public void message(String to, String subject, String text, String id) {
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.submitting));
+            ComposeMessageTask messageTask = new ComposeMessageTask(global, AccountFeedFragment.this, new String[]{to, subject, text, null, id});
+            messageTask.execute();
         }
 
         @JavascriptInterface

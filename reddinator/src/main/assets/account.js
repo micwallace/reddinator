@@ -1,11 +1,16 @@
 // set article from document hash
 var username;
+var section;
+var isMessages = false;
 var color_vote = "#A5A5A5";
 var color_upvote_active = "#FF8B60";
 var color_downvote_active = "#9494FF";
 
-function init(themeColors, user){
+function init(themeColors, user, sect){
     username = user;
+    section = sect;
+    if (sect=="unread" || sect=="inbox" || sect=="sent")
+        isMessages = true;
     setTheme(themeColors);
 }
 
@@ -100,6 +105,31 @@ function voteCallback(thingId, direction){
     console.log("vote callback received: "+direction);
 }
 
+function message(elem){
+    var text = elem.prev('textarea').val();
+    var id = elem.parent().parent().attr('id');
+    if (text==""){
+        alert("Enter some text for the message.");
+        messageCallback(id, false);
+        return;
+    }
+    var to = elem.parent().parent().data('to');
+    var subject = elem.parent().parent().data('subject');
+    if (subject.indexOf("re:")!==0)
+        subject = "re: "+subject;
+    Reddinator.message(to, subject, text, id);
+}
+
+function messageCallback(parentId, success){
+    //console.log("message callback called");
+    var postElem = $("#"+parentId+" > .post_box");
+    if (success){
+        postElem.children('textarea').val('');
+        postElem.hide();
+    }
+    postElem.children("button").prop("disabled", false);
+}
+
 function comment(parentId, text){
     if (text==""){
         alert("Enter some text for the comment.");
@@ -115,7 +145,6 @@ function commentCallback(parentId, commentData){
     var postElem = $("#"+parentId+" > .post_box");
     if (commentData){
         commentData = JSON.parse(commentData);
-        postElem.children("textarea").val("");
         if (parentId.indexOf("t3_")!==-1){
             $("#post_comment_button").show();
             // in case of submitting first comment
@@ -291,8 +320,15 @@ function appendComment(commentData, prepend, parentId){
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
-    commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
-    commentElem.find(".comment_reply_count").text("0");
+    if (isMessages && commentData.hasOwnProperty('subject')){
+        commentElem.find(".comment_scores").hide();
+        commentElem.find(".message_type").text("("+commentData.subject+")").show();
+        commentElem.find(".message_subject").text(commentData.link_title).show();
+        commentElem.data("context", commentData.context);
+    } else {
+        commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
+        commentElem.find(".comment_reply_count").text("0");
+    }
     // check if likes
     if (commentData.hasOwnProperty('likes')){
         if (commentData.likes==true){
@@ -343,9 +379,13 @@ function appendMessage(messageData, prepend){
     //console.log(JSON.stringify(messageData));
     var messageElem = $("#message_template").clone().show();
     messageElem.attr("id", messageData.name);
+    messageElem.data("to", (section=="sent"?messageData.dest:messageData.author));
+    messageElem.data("subject", messageData.subject);
     var text = htmlDecode(messageData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     messageElem.find(".message_text").html(text);
-    messageElem.find(".message_user").text('/u/'+messageData.author).attr('href', 'https://www.reddit.com/u/'+messageData.author);
+    var authorText = (section=="sent"?messageData.dest:messageData.author);
+    messageElem.find(".message_user").text('/u/'+authorText).attr('href', 'https://www.reddit.com/u/'+authorText);
+    messageElem.find(".message_subject").text(messageData.subject);
     // check if likes
     /*if (messageData.hasOwnProperty('likes')){
         if (messageData.likes==1){

@@ -49,7 +49,6 @@ import java.lang.reflect.Method;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
@@ -126,14 +125,19 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 3) {
-            updateTheme();
-            Fragment fragment;
-            for (int i =0; i<pageAdapter.registeredFragments.size(); i++) {
-                fragment = pageAdapter.getRegisteredFragment(i);
-                if (fragment != null && fragment.getClass().getSimpleName().equals("AccountFeedFragment"))
-                    ((AccountFeedFragment) fragment).updateTheme();
+        if (requestCode==0) {
+            if (resultCode == 3) {
+                updateTheme();
+                Fragment fragment;
+                for (int i = 0; i < pageAdapter.registeredFragments.size(); i++) {
+                    fragment = pageAdapter.getRegisteredFragment(i);
+                    if (fragment != null && fragment.getClass().getSimpleName().equals("AccountFeedFragment"))
+                        ((AccountFeedFragment) fragment).updateTheme();
+                }
             }
+        } else if (requestCode==1){
+            if (resultCode==1)
+                reloadSentMessages();
         }
     }
 
@@ -210,7 +214,7 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
 
             case R.id.menu_submit:
                 Intent submitIntent = new Intent(MessagesActivity.this, ComposeMessageActivity.class);
-                startActivity(submitIntent);
+                startActivityForResult(submitIntent, 1);
                 break;
 
             case R.id.menu_account:
@@ -251,6 +255,11 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
                 actionBar.setTitle(title);
             }
         });
+    }
+
+    public void reloadSentMessages(){
+        Fragment fragment = pageAdapter.getRegisteredFragment(2);
+        ((AccountFeedFragment) fragment).reload();
     }
 
     /**

@@ -132,7 +132,8 @@ public class ComposeMessageActivity extends Activity implements ComposeMessageTa
     @Override
     public void onMessageSent(boolean result, RedditData.RedditApiException exception, String[] args) {
         if (result){
-            this.finish();
+            setResult(1);
+            finish();
             Toast.makeText(this, resources.getString(R.string.message_sent), Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
