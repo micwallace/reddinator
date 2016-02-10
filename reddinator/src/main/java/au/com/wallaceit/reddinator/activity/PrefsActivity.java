@@ -21,6 +21,7 @@ import android.app.ActionBar;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 public class PrefsActivity extends PreferenceActivity {
     private PrefsFragment fragment;
@@ -38,5 +39,17 @@ public class PrefsActivity extends PreferenceActivity {
 
     public void onBackPressed() {
         fragment.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.onBackPressed();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 }
