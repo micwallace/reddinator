@@ -266,7 +266,7 @@ function appendComment(parentId, commentData, prepend){
     var flag = commentElem.find(".distinguish_flag");
     if (commentData.author==subAuthor){
         flag.text("[S]");
-        flag.css("visibility", "visible");
+        flag.show();
     }
     if (commentData.distinguished!=null){
         switch(commentData.distinguished){
@@ -283,7 +283,7 @@ function appendComment(parentId, commentData, prepend){
                 flag.css("color", "#C22344");
                 break;
         }
-        flag.css("visibility", "visible");
+        flag.show();
     }
     if (parentId.indexOf("t3_")!==-1){
         if (prepend){

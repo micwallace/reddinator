@@ -11,17 +11,17 @@
 </head>
 <body style="display:none;">
 <div id="comment_template" class="comment_box" style="display: none;">
-    <div class="comment_info">
+    <div class="message_comment_info comment_info">
         <span style="display:inline;"><a class="comment_user" href=""></a></span>
-        <span class="distinguish_flag"></span>
+        <span class="distinguish_flag" style="display:none;"></span>
+        <span class="message_type" style="display:none;"></span>
         <div class="comment_scores">
             <span><i class="fa fa-star"></i></span>
             <span class="comment_score" style="padding:0;"></span>
             <span><i class="fa fa-comment"></i></span>
             <span class="comment_reply_count" style="padding:0;"></span>
         </div>
-        <span class="message_type" style="display:none;"></span><br/>
-        <span class="message_subject" style="display:none;"></span>
+        <div class="message_subject comment_message_subject" style="display:none;"></div>
     </div>
     <div class="comment_text">
     </div>
@@ -49,8 +49,8 @@
 <div id="message_template" class="comment_box" style="display: none;">
     <div class="message_info comment_info">
         <span style="display:inline;"><a class="message_user comment_user" href=""></a></span>
-        <span class="distinguish_flag"></span><br/>
-        <span class="message_subject"></span>
+        <span class="distinguish_flag" style="display:none;"></span>
+        <div class="message_subject"></div>
     </div>
     <div class="message_text comment_text">
     </div>

@@ -71,19 +71,21 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
+        // set window flags
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        // request loading bar first
+        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
         super.onCreate(savedInstanceState);
         global = ((Reddinator) MessagesActivity.this.getApplicationContext());
         if (!global.mRedditData.isLoggedIn()){
             global.mRedditData.initiateLogin(MessagesActivity.this, false);
             Toast.makeText(MessagesActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
             this.finish();
+            return;
         }
         resources = getResources();
-        // set window flags
-        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        // request loading bar first
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
         if (actionBar != null) {

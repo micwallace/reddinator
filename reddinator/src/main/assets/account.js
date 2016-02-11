@@ -20,6 +20,7 @@ function setTheme(themeColors){
     $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
     $(".comment_text").css("color", themeColors["headline_text"]);
     $(".comment_user").css("color", themeColors["source_text"]);
+    $(".message_type, .message_subject").css("color", themeColors["load_text"]);
     $(".fa-star").css("color", themeColors["votes_icon"]);
     $(".comment_score").css("color", themeColors["votes_text"]);
     $(".fa-comment").css("color", themeColors["comments_icon"]);
@@ -287,7 +288,7 @@ function appendPost(postData, prepend){
         var flag = postElem.find(".distinguish_flag");
         if (postData.author==username){
             flag.text("[S]");
-            flag.css("visibility", "visible");
+            flag.show();
         }
         if (postData.distinguished!=null){
             switch(postData.distinguished){
@@ -304,7 +305,7 @@ function appendPost(postData, prepend){
                     flag.css("color", "#C22344");
                     break;
             }
-            flag.css("visibility", "visible");
+            flag.show();
         }
         if (prepend){
             postElem.prependTo("#base");
@@ -346,7 +347,7 @@ function appendComment(commentData, prepend, parentId){
     var flag = commentElem.find(".distinguish_flag");
     if (commentData.link_author==username){
         flag.text("[S]");
-        flag.css("visibility", "visible");
+        flag.show();
     }
     if (commentData.distinguished!=null){
         switch(commentData.distinguished){
@@ -363,7 +364,7 @@ function appendComment(commentData, prepend, parentId){
                 flag.css("color", "#C22344");
                 break;
         }
-        flag.css("visibility", "visible");
+        flag.show();
     }
     if (parentId==null){
         parentId = "#base";
@@ -421,7 +422,7 @@ function appendMessage(messageData, prepend){
                 flag.css("color", "#C22344");
                 break;
         }
-        flag.css("visibility", "visible");
+        flag.show();
     }
     if (prepend){
         messageElem.prependTo("#base");
