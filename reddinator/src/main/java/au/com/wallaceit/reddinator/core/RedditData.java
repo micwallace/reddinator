@@ -59,7 +59,7 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages";
+    public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages,report";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
     private JSONObject oauthToken = null;
@@ -548,9 +548,25 @@ public class RedditData {
 
     public void save(String category, String name) throws RedditApiException {
         checkLogin();
-
         String url = OAUTH_ENDPOINT + "/api/save?category="+category+"&id="+name;
+        redditApiPost(url);
+    }
 
+    public void unSave(String name) throws RedditApiException {
+        checkLogin();
+        String url = OAUTH_ENDPOINT + "/api/unsave?id="+name;
+        redditApiPost(url);
+    }
+
+    public void hide(String name) throws RedditApiException {
+        checkLogin();
+        String url = OAUTH_ENDPOINT + "/api/hide?id="+name;
+        redditApiPost(url);
+    }
+
+    public void unHide(String name) throws RedditApiException {
+        checkLogin();
+        String url = OAUTH_ENDPOINT + "/api/unhide?id="+name;
         redditApiPost(url);
     }
 

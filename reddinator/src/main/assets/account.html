@@ -27,22 +27,20 @@
         <i class="upvote fa fa-lg fa-arrow-up"></i><br/>
         <i class="downvote fa fa-lg fa-arrow-down"></i>
     </div>
-    <div class="option_container">
-        <div class="clearfix"></div>
-        <div class="comment_options">
+    <div class="option_container" style="position: relative; min-height: 28px;">
+        <div class="comment_account_options">
             <i class="user_option fa fa-pencil" onclick="startEdit($(this).parent().parent().parent().attr('id'));"></i>
             <i class="user_option fa fa-trash" onclick="deleteComment($(this).parent().parent().parent().attr('id'));"></i>
             <i class="post_toggle fa fa-reply"></i>
+            <i class="remove_option fa fa-times" style="display:none;"></i>
             <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
-        </div>
-        <div class="reply_expand" onclick="toggleReplies(this);">
-            <h5>-</h5>
-            <h6>hide replies</h6>
         </div>
     </div>
     <div class="post_reply post_box" style="display:none;">
         <textarea rows="5"></textarea>
         <button onclick="$(this).prop('disabled', true); comment($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Reply</button>
+    </div>
+    <div class="comment_replies" style="display:none;">
     </div>
 </div>
 <div id="post_template" class="post_container comment_box" style="display: none;">
@@ -55,14 +53,17 @@
         <i class="downvote fa fa-lg fa-arrow-down"></i>
     </div>
     <div class="post_info">
-        <span class="post_domain comment_user" style="display:inline;"></span>
-        <span class="distinguish_flag" style="display:none;"></span>
-        <div style="display:inline; padding:0; margin:0; right:0px;">
+        <div style="display:inline; padding:0;">
+            <span class="post_domain comment_user" style="display:inline;"></span>
+            <span class="distinguish_flag" style="display:none;"></span>
             <span><i class="fa fa-star"></i></span>
             <span class="comment_score post_score" style="padding:0;"></span>
             <span><i class="fa fa-comment"></i></span>
             <span class="comment_reply_count comment_count" style="padding:0;"></span>
         </div>
+    </div>
+    <div class="post_options">
+        <i class="remove_option fa fa-times" style="display:none; line-height: 14px;"></i>
     </div>
 </div>
 <div id="more_template" class="more_box" style="display:none;">

@@ -55,7 +55,9 @@ import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
+import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.MarkMessageTask;
+import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback, ComposeMessageTask.Callback {
@@ -309,6 +311,32 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.deleting));
             commentTask = new CommentTask(global, thingId, null, CommentTask.ACTION_DELETE, AccountFeedFragment.this);
             commentTask.execute();
+        }
+
+        @JavascriptInterface
+        public void unSave(final String thingId) {
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.deleting));
+            SavePostTask savePostTask = new SavePostTask(getActivity(), false, new Runnable() {
+                @Override
+                public void run() {
+                    ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+                    mWebView.loadUrl("javascript:deleteCallback('"+thingId+"')");
+                }
+            });
+            savePostTask.execute("unsave", thingId);
+        }
+
+        @JavascriptInterface
+        public void unHide(final String thingId) {
+            ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.deleting));
+            HidePostTask hidePostTask = new HidePostTask(getActivity(), false, new Runnable() {
+                @Override
+                public void run() {
+                    ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
+                    mWebView.loadUrl("javascript:deleteCallback('"+thingId+"')");
+                }
+            });
+            hidePostTask.execute("unhide", thingId);
         }
 
         @JavascriptInterface

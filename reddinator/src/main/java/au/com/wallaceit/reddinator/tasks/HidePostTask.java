@@ -27,15 +27,14 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 
-public class SavePostTask extends AsyncTask<String, Long, Boolean> {
+public class HidePostTask extends AsyncTask<String, Long, Boolean> {
     private Reddinator global;
     private RedditData.RedditApiException exception;
     private Context context;
     private Runnable callback;
     private boolean fromWidget = false;
-    private boolean unsave = false;
 
-    public SavePostTask(Context context, boolean fromWidget, Runnable callback){
+    public HidePostTask(Context context, boolean fromWidget, Runnable callback){
         this.context = context;
         this.fromWidget = fromWidget;
         this.callback = callback;
@@ -45,11 +44,10 @@ public class SavePostTask extends AsyncTask<String, Long, Boolean> {
     @Override
     protected Boolean doInBackground(String... params) {
         try {
-            if (params[0].equals("unsave")){
-                global.mRedditData.unSave(params[1]);
-                unsave = true;
+            if (params[0].equals("unhide")){
+                global.mRedditData.unHide(params[1]);
             } else {
-                global.mRedditData.save(params[0], params[1]);
+                global.mRedditData.hide(params[0]);
             }
         } catch (RedditData.RedditApiException e) {
             e.printStackTrace();
@@ -66,9 +64,6 @@ public class SavePostTask extends AsyncTask<String, Long, Boolean> {
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, fromWidget);
             // show error
             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            if (!unsave)
-                Toast.makeText(context, context.getString(R.string.post_saved), Toast.LENGTH_SHORT).show();
         }
         if (callback!=null)
             callback.run();

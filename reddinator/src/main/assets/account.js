@@ -166,6 +166,20 @@ function deleteComment(thingId){
     }
 }
 
+function unSave(thingId){
+    var answer = confirm("Are you sure you want to unsave?");
+    if (answer){
+        Reddinator.unSave(thingId);
+    }
+}
+
+function unHide(thingId){
+    var answer = confirm("Are you sure you want to unhide?");
+    if (answer){
+        Reddinator.unHide(thingId);
+    }
+}
+
 function deleteCallback(thingId){
     $("#"+thingId).remove();
 }
@@ -307,6 +321,19 @@ function appendPost(postData, prepend){
             }
             flag.show();
         }
+
+        var opt = postElem.find(".remove_option");
+        switch (section){
+            case "saved":
+                opt.show();
+                opt.attr("onclick", "unSave('"+postData.name+"');");
+                break;
+            case "hidden":
+                opt.show();
+                opt.attr("onclick", "unHide('"+postData.name+"');");
+                break;
+        }
+
         if (prepend){
             postElem.prependTo("#base");
         } else {
@@ -365,6 +392,11 @@ function appendComment(commentData, prepend, parentId){
                 break;
         }
         flag.show();
+    }
+    if (section=="saved"){
+        var opt = commentElem.find(".remove_option");
+        opt.show();
+        opt.attr("onclick", "unSave('"+commentData.name+"');");
     }
     if (parentId==null){
         parentId = "#base";

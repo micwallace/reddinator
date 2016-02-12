@@ -81,12 +81,6 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
-        // set window flags
-        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        // request loading bar first
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
-
         super.onCreate(savedInstanceState);
         global = ((Reddinator) AccountActivity.this.getApplicationContext());
         if (!global.mRedditData.isLoggedIn()){
@@ -95,9 +89,12 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
             this.finish();
             return;
         }
+        // set window flags
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+
         prefs = PreferenceManager.getDefaultSharedPreferences(AccountActivity.this);
         resources = getResources();
-
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
         if (actionBar != null) {

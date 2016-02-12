@@ -23,6 +23,7 @@ body {
     padding-left:5px;
     padding-right:5px;
     margin-right: 30px;
+    min-height: 28px;
     white-space: pre-wrap; /* css-3 */
     white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
     white-space: -pre-wrap; /* Opera 4-6 */
@@ -35,7 +36,7 @@ body {
     vertical-align:top;
     padding-top:0;
     margin-top:0;
-    min-height: 32px;
+    min-height: 46px;
 }
 
 .post_thumb {
@@ -52,8 +53,9 @@ body {
 }
 
 .post_info {
+    margin-top: 5px;
     padding-left:5px;
-    padding-right:5px;
+    vertical-align: bottom;
 }
 
 .post_info i, .post_info .distinguish_flag {
@@ -99,11 +101,12 @@ body {
     padding:0;
 }
 .vote {
-    width: 30px;
+    width: 26px;
     position: absolute;
     right: 0;
     top: 5px;
-    align: right;
+    text-align: right;
+    margin-right: 6px;
     z-index: 100;
 }
 .comment_info span {
@@ -136,6 +139,23 @@ h5, h6 {
     display:inline;
     margin-top:16px;
     margin-right:6px;
+}
+
+.comment_account_options {
+    text-align: right;
+    display:inline;
+    position: absolute;
+    right: 0;
+    bottom:0;
+    margin-top:16px;
+    margin-right:6px;
+}
+
+.post_options {
+    position: absolute;
+    right: 6px;
+    bottom: 0;
+    z-index: 100;
 }
 
 .message_comment_options, .message_options {
@@ -262,7 +282,7 @@ a {
 .fa-globe {
     color: #B8B8B8;
 }
-.fa-trash {
+.fa-trash, .fa-times {
     color:#E06B6C;
 }
 .fa-arrow-up {
@@ -272,8 +292,11 @@ a {
 .fa-arrow-down {
     color:#A5A5A5;
 }
-.comment_options i, .message_options i, .message_comment_options i {
+.comment_options i, .comment_account_options i, .message_options i, .message_comment_options i {
     font-size: 24px;
+}
+.remove_option {
+    font-size: 28px !important;
 }
 .user_option {
     display:none;
