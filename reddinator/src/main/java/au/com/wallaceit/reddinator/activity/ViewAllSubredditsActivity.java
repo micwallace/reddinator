@@ -196,7 +196,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             public void run() {
                 // get all popular subreddits
                 try {
-                    srjson = global.mRedditData.getSubredditSearch(query);
+                    srjson = global.mRedditData.searchSubreddits(query);
                 } catch (final RedditData.RedditApiException e) {
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
@@ -323,7 +323,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         protected ArrayList<JSONObject> doInBackground(String... string) {
             // load popular subreddits
             try {
-                srjson = global.mRedditData.getSubreddits();
+                srjson = global.mRedditData.getPopularSubreddits();
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 exception = e;

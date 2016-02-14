@@ -111,7 +111,7 @@ public class RedditData {
     }
 
     // NON-AUTHED REQUESTS
-    public JSONArray getSubreddits() throws RedditApiException {
+    public JSONArray getPopularSubreddits() throws RedditApiException {
         JSONArray subreddits;
         String url = STANDARD_ENDPOINT + "/subreddits/popular.json?limit=50";
         try {
@@ -123,7 +123,7 @@ public class RedditData {
         return subreddits;
     }
 
-    public JSONArray getSubredditSearch(String query) throws RedditApiException {
+    public JSONArray searchSubreddits(String query) throws RedditApiException {
         JSONArray subreddits;
         String url = STANDARD_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
@@ -156,6 +156,22 @@ public class RedditData {
     public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
         String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        JSONObject result;
+        JSONArray feed;
+
+        result = redditApiGet(url, true); // use oauth if logged in
+        try {
+            feed = result.getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return feed;
+    }
+
+    public JSONArray searchRedditPosts(String query, String feedPath, boolean restrictSub, String sort, String time, int limit, String afterid) throws RedditApiException {
+        boolean loggedIn = isLoggedIn();
+        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/search.json?q=" + query + "&t=" + time + "&sort=" + sort + "&restrict_sr=" + restrictSub + "&type=link&syntax=plain&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed;
 

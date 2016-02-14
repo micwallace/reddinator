@@ -414,6 +414,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_saved)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_search)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_search).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_viewdomain)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
@@ -461,6 +462,13 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             case R.id.menu_account:
                 Intent accnIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
                 startActivity(accnIntent);
+                break;
+
+            case R.id.menu_search:
+                Intent searchIntent = new Intent(SubredditSelectActivity.this, SearchActivity.class);
+                if (!global.getSubredditManager().isFeedMulti(mAppWidgetId))
+                    searchIntent.putExtra("feed_path", global.getSubredditManager().getCurrentFeedPath(mAppWidgetId));
+                startActivity(searchIntent);
                 break;
 
             case R.id.menu_saved:

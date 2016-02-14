@@ -296,4 +296,5 @@
     <string name="send_message">Send Message</string>
     <string name="messages">Messages</string>
     <string name="password">Password</string>
+    <string name="limit_sr">Limit to %1$s</string>
 </resources>
