@@ -203,11 +203,14 @@ public class SubredditManager {
         editor.apply();
     }
     // apply filters to the new feed data
-    public JSONArray filterFeed(int feedId, JSONArray feedArray, JSONArray currentFeed, boolean filterAll){
+    public JSONArray filterFeed(int feedId, JSONArray feedArray, JSONArray currentFeed, boolean filterAll, boolean filterPosts){
         // determine filter requirements
         boolean filterDuplicates = prefs.getBoolean("filterduplicatespref", true) && currentFeed!=null;
-        JSONObject postFilters = getPostFilters(getCurrentFeedPath(feedId));
-        boolean filterPosts = postFilters.length()>0;
+        JSONObject postFilters = null;
+        if (filterPosts) {
+            postFilters = getPostFilters(getCurrentFeedPath(feedId));
+            filterPosts = postFilters.length() > 0;
+        }
         if (filterAll) {
             filterAll = !prefs.getString("allFilter", "").equals("");
         }
@@ -234,7 +237,7 @@ public class SubredditManager {
         for (int i=0; i<feedArray.length(); i++){
             try {
                 feedObj = feedArray.getJSONObject(i);
-                if (filterPosts || filterDuplicates) {
+                if (filterDuplicates || filterPosts) {
                     String currentId = feedObj.getJSONObject("data").getString("name");
                     if (filterDuplicates) {
                         if (ids.contains(currentId)) {

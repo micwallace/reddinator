@@ -91,15 +91,29 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         });
 
         Preference clearFilterButton = findPreference("clear_post_filter");
-        clearFilterButton.setSummary(getString(R.string.clear_post_filter_summary, global.getSubredditManager().getPostFilterCount()));
-        clearFilterButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                global.getSubredditManager().clearPostFilters();
-                Toast.makeText(getActivity(), getString(R.string.clear_post_filter_message), Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
+        if (!global.mRedditData.isLoggedIn()) {
+            clearFilterButton.setSummary(getString(R.string.clear_post_filter_summary, global.getSubredditManager().getPostFilterCount()));
+            clearFilterButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    global.getSubredditManager().clearPostFilters();
+                    Toast.makeText(getActivity(), getString(R.string.clear_post_filter_message), Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            });
+        } else {
+            clearFilterButton.setSummary(getString(R.string.clear_post_filter_summary_disabled));
+            clearFilterButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent intent = new Intent(getActivity(), AccountActivity.class);
+                    intent.setAction(AccountActivity.ACTION_HIDDEN);
+                    startActivity(intent);
+                    getActivity().finish();
+                    return true;
+                }
+            });
+        }
 
         themePref = (ListPreference) findPreference("appthemepref");
 

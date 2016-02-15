@@ -644,7 +644,7 @@ public class MainActivity extends Activity {
                     if (tempArray.length() == 0) {
                         endOfFeed = true;
                     } else {
-                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, data, isAll);
+                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, data, isAll, !global.mRedditData.isLoggedIn());
 
                         int i = 0;
                         while (i < tempArray.length()) {
@@ -670,7 +670,7 @@ public class MainActivity extends Activity {
                     if (tempArray.length() == 0) {
                         endOfFeed = true;
                     } else {
-                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll);
+                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll, !global.mRedditData.isLoggedIn());
                     }
                     data = tempArray;
                 }

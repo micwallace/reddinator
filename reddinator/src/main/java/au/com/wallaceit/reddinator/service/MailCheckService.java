@@ -34,7 +34,6 @@ import org.json.JSONArray;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.MessagesActivity;
-import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 
 public class MailCheckService extends Service {

@@ -20,7 +20,6 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -75,7 +74,6 @@ import au.com.wallaceit.reddinator.service.WidgetProvider;
 public class SearchActivity extends Activity {
 
     private Context context;
-    private SharedPreferences prefs;
     private Reddinator global;
     private SearchListAdapter listAdapter;
     private AbsListView listView;
@@ -95,7 +93,7 @@ public class SearchActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         context = SearchActivity.this;
         global = ((Reddinator) context.getApplicationContext());
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         setContentView(R.layout.activity_search);
         // Setup actionbar
         appView = findViewById(R.id.appview);

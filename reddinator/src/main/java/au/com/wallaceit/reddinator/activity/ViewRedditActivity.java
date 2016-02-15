@@ -54,9 +54,6 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.kobakei.ratethisapp.RateThisApp;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.reflect.Method;
 import java.util.Date;
 

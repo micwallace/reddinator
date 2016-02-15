@@ -258,4 +258,6 @@
     <string name="gilded">Dorado</string>
     <string name="hidden">Oculto</string>
     <string name="view_on_reddit">Ver en Reddit</string>
+    <string name="clear_post_filter_summary_disabled">Está conectado , utilizar su cuenta para mostrar</string>
+    <string name="limit_sr">Limitar a %1$s</string>
 </resources>

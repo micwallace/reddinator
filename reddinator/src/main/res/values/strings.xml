@@ -297,4 +297,5 @@
     <string name="messages">Messages</string>
     <string name="password">Password</string>
     <string name="limit_sr">Limit to %1$s</string>
+    <string name="clear_post_filter_summary_disabled">You\'re logged in, use your account to unhide</string>
 </resources>

@@ -7,14 +7,29 @@
         <item>Abrir Pagina Reddit</item>
     </string-array>
 
-    <!-- needs coding work as this is used in reddit urls
     <string-array name="reddit_sorts">
         <item>hot</item>
         <item>nuevo</item>
         <item>en ascenso</item>
         <item>controversial</item>
         <item>top</item>
-    </string-array>!-->
+    </string-array>
+
+    <string-array name="reddit_search_sorts">
+        <item>pertinencia</item>
+        <item>hot</item>
+        <item>nuevo</item>
+        <item>top</item>
+    </string-array>
+
+    <string-array name="reddit_search_times">
+        <item>todas</item>
+        <item>hora</item>
+        <item>día</item>
+        <item>semana</item>
+        <item>mes</item>
+        <item>año</item>
+    </string-array>
 
     <!-- Translate -->
     <string-array name="widget_refresh_list">

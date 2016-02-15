@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
@@ -77,7 +78,11 @@ public class FeedItemDialogActivity extends Activity {
                     case "hide_post":
                         redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
                         int feedPos = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, 0);
-                        global.getSubredditManager().addPostFilter(widgetId, redditId);
+                        if (global.mRedditData.isLoggedIn()){
+                            new HidePostTask(FeedItemDialogActivity.this, false, null).execute(redditId);
+                        } else {
+                            global.getSubredditManager().addPostFilter(widgetId, redditId);
+                        }
                         global.removePostFromFeed(widgetId, feedPos, redditId);
                         if (widgetId!=0) {
                             WidgetProvider.hideLoaderAndRefreshViews(FeedItemDialogActivity.this, widgetId, false);

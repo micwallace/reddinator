@@ -72,6 +72,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
     public static final String ACTION_SAVED = "saved";
+    public static final String ACTION_HIDDEN = "hidden";
     private String section = "overview";
 
     /**
@@ -117,10 +118,12 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         // theme
         updateTheme();
 
-        if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_SAVED)){
-            section = ACTION_SAVED;
-            viewPager.setCurrentItem(6);
-            tabsIndicator.setTab(6);
+        String action = getIntent().getAction();
+        if (action!=null && (action.equals(ACTION_SAVED) || action.equals(ACTION_HIDDEN))){
+            section = action;
+            int index = action.equals(ACTION_HIDDEN)?5:6;
+            viewPager.setCurrentItem(index);
+            tabsIndicator.setTab(index);
             scrollView.post(new Runnable() {
                 @Override
                 public void run() {
