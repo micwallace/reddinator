@@ -446,7 +446,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 return;
             }
             // check if end of feed, if not process & set feed data
-            if (data.length() == 0) {
+            if (tempArray.length() == 0) {
                 endOfFeed = true;
             } else {
                 tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll);

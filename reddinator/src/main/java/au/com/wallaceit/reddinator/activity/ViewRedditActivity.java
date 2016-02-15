@@ -163,18 +163,10 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
             postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
             widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
             feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+            userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
             // Get selected item from feed and user vote preference
             if (getIntent().getBooleanExtra("submitted", false)){
                 userLikes = "true";
-            } else {
-                JSONObject currentFeedItem = global.getFeedObject(prefs, widgetId, feedposition, redditItemId);
-                if (currentFeedItem!=null) {
-                    try {
-                        userLikes = currentFeedItem.getString("likes");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
         // Init rate dialog
@@ -243,7 +235,7 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
     @Override
     public void finish() {
         // update widget voting icons if a vote has been placed
-        if (widgetId!=0){
+        if (widgetId>0){
             if (global.getItemUpdate()!=null){
                 WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
             }

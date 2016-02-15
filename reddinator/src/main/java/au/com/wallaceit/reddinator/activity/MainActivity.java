@@ -233,6 +233,7 @@ public class MainActivity extends Activity {
             listView.invalidateViews();
         }
     }
+
     private Bundle getItemExtras(int position){
         JSONObject item = listAdapter.getItem(position);
         Bundle extras = new Bundle();
@@ -666,7 +667,7 @@ public class MainActivity extends Activity {
                         return (long) 0;
                     }
                     // check if end of feed, if not process & set feed data
-                    if (data.length() == 0) {
+                    if (tempArray.length() == 0) {
                         endOfFeed = true;
                     } else {
                         tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll);

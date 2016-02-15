@@ -167,11 +167,13 @@ public class SubredditManager {
             }
             return finalarr;
         } else {
-            try {
-                finalarr = postFilters.getJSONObject(feedPath);
-                return finalarr;
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (postFilters.has(feedPath)) {
+                try {
+                    finalarr = postFilters.getJSONObject(feedPath);
+                    return finalarr;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return new JSONObject();

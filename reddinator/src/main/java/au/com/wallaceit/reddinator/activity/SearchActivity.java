@@ -20,6 +20,7 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,8 +33,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -42,6 +45,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.IconTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -78,10 +82,6 @@ public class SearchActivity extends Activity {
     private View appView;
     private ThemeManager.Theme theme;
     private Bitmap[] images;
-    private EditText searchbox;
-    private CheckBox subcheckbox;
-    private Spinner sortselect;
-    private Spinner timeselect;
 
     private String query = "";
     private String feedPath = "";
@@ -92,7 +92,7 @@ public class SearchActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         context = SearchActivity.this;
         global = ((Reddinator) context.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -131,7 +131,7 @@ public class SearchActivity extends Activity {
             }
         });
 
-        searchbox = (EditText) this.findViewById(R.id.query);
+        final EditText searchbox = (EditText) this.findViewById(R.id.query);
         searchbox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -148,10 +148,23 @@ public class SearchActivity extends Activity {
 
         });
 
+        IconTextView searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
+        searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                query = searchbox.getText().toString();
+                if (!query.equals("")) {
+                    listAdapter.search();
+                } else {
+                    Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         feedPath = getIntent().getStringExtra("feed_path");
         if (feedPath==null) feedPath = ""; // default to front page
 
-        subcheckbox = (CheckBox) findViewById(R.id.limit_sr);
+        CheckBox subcheckbox = (CheckBox) findViewById(R.id.limit_sr);
         if (feedPath.equals("")){
             subcheckbox.setVisibility(View.GONE);
         } else {
@@ -167,7 +180,7 @@ public class SearchActivity extends Activity {
             });
         }
 
-        sortselect = (Spinner) findViewById(R.id.sort);
+        Spinner sortselect = (Spinner) findViewById(R.id.sort);
         sortselect.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_sorts)));
         sortselect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -197,7 +210,7 @@ public class SearchActivity extends Activity {
             }
         });
 
-        timeselect = (Spinner) findViewById(R.id.time);
+        Spinner timeselect = (Spinner) findViewById(R.id.time);
         timeselect.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_times)));
         timeselect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -255,7 +268,7 @@ public class SearchActivity extends Activity {
     private void setThemeColors() {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
-        findViewById(R.id.searchbar).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        //findViewById(R.id.searchbar).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
     }
 
     @Override
@@ -289,11 +302,22 @@ public class SearchActivity extends Activity {
             listView.invalidateViews();
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return false;
+    }
+
     private Bundle getItemExtras(int position){
         JSONObject item = listAdapter.getItem(position);
         Bundle extras = new Bundle();
         try {
-            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
             extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
@@ -317,7 +341,7 @@ public class SearchActivity extends Activity {
         private boolean loadThumbnails = false;
         private boolean bigThumbs = false;
         private boolean hideInf = false;
-        private boolean showItemSubreddit = false;
+        private boolean isLoaded = false;
 
         protected SearchListAdapter(Reddinator gobjects, SharedPreferences prefs) {
 
@@ -354,12 +378,14 @@ public class SearchActivity extends Activity {
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
-            showItemSubreddit = global.getSubredditManager().isFeedMulti(0);
         }
 
         @Override
         public int getCount() {
-            return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
+            if (isLoaded)
+                return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
+
+            return 0;
         }
 
         @Override
@@ -439,7 +465,7 @@ public class SearchActivity extends Activity {
                 viewHolder.listheading.setText(Html.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
-                String sourceText = (showItemSubreddit?subreddit+" - ":"")+domain;
+                String sourceText = (restrictSub?subreddit+" - ":"")+domain;
                 viewHolder.sourcetxt.setText(sourceText);
                 viewHolder.sourcetxt.setTextColor(themeColors.get("source_text"));
                 viewHolder.votestxt.setText(String.valueOf(score));
@@ -674,7 +700,6 @@ public class SearchActivity extends Activity {
 
             @Override
             protected Long doInBackground(Void... none) {
-                boolean isAll = global.getSubredditManager().getCurrentFeedName(0).equals("all");
                 JSONArray tempArray;
                 endOfFeed = false;
                 if (loadMore) {
@@ -711,7 +736,7 @@ public class SearchActivity extends Activity {
                         return (long) 0;
                     }
                     // check if end of feed, if not process & set feed data
-                    if (data.length() == 0) {
+                    if (tempArray.length() == 0) {
                         endOfFeed = true;
                     }
                     data = tempArray;
@@ -734,36 +759,35 @@ public class SearchActivity extends Activity {
             @Override
             protected void onPostExecute(Long result) {
                 if (result > 0) {
+                    isLoaded = true;
                     // hide loader
                     if (loadMore) {
-                        hideAppLoader(false, false); // don't go to top of list
+                        hideAppLoader(false); // don't go to top of list
                     } else {
-                        hideAppLoader(true, false); // go to top
+                        hideAppLoader(true); // go to top
                     }
                     listAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
-                    hideAppLoader(false, true); // don't go to top of list and show error icon
+                    hideAppLoader(false); // don't go to top of list and show error icon
                 }
             }
         }
 
         // hide loader
-        private void hideAppLoader(boolean goToTopOfList, boolean showError) {
+        private void hideAppLoader(boolean goToTopOfList) {
             // get theme layout id
             //loader.setVisibility(View.GONE);
+            setProgressBarIndeterminateVisibility(false);
             // go to the top of the list view
             if (goToTopOfList) {
                 listView.smoothScrollToPosition(0);
             }
-            if (showError) {
-                //errorIcon.setVisibility(View.VISIBLE);
-            }
         }
 
         private void showAppLoader() {
-            //errorIcon.setVisibility(View.GONE);
             //loader.setVisibility(View.VISIBLE);
+            setProgressBarIndeterminateVisibility(true);
         }
     }
 
@@ -840,14 +864,14 @@ public class SearchActivity extends Activity {
                         break;
                 }
                 listAdapter.updateUiVote(listposition, redditid, value);
-                global.setItemVote(prefs, 0, listposition, redditid, value);
+                //global.setItemVote(prefs, 0, listposition, redditid, value);
             } else {
                 // check login required
                 if (exception.isAuthError()) global.mRedditData.initiateLogin(SearchActivity.this, false);
                 // show error
                 Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
-            listAdapter.hideAppLoader(false, false);
+            listAdapter.hideAppLoader(false);
         }
     }
 
