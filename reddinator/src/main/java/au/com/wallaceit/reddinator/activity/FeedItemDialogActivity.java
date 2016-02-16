@@ -84,7 +84,7 @@ public class FeedItemDialogActivity extends Activity {
                             global.getSubredditManager().addPostFilter(widgetId, redditId);
                         }
                         global.removePostFromFeed(widgetId, feedPos, redditId);
-                        if (widgetId!=0) {
+                        if (widgetId>0) {
                             WidgetProvider.hideLoaderAndRefreshViews(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(5); // tell main activity to refresh views
@@ -113,7 +113,7 @@ public class FeedItemDialogActivity extends Activity {
                         // view subreddit of this item
                         String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
                         global.getSubredditManager().setFeedSubreddit(widgetId, subreddit);
-                        if (widgetId!=0) {
+                        if (widgetId>0) {
                             WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(2); // tell main activity to update
@@ -124,7 +124,7 @@ public class FeedItemDialogActivity extends Activity {
                         // view listings for the domain of this item
                         String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
                         global.getSubredditManager().setFeedDomain(widgetId, domain);
-                        if (widgetId!=0) {
+                        if (widgetId>0) {
                             WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(2);
@@ -149,7 +149,7 @@ public class FeedItemDialogActivity extends Activity {
         upvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (widgetId!=0) {
+                if (widgetId>0) {
                     new WidgetVoteTask(
                             FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
@@ -164,7 +164,7 @@ public class FeedItemDialogActivity extends Activity {
         downvote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (widgetId!=0) {
+                if (widgetId>0) {
                     new WidgetVoteTask(
                             FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
@@ -193,11 +193,11 @@ public class FeedItemDialogActivity extends Activity {
             options.add(new String[]{"open_post", getString(R.string.item_option_open_post)});
             options.add(new String[]{"open_comments", getString(R.string.item_option_open_comments)});
 
-            if (global.getSubredditManager().isFeedMulti(widgetId))
+            if (widgetId>-1 && global.getSubredditManager().isFeedMulti(widgetId))
                 options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT))});
 
             String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
-            if (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain))
+            if (widgetId>-1 && (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain)))
                 options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});
         }
 
@@ -239,7 +239,7 @@ public class FeedItemDialogActivity extends Activity {
     }
 
     private void close(int result){
-        if (result==3 || result==4) {
+        if (result==3 || result==4 || (widgetId<0 && result==5)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(WidgetProvider.ITEM_FEED_POSITION, getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
             setResult(result, intent);

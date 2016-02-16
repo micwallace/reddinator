@@ -18,6 +18,11 @@
     <item
         android:id="@+id/menu_account"
         android:title="@string/my_reddit"
+        android:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_save"
+        android:title="@string/save"
         android:showAsAction="never" />
 
     <item
@@ -28,11 +33,6 @@
     <item
         android:id="@+id/menu_share"
         android:title="@string/share"
-        android:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_save"
-        android:title="@string/save"
         android:showAsAction="never" />
 
     <item

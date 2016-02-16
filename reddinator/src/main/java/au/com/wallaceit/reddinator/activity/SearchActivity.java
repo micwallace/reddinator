@@ -290,7 +290,7 @@ public class SearchActivity extends Activity {
                 break;
             // reload feed data from cache
             case 5:
-                listAdapter.reloadFeedData();
+                listAdapter.removePostAtPosition(data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
                 listView.invalidateViews();
                 break;
         }
@@ -673,8 +673,19 @@ public class SearchActivity extends Activity {
             loadReddits(true);
         }
 
-        public void reloadFeedData() {
-            data = global.getFeed(mSharedPreferences, 0);
+        public void removePostAtPosition(int position) {
+            if (position>-1) {
+                JSONArray tempArr = new JSONArray();
+                for (int i = 0; i<data.length(); i++){
+                    if (i!=position)
+                        try {
+                            tempArr.put(data.get(i));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                }
+                data = tempArr;
+            }
         }
 
         public void search() {

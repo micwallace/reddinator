@@ -452,16 +452,26 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 break;
 
             case R.id.menu_inbox:
-                Intent inboxIntent = new Intent(SubredditSelectActivity.this, MessagesActivity.class);
-                if (global.mRedditData.getInboxCount()>0) {
-                    inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
+                    Toast.makeText(SubredditSelectActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent inboxIntent = new Intent(SubredditSelectActivity.this, MessagesActivity.class);
+                    if (global.mRedditData.getInboxCount() > 0) {
+                        inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                    }
+                    startActivity(inboxIntent);
                 }
-                startActivity(inboxIntent);
                 break;
 
             case R.id.menu_account:
-                Intent accnIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
-                startActivity(accnIntent);
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
+                    Toast.makeText(SubredditSelectActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent accnIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
+                    startActivity(accnIntent);
+                }
                 break;
 
             case R.id.menu_search:
@@ -472,9 +482,14 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 break;
 
             case R.id.menu_saved:
-                Intent savedIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
-                savedIntent.setAction(AccountActivity.ACTION_SAVED);
-                startActivity(savedIntent);
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
+                    Toast.makeText(SubredditSelectActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent savedIntent = new Intent(SubredditSelectActivity.this, AccountActivity.class);
+                    savedIntent.setAction(AccountActivity.ACTION_SAVED);
+                    startActivity(savedIntent);
+                }
                 break;
 
             case R.id.menu_submit:

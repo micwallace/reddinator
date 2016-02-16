@@ -73,12 +73,6 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         global = ((Reddinator) MessagesActivity.this.getApplicationContext());
-        if (!global.mRedditData.isLoggedIn()){
-            global.mRedditData.initiateLogin(MessagesActivity.this, false);
-            Toast.makeText(MessagesActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
-            this.finish();
-            return;
-        }
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);

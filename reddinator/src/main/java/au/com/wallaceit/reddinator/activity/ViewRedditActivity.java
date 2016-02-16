@@ -347,16 +347,26 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
                 break;
 
             case R.id.menu_account:
-                Intent accnIntent = new Intent(ViewRedditActivity.this, AccountActivity.class);
-                startActivity(accnIntent);
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
+                    Toast.makeText(ViewRedditActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent accnIntent = new Intent(ViewRedditActivity.this, AccountActivity.class);
+                    startActivity(accnIntent);
+                }
                 break;
 
             case R.id.menu_inbox:
-                Intent inboxIntent = new Intent(ViewRedditActivity.this, MessagesActivity.class);
-                if (global.mRedditData.getInboxCount()>0) {
-                    inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
+                    Toast.makeText(ViewRedditActivity.this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent inboxIntent = new Intent(ViewRedditActivity.this, MessagesActivity.class);
+                    if (global.mRedditData.getInboxCount() > 0) {
+                        inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                    }
+                    startActivity(inboxIntent);
                 }
-                startActivity(inboxIntent);
                 break;
 
             case R.id.menu_open:

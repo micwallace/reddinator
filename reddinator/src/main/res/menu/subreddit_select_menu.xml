@@ -14,8 +14,8 @@
         reddinator:showAsAction="always"/>
 
     <item
-        android:id="@+id/menu_search"
-        android:title="@string/search"
+        android:id="@+id/menu_account"
+        android:title="@string/my_reddit"
         android:showAsAction="ifRoom"
         reddinator:showAsAction="ifRoom"/>
 
@@ -26,8 +26,8 @@
         reddinator:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/menu_account"
-        android:title="@string/my_reddit"
+        android:id="@+id/menu_search"
+        android:title="@string/search"
         android:showAsAction="ifRoom"
         reddinator:showAsAction="ifRoom"/>
 
