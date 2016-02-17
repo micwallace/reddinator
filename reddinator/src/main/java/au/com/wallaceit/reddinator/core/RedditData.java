@@ -171,7 +171,13 @@ public class RedditData {
 
     public JSONArray searchRedditPosts(String query, String feedPath, boolean restrictSub, String sort, String time, int limit, String afterid) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/search.json?q=" + query + "&t=" + time + "&sort=" + sort + "&restrict_sr=" + restrictSub + "&type=link&syntax=plain&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        String url;
+        try {
+            url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/search.json?q=" + URLEncoder.encode(query, "UTF-8") + "&t=" + time + "&sort=" + sort + "&restrict_sr=" + restrictSub + "&type=link&syntax=plain&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Encoding error: "+e.getMessage());
+        }
         JSONObject result;
         JSONArray feed;
 
