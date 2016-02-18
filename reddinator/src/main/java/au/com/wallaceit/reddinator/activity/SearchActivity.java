@@ -213,27 +213,28 @@ public class SearchActivity extends Activity {
         timeselect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                sort = "all"; // default if fails
                 // find index
                 switch (position) {
                     case 0:
-                        sort = "all";
+                        time = "all";
                         break;
                     case 1:
-                        sort = "hour";
+                        time = "hour";
                         break;
                     case 2:
-                        sort = "day";
+                        time = "day";
                         break;
                     case 3:
-                        sort = "week";
+                        time = "week";
                         break;
                     case 4:
-                        sort = "month";
+                        time = "month";
                         break;
                     case 5:
-                        sort = "year";
+                        time = "year";
                         break;
+                    default:
+                        time = "all";
                 }
                 if (!query.equals("")) listAdapter.search();
             }
