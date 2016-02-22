@@ -348,17 +348,16 @@ function appendComment(commentData, prepend, parentId){
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
-    if (isMessages && commentData.hasOwnProperty('subject')){
+    if (isMessages){
         commentElem.find(".comment_scores").hide();
         commentElem.find(".message_type").text("("+commentData.subject+")").show();
         commentElem.find(".message_subject").text(commentData.link_title).show();
         commentElem.data("context", commentData.context);
     } else {
         commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);
-        commentElem.find(".comment_reply_count").text("0");
-        // no context available
-        if (isMessages)
-            commentElem.find(".comment_context_link").hide();
+        commentElem.find(".comment_reply_count").hide();
+        // build context url
+        commentElem.data("context", "/r/"+commentData.subreddit+"/comments/"+commentData.link_id.split("_")[1]+"//"+commentData.id+"/?context=3");
     }
     // check if likes
     if (commentData.hasOwnProperty('likes')){

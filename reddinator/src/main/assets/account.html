@@ -33,7 +33,7 @@
             <i class="user_option fa fa-trash" onclick="deleteComment($(this).parent().parent().parent().attr('id'));"></i>
             <i class="post_toggle fa fa-reply"></i>
             <i class="remove_option fa fa-times" style="display:none;"></i>
-            <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().attr('id'));"></i>
+            <i class="fa fa-globe" onclick="Reddinator.openCommentLink($(this).parent().parent().parent().data('context'));"></i>
         </div>
     </div>
     <div class="post_reply post_box" style="display:none;">
