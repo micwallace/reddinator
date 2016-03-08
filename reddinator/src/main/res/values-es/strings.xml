@@ -260,4 +260,6 @@
     <string name="view_on_reddit">Ver en Reddit</string>
     <string name="clear_post_filter_summary_disabled">Está conectado , utilizar su cuenta para mostrar</string>
     <string name="limit_sr">Limitar a %1$s</string>
+    <string name="data_error">Error en los datos de correos de apertura, por favor, vuelva a cargar la alimentación</string>
+    <string name="view_comments">Ver Comentarios {fa-comments}</string>
 </resources>

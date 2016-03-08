@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.wallaceit.reddinator"
-    android:versionCode="34"
-    android:versionName="3.03">
+    android:versionCode="35"
+    android:versionName="3.04">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed by some webview HTML5 video implementations (Bug report received for Android 4.1) -->
@@ -133,6 +133,11 @@
 
         <activity
             android:name=".activity.FeedItemDialogActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <activity
+            android:name=".activity.ViewImageDialogActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Dialog" />
     </application>

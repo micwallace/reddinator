@@ -404,73 +404,8 @@ public class Reddinator extends Application {
                     file.delete();
             }
     }
-    // String escaping utility functions used to escape strings passed to javascript webviews, StringEscapeUtils was causing errors
-    public static String escapeJavaScript(String param) {
-        char[] chars = param.toCharArray();
 
-        StringBuilder sb = new StringBuilder();
-
-        for (char aChar : chars) {
-            if(aChar > 4095) {
-                sb.append("\\u");
-                sb.append(hex(aChar));
-            } else if(aChar > 255) {
-                sb.append("\\u0");
-                sb.append(hex(aChar));
-            } else if(aChar > 127) {
-                sb.append("\\u00" );
-                sb.append(hex(aChar));
-            } else if(aChar < 32) {
-                switch (aChar) {
-                    case '\n':
-                        sb.append("\\n");
-                        break;
-                    case '\r':
-                        sb.append("\\r");
-                        break;
-                    case '\b':
-                        sb.append("\\b");
-                        break;
-                    case '\f':
-                        sb.append("\\f");
-                        break;
-                    case '\t':
-                        sb.append("\\t");
-                        break;
-                    default:
-                        if(aChar > 15) {
-                            sb.append("\\u00");
-                            sb.append(hex(aChar));
-                        } else {
-                            sb.append("\\u000");
-                            sb.append(hex(aChar));
-                        }
-                        break;
-                }
-            } else {
-                switch(aChar) {
-                    case '\"':
-                        sb.append(92);
-                        sb.append(34);
-                        break;
-                    case '\'':
-                        sb.append(92);
-                        sb.append(39);
-                        break;
-                    case '\\':
-                        sb.append(92);
-                        sb.append(92);
-                        break;
-                    default:
-                        sb.append(aChar);
-                }
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private static String hex(char ch) {
-        return Integer.toHexString(ch).toUpperCase();
+    public static boolean isImageUrl(String url) {
+        return url != null && url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)");
     }
 }

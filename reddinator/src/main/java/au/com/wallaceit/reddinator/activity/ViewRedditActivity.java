@@ -141,7 +141,7 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
-        if (prefs.getBoolean("commentsfirstpref", false)) {
+        if (getIntent().getExtras().getBoolean("view_comments", false) || prefs.getBoolean("commentsfirstpref", false)) {
             viewPager.setCurrentItem(1);
         } else {
             viewPager.setCurrentItem(0);

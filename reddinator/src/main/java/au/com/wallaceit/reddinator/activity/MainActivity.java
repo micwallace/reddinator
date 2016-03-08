@@ -144,8 +144,13 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // open in the reddinator view
+                Bundle extras = getItemExtras(position);
+                if (extras==null){
+                    Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
+                    return;
+                }
                 Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                clickIntent1.putExtras(getItemExtras(position));
+                clickIntent1.putExtras(extras);
                 context.startActivity(clickIntent1);
             }
         });
@@ -153,8 +158,13 @@ public class MainActivity extends Activity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Bundle extras = getItemExtras(position);
+                if (extras==null){
+                    Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
+                    return true;
+                }
                 Intent ointent = new Intent(MainActivity.this, FeedItemDialogActivity.class);
-                ointent.putExtras(getItemExtras(position));
+                ointent.putExtras(extras);
                 MainActivity.this.startActivityForResult(ointent, 1);
                 return true;
             }
@@ -237,6 +247,9 @@ public class MainActivity extends Activity {
     private Bundle getItemExtras(int position){
         JSONObject item = listAdapter.getItem(position);
         Bundle extras = new Bundle();
+        if (item==null){
+            return null;
+        }
         try {
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
             extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
@@ -295,7 +308,8 @@ public class MainActivity extends Activity {
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow)
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), Color.RED, 12, shadow)
             };
 
             // get font size preference
@@ -356,6 +370,7 @@ public class MainActivity extends Activity {
                     viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
                     viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
                     viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
+                    viewHolder.thumbview_expand = (ImageView) row.findViewById(R.id.thumbnail_expand);
                     viewHolder.infview = row.findViewById(R.id.infbox);
                     viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
                     viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
@@ -364,12 +379,7 @@ public class MainActivity extends Activity {
                     viewHolder = (ViewHolder) row.getTag();
                 }
                 // collect data
-                String name;
-                String thumbnail;
-                String domain;
-                String id;
-                String userLikes;
-                String subreddit;
+                String name, thumbnail, domain, id, url, userLikes, subreddit;
                 int score;
                 int numcomments;
                 boolean nsfw;
@@ -377,6 +387,7 @@ public class MainActivity extends Activity {
                     JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
                     name = tempobj.getString("title");
                     id = tempobj.getString("name");
+                    url = tempobj.getString("url");
                     domain = tempobj.getString("domain");
                     thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
                     score = tempobj.getInt("score");
@@ -451,6 +462,8 @@ public class MainActivity extends Activity {
                             }
                             viewHolder.thumbview.setImageResource(resource);
                             viewHolder.thumbview.setVisibility(View.VISIBLE);
+                            viewHolder.thumbview.setClickable(false);
+                            viewHolder.thumbview_expand.setVisibility(View.GONE);
                             //System.out.println("Loading default image: "+thumbnail);
                         } else {
                             // check if the image is in cache
@@ -469,6 +482,23 @@ public class MainActivity extends Activity {
                                 viewHolder.thumbview.setVisibility(View.VISIBLE);
                                 // set image source as default to prevent an image from a previous view being used
                                 viewHolder.thumbview.setImageResource(android.R.drawable.screen_background_dark_transparent);
+                            }
+                            // check if url is image, if so, add ViewImageDialog intent and show indicator
+                            if (Reddinator.isImageUrl(url)){
+                                viewHolder.thumbview.setClickable(true);
+                                viewHolder.thumbview.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(MainActivity.this, ViewImageDialogActivity.class);
+                                        intent.putExtras(getItemExtras(position));
+                                        MainActivity.this.startActivity(intent);
+                                    }
+                                });
+                                viewHolder.thumbview_expand.setImageBitmap(images[6]);
+                                viewHolder.thumbview_expand.setVisibility(View.VISIBLE);
+                            } else {
+                                viewHolder.thumbview.setClickable(false);
+                                viewHolder.thumbview_expand.setVisibility(View.GONE);
                             }
                         }
                     } else {
@@ -525,6 +555,7 @@ public class MainActivity extends Activity {
             TextView votestxt;
             TextView commentstxt;
             ImageView thumbview;
+            ImageView thumbview_expand;
             ImageButton upvotebtn;
             ImageButton downvotebtn;
             View infview;

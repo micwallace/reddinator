@@ -130,7 +130,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow)
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), Color.RED, 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
 
@@ -286,6 +287,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         }
                         row.setImageViewResource(R.id.thumbnail, resource);
                         row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
+                        row.setOnClickFillInIntent(R.id.thumbnail, i);
+                        row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                         //System.out.println("Loading default image: "+thumbnail);
                     } else {
                         Bitmap bitmap;
@@ -303,6 +306,19 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         } else {
                             // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
                             row.setViewVisibility(R.id.thumbnail, View.GONE);
+                        }
+                        // check if url is image, if so, add ViewImageDialog intent and show indicator
+                        if (Reddinator.isImageUrl(url)){
+                            Intent imageintent =  new Intent();
+                            Bundle imageextras = (Bundle) extras.clone();
+                            imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
+                            imageintent.putExtras(imageextras);
+                            row.setOnClickFillInIntent(R.id.thumbnail, imageintent);
+                            row.setViewVisibility(R.id.thumbnail_expand, View.VISIBLE);
+                            row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
+                        } else {
+                            row.setOnClickFillInIntent(R.id.thumbnail, i);
+                            row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                         }
                     }
                 } else {

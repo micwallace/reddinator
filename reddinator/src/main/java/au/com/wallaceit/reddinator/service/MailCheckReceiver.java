@@ -35,7 +35,7 @@ public class MailCheckReceiver extends BroadcastReceiver {
 
     public static void setAlarm(Context context){
 
-        Intent intent = new Intent(context, MailCheckReceiver.class);
+        Intent intent = new Intent(context.getApplicationContext(), MailCheckReceiver.class);
         intent.setPackage(context.getPackageName());
         intent.setAction(CHECK_ACTION);
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));

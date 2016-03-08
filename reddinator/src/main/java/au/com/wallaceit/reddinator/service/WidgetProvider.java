@@ -44,6 +44,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.PrefsActivity;
 import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
+import au.com.wallaceit.reddinator.activity.ViewImageDialogActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.FeedItemDialogActivity;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
@@ -62,6 +63,7 @@ public class WidgetProvider extends AppWidgetProvider {
     public static final int ITEM_CLICK_UPVOTE = 1;
     public static final int ITEM_CLICK_DOWNVOTE = 2;
     public static final int ITEM_CLICK_OPTIONS = 3;
+    public static final int ITEM_CLICK_IMAGE = 4;
     public static final String ITEM_FEED_POSITION = "ITEM_FEED_POSITION";
     public static final String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
     public static final String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
@@ -288,6 +290,13 @@ public class WidgetProvider extends AppWidgetProvider {
                         ointent.putExtras(intent.getExtras());
                         ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(ointent);
+                        break;
+                    // open image view
+                    case WidgetProvider.ITEM_CLICK_IMAGE:
+                        Intent imageintent = new Intent(context, ViewImageDialogActivity.class);
+                        imageintent.putExtras(intent.getExtras());
+                        imageintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(imageintent);
                         break;
                 }
             }

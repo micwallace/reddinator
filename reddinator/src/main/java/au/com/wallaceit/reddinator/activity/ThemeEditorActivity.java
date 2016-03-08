@@ -223,7 +223,12 @@ public class ThemeEditorActivity extends ListActivity {
                             opacityBar.setVisibility(View.GONE);
                         }
                         // set current color
-                        int curColor = Color.parseColor(theme.getValue(finalKey));
+                        int curColor;
+                        try {
+                            curColor = Color.parseColor(theme.getValue(finalKey));
+                        } catch (IllegalArgumentException iae) {
+                            curColor = Color.WHITE;
+                        }
                         picker.setColor(curColor);
                         picker.setOldCenterColor(curColor);
 
@@ -295,13 +300,14 @@ public class ThemeEditorActivity extends ListActivity {
                                 dialogInterface.dismiss();
                                 try {
                                     Color.parseColor(hexCode);
-                                    theme.setValue(finalKey, hexCode);
-                                    themeChanged = true;
-                                    refreshList();
                                 } catch (IllegalArgumentException iae) {
                                     // This color string is not valid
                                     Toast.makeText(ThemeEditorActivity.this, "Please enter a valid hex color code", Toast.LENGTH_LONG).show();
+                                    return;
                                 }
+                                theme.setValue(finalKey, hexCode);
+                                themeChanged = true;
+                                refreshList();
                             }
                         })
                         .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
