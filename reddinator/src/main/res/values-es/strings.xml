@@ -204,7 +204,7 @@
     <string name="back_button_pref_summary_off">Salir de la ultima pantalla</string>
     <string name="comment_font_pref_title">Tamaño de la fuente en los comentarios</string>
     <string name="comment_font_pref_summary">Tamaño de la fuente por defecto para la vista de los comentarios</string>
-    <string name="reddit_mobile_site_pref_title">Bandeja de Entrada/Cuenta del sitio mobile</string>
+    <string name="reddit_mobile_site_pref_title">Reddit del sitio mobile</string>
     <string name="reddit_mobile_site_pref_summary_off">Usando el sitio oficial para moviles (i.reddit.com)</string>
     <string name="reddit_mobile_site_pref_summary_on">Usando el sitio beta mobile (m.reddit.com)</string>
     <string name="reddit_mobile_site_comments_pref_title">Contenido/Comentarioss sitio mobile</string>
@@ -262,4 +262,6 @@
     <string name="limit_sr">Limitar a %1$s</string>
     <string name="data_error">Error en los datos de correos de apertura, por favor, vuelva a cargar la alimentación</string>
     <string name="view_comments">Ver Comentarios {fa-comments}</string>
+    <string name="changelog">Cambios</string>
+    <string name="credits">Créditos</string>
 </resources>

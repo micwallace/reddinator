@@ -247,7 +247,7 @@
     <string name="back_button_pref_summary_off">Exit to the last screen</string>
     <string name="comment_font_pref_title">Comments Font Size</string>
     <string name="comment_font_pref_summary">Default font size for the comments view</string>
-    <string name="reddit_mobile_site_pref_title">Inbox/Account mobile site</string>
+    <string name="reddit_mobile_site_pref_title">Reddit links mobile site</string>
     <string name="reddit_mobile_site_pref_summary_off">Using legacy mobile site (i.reddit.com)</string>
     <string name="reddit_mobile_site_pref_summary_on">Using beta mobile site (m.reddit.com)</string>
     <string name="reddit_mobile_site_comments_pref_title">Content/Comments mobile site</string>

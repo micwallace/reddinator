@@ -437,6 +437,16 @@ public class Reddinator extends Application {
     }
 
     public static boolean isImageUrl(String url) {
-        return url != null && url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)");
+        if (url == null)
+            return false;
+        // Check image extension
+        if (hasImageExtension(url))
+            return true;
+        // Check for imgur url without file extension (should not be album)
+        return url.toLowerCase().matches("(https?://(.*imgur.com/[^a/].*)$)");
+    }
+
+    public static boolean hasImageExtension(String url){
+        return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)");
     }
 }

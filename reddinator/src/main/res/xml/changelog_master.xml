@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="3.05" versioncode="35">
+    <release version="3.04" versioncode="35">
         <change>Added image preview dialog</change>
-        <change>Updated this dialog with changelog and credits</change>
+        <change>Updated about dialog with changelog and credits</change>
         <change>Various bug fixes and tweaks</change>
     </release>
-    <release version="3.04" versioncode="34">
+    <release version="3.03" versioncode="34">
         <change>Native account history and message views</change>
         <change>Compose messages</change>
         <change>Search for Reddit posts</change>

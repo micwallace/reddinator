@@ -447,8 +447,8 @@ public class MainActivity extends Activity {
 
                 // load thumbnail if they are enabled for this widget
                 if (loadThumbnails) {
-                    // load big image if preference is set
-                    if (!thumbnail.equals("")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
+                    // check for thumbnail; detect default thumbnails
+                    if (!thumbnail.equals("")) {
                         if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
                             int resource = 0;
                             switch (thumbnail) {
@@ -462,8 +462,6 @@ public class MainActivity extends Activity {
                             }
                             viewHolder.thumbview.setImageResource(resource);
                             viewHolder.thumbview.setVisibility(View.VISIBLE);
-                            viewHolder.thumbview.setClickable(false);
-                            viewHolder.thumbview_expand.setVisibility(View.GONE);
                             //System.out.println("Loading default image: "+thumbnail);
                         } else {
                             // check if the image is in cache
@@ -483,23 +481,23 @@ public class MainActivity extends Activity {
                                 // set image source as default to prevent an image from a previous view being used
                                 viewHolder.thumbview.setImageResource(android.R.drawable.screen_background_dark_transparent);
                             }
-                            // check if url is image, if so, add ViewImageDialog intent and show indicator
-                            if (Reddinator.isImageUrl(url)){
-                                viewHolder.thumbview.setClickable(true);
-                                viewHolder.thumbview.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent intent = new Intent(MainActivity.this, ViewImageDialogActivity.class);
-                                        intent.putExtras(getItemExtras(position));
-                                        MainActivity.this.startActivity(intent);
-                                    }
-                                });
-                                viewHolder.thumbview_expand.setImageBitmap(images[6]);
-                                viewHolder.thumbview_expand.setVisibility(View.VISIBLE);
-                            } else {
-                                viewHolder.thumbview.setClickable(false);
-                                viewHolder.thumbview_expand.setVisibility(View.GONE);
-                            }
+                        }
+                        // check if url is image, if so, add ViewImageDialog intent and show indicator
+                        if (Reddinator.isImageUrl(url)){
+                            viewHolder.thumbview.setClickable(true);
+                            viewHolder.thumbview.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(MainActivity.this, ViewImageDialogActivity.class);
+                                    intent.putExtras(getItemExtras(position));
+                                    MainActivity.this.startActivity(intent);
+                                }
+                            });
+                            viewHolder.thumbview_expand.setImageBitmap(images[6]);
+                            viewHolder.thumbview_expand.setVisibility(View.VISIBLE);
+                        } else {
+                            viewHolder.thumbview.setClickable(false);
+                            viewHolder.thumbview_expand.setVisibility(View.GONE);
                         }
                     } else {
                         viewHolder.thumbview.setVisibility(View.GONE);

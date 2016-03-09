@@ -273,7 +273,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // load thumbnail if they are enabled for this widget
             if (loadThumbnails) {
                 // load big image if preference is set
-                if (!thumbnail.equals("")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
+                if (!thumbnail.equals("")) { // check for thumbnail; detect default thumbnails
                     if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
                         int resource = 0;
                         switch (thumbnail) {
@@ -287,8 +287,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                         }
                         row.setImageViewResource(R.id.thumbnail, resource);
                         row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
-                        row.setOnClickFillInIntent(R.id.thumbnail, i);
-                        row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                         //System.out.println("Loading default image: "+thumbnail);
                     } else {
                         Bitmap bitmap;
@@ -307,19 +305,19 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                             // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
                             row.setViewVisibility(R.id.thumbnail, View.GONE);
                         }
-                        // check if url is image, if so, add ViewImageDialog intent and show indicator
-                        if (Reddinator.isImageUrl(url)){
-                            Intent imageintent =  new Intent();
-                            Bundle imageextras = (Bundle) extras.clone();
-                            imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
-                            imageintent.putExtras(imageextras);
-                            row.setOnClickFillInIntent(R.id.thumbnail, imageintent);
-                            row.setViewVisibility(R.id.thumbnail_expand, View.VISIBLE);
-                            row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
-                        } else {
-                            row.setOnClickFillInIntent(R.id.thumbnail, i);
-                            row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
-                        }
+                    }
+                    // check if url is image, if so, add ViewImageDialog intent and show indicator
+                    if (Reddinator.isImageUrl(url)){
+                        Intent imageintent =  new Intent();
+                        Bundle imageextras = (Bundle) extras.clone();
+                        imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
+                        imageintent.putExtras(imageextras);
+                        row.setOnClickFillInIntent(R.id.thumbnail, imageintent);
+                        row.setViewVisibility(R.id.thumbnail_expand, View.VISIBLE);
+                        row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
+                    } else {
+                        row.setOnClickFillInIntent(R.id.thumbnail, i);
+                        row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                     }
                 } else {
                     row.setViewVisibility(R.id.thumbnail, View.GONE);

@@ -46,6 +46,8 @@ public class ViewImageDialogActivity extends Activity {
         // get content url (which will be an image)
         imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
         imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
+        if (!Reddinator.hasImageExtension(imageUrl))
+            imageUrl += ".jpg"; // any extension will work
         // setup image view
         webView = (WebView) findViewById(R.id.imagewebview);
         webView.setBackgroundColor(Color.TRANSPARENT);
