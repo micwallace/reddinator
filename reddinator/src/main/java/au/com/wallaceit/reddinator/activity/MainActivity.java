@@ -309,7 +309,7 @@ public class MainActivity extends Activity {
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), Color.RED, 12, shadow)
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
             };
 
             // get font size preference
@@ -503,6 +503,7 @@ public class MainActivity extends Activity {
                         }
                     } else {
                         viewHolder.thumbview.setVisibility(View.GONE);
+                        viewHolder.thumbview_expand.setVisibility(View.GONE);
                     }
                 } else {
                     viewHolder.thumbview.setVisibility(View.GONE);

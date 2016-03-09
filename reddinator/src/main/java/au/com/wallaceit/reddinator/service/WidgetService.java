@@ -131,7 +131,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), Color.RED, 12, shadow)
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
 
@@ -323,6 +323,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     }
                 } else {
                     row.setViewVisibility(R.id.thumbnail, View.GONE);
+                    row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                 }
             } else {
                 row.setViewVisibility(R.id.thumbnail, View.GONE);

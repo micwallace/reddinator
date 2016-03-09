@@ -427,12 +427,12 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         builder.setMessage(resources.getString(R.string.open_link))
                 .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        openUrlExternally(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
+                        openUrlExternally(postUrl);
                     }
                 })
                 .setPositiveButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        openUrlExternally("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        openUrlExternally("https://reddit.com" + postPermalink);
                     }
                 });
         // Create the AlertDialog
@@ -444,16 +444,16 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         builder.setMessage(resources.getString(R.string.share_url))
                 .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL));
+                        shareText(postUrl);
                     }
                 }).setPositiveButton(resources.getString(R.string.both), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        shareText(getIntent().getStringExtra(WidgetProvider.ITEM_URL)+"\nhttps://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        shareText(postUrl+"\nhttps://reddit.com" + postPermalink);
                     }
                 })
                 .setNeutralButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        shareText("https://reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        shareText("https://reddit.com" + postPermalink);
                     }
                 });
         // Create the AlertDialog
