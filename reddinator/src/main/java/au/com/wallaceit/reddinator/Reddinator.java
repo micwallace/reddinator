@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,8 +37,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +55,9 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
+import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
+import de.cketti.library.changelog.ChangeLog;
 
 import static au.com.wallaceit.reddinator.R.layout.dialog_info;
 
@@ -344,7 +350,26 @@ public class Reddinator extends Application {
     }
 
     public static void showInfoDialog(final Activity context, final boolean isInfo){
+        Resources resources = context.getResources();
         LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(dialog_info, null);
+        // setup view pager
+        final ViewPager pager = (ViewPager) aboutView.findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);
+        pager.setAdapter(new SimpleTabsAdapter(new String[]{resources.getString(R.string.about), resources.getString(R.string.credits), resources.getString(R.string.changelog)}, new int[]{R.id.info_about, R.id.info_credits, R.id.info_changelog}, context, aboutView));
+        LinearLayout tabsLayout = (LinearLayout) aboutView.findViewById(R.id.tab_widget);
+        SimpleTabsWidget tabs = new SimpleTabsWidget(context, tabsLayout);
+        tabs.setViewPager(pager);
+        ThemeManager.Theme theme = ((Reddinator) context.getApplicationContext()).mThemeManager.getActiveTheme("appthemepref");
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        tabs.setBackgroundColor(headerColor);
+        tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
+        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
+        // do upgrade dialog specific stuff
+        if (!isInfo) {
+            pager.setCurrentItem(2); // show changelog_master first on install/upgrade
+            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionName, true).apply();
+        }
+        // setup about view
         ((TextView) aboutView.findViewById(R.id.version)).setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));
         aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -367,13 +392,19 @@ public class Reddinator extends Application {
                 context.startActivity(intent);
             }
         });
+        // setup credits
+        WebView cwv = (WebView) aboutView.findViewById(R.id.info_credits);
+        cwv.loadUrl("file:///android_asset/credits.html");
+        // setup changelog_master
+        ChangeLog cl = new ChangeLog(context);
+        WebView wv = (WebView) aboutView.findViewById(R.id.info_changelog);
+        wv.loadData(cl.getLog(), "text/html", "UTF-8");
+        // initialize dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(aboutView)
         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if (!isInfo)
-                    PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionName, true).apply();
                 dialogInterface.dismiss();
             }
         }).show();

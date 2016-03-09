@@ -5,159 +5,190 @@
     android:background="#5F99CF"
     android:gravity="center_horizontal">
     <LinearLayout
+        android:id="@+id/info_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:orientation="vertical"
-
         android:gravity="center_horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="28sp"
-        android:text="@string/app_name"
-        android:id="@+id/textView"
-        android:textColor="#fff"
-        android:layout_gravity="center_horizontal" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="14sp"
-        android:layout_marginBottom="2dp"
-        android:textColor="#fff"
-        android:id="@+id/version" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/about_thankyou"
-        android:id="@+id/textView2"
-        android:textColor="#fff"
-        android:layout_gravity="center_horizontal" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="28sp"
+            android:text="@string/app_name"
+            android:id="@+id/textView"
+            android:textColor="#fff"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="14sp"
+            android:layout_marginBottom="2dp"
+            android:textColor="#fff"
+            android:id="@+id/version" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/about_thankyou"
+            android:id="@+id/textView2"
+            android:textColor="#fff"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="4dp"
+    <include
+        android:id="@+id/tab_widget"
+        layout="@layout/tabs"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="#FFF">
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:stretchColumns="1">
-            <TableRow
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@string/about_text"
-                    android:textSize="16sp"
-                    android:id="@+id/textView3" />
-            </TableRow>
-            <TableRow
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_open_source"
-                    android:textSize="16sp"
-                    android:id="@+id/textView5"/>
-                <ImageView
-                    android:id="@+id/github"
-                    android:layout_width="0dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_height="90dp"
-                    android:layout_weight="1"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/github_logo"
-                    android:contentDescription="@string/github" />
-            </TableRow>
-            <TableRow
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_donate"
-                    android:textSize="16sp"
-                    android:id="@+id/textView6"/>
-                <ImageView
-                    android:id="@+id/donate"
-                    android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:contentDescription="@string/donate_paypal"
-                    android:src="@drawable/paypal_donate"/>
-            </TableRow>
-            <TableRow
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_give_gold"
-                    android:textSize="16sp"
-                    android:id="@+id/textView7"/>
-                <ImageView
-                    android:id="@+id/gold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_weight="1"
-                    android:maxWidth="284dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/reddit_gold_logo"
-                    android:contentDescription="@string/give_gold" />
-            </TableRow>
-            <TableRow
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_beta_program"
-                    android:textSize="16sp"
-                    android:autoLink="web"
-                    android:id="@+id/textView9" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginStart="2dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/about_r_reddinator"
-                    android:textSize="16sp"
-                    android:autoLink="web"
-                    android:id="@+id/textView8"/>
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+
+        <ScrollView
+            android:id="@+id/info_about"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:paddingTop="4dp"
+            android:background="#FFF">
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:stretchColumns="1">
+                <TableRow
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/about_text"
+                        android:textSize="16sp"
+                        android:id="@+id/textView3" />
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/about_open_source"
+                        android:textSize="16sp"
+                        android:id="@+id/textView5"/>
+                    <ImageView
+                        android:id="@+id/github"
+                        android:layout_width="0dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_height="90dp"
+                        android:layout_weight="1"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/github_logo"
+                        android:contentDescription="@string/github" />
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/about_donate"
+                        android:textSize="16sp"
+                        android:id="@+id/textView6"/>
+                    <ImageView
+                        android:id="@+id/donate"
+                        android:layout_width="0dp"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@string/donate_paypal"
+                        android:src="@drawable/paypal_donate"/>
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/about_give_gold"
+                        android:textSize="16sp"
+                        android:id="@+id/textView7"/>
+                    <ImageView
+                        android:id="@+id/gold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_weight="1"
+                        android:maxWidth="284dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/reddit_gold_logo"
+                        android:contentDescription="@string/give_gold" />
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/about_beta_program"
+                        android:textSize="16sp"
+                        android:autoLink="web"
+                        android:id="@+id/textView9" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginStart="2dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/about_r_reddinator"
+                        android:textSize="16sp"
+                        android:autoLink="web"
+                        android:id="@+id/textView8"/>
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
+
+        <WebView
+            android:id="@+id/info_credits"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:fillViewport="true"
+            android:paddingTop="4dp"/>
+
+        <WebView
+            android:id="@+id/info_changelog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:fillViewport="true"
+            android:paddingTop="4dp"/>
+
+    </android.support.v4.view.ViewPager>
 </LinearLayout>

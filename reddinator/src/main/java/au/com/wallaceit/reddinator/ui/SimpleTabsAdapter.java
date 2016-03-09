@@ -47,6 +47,10 @@ public class SimpleTabsAdapter extends PagerAdapter {
         return layout.findViewById(layoutIds[position]);
     }
 
+    public void destroyItem(ViewGroup container, int position, Object object) {
+
+    }
+
     @Override
     public int getCount() {
         return labels.length;

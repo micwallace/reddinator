@@ -91,7 +91,7 @@
     <string name="about_open_source">Reddinator is proudly open-source software. Come and contribute on Github</string>
     <string name="about_donate">Programing is thirsty work, buy me a beer to help maintain the app.</string>
     <string name="about_r_reddinator">Stay up to date with the latest news at:\nhttps://www.reddit.com/r/reddinator/</string>
-    <string name="about_beta_program">Join the beta program through Google+\nhttps://plus.google.com/communities/108346406386882223261</string>
+    <string name="about_beta_program">Join the beta program:\nhttps://play.google.com/apps/testing/au.com.wallaceit.reddinator</string>
     <string name="donate_paypal">Donate with Paypal</string>
     <string name="about_give_gold">If you feel my effort deserves gold</string>
     <string name="give_gold">Give Reddit Gold</string>
@@ -300,4 +300,6 @@
     <string name="clear_post_filter_summary_disabled">You\'re logged in, use your account to unhide</string>
     <string name="data_error">Error opening post data, please reload feed</string>
     <string name="view_comments">View Comments {fa-comments}</string>
+    <string name="credits">Credits</string>
+    <string name="changelog">Changelog</string>
 </resources>

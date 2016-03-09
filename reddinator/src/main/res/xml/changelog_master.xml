@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<changelog>
+    <release version="3.05" versioncode="35">
+        <change>Added image preview dialog</change>
+        <change>Updated this dialog with changelog and credits</change>
+        <change>Various bug fixes and tweaks</change>
+    </release>
+    <release version="3.04" versioncode="34">
+        <change>Native account history and message views</change>
+        <change>Compose messages</change>
+        <change>Search for Reddit posts</change>
+        <change>Hide posts to your Reddit account when logged in</change>
+        <change>Pick theme colours using hex codes</change>
+        <change>Huge project clean up (just for the developers sanity)</change>
+    </release>
+    <release version="2.91" versioncode="28">
+        <change>Voting on widget feed</change>
+        <change>Post options dialogue (widget cogs icon, long press in app feed)</change>
+        <change>Domain feeds (ie. view all imgur.com)</change>
+        <change>Duplicate post filter (removed duplicates from previous pages)</change>
+        <change>Option to hide posts (post filter)</change>
+        <change>Save posts from the post option dialog</change>
+        <change>Thumbnail caching improvements</change>
+        <change>Various other bug fixes and improvements</change>
+        <change>Spanish translations</change>
+    </release>
+    <release version="2.81" versioncode="25">
+        <change>Addition of save post feature</change>
+        <change>Updated this dialog with change-log and credits</change>
+        <change>Various bug fixes and tweaks</change>
+    </release>
+    <release version="2.7" versioncode="23">
+        <change>User defined themes!</change>
+        <change>Better account integration, loads subreddits &amp; multis on login.</change>
+        <change>Subscribe &amp; unsubscribe from Subreddits when logged in.</change>
+        <change>Create, edit and browse Multis from your Reddit account!</change>
+        <change>New tabs and layouts.</change>
+        <change>Submit Links and Text Posts</change>
+        <change>Filter/exclude subreddits from /r/all</change>
+        <change>Back button preference for better tablet support</change>
+        <change>Various bug fixes, API &amp; error handling improvements</change>
+    </release>
+</changelog>
