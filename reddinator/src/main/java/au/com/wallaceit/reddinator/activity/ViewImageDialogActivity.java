@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ public class ViewImageDialogActivity extends Activity {
     WebView webView;
     String imageUrl;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,7 @@ public class ViewImageDialogActivity extends Activity {
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setWebViewClient(new ImageWebViewClient());
         webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
@@ -81,6 +84,10 @@ public class ViewImageDialogActivity extends Activity {
     class ImageWebViewClient extends WebViewClient {
         public void onPageFinished(WebView webView, String url) {
             findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+        }
+
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return true;
         }
     }
 }

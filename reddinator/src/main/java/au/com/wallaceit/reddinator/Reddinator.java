@@ -447,6 +447,6 @@ public class Reddinator extends Application {
     }
 
     public static boolean hasImageExtension(String url){
-        return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)");
+        return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif?v|bmp))$)");
     }
 }

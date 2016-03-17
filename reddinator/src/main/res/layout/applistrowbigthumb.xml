@@ -25,6 +25,24 @@
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
+        <ImageView
+            android:id="@+id/thumbnail_expand"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:maxHeight="18dp"
+            android:maxWidth="18dp"
+            android:minHeight="18dp"
+            android:minWidth="18dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="68dp"
+            android:contentDescription="@string/img"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/listheading"
             android:layout_width="fill_parent"
@@ -53,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:orientation="vertical"
             android:layout_marginRight="6dp"
             android:layout_marginEnd="6dp">
