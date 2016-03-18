@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.wallaceit.reddinator"
     android:versionCode="36"
-    android:versionName="3.04">
+    android:versionName="3.06">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed by some webview HTML5 video implementations (Bug report received for Android 4.1) -->

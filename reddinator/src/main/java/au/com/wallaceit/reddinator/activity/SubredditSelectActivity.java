@@ -412,7 +412,10 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         }
         (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
-        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
+        MenuItem accountItem = (menu.findItem(R.id.menu_account));
+        if (global.mRedditData.isLoggedIn())
+            accountItem.setTitle(global.mRedditData.getUsername());
+        accountItem.setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_saved)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_search)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_search).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_viewdomain)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
@@ -647,7 +650,6 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                     needsThemeUpdate = true;
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.putString("widgettheme-" + mAppWidgetId, keys[i]);
-                    System.out.println(keys[i]);
                     editor.apply();
                     dialogInterface.cancel();
                 }
@@ -1057,7 +1059,6 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         saveButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Save multi");
                 JSONObject multiObj = new JSONObject();
                 try {
                     multiObj.put("decription_md", description.getText().toString());

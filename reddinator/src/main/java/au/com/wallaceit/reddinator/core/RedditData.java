@@ -43,7 +43,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
@@ -64,6 +63,7 @@ public class RedditData {
     private String userAgent;
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
+    private JSONObject userInfo;
     private String username;
     private int inboxCount = 0;
     private long lastUpdateTime = 0;
@@ -81,6 +81,12 @@ public class RedditData {
         // load account
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         String tokenStr = sharedPrefs.getString("oauthtoken", "");
+        try {
+            userInfo = new JSONObject(sharedPrefs.getString("user_info", "{}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            userInfo = new JSONObject();
+        }
         username = sharedPrefs.getString("username", "");
         inboxCount = sharedPrefs.getInt("inbox_count", 0);
         lastUpdateTime = sharedPrefs.getLong("last_info_update", 0);
@@ -225,6 +231,28 @@ public class RedditData {
         return inboxCount;
     }
 
+    public long getLinkKarma(){
+        try {
+            return userInfo.getLong("link_karma");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    public long getCommentKarma(){
+        try {
+            return userInfo.getLong("comment_karma");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /*public JSONObject getCachedUserInfo(){
+        return userInfo;
+    }*/
+
     public long getLastUserUpdateTime(){ return lastUpdateTime; }
 
     public void clearStoredInboxCount(){
@@ -236,11 +264,11 @@ public class RedditData {
 
     // updates internally tracked user info and saves it to preference. This is also used for saving oauth token for the first time.
     public void updateUserInfo() throws RedditApiException {
-        JSONObject userInfo = getUserInfo();
+        userInfo = getUserInfo();
         try {
             username = userInfo.getString("name");
             inboxCount = userInfo.getInt("inbox_count");
-            lastUpdateTime = (new Date()).getTime();
+            lastUpdateTime = System.currentTimeMillis();
         } catch (JSONException e) {
             e.printStackTrace();
             return;
@@ -253,6 +281,44 @@ public class RedditData {
 
         JSONObject resultjson;
         String url = OAUTH_ENDPOINT + "/api/v1/me";
+        try {
+            resultjson = redditApiGet(url, true);
+
+            if (resultjson.has("errors") && resultjson.getJSONArray("errors").length()>0) {
+                throw new RedditApiException("API error: "+resultjson.getJSONArray("errors").getJSONArray(0).getString(1));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+
+        return resultjson;
+    }
+
+    public JSONObject getKarmaBreakdown() throws RedditApiException {
+        checkLogin();
+
+        JSONObject resultjson;
+        String url = OAUTH_ENDPOINT + "/api/v1/me/karma";
+        try {
+            resultjson = redditApiGet(url, true);
+
+            if (resultjson.has("errors") && resultjson.getJSONArray("errors").length()>0) {
+                throw new RedditApiException("API error: "+resultjson.getJSONArray("errors").getJSONArray(0).getString(1));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+
+        return resultjson;
+    }
+
+    public JSONObject getTrophies() throws RedditApiException {
+        checkLogin();
+
+        JSONObject resultjson;
+        String url = OAUTH_ENDPOINT + "/api/v1/me/trophies";
         try {
             resultjson = redditApiGet(url, true);
 
@@ -344,9 +410,7 @@ public class RedditData {
         } catch (UnsupportedEncodingException e) {
             throw new RedditApiException("Encoding error: "+e.getMessage());
         }
-        JSONObject result = redditApiPost(url);
-        System.out.println("Message compose returned:");
-        System.out.println(result.toString());
+        redditApiPost(url);
     }
 
     public JSONObject postComment(String parentId, String text) throws RedditApiException {
@@ -359,7 +423,7 @@ public class RedditData {
             String url = OAUTH_ENDPOINT + "/api/comment?thing_id=" + parentId + "&text=" + URLEncoder.encode(text, "UTF-8") + "&api_type=json";
 
             resultjson = redditApiPost(url).getJSONObject("json");
-            System.out.println(resultjson.toString());
+
             if (resultjson.has("errors") && resultjson.getJSONArray("errors").length()>0) {
                 JSONArray errors = resultjson.getJSONArray("errors");
                 JSONArray firsterror = (JSONArray) errors.get(0);
@@ -921,6 +985,7 @@ public class RedditData {
     public void saveUserData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString("oauthtoken", oauthToken == null ? "" : oauthToken.toString());
+        edit.putString("user_info", userInfo.toString());
         edit.putString("username", username);
         edit.putInt("inbox_count", inboxCount);
         edit.putLong("last_info_update", lastUpdateTime);

@@ -3,12 +3,17 @@
     <item
         android:id="@+id/menu_submit"
         android:title="@string/submit"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_inbox"
         android:title="@string/inbox"
         android:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_karma"
+        android:title="@string/karma"
+        android:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_viewonreddit"

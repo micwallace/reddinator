@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.06" versioncode="36">
+        <change>Added karma totals and breakdown dialog to account view</change>
+        <change>Added username to account menu items and title</change>
+        <change>Fixed .gifv malformed url bug in image dialog</change>
+        <change>Fixed layout bug causing NPE</change>
+    </release>
     <release version="3.04" versioncode="35">
         <change>Added image preview dialog</change>
         <change>Updated about dialog with changelog and credits</change>

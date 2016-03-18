@@ -271,7 +271,6 @@ public class SubmitActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                System.out.println(jsonResult.toString());
 
                 String id;
                 String permalink;

@@ -17,30 +17,35 @@
  */
 package au.com.wallaceit.reddinator.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -50,20 +55,23 @@ import android.widget.Toast;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Method;
-import java.util.Date;
+import java.text.NumberFormat;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
 public class AccountActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
 
     private Reddinator global;
-    private SharedPreferences prefs;
     private MenuItem messageIcon;
     private ActionBar actionBar;
     private BroadcastReceiver inboxReceiver;
@@ -74,6 +82,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
     public static final String ACTION_SAVED = "saved";
     public static final String ACTION_HIDDEN = "hidden";
     private String section = "overview";
+    ThemeManager.Theme theme;
 
     /**
      * (non-Javadoc)
@@ -88,7 +97,6 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(AccountActivity.this);
         resources = getResources();
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
@@ -99,6 +107,8 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
         }
+        // set title with username and karma
+        actionBar.setTitle(global.mRedditData.getUsername());
         // set content view
         setContentView(R.layout.view_account);
         // Setup View Pager and widget
@@ -153,10 +163,19 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
     }
 
     private void updateTheme(){
-        ThemeManager.Theme theme = getCurrentTheme();
+        theme = getCurrentTheme();
         tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
         tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
+        updateSubtitle();
+    }
+
+    private void updateSubtitle(){
+        String linkKarma = NumberFormat.getInstance().format(global.mRedditData.getLinkKarma());
+        String commentKarma = NumberFormat.getInstance().format(global.mRedditData.getCommentKarma());
+        actionBar.setSubtitle(
+                Html.fromHtml("<font color='" + theme.getValue("votes_icon") + "'>" + linkKarma + "</font> - " +
+                        "<font color='" + theme.getValue("comments_icon") + "'>" + commentKarma + "</font>"));
     }
 
     public ThemeManager.Theme getCurrentTheme(){
@@ -165,24 +184,8 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
 
     public void onResume(){
         super.onResume();
-        // Register receiver & check for new messages if logged in, enabled and due
-        int checkPref = Integer.parseInt(prefs.getString("mail_check_pref", "300000"));
-        if (global.mRedditData.isLoggedIn() || checkPref!=0)
-        if ((global.mRedditData.getLastUserUpdateTime()+checkPref)<(new Date()).getTime()) {
-            inboxReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    // update inbox indicator
-                    setInboxIcon();
-                }
-            };
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(MailCheckService.MAIL_CHECK_COMPLETE);
-            registerReceiver(inboxReceiver, filter);
-
-            MailCheckService.checkMail(AccountActivity.this, MailCheckService.ACTIVITY_CHECK_ACTION);
-        }
-
+        // user info update refreshes both karma and message indicator
+        triggerRefreshUserInfo();
         setInboxIcon();
     }
 
@@ -207,6 +210,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         inflater.inflate(R.menu.account_menu, menu);
         // set options menu view
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(actionbarIconColor).actionBarSize());
+        (menu.findItem(R.id.menu_karma)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_star).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_viewonreddit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(actionbarIconColor).actionBarSize());
@@ -262,6 +266,10 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
                 startActivity(inboxIntent);
                 break;
 
+            case R.id.menu_karma:
+                new LoadUserDetailsTask().execute();
+                break;
+
             case R.id.menu_submit:
                 Intent submitIntent = new Intent(AccountActivity.this, SubmitActivity.class);
                 startActivity(submitIntent);
@@ -287,6 +295,136 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private void showUserDetailsDialog(JSONObject[] data){
+        System.out.println(data[0].toString());
+        System.out.println(data[1].toString());
+        JSONArray trophies, karma;
+        try {
+            karma = data[0].getJSONArray("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            karma = new JSONArray();
+        }
+        try {
+            trophies = data[1].getJSONObject("data").getJSONArray("trophies");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            trophies = new JSONArray();
+        }
+        String html = "";
+        // build trophies
+        html += "<h3>Trophies</h3><div style='text-align:center;'>";
+        for (int i = 0; i<trophies.length(); i++){
+            try {
+                JSONObject trophy = trophies.getJSONObject(i).getJSONObject("data");
+                String icon = trophy.getString("icon_70");
+                String name = trophy.getString("name");
+                html += "<div style='display:inline-block; min-width:100px; text-align: center; padding: 6px;'>";
+                html += "<img src='"+icon+"' />";
+                html += "<p style='margin-top:4px;'>"+name+"</p>";
+                html += "</div>";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        html += "</div>";
+        // build karma table
+        html += "<h3 style='margin-top:4px;'>Karma by Subreddit</h3>";
+        html += "<table style='margin:0;width:100%;'><thead><tr><th style='text-align:left;'>Subreddit</th><th>Links</th><th>Comments</th></tr></thead><tbody>";
+        for (int i = 0; i<karma.length(); i++){
+            try {
+                JSONObject subKarma = karma.getJSONObject(i);
+                String subreddit = subKarma.getString("sr");
+                String link = subKarma.getString("link_karma");
+                String comment = subKarma.getString("comment_karma");
+                html += "<tr><td>"+subreddit+"</td><td style='text-align:right;'>"+link+"</td><td style='text-align:right;'>"+comment+"</td></tr>";
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        html += "</tbody></table>";
+        // open dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        @SuppressLint("InflateParams")
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_account_details, null);
+        WebView wv = (WebView) view.findViewById(R.id.webView);
+        builder.setTitle(global.mRedditData.getUsername());
+        builder.setView(view);
+        builder.setCancelable(true);
+        wv.setWebViewClient(new WebViewClient());
+        wv.loadData(html, "text/html", "UTF-8");
+        builder.show();
+    }
+
+    private class LoadUserDetailsTask extends AsyncTask<Void, Void, JSONObject[]>{
+        private RedditData.RedditApiException exception = null;
+        ProgressDialog progressDialog;
+
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(AccountActivity.this, resources.getString(R.string.loading), resources.getString(R.string.one_moment), true);
+        }
+
+        @Override
+        protected JSONObject[] doInBackground(Void... strings) {
+            try {
+                JSONObject karma = global.mRedditData.getKarmaBreakdown();
+                JSONObject trophies = global.mRedditData.getTrophies();
+                return new JSONObject[]{karma, trophies};
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                exception = e;
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject[] result) {
+            progressDialog.dismiss();
+            if (result!=null) {
+                showUserDetailsDialog(result);
+            } else {
+                // show error
+                Toast.makeText(global.getApplicationContext(), "Failed to load karma breakdown: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // don't update this more than once a minute
+    public void triggerRefreshUserInfo(){
+        long now = System.currentTimeMillis();
+        long last = global.mRedditData.getLastUserUpdateTime();
+        if ((now-last)>60000){
+            new RefreshUserInfoTask().execute();
+        }
+    }
+
+    private class RefreshUserInfoTask extends AsyncTask<Void, Void, Boolean>{
+        private RedditData.RedditApiException exception = null;
+
+        @Override
+        protected Boolean doInBackground(Void... strings) {
+            try {
+                global.mRedditData.updateUserInfo();
+                return true;
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+                exception = e;
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                updateSubtitle();
+                setInboxIcon();
+            } else {
+                // show error
+                Toast.makeText(global.getApplicationContext(), "Failed to refresh user info: " + exception.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void setTitleText(final String title){

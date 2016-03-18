@@ -237,7 +237,6 @@ public class ThemeEditorActivity extends ListActivity {
                             @Override
                             public void onClick(View v) {
                                 String hexColor = useAlpha?("#"+Integer.toHexString(picker.getColor())):String.format("#%06X", (0xFFFFFF & picker.getColor()));
-                                System.out.println(hexColor);
                                 theme.setValue(finalKey, hexColor.toUpperCase());
                                 themeChanged = true;
                                 refreshList();

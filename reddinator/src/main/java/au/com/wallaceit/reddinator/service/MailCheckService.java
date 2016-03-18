@@ -71,7 +71,6 @@ public class MailCheckService extends Service {
             int oldCount = global.mRedditData.getInboxCount();
             try {
                 global.mRedditData.updateUserInfo();
-                System.out.println("Mail check completed "+global.mRedditData.getInboxCount());
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
                 return false;

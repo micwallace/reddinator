@@ -261,8 +261,10 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.view_menu, menu);
         // set options menu view
-
-        (menu.findItem(R.id.menu_account)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(actionbarIconColor).actionBarSize());
+        MenuItem accountItem = (menu.findItem(R.id.menu_account));
+        if (global.mRedditData.isLoggedIn())
+            accountItem.setTitle(global.mRedditData.getUsername());
+        accountItem.setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(actionbarIconColor).actionBarSize());
         (menu.findItem(R.id.menu_save)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_save).color(actionbarIconColor).actionBarSize());
