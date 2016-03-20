@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -342,8 +343,15 @@ public class Reddinator extends Application {
     }
 
     public static void doShowWelcomeDialog(final Activity context){
+        try {
+            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            if (appInfo.metaData.getBoolean("suppressChangelog"))
+                return;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean aboutDismissed = preferences.getBoolean("welcomeDialogShown-"+getPackageInfo(context).versionName, false);
+        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, false);
         if (!aboutDismissed){
             showInfoDialog(context, false);
         }
@@ -364,10 +372,15 @@ public class Reddinator extends Application {
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
-        // do upgrade dialog specific stuff
+        // do install/upgrade dialog specific stuff
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         if (!isInfo) {
-            pager.setCurrentItem(2); // show changelog_master first on install/upgrade
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putBoolean("welcomeDialogShown-" + getPackageInfo(context).versionName, true).apply();
+            if (prefs.getBoolean("welcomeDialogShown", false)){
+                pager.setCurrentItem(2); // show changelog view on upgrade
+            } else {
+                prefs.edit().putBoolean("welcomeDialogShown", true).apply(); // show details view on first run
+            }
+            prefs.edit().putBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, true).apply();
         }
         // setup about view
         ((TextView) aboutView.findViewById(R.id.version)).setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));

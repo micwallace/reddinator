@@ -80,6 +80,7 @@ public class OAuthView extends Activity {
             }
         });
         wv.getSettings().setJavaScriptEnabled(true);
+        wv.getSettings().setDomStorageEnabled(true);
         //wv.getSettings().setDefaultFontSize(22);
         // enable cookies
         CookieManager.getInstance().setAcceptCookie(true);
@@ -103,6 +104,7 @@ public class OAuthView extends Activity {
                     new LoginTask().execute(oauthUri);
                 }
             }
+            super.onPageStarted(view, url, favicon);
         }
     }
 

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.07" versioncode="37">
+        <change>Fixed bug causing failed login in oauth view by enabling DOM storage (possible Reddit change).</change>
+        <change>Added suppress changelog flag to suppress the changelog dialog for minor updates.</change>
+    </release>
     <release version="3.06" versioncode="36">
         <change>Added karma totals and breakdown dialog to account view</change>
         <change>Added username to account menu items and title</change>
