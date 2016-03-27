@@ -169,14 +169,18 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
-
-        // set the current subreddit
-        srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
-
-        // Trigger reload?
-        if (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2)
+        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
+            // open reddit feed via url
             listAdapter.reloadReddits();
+            // TODO
+        } else {
+            // set the current subreddit
+            srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
 
+            // Trigger reload?
+            if (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2)
+                listAdapter.reloadReddits();
+        }
     }
 
     @Override

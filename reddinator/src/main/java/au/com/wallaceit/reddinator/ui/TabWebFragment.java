@@ -85,6 +85,11 @@ public class TabWebFragment extends Fragment {
         }
     }
 
+    public void load(String url){
+        this.url = url;
+        load();
+    }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

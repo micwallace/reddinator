@@ -52,7 +52,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
+import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
@@ -299,6 +303,23 @@ public class Reddinator extends Application {
 
     public String getDefaultCommentsMobileSite(){
         return getRedditMobileSite(mSharedPreferences.getBoolean("mobilecommentspref", true));
+    }
+
+    public static void handleRedditLink(Context context, String url){
+        Pattern pattern = Pattern.compile(".*reddit.com(/r/.*(/comments/(.*)/.*/))");
+        Matcher matcher = pattern.matcher(url);
+        Intent i;
+        if (matcher.find() && matcher.group(1)!=null){
+            // reddit post link
+            i = new Intent(context, ViewRedditActivity.class);
+            i.setAction(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+        } else {
+            // link is unsupported in native views; open in webview
+            i = new Intent(context, WebViewActivity.class);
+            i.putExtra("url", url);
+        }
+        context.startActivity(i);
     }
 
     public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize, int[] shadow) {

@@ -38,7 +38,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,13 +53,20 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.kobakei.ratethisapp.RateThisApp;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.tasks.LoadPostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -69,13 +75,14 @@ import au.com.wallaceit.reddinator.ui.TabWebFragment;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
-public class ViewRedditActivity extends FragmentActivity implements VoteTask.Callback {
+public class ViewRedditActivity extends FragmentActivity implements LoadPostTask.Callback, VoteTask.Callback {
 
     private Reddinator global;
     private SharedPreferences prefs;
     private MenuItem upvote;
     private MenuItem downvote;
     private MenuItem messageIcon;
+    private JSONObject postInfo;
     private String userLikes = "null"; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
     private String postUrl;
@@ -132,16 +139,14 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
             @Override
             public void onPageSelected(int position) {
                 Fragment fragment = pageAdapter.getRegisteredFragment(position);
-                if (fragment!=null && fragment instanceof TabWebFragment) {
+                if (postUrl!=null && fragment!=null && fragment instanceof TabWebFragment) {
                     ((TabWebFragment) fragment).load();
-                } else if (fragment instanceof TabCommentsFragment) {
-                    ((TabCommentsFragment) fragment).load();
                 }
             }
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
-        if (getIntent().getExtras().getBoolean("view_comments", false) || prefs.getBoolean("commentsfirstpref", false)) {
+        if (getIntent().getBooleanExtra("view_comments", false) || prefs.getBoolean("commentsfirstpref", false)) {
             viewPager.setCurrentItem(1);
         } else {
             viewPager.setCurrentItem(0);
@@ -149,23 +154,38 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         // theme
         updateTheme();
         // setup needed members
-        if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_VIEW_POST)){
+        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
+            // open post via url, extract permalink and postId
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/.*/comments/(.*)/.*/)");
+            Matcher matcher = pattern.matcher(getIntent().getDataString());
+            if (matcher.find()){
+                postPermalink = matcher.group(1);
+                redditItemId = "t3_"+matcher.group(2);
+            }
+        } else if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_VIEW_POST)){
+            // onclick action from account/message views
             redditItemId = getIntent().getStringExtra("id");
             postUrl = getIntent().getStringExtra("url");
             postPermalink = getIntent().getStringExtra("permalink");
             userLikes = getIntent().getStringExtra("likes");
         } else {
+            // from widget or app feed
+            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+
             redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
             postUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
             postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
             userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
             // Get selected item from feed and user vote preference
             if (getIntent().getBooleanExtra("submitted", false)){
                 userLikes = "true";
             }
         }
+        // load post data; once loaded comment data is passed to the comment fragment
+        // the content view is also loaded if postUrl is not provided via extras
+        new LoadPostTask(global, this).execute(postPermalink, "best");
+
         // Init rate dialog
         RateThisApp.Config config = new RateThisApp.Config();
         config.setTitle(R.string.rate_reddinator);
@@ -274,26 +294,31 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         // determine vote drawables
         upvote = menu.findItem(R.id.menu_upvote);
         downvote = menu.findItem(R.id.menu_downvote);
-        if (userLikes!=null && !userLikes.equals("null")){
-            if (userLikes.equals("true")) {
-                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
-                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
-                curvote = 1;
-            } else if (userLikes.equals("false")) {
-                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
-                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
-                curvote = -1;
-            }
-        } else {
-            upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
-            downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
-            curvote = 0;
-        }
+        setVoteIcons();
         // set inbox icon color based on inbox count
         messageIcon = (menu.findItem(R.id.menu_inbox));
         setInboxIcon();
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setVoteIcons(){
+        if (upvote!=null)
+            if (userLikes!=null && !userLikes.equals("null")){
+                if (userLikes.equals("true")) {
+                    upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
+                    downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
+                    curvote = 1;
+                } else if (userLikes.equals("false")) {
+                    upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
+                    downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
+                    curvote = -1;
+                }
+            } else {
+                upvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_up).color(actionbarIconColor).actionBarSize());
+                downvote.setIcon(new IconDrawable(this, Iconify.IconValue.fa_arrow_down).color(actionbarIconColor).actionBarSize());
+                curvote = 0;
+            }
     }
 
     private void setInboxIcon(){
@@ -561,6 +586,38 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onPostLoaded(JSONArray result, RedditData.RedditApiException exception) {
+        if (result!=null){
+            try {
+                postInfo = result.getJSONObject(0).getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data");
+                JSONArray comments = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
+                // pass comments to fragment
+                if (pageAdapter.getRegisteredFragment(1) instanceof TabCommentsFragment){
+                    TabCommentsFragment fragment = (TabCommentsFragment) pageAdapter.getRegisteredFragment(1);
+                    fragment.loadFromData(postInfo, comments);
+                }
+                // load content view and set vote icons if url was not passed in extras
+                if (postUrl==null){
+                    userLikes = postInfo.getString("likes");
+                    postUrl = postInfo.getString("url");
+                    // use reddit mobile view
+                    if (postUrl.contains("//www.reddit.com/")){
+                        postUrl = postUrl.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
+                    }
+                    TabWebFragment webfragment = (TabWebFragment) pageAdapter.getRegisteredFragment(0);
+                    webfragment.load(postUrl);
+                    setVoteIcons();
+                }
+                System.out.println(postInfo.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "Could not load post info: "+exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
     class RedditPageAdapter extends FragmentPagerAdapter {
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
@@ -589,14 +646,12 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
             switch (position) {
                 default:
                 case 0: // content
-
-                    Log.w(getPackageName(), postUrl);
                     // use reddit mobile view
-                    if (postUrl.contains("//www.reddit.com/")){
+                    if (postUrl !=null && postUrl.contains("//www.reddit.com/")){
                         postUrl = postUrl.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
-                    return TabWebFragment.init(postUrl, fontsize, (!commentsPref || (preloadPref==3 || preloadPref==1)));
+                    return TabWebFragment.init(postUrl, fontsize, (postUrl!=null && (!commentsPref || (preloadPref==3 || preloadPref==1))));
                 case 1: // comments
                     if (prefs.getBoolean("commentswebviewpref", false)) {
                         // reddit
@@ -605,7 +660,7 @@ public class ViewRedditActivity extends FragmentActivity implements VoteTask.Cal
                         return TabWebFragment.init(url, fontsize, (commentsPref || preloadPref>1));
                     } else {
                         // native
-                        return TabCommentsFragment.init(redditItemId, postPermalink, (commentsPref || preloadPref>1));
+                        return TabCommentsFragment.init(redditItemId, postPermalink); // don't load comments, initial data now populated via onPostLoaded
                     }
             }
         }

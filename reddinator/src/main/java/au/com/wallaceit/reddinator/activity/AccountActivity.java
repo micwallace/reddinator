@@ -67,6 +67,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
+import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
 public class AccountActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
@@ -346,16 +347,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         }
         html += "</tbody></table>";
         // open dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        @SuppressLint("InflateParams")
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_account_details, null);
-        WebView wv = (WebView) view.findViewById(R.id.webView);
-        builder.setTitle(global.mRedditData.getUsername());
-        builder.setView(view);
-        builder.setCancelable(true);
-        wv.setWebViewClient(new WebViewClient());
-        wv.loadData(html, "text/html", "UTF-8");
-        builder.show();
+        HtmlDialog.init(this, global.mRedditData.getUsername(), html);
     }
 
     private class LoadUserDetailsTask extends AsyncTask<Void, Void, JSONObject[]>{

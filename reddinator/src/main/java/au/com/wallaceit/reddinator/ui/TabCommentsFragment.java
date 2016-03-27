@@ -54,9 +54,9 @@ import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class TabCommentsFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
-    private Context mContext;
     private Resources resources;
     public WebView mWebView;
+    private boolean webviewInit = false;
     private boolean mFirstTime = true;
     private LinearLayout ll;
     private Reddinator global;
@@ -67,12 +67,12 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
     VoteTask commentsVoteTask;
     CommentTask commentTask;
 
-    public static TabCommentsFragment init(String id, String permalink, boolean load) {
+    public static TabCommentsFragment init(String id, String permalink) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
         Bundle args = new Bundle();
         args.putString("id", id);
         args.putString("permalink", permalink);
-        args.putBoolean("load", load);
+        //args.putBoolean("load", load);
         commentsTab.setArguments(args);
         return commentsTab;
     }
@@ -83,22 +83,32 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     }
 
-    boolean loaded = false;
+    /*boolean loaded = false;
     public void load(){
         if (!loaded) {
             loadComments("best");
             loaded = true;
+        }
+    }*/
+
+    public JSONArray initialData = null;
+    public void loadFromData(JSONObject postInfo, JSONArray comments){
+        subData = postInfo;
+        if (webviewInit) {
+            populateCommentsFromData(comments.toString());
+        } else {
+            initialData = comments;
         }
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this.getActivity();
+        Context mContext = this.getActivity();
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (Reddinator) mContext.getApplicationContext();
         resources = getResources();
-        final boolean load = getArguments().getBoolean("load");
+        //final boolean load = getArguments().getBoolean("load");
 
         // get needed activity values
         articleId = getArguments().getString("id");
@@ -137,9 +147,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                     redditLink = true;
                 }
                 if (redditLink){
-                    Intent i = new Intent(mContext, WebViewActivity.class);
-                    i.putExtra("url", url);
-                    startActivity(i);
+                    // open in native view if supported
+                    Reddinator.handleRedditLink(getContext(), url);
                 } else {
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(i);
@@ -149,7 +158,10 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
-                if (load) load();
+                if (initialData!=null) {
+                    populateCommentsFromData(initialData.toString());
+                }
+                webviewInit = true;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient());
@@ -377,16 +389,24 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                     if (loadMore) {
                         executeJavascript("populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
                     } else {
-                        String author = "";
-                        try {
-                            author = subData.getString("author");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        executeJavascript("populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        populateCommentsFromData(result);
                     }
                     break;
             }
+        }
+    }
+
+    private void populateCommentsFromData(String data){
+        String author = "";
+        try {
+            author = subData.getString("author");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (data.equals("[]")){
+            executeJavascript("showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+        } else {
+            executeJavascript("populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
         }
     }
 
