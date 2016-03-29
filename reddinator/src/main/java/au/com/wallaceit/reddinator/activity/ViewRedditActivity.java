@@ -156,11 +156,16 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         // setup needed members
         if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
             // open post via url, extract permalink and postId
-            Pattern pattern = Pattern.compile(".*reddit.com(/r/.*/comments/(.*)/.*/)");
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/.*/)");
             Matcher matcher = pattern.matcher(getIntent().getDataString());
             if (matcher.find()){
+                //System.out.println(matcher.group(2)+" "+matcher.group(1));
                 postPermalink = matcher.group(1);
                 redditItemId = "t3_"+matcher.group(2);
+            } else {
+                Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
+                this.finish();
+                return;
             }
         } else if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_VIEW_POST)){
             // onclick action from account/message views

@@ -27,12 +27,16 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -44,6 +48,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import org.json.JSONArray;
@@ -52,10 +57,13 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
@@ -72,6 +80,7 @@ public class MainActivity extends Activity {
     private AbsListView listView;
     private View appView;
     private ActionBar actionBar;
+    private MenuItem messageIcon;
     private ProgressBar loader;
     private TextView srtext;
     private IconTextView errorIcon;
@@ -79,6 +88,10 @@ public class MainActivity extends Activity {
     private IconTextView configbutton;
     private ThemeManager.Theme theme;
     private Bitmap[] images;
+    private int feedId = 0; // 0 for normal feed, -1 for temp feed. Used to keep feed cache storage and settings separate from the main feed.
+    private String subredditName;
+    private String subredditPath;
+    private String subredditSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +113,6 @@ public class MainActivity extends Activity {
         loader = (ProgressBar) findViewById(R.id.appsrloader);
         errorIcon = (IconTextView) findViewById(R.id.apperroricon);
         refreshbutton = (IconTextView) findViewById(R.id.apprefreshbutton);
-        configbutton = (IconTextView) findViewById(R.id.appprefsbutton);
 
         srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
@@ -123,18 +135,30 @@ public class MainActivity extends Activity {
             }
         };
 
-        View.OnClickListener configclick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent prefsintent = new Intent(context, PrefsActivity.class);
-                startActivityForResult(prefsintent, 0);
-            }
-        };
-
-        configbutton.setOnClickListener(configclick);
         srtext.setOnClickListener(srclick);
         findViewById(R.id.app_logo).setOnClickListener(srclick);
         findViewById(R.id.appcaret).setOnClickListener(srclick);
+        // check intent and set needed feed params accordingly
+        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
+            // open reddit feed via url, extract path
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/([^/]*))");
+            Matcher matcher = pattern.matcher(getIntent().getDataString());
+            if (matcher.find()){
+                //System.out.println(matcher.group(2)+" "+matcher.group(1));
+                subredditPath = matcher.group(1);
+                subredditName = matcher.group(2);
+                subredditSort = "hot";
+            } else {
+                Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
+                this.finish();
+                return;
+            }
+            feedId = -1;
+        } else {
+            subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
+            subredditName = global.getSubredditManager().getCurrentFeedName(0);
+            subredditSort = prefs.getString("sort-app", "hot");
+        }
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
         listAdapter = new ReddinatorListAdapter(global, prefs);
@@ -145,7 +169,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // open in the reddinator view
                 Bundle extras = getItemExtras(position);
-                if (extras==null){
+                if (extras == null) {
                     Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -159,7 +183,7 @@ public class MainActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Bundle extras = getItemExtras(position);
-                if (extras==null){
+                if (extras == null) {
                     Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -169,18 +193,13 @@ public class MainActivity extends Activity {
                 return true;
             }
         });
-        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
-            // open reddit feed via url
-            listAdapter.reloadReddits();
-            // TODO
-        } else {
-            // set the current subreddit
-            srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
 
-            // Trigger reload?
-            if (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2)
-                listAdapter.reloadReddits();
-        }
+        // set the current subreddit name
+        srtext.setText(subredditName);
+
+        // always load a temp feed (from intent action_view) and when there's no cached data or when the preference is set to always reload when opened
+        if (feedId==-1 || (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2))
+            listAdapter.reloadReddits();
     }
 
     @Override
@@ -190,6 +209,136 @@ public class MainActivity extends Activity {
         if (update != null) {
             listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"));
         }
+        if (messageIcon!=null){
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Reddinator.getActionbarIconColor();
+            messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.feed_menu, menu);
+
+        // set options menu view
+        int iconColor = Reddinator.getActionbarIconColor();
+        int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
+        messageIcon = (menu.findItem(R.id.menu_inbox));
+        messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        (menu.findItem(R.id.menu_sidebar)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_file_archive_o).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
+        //if (mAppWidgetId==0) {
+            (menu.findItem(R.id.menu_widgettheme)).setVisible(false);
+        //}
+        (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
+        MenuItem accountItem = (menu.findItem(R.id.menu_account));
+        if (global.mRedditData.isLoggedIn())
+            accountItem.setTitle(global.mRedditData.getUsername());
+        accountItem.setIcon(new IconDrawable(this, Iconify.IconValue.fa_reddit_square).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_search)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_search).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
+
+        //return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu)
+    {
+        if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if(menu.getClass().getSimpleName().equals("MenuBuilder")){
+                try{
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                }
+                catch(NoSuchMethodException e){
+                    System.out.println("Could not display action icons in menu");
+                }
+                catch(Exception e){
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+
+            case R.id.menu_sidebar:
+
+                break;
+
+            case R.id.menu_inbox:
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(this, false);
+                    Toast.makeText(this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent inboxIntent = new Intent(this, MessagesActivity.class);
+                    if (global.mRedditData.getInboxCount() > 0) {
+                        inboxIntent.setAction(MessagesActivity.ACTION_UNREAD);
+                    }
+                    startActivity(inboxIntent);
+                }
+                break;
+
+            case R.id.menu_account:
+                if (!global.mRedditData.isLoggedIn()){
+                    global.mRedditData.initiateLogin(this, false);
+                    Toast.makeText(this, "Reddit login required", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent accnIntent = new Intent(this, AccountActivity.class);
+                    startActivity(accnIntent);
+                }
+                break;
+
+            case R.id.menu_search:
+                Intent searchIntent = new Intent(this, SearchActivity.class);
+                if (!global.getSubredditManager().isFeedMulti(0))
+                    searchIntent.putExtra("feed_path", global.getSubredditManager().getCurrentFeedPath(0));
+                startActivity(searchIntent);
+                break;
+
+            case R.id.menu_submit:
+                Intent submitIntent = new Intent(this, SubmitActivity.class);
+                startActivity(submitIntent);
+                break;
+
+            case R.id.menu_feedprefs:
+                //showFeedPrefsDialog();
+                break;
+
+            case R.id.menu_widgettheme:
+                //showWidgetThemeDialog();
+                break;
+
+            case R.id.menu_thememanager:
+                Intent intent = new Intent(this, ThemesActivity.class);
+                startActivityForResult(intent, 2);
+                break;
+
+            case R.id.menu_prefs:
+                Intent intent2 = new Intent(this, PrefsActivity.class);
+                startActivityForResult(intent2, 2);
+                break;
+
+            case R.id.menu_about:
+                Reddinator.showInfoDialog(this, true);
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     private void setThemeColors() {
@@ -197,13 +346,12 @@ public class MainActivity extends Activity {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
 
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
-        actionBar.getCustomView().setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("header_color"))));
         srtext.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
         int iconColor = Color.parseColor(theme.getValue("default_icon"));
         int[] shadow = new int[]{3, 4, 4, Color.parseColor(theme.getValue("icon_shadow"))};
-        configbutton.setTextColor(iconColor);
-        configbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
+
         refreshbutton.setTextColor(iconColor);
         refreshbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
         ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
@@ -220,7 +368,11 @@ public class MainActivity extends Activity {
                 break;
             // reload feed prefs and update feed, subreddit has changed
             case 2:
-                srtext.setText(global.getSubredditManager().getCurrentFeedName(0));
+                feedId = 0;
+                subredditName = global.getSubredditManager().getCurrentFeedName(0);
+                subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
+                subredditSort = prefs.getString("sort-app", "hot");
+                srtext.setText(subredditName);
                 listAdapter.loadFeedPrefs();
                 listAdapter.reloadReddits();
                 break;
@@ -255,7 +407,7 @@ public class MainActivity extends Activity {
             return null;
         }
         try {
-            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, feedId);
             extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
             extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
@@ -286,15 +438,19 @@ public class MainActivity extends Activity {
             global = gobjects;
             mSharedPreferences = prefs;
             // load the caches items
-            data = global.getFeed(mSharedPreferences, 0);
-            //System.out.println("cached Data length: "+data.length());
-            if (data.length() != 0) {
-                try {
-                    lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
-                } catch (JSONException e) {
-                    lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
-                    e.printStackTrace();
+            if (feedId==0) {
+                data = global.getFeed(mSharedPreferences, 0);
+                //System.out.println("cached Data length: "+data.length());
+                if (data.length() != 0) {
+                    try {
+                        lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name");
+                    } catch (JSONException e) {
+                        lastItemId = "0"; // Could not get last item ID; perform a reload next time and show error view :(
+                        e.printStackTrace();
+                    }
                 }
+            } else {
+                data = new JSONArray();
             }
             // load preferences
             loadTheme();
@@ -325,12 +481,12 @@ public class MainActivity extends Activity {
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
-            showItemSubreddit = global.getSubredditManager().isFeedMulti(0);
+            showItemSubreddit = feedId==0 && global.getSubredditManager().isFeedMulti(0);
         }
 
         @Override
         public int getCount() {
-            return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
+            return data.length()>0 ? (data.length() + 1) : 0; // plus 1 advertises the "load more" item to the listview without having to add it to the data source
         }
 
         @Override
@@ -637,7 +793,7 @@ public class MainActivity extends Activity {
         }
 
         public void reloadFeedData() {
-            data = global.getFeed(mSharedPreferences, 0);
+            data = global.getFeed(mSharedPreferences, feedId);
         }
 
         public void reloadReddits() {
@@ -661,9 +817,9 @@ public class MainActivity extends Activity {
 
             @Override
             protected Long doInBackground(Void... none) {
-                String curFeed = global.getSubredditManager().getCurrentFeedPath(0);
-                boolean isAll = global.getSubredditManager().getCurrentFeedName(0).equals("all");
-                String sort = mSharedPreferences.getString("sort-app", "hot");
+                String curFeed = subredditPath;
+                boolean isAll = subredditName.equals("all");
+                String sort = subredditSort;
                 JSONArray tempArray;
                 endOfFeed = false;
                 if (loadMore) {
@@ -709,7 +865,7 @@ public class MainActivity extends Activity {
                     data = tempArray;
                 }
                 // save feed
-                global.setFeed(prefs, 0, data);
+                global.setFeed(prefs, feedId, data);
                 if (endOfFeed){
                     lastItemId = "0";
                 } else {

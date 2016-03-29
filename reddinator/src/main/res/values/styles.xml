@@ -18,10 +18,18 @@
         <item name="android:selectableItemBackground">@android:color/transparent</item>
         <item name="android:button">@android:color/transparent</item>
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
     </style>
-
+    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+    </style>
     <style name="ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
         <item name="android:minWidth">40dip</item>
+        <item name="android:paddingLeft">0dip</item>
+        <item name="android:paddingRight">0dip</item>
+    </style>
+    <style name="ActionOverflowButtonStyle" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <item name="android:minWidth">42dip</item>
         <item name="android:paddingLeft">0dip</item>
         <item name="android:paddingRight">0dip</item>
     </style>

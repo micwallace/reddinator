@@ -303,4 +303,5 @@
     <string name="credits">Credits</string>
     <string name="changelog">Changelog</string>
     <string name="karma" translatable="false">Karma</string>
+    <string name="sidebar">Sidebar</string>
 </resources>

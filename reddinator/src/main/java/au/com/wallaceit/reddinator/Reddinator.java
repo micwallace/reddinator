@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -306,12 +307,19 @@ public class Reddinator extends Application {
     }
 
     public static void handleRedditLink(Context context, String url){
-        Pattern pattern = Pattern.compile(".*reddit.com(/r/.*(/comments/(.*)/.*/))");
+        //System.out.println(url);
+        Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*)(/comments/([^/]*)/[^/]*/)?/?$");
         Matcher matcher = pattern.matcher(url);
         Intent i;
-        if (matcher.find() && matcher.group(1)!=null){
+        boolean match = matcher.find();
+        if (match && matcher.group(2)!=null){
             // reddit post link
             i = new Intent(context, ViewRedditActivity.class);
+            i.setAction(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+        } else if (match && matcher.group(1)!=null) {
+            // subreddit feed
+            i = new Intent(context, MainActivity.class);
             i.setAction(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
         } else {

@@ -189,7 +189,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         if (extras != null) {
             mAppWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             if (mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-                mAppWidgetId = 0; // Id of 4 zeros indicates its the app view, not a widget, that is being updated
+                mAppWidgetId = 0; // Id of zero indicates its the app view, not a widget, that is being updated
             } else {
                 String action = getIntent().getAction();
                 widgetFirstTimeSetup = action!=null && action.equals("android.appwidget.action.APPWIDGET_CONFIGURE");
@@ -409,8 +409,9 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
         if (mAppWidgetId==0) {
             (menu.findItem(R.id.menu_widgettheme)).setVisible(false);
+        } else {
+            (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         }
-        (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         MenuItem accountItem = (menu.findItem(R.id.menu_account));
         if (global.mRedditData.isLoggedIn())
