@@ -47,6 +47,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
@@ -96,6 +97,12 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
+    // info panel views
+    private TextView sourceText;
+    private TextView titleText;
+    private TextView votesText;
+    private TextView commentsText;
+    private TextView statsText;
 
     public static final String ACTION_VIEW_POST = "view_post";
 
@@ -125,7 +132,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             view.setPadding(5, 0, 5, 0);
         }
         // set content view
-        setContentView(R.layout.viewreddit);
+        setContentView(R.layout.activity_viewreddit);
         // Setup View Pager and widget
         ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
@@ -151,6 +158,12 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         } else {
             viewPager.setCurrentItem(0);
         }
+        // setup info panel views
+        sourceText = ((TextView) findViewById(R.id.sourcetxt));
+        votesText = ((TextView) findViewById(R.id.votestxt));
+        commentsText = ((TextView) findViewById(R.id.commentstxt));
+        titleText = ((TextView) findViewById(R.id.post_title));
+        statsText = ((TextView) findViewById(R.id.post_stats));
         // theme
         updateTheme();
         // setup needed members
@@ -214,9 +227,15 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
 
     private void updateTheme(){
         ThemeManager.Theme theme = getCurrentTheme();
-        tabsIndicator.setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        int headerBg = Color.parseColor(theme.getValue("header_color"));
+        int headerText = Color.parseColor(theme.getValue("header_text"));
+        tabsIndicator.setBackgroundColor(headerBg);
         tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
-        tabsIndicator.setTextColor(Color.parseColor(theme.getValue("header_text")));
+        tabsIndicator.setTextColor(headerText);
+        // info panel
+        findViewById(R.id.info_panel).setBackgroundColor(headerBg);
+        sourceText.setTextColor(headerText);
+        titleText.setTextColor(headerText);
     }
 
     public ThemeManager.Theme getCurrentTheme(){
@@ -614,12 +633,28 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                     webfragment.load(postUrl);
                     setVoteIcons();
                 }
+                populateInfoPanel();
                 System.out.println(postInfo.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         } else {
             Toast.makeText(this, "Could not load post info: "+exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void populateInfoPanel(){
+        try {
+            String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
+            sourceText.setText(source);
+            titleText.setText(postInfo.getString("title"));
+            votesText.setText(postInfo.getString("score"));
+            commentsText.setText(postInfo.getString("num_comments"));
+            String score = postInfo.getString("score");
+            String ratio = postInfo.getString("upvote_ratio");
+            statsText.setText(score+" points ("+Math.round(Float.parseFloat(ratio)*100)+"% upvoted)");
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

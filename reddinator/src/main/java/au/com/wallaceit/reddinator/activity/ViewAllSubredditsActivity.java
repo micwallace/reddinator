@@ -77,7 +77,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        setContentView(R.layout.viewallsubreddit);
+        setContentView(R.layout.activity_subreddits);
         // setup list view
         ListView listview = getListView();
         listview.setTextFilterEnabled(true);

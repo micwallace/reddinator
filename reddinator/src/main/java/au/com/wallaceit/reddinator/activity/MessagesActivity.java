@@ -87,7 +87,7 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
             view.setPadding(5, 0, 5, 0);
         }
         // set content view
-        setContentView(R.layout.view_messages);
+        setContentView(R.layout.activity_messages);
         // Setup View Pager and widget
         viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());

@@ -17,10 +17,8 @@
  */
 package au.com.wallaceit.reddinator.activity;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -36,16 +34,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -111,7 +105,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         // set title with username and karma
         actionBar.setTitle(global.mRedditData.getUsername());
         // set content view
-        setContentView(R.layout.view_account);
+        setContentView(R.layout.activity_account);
         // Setup View Pager and widget
         ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
@@ -299,8 +293,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
     }
 
     private void showUserDetailsDialog(JSONObject[] data){
-        System.out.println(data[0].toString());
-        System.out.println(data[1].toString());
+
         JSONArray trophies, karma;
         try {
             karma = data[0].getJSONArray("data");

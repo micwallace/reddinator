@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFF"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/srtoolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="40dip"
+        android:layout_alignParentTop="true"
+        android:background="#CEE3F8" >
+
+        <EditText
+            android:id="@+id/searchbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/searchbutton"
+            android:layout_toStartOf="@+id/searchbutton"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"
+            android:ems="10"
+            android:hint="@string/search" >
+        </EditText>
+
+        <IconTextView
+            android:id="@+id/searchbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:contentDescription="@string/search"
+            android:text="@string/fa_search"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:textSize="28sp"
+            android:textColor="#5F99CF" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/srtoolbar"
+        android:background="#FFF" >
+        
+    </ListView>
+    <LinearLayout
+        android:id="@+id/subredditload"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/srtoolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center" >
+
+	    <ImageView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:contentDescription="@string/loading_pop_desc"
+	        android:scaleType="center"
+	        android:src="@drawable/reddit_icon_small" />
+
+	    <TextView
+	        android:id="@+id/poploadtxt"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+	        android:text="@string/loading_popular"
+	        android:textAppearance="?android:attr/textAppearanceMedium"
+	        android:textColor="#000" />
+	</LinearLayout>
+</RelativeLayout>

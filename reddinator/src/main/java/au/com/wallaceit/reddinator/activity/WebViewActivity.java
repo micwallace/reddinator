@@ -20,7 +20,6 @@ package au.com.wallaceit.reddinator.activity;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -63,9 +62,9 @@ public class WebViewActivity extends Activity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mActivity = WebViewActivity.this;
-        setContentView(R.layout.webview);
+        setContentView(R.layout.activity_webview);
         mActivity.setTitle(R.string.loading);
-        // set and load webview
+        // set and load activity_webview
         wv = (WebView) findViewById(R.id.webView);
         wvclient = new WebViewClient();
         wv.setWebViewClient(wvclient);

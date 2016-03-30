@@ -63,9 +63,9 @@ public class OAuthView extends Activity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mActivity = OAuthView.this;
-        setContentView(R.layout.webview);
+        setContentView(R.layout.activity_webview);
         mActivity.setTitle(R.string.loading);
-        // set and load webview
+        // set and load activity_webview
         wv = (WebView) findViewById(R.id.webView);
         wvclient = new OverrideClient();
 

@@ -38,12 +38,6 @@
         reddinator:showAsAction="never"/>
 
     <item
-        android:id="@+id/menu_widgettheme"
-        android:title="@string/widget_theme"
-        android:showAsAction="never"
-        reddinator:showAsAction="never"/>
-
-    <item
         android:id="@+id/menu_thememanager"
         android:title="@string/menu_theme_manager"
         android:showAsAction="never"

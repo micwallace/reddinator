@@ -58,9 +58,11 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
+    public static final String OAUTH_SCOPES_UNAUTHED = "read";
     public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages,report";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
+    private JSONObject oauthUnauthed = null;
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
     private JSONObject userInfo;
@@ -113,6 +115,7 @@ public class RedditData {
     public void purgeAccountData() {
         oauthToken = null;
         username = null;
+        userInfo = new JSONObject();
         saveUserData();
     }
 
@@ -155,8 +158,19 @@ public class RedditData {
 
     public JSONObject getSubmitText(String subreddit) throws RedditApiException {
 
-        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/api/submit_text/.json";
+        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/api/submit_text.json";
         return redditApiGet(url, false);
+    }
+
+    public JSONObject getSubredditInfo(String subreddit) throws RedditApiException {
+
+        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/about.json";
+        try {
+            return redditApiGet(url, false).getJSONObject("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
     }
 
     public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) throws RedditApiException {

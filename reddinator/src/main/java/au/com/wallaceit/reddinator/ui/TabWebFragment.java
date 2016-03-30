@@ -106,7 +106,7 @@ public class TabWebFragment extends Fragment {
             mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
             ll = (LinearLayout) inflater.inflate(R.layout.webtab, container, false);
             mWebView = (WebView) ll.findViewById(R.id.webView1);
-            // fixes for webview not taking keyboard input on some devices
+            // fixes for activity_webview not taking keyboard input on some devices
             mWebView.getSettings().setLoadWithOverviewMode(true);
             mWebView.getSettings().setUseWideViewPort(true);
             mWebView.getSettings().setJavaScriptEnabled(true); // enable ecmascript

@@ -70,8 +70,10 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
+import au.com.wallaceit.reddinator.ui.HtmlDialog;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback {
 
     private Context context;
     private SharedPreferences prefs;
@@ -85,7 +87,6 @@ public class MainActivity extends Activity {
     private TextView srtext;
     private IconTextView errorIcon;
     private IconTextView refreshbutton;
-    private IconTextView configbutton;
     private ThemeManager.Theme theme;
     private Bitmap[] images;
     private int feedId = 0; // 0 for normal feed, -1 for temp feed. Used to keep feed cache storage and settings separate from the main feed.
@@ -225,13 +226,9 @@ public class MainActivity extends Activity {
         int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
         messageIcon = (menu.findItem(R.id.menu_inbox));
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
-        (menu.findItem(R.id.menu_sidebar)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_file_archive_o).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.menu_sidebar)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_book).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
-        //if (mAppWidgetId==0) {
-            (menu.findItem(R.id.menu_widgettheme)).setVisible(false);
-        //}
-        (menu.findItem(R.id.menu_widgettheme)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_paint_brush).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
         MenuItem accountItem = (menu.findItem(R.id.menu_account));
         if (global.mRedditData.isLoggedIn())
@@ -241,7 +238,6 @@ public class MainActivity extends Activity {
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
-        //return super.onCreateOptionsMenu(menu);
         return true;
     }
 
@@ -275,7 +271,7 @@ public class MainActivity extends Activity {
                 break;
 
             case R.id.menu_sidebar:
-
+                new LoadSubredditInfoTask(global, this).execute(subredditName);
                 break;
 
             case R.id.menu_inbox:
@@ -315,10 +311,6 @@ public class MainActivity extends Activity {
 
             case R.id.menu_feedprefs:
                 //showFeedPrefsDialog();
-                break;
-
-            case R.id.menu_widgettheme:
-                //showWidgetThemeDialog();
                 break;
 
             case R.id.menu_thememanager:
@@ -419,6 +411,18 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
         return extras;
+    }
+
+    @Override
+    public void onSubredditInfoLoaded(JSONObject result, RedditData.RedditApiException exception) {
+        if (result!=null){
+            try {
+                String html = result.getString("description_html");
+                HtmlDialog.init(this, subredditPath, Html.fromHtml(html).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public class ReddinatorListAdapter extends BaseAdapter {

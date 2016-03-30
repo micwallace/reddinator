@@ -56,7 +56,7 @@ public class FeedItemDialogActivity extends Activity {
         widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.activity_widget_item_dialog);
+        dialog.setContentView(R.layout.activity_item_dialog);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -226,7 +226,7 @@ public class FeedItemDialogActivity extends Activity {
             TextView text;
 
             if (convertView == null) {
-                view = inflater.inflate(R.layout.widget_item_dialog_row, parent, false);
+                view = inflater.inflate(R.layout.item_dialog_row, parent, false);
             } else {
                 view = convertView;
             }

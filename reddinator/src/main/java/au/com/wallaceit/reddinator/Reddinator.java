@@ -323,7 +323,7 @@ public class Reddinator extends Application {
             i.setAction(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
         } else {
-            // link is unsupported in native views; open in webview
+            // link is unsupported in native views; open in activity_webview
             i = new Intent(context, WebViewActivity.class);
             i.putExtra("url", url);
         }

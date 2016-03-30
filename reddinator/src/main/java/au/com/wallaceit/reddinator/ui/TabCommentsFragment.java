@@ -116,7 +116,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
         ll = new LinearLayout(mContext);
         ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
-        // fixes for webview not taking keyboard input on some devices
+        // fixes for activity_webview not taking keyboard input on some devices
         mWebView = new WebView(mContext);
         mWebView.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         ll.addView(mWebView);

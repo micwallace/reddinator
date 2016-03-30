@@ -35,6 +35,8 @@
     <string name="fa_caret" translatable="false">{fa-caret-down}</string>
     <string name="fa_arrow_up" translatable="false">{fa-arrow-up}</string>
     <string name="fa_arrow_down" translatable="false">{fa-arrow-down}</string>
+    <string name="fa_star" translatable="false">{fa_star}</string>
+    <string name="fa_comment" translatable="false">{fa_comment}</string>
     <string name="nsfw_flag" translatable="false">[NSFW]</string>
     <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->

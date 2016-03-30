@@ -42,7 +42,16 @@ public class HtmlDialog extends AlertDialog {
         setTitle(title);
         setView(view);
         setCancelable(true);
-        wv.setWebViewClient(new WebViewClient());
+        wv.setWebViewClient(new NoNavClient());
         wv.loadData(html, "text/html", "UTF-8");
+    }
+
+    class NoNavClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            // TODO: handle link clicks
+
+            return true;
+        }
     }
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sliding_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="30dp"
+    sothree:umanoShadowHeight="4dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/redditview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <include
+            android:id="@+id/tab_widget"
+            layout="@layout/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/tab_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingBottom="15dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/sourcetxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:text="@string/reddit_domain"
+                android:textColor="#336699"
+                android:singleLine="true"
+                android:ellipsize="marquee"/>
+
+            <IconTextView
+                android:id="@+id/votesicon"
+                android:contentDescription="@string/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/votestxt"
+                android:layout_toStartOf="@+id/votestxt"
+                android:text="@string/fa_star"
+                android:shadowColor="#22000000"
+                android:shadowDx="4"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:padding="2dp"
+                android:textSize="22sp"
+                android:textColor="#DBDBDB" />
+
+            <TextView
+                android:id="@+id/votestxt"
+                android:textIsSelectable="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/commentsicon"
+                android:layout_toStartOf="@+id/commentsicon"
+                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginEnd="6dp"
+                android:textColor="#336699" />
+
+            <IconTextView
+                android:id="@+id/commentsicon"
+                android:contentDescription="@string/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/commentstxt"
+                android:layout_toStartOf="@+id/commentstxt"
+                android:text="@string/fa_comment"
+                android:shadowColor="#22000000"
+                android:shadowDx="4"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:textSize="22sp"
+                android:textColor="#DBDBDB"/>
+
+            <TextView
+                android:id="@+id/commentstxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:textColor="#336699"
+                android:textIsSelectable="false" />
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/post_title"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <IconTextView
+            android:id="@+id/post_stats"
+            style="@android:style/TextAppearance.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:textSize="18dp"/>
+    </LinearLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

@@ -107,7 +107,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.subredditselect);
+        setContentView(R.layout.activity_subreddit_select);
 
         // load personal list from saved prefereces, if null use default and save
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(SubredditSelectActivity.this);

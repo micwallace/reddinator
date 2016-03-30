@@ -20,6 +20,7 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 23
+        return
     }
     signingConfigs {
         debug {
@@ -51,4 +52,5 @@ dependencies {
     compile 'com.larswerkman:HoloColorPicker:1.5'
     compile 'com.kobakei:ratethisapp:0.0.4'
     compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
+    compile 'com.sothree.slidinguppanel:library:3.3.0'
 }
