@@ -38,13 +38,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.format.DateUtils;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +56,7 @@ import android.widget.Toast;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.kobakei.ratethisapp.RateThisApp;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,6 +74,7 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.LoadPostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
+import au.com.wallaceit.reddinator.ui.RedditViewPager;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
 import au.com.wallaceit.reddinator.ui.TabWebFragment;
@@ -101,8 +106,12 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private TextView sourceText;
     private TextView titleText;
     private TextView votesText;
+    private IconTextView votesIcon;
     private TextView commentsText;
-    private TextView statsText;
+    private IconTextView commentsIcon;
+    private TextView infoText;
+    private IconTextView lockButton;
+    private boolean viewsLocked = false;
 
     public static final String ACTION_VIEW_POST = "view_post";
 
@@ -134,7 +143,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         // set content view
         setContentView(R.layout.activity_viewreddit);
         // Setup View Pager and widget
-        ViewPager viewPager = (ViewPager) findViewById(R.id.tab_content);
+        final RedditViewPager viewPager = (RedditViewPager) findViewById(R.id.tab_content);
         pageAdapter = new RedditPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tab_widget);
@@ -159,11 +168,29 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             viewPager.setCurrentItem(0);
         }
         // setup info panel views
-        sourceText = ((TextView) findViewById(R.id.sourcetxt));
-        votesText = ((TextView) findViewById(R.id.votestxt));
-        commentsText = ((TextView) findViewById(R.id.commentstxt));
-        titleText = ((TextView) findViewById(R.id.post_title));
-        statsText = ((TextView) findViewById(R.id.post_stats));
+        final SlidingUpPanelLayout infoPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        infoPanel.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                infoPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+        sourceText = (TextView) findViewById(R.id.source_txt);
+        votesText = (TextView) findViewById(R.id.votes_txt);
+        votesIcon = (IconTextView) findViewById(R.id.votes_icon);
+        commentsText = (TextView) findViewById(R.id.comments_txt);
+        commentsIcon = (IconTextView) findViewById(R.id.comments_icon);
+        titleText = (TextView) findViewById(R.id.post_title);
+        infoText = (TextView) findViewById(R.id.info_txt);
+        lockButton = (IconTextView) findViewById(R.id.lockbutton);
+        lockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewsLocked = !viewsLocked;
+                lockButton.setTextColor(viewsLocked ? Color.parseColor("#E06B6C") : Color.parseColor("#DBDBDB"));
+                viewPager.setPagingEnabled(!viewsLocked);
+            }
+        });
         // theme
         updateTheme();
         // setup needed members
@@ -236,6 +263,11 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         findViewById(R.id.info_panel).setBackgroundColor(headerBg);
         sourceText.setTextColor(headerText);
         titleText.setTextColor(headerText);
+        infoText.setTextColor(headerText);
+        votesText.setTextColor(headerText);
+        commentsText.setTextColor(headerText);
+        votesIcon.setTextColor(Color.parseColor(theme.getValue("votes_icon")));
+        commentsIcon.setTextColor(Color.parseColor(theme.getValue("comments_icon")));
     }
 
     public ThemeManager.Theme getCurrentTheme(){
@@ -634,7 +666,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                     setVoteIcons();
                 }
                 populateInfoPanel();
-                System.out.println(postInfo.toString());
+                //System.out.println(postInfo.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -648,11 +680,12 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
             titleText.setText(postInfo.getString("title"));
-            votesText.setText(postInfo.getString("score"));
-            commentsText.setText(postInfo.getString("num_comments"));
-            String score = postInfo.getString("score");
-            String ratio = postInfo.getString("upvote_ratio");
-            statsText.setText(score+" points ("+Math.round(Float.parseFloat(ratio)*100)+"% upvoted)");
+            infoText.setText(getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, 0L, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author")));
+            int score = postInfo.getInt("score");
+            double ratio = postInfo.getDouble("upvote_ratio");
+            votesText.setText(getResources().getQuantityString(R.plurals.vote_details, score, score, Math.round(ratio * 100)));
+            int comments = postInfo.getInt("num_comments");
+            commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
         } catch (JSONException e) {
             e.printStackTrace();
         }

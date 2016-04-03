@@ -306,7 +306,17 @@ public class Reddinator extends Application {
         return getRedditMobileSite(mSharedPreferences.getBoolean("mobilecommentspref", true));
     }
 
-    public static void handleRedditLink(Context context, String url){
+    public void handleLink(Context context, String url){
+        if (url.indexOf("https://www.reddit.com/")==0){
+            // open in native view if supported
+            handleRedditLink(context, url);
+        } else {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(i);
+        }
+    }
+
+    public void handleRedditLink(Context context, String url){
         //System.out.println(url);
         Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*)(/comments/([^/]*)/[^/]*/)?/?$");
         Matcher matcher = pattern.matcher(url);
@@ -325,6 +335,7 @@ public class Reddinator extends Application {
         } else {
             // link is unsupported in native views; open in activity_webview
             i = new Intent(context, WebViewActivity.class);
+            url = url.replace("https://www.reddit.com", getDefaultMobileSite());
             i.putExtra("url", url);
         }
         context.startActivity(i);

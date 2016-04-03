@@ -37,6 +37,7 @@
     <string name="fa_arrow_down" translatable="false">{fa-arrow-down}</string>
     <string name="fa_star" translatable="false">{fa_star}</string>
     <string name="fa_comment" translatable="false">{fa_comment}</string>
+    <string name="fa_lock" translatable="false">{fa_lock}</string>
     <string name="nsfw_flag" translatable="false">[NSFW]</string>
     <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->
@@ -306,4 +307,13 @@
     <string name="changelog">Changelog</string>
     <string name="karma" translatable="false">Karma</string>
     <string name="sidebar">Sidebar</string>
+    <plurals name="num_comments">
+        <item quantity="one">%d comment</item>
+        <item quantity="other">%d comments</item>
+    </plurals>
+    <plurals name="vote_details">
+        <item quantity="one">%1$d point (%2$d%% upvoted)</item>
+        <item quantity="other">%1$d points (%2$d%% upvoted)</item>
+    </plurals>
+    <string name="submitted_details">"submitted %1$s by /u/%2$s</string>
 </resources>

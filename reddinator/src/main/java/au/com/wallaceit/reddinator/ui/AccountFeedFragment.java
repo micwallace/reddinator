@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -129,24 +128,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                boolean redditLink = false;
                 //System.out.println(url);
                 if (url.indexOf("file://") == 0) { // fix for short sub and user links
-                    url = url.replace("file://", global.getDefaultMobileSite()) + "/";
-                    redditLink = true;
+                    url = url.replace("file://", "https://www.reddit.com");
                 }
-                if (url.indexOf("https://www.reddit.com/") == 0) { // catch other reddit links
-                    url = url.replace("https://www.reddit.com", global.getDefaultMobileSite());
-                    redditLink = true;
-                }
-                if (redditLink) {
-                    Intent i = new Intent(mContext, WebViewActivity.class);
-                    i.putExtra("url", url);
-                    startActivity(i);
-                } else {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(i);
-                }
+                global.handleLink(getContext(), url);
                 return true; // always override url
             }
 

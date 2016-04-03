@@ -55,7 +55,6 @@ public class LoadSubredditInfoTask extends AsyncTask<String, Integer, JSONObject
 
     @Override
     protected void onPostExecute(JSONObject data) {
-        System.out.println(data);
         if (callback!=null)
             callback.onSubredditInfoLoaded(data, exception);
     }

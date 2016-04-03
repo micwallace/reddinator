@@ -27,6 +27,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.Reddinator;
 
 public class HtmlDialog extends AlertDialog {
     public static HtmlDialog init(Context context, String title, String html){
@@ -43,14 +44,14 @@ public class HtmlDialog extends AlertDialog {
         setView(view);
         setCancelable(true);
         wv.setWebViewClient(new NoNavClient());
-        wv.loadData(html, "text/html", "UTF-8");
+        wv.loadDataWithBaseURL("https://www.reddit.com", html, "text/html", "UTF-8", null);
     }
 
     class NoNavClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // TODO: handle link clicks
-
+            ((Reddinator) getContext().getApplicationContext()).handleLink(getContext(), url);
             return true;
         }
     }
