@@ -58,11 +58,11 @@ public class RedditData {
     private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    public static final String OAUTH_SCOPES_UNAUTHED = "read";
+    //public static final String OAUTH_SCOPES_UNAUTHED = "read";
     public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages,report";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
-    private JSONObject oauthUnauthed = null;
+    //private JSONObject oauthUnauthed = null;
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
     private JSONObject userInfo;

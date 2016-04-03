@@ -316,4 +316,5 @@
         <item quantity="other">%1$d points (%2$d%% upvoted)</item>
     </plurals>
     <string name="submitted_details">submitted %1$s by &lt;a href="https://www.reddit.com/u/%2$s/"&gt;/u/%2$s&lt;/a&gt;</string>
+    <string name="loading_sidebar">Loading sidebar…</string>
 </resources>

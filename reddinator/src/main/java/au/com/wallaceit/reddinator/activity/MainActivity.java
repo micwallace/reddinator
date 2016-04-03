@@ -21,6 +21,7 @@ package au.com.wallaceit.reddinator.activity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -288,7 +289,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 break;
 
             case R.id.menu_sidebar:
-                new LoadSubredditInfoTask(global, this).execute(subredditName);
+                openSidebar();
                 break;
 
             case R.id.menu_inbox:
@@ -508,16 +509,30 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         return extras;
     }
 
+    private ProgressDialog sidebarProg;
+    private void openSidebar(){
+        sidebarProg = new ProgressDialog(this);
+        sidebarProg.setIndeterminate(true);
+        sidebarProg.setTitle(R.string.loading);
+        sidebarProg.setMessage(getString(R.string.loading_sidebar));
+        sidebarProg.show();
+        new LoadSubredditInfoTask(global, this).execute(subredditName);
+    }
     @Override
     public void onSubredditInfoLoaded(JSONObject result, RedditData.RedditApiException exception) {
         if (result!=null){
             try {
-                String html = result.getString("description_html");
+                String html = "&lt;p&gt;"+result.getString("subscribers")+" readers&lt;br/&gt;"+result.getString("accounts_active")+" users here now&lt;/p&gt;";
+                html += result.getString("description_html");
                 HtmlDialog.init(this, subredditPath, Html.fromHtml(html).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        } else {
+            Toast.makeText(this, "Error loading sidebar: "+exception.getMessage(), Toast.LENGTH_LONG).show();
         }
+        if (sidebarProg!=null)
+            sidebarProg.dismiss();
     }
 
     public class ReddinatorListAdapter extends BaseAdapter {
