@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.10" versioncode="38">
+        <change>Added post info panel to view reddit activity.</change>
+        <change>Added viewpager gesture lock to info panel allowing horizontal scrolling when necessary.</change>
+        <change>Added action menu to feed activity.</change>
+        <change>Added sidebar dialog and feed/sort preferences to feed activity menu.</change>
+        <change>View reddit activity and feed activity can now be opened via url.</change>
+        <change>Reddit urls in comments and messages now open in native views when possible.</change>
+    </release>
     <release version="3.07" versioncode="37">
         <change>Fixed bug causing failed login in oauth view by enabling DOM storage (possible Reddit change).</change>
         <change>Added suppress changelog flag to suppress the changelog dialog for minor updates.</change>

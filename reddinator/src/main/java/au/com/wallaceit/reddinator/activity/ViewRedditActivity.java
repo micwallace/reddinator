@@ -38,7 +38,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.text.format.DateUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -215,7 +217,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             userLikes = getIntent().getStringExtra("likes");
         } else {
             // from widget or app feed
-            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
 
             redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
@@ -264,6 +266,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         sourceText.setTextColor(headerText);
         titleText.setTextColor(headerText);
         infoText.setTextColor(headerText);
+        infoText.setLinkTextColor(headerText);
         votesText.setTextColor(headerText);
         commentsText.setTextColor(headerText);
         votesIcon.setTextColor(Color.parseColor(theme.getValue("votes_icon")));
@@ -680,7 +683,11 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
             titleText.setText(postInfo.getString("title"));
-            infoText.setText(getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, 0L, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author")));
+
+            String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, 0L, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
+            infoText.setText(Html.fromHtml(infoStr));
+            infoText.setMovementMethod(LinkMovementMethod.getInstance());
+
             int score = postInfo.getInt("score");
             double ratio = postInfo.getDouble("upvote_ratio");
             votesText.setText(getResources().getQuantityString(R.plurals.vote_details, score, score, Math.round(ratio * 100)));

@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:reddinator="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_sort"
+        android:title="@string/sort_label"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
         android:id="@+id/menu_sidebar"
         android:title="@string/sidebar"
         android:showAsAction="never"

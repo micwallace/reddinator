@@ -20,8 +20,10 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -83,6 +85,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private View appView;
     private ActionBar actionBar;
     private MenuItem messageIcon;
+    private MenuItem sortItem;
     private ProgressBar loader;
     private TextView srtext;
     private IconTextView errorIcon;
@@ -127,18 +130,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 listAdapter.reloadReddits();
             }
         });
-
-        View.OnClickListener srclick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent srintent = new Intent(context, SubredditSelectActivity.class);
-                startActivityForResult(srintent, 0);
-            }
-        };
-
-        srtext.setOnClickListener(srclick);
-        findViewById(R.id.app_logo).setOnClickListener(srclick);
-        findViewById(R.id.appcaret).setOnClickListener(srclick);
+        View.OnClickListener srclick;
         // check intent and set needed feed params accordingly
         if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
             // open reddit feed via url, extract path
@@ -155,11 +147,29 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 return;
             }
             feedId = -1;
+            srclick = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(MainActivity.this, "This is a temporary feed, change sort and preferences from the menu", Toast.LENGTH_LONG).show();
+                }
+            };
+            findViewById(R.id.appcaret).setVisibility(View.GONE);
         } else {
             subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
             subredditName = global.getSubredditManager().getCurrentFeedName(0);
             subredditSort = prefs.getString("sort-app", "hot");
+            srclick = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent srintent = new Intent(context, SubredditSelectActivity.class);
+                    startActivityForResult(srintent, 0);
+                }
+            };
+            findViewById(R.id.appcaret).setOnClickListener(srclick);
         }
+        // don't add subreddit select click for temp feeds, feed prefs and sort are changable from the menu only in temp feeds
+        srtext.setOnClickListener(srclick);
+        findViewById(R.id.app_logo).setOnClickListener(srclick);
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
         listAdapter = new ReddinatorListAdapter(global, prefs);
@@ -226,6 +236,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
         messageIcon = (menu.findItem(R.id.menu_inbox));
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        sortItem = (menu.findItem(R.id.menu_sort));
+        sortItem.setIcon(new IconDrawable(this, Iconify.IconValue.fa_sort).color(iconColor).actionBarSize());
+        sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
         (menu.findItem(R.id.menu_sidebar)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_book).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
@@ -270,6 +283,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 onBackPressed();
                 break;
 
+            case R.id.menu_sort:
+                showSortDialog();
+                break;
+
             case R.id.menu_sidebar:
                 new LoadSubredditInfoTask(global, this).execute(subredditName);
                 break;
@@ -310,7 +327,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 break;
 
             case R.id.menu_feedprefs:
-                //showFeedPrefsDialog();
+                showFeedPrefsDialog();
                 break;
 
             case R.id.menu_thememanager:
@@ -331,6 +348,83 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    private boolean needsFeedViewUpdate = false;
+    private void showFeedPrefsDialog(){
+        final CharSequence[] names = {getString(R.string.thumbnails), getString(R.string.thumbnails_on_top), getString(R.string.hide_post_info)};
+        final boolean[] initvalue = {prefs.getBoolean("thumbnails-app", true), prefs.getBoolean("bigthumbs-app", false), prefs.getBoolean("hideinf-app", false)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.feed_prefs));
+        builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
+            public void onClick(DialogInterface dialogInterface, int item, boolean state) {
+                SharedPreferences.Editor prefsedit = prefs.edit();
+                switch (item) {
+                    case 0:
+                        prefsedit.putBoolean("thumbnails-app", state);
+                        break;
+                    case 1:
+                        prefsedit.putBoolean("bigthumbs-app", state);
+                        break;
+                    case 2:
+                        prefsedit.putBoolean("hideinf-app", state);
+                        break;
+                }
+                prefsedit.apply();
+                needsFeedViewUpdate = true;
+            }
+        });
+        builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+                if (needsFeedViewUpdate) {
+                    listAdapter.loadFeedPrefs();
+                    listView.invalidateViews();
+                    needsFeedViewUpdate = false;
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    // show sort select dialog
+    private void showSortDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.select_sort));
+        builder.setItems(R.array.reddit_sorts, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences.Editor prefsedit = prefs.edit();
+                String sort = "hot"; // default if fails
+                // find index
+                switch (which) {
+                    case 0:
+                        sort = "hot";
+                        break;
+                    case 1:
+                        sort = "new";
+                        break;
+                    case 2:
+                        sort = "rising";
+                        break;
+                    case 3:
+                        sort = "controversial";
+                        break;
+                    case 4:
+                        sort = "top";
+                        break;
+                }
+                if (feedId==0) { // don't update persitent setting if it's a temp feed.
+                    prefsedit.putString("sort-app", sort);
+                    prefsedit.apply();
+                }
+                subredditSort = sort;
+                // set new text in button
+                sortItem.setTitle(getString(R.string.sort_label) + " " + subredditSort);
+                dialog.dismiss();
+                listAdapter.reloadReddits();
+            }
+        });
+        builder.show();
     }
 
     private void setThemeColors() {
@@ -364,6 +458,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 subredditName = global.getSubredditManager().getCurrentFeedName(0);
                 subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
                 subredditSort = prefs.getString("sort-app", "hot");
+                sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
                 srtext.setText(subredditName);
                 listAdapter.loadFeedPrefs();
                 listAdapter.reloadReddits();
