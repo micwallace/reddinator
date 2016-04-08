@@ -83,7 +83,7 @@
                 android:layout_below="@id/post_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-16dp"
+                android:layout_marginBottom="-18dp"
                 android:padding="0dp"
                 android:includeFontPadding="false"
                 android:clickable="true"
@@ -104,6 +104,23 @@
                 android:shadowRadius="3"
                 android:padding="2dp"
                 android:textSize="16sp" />
+
+            <IconTextView
+                android:id="@+id/refresh_button"
+                android:contentDescription="@string/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/info_txt"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:text="@string/fa_refresh"
+                android:shadowColor="#22000000"
+                android:shadowDx="4"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:paddingTop="2dp"
+                android:textSize="24sp"
+                android:textColor="#DBDBDB" />
 
             <TextView
                 android:id="@+id/votes_txt"

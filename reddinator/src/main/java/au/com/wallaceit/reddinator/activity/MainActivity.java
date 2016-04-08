@@ -317,8 +317,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
             case R.id.menu_search:
                 Intent searchIntent = new Intent(this, SearchActivity.class);
-                if (!global.getSubredditManager().isFeedMulti(0))
-                    searchIntent.putExtra("feed_path", global.getSubredditManager().getCurrentFeedPath(0));
+                if (feedId==-1 || !global.getSubredditManager().isFeedMulti(0))
+                    searchIntent.putExtra("feed_path", subredditPath);
                 startActivity(searchIntent);
                 break;
 

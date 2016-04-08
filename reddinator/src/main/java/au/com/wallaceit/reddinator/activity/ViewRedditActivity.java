@@ -193,6 +193,14 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 viewPager.setPagingEnabled(!viewsLocked);
             }
         });
+        IconTextView refreshButton = (IconTextView) findViewById(R.id.refresh_button);
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setTitle(R.string.loading);
+                new LoadPostTask(global, ViewRedditActivity.this).execute(postPermalink, "best");
+            }
+        });
         // theme
         updateTheme();
         // setup needed members
@@ -645,6 +653,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         super.onSaveInstanceState(outState);
     }
 
+    private boolean commentsLoaded = false; // don't pass comments to comments view on subsequent reloads
     @Override
     public void onPostLoaded(JSONArray result, RedditData.RedditApiException exception) {
         if (result!=null){
@@ -652,9 +661,10 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 postInfo = result.getJSONObject(0).getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data");
                 JSONArray comments = result.getJSONObject(1).getJSONObject("data").getJSONArray("children");
                 // pass comments to fragment
-                if (pageAdapter.getRegisteredFragment(1) instanceof TabCommentsFragment){
+                if (!commentsLoaded && pageAdapter.getRegisteredFragment(1) instanceof TabCommentsFragment){
                     TabCommentsFragment fragment = (TabCommentsFragment) pageAdapter.getRegisteredFragment(1);
                     fragment.loadFromData(postInfo, comments);
+                    commentsLoaded = true;
                 }
                 // load content view and set vote icons if url was not passed in extras
                 if (postUrl==null){
@@ -676,6 +686,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         } else {
             Toast.makeText(this, "Could not load post info: "+exception.getMessage(), Toast.LENGTH_LONG).show();
         }
+        setTitle(R.string.app_name);
     }
 
     private void populateInfoPanel(){
@@ -684,7 +695,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             sourceText.setText(source);
             titleText.setText(postInfo.getString("title"));
 
-            String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, 0L, DateUtils.YEAR_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
+            String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
             infoText.setText(Html.fromHtml(infoStr));
             infoText.setMovementMethod(LinkMovementMethod.getInstance());
 

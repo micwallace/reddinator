@@ -288,14 +288,14 @@ public class WidgetProvider extends AppWidgetProvider {
                     case WidgetProvider.ITEM_CLICK_OPTIONS:
                         Intent ointent = new Intent(context, FeedItemDialogActivity.class);
                         ointent.putExtras(intent.getExtras());
-                        ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(ointent);
                         break;
                     // open image view
                     case WidgetProvider.ITEM_CLICK_IMAGE:
                         Intent imageintent = new Intent(context, ViewImageDialogActivity.class);
                         imageintent.putExtras(intent.getExtras());
-                        imageintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        imageintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         context.startActivity(imageintent);
                         break;
                 }
