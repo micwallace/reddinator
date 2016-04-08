@@ -53,8 +53,6 @@ public class TabWebFragment extends Fragment {
     private LinearLayout ll;
     //private Bundle WVState;
     public View mFullSView;
-    private LinearLayout mTabcontainer;
-    private FrameLayout mVideoFrame;
     private WebChromeClient.CustomViewCallback mFullSCallback;
     public WebChromeClient mChromeClient;
     private Activity mActivity;
@@ -159,6 +157,10 @@ public class TabWebFragment extends Fragment {
     // web chrome client
     WebChromeClient newchromeclient = new WebChromeClient() {
         ActionBar actionBar;
+        private FrameLayout mVideoFrame;
+        private View mTabcontainer;
+        private LinearLayout rootLayout;
+
         public void onProgressChanged(WebView view, int progress) {
             if(isAdded()) {
                 boolean voteinprogress = ((ViewRedditActivity) mActivity).voteInProgress();
@@ -185,9 +187,6 @@ public class TabWebFragment extends Fragment {
                 callback.onCustomViewHidden();
                 return;
             }
-            // get main view and hide
-            mTabcontainer = (LinearLayout) ((Activity) mContext).findViewById(R.id.redditview);
-            mTabcontainer.setVisibility(View.GONE);
             // create custom view to show
             mVideoFrame = new FrameLayout(mContext);
             mVideoFrame.setLayoutParams(LayoutParameters);
@@ -204,8 +203,12 @@ public class TabWebFragment extends Fragment {
             actionBar.hide();
             ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mVideoFrame.setVisibility(View.VISIBLE);
-
-            ((Activity) mContext).setContentView(mVideoFrame);
+            // add view to root layout
+            rootLayout = (LinearLayout) ((Activity) mContext).findViewById(R.id.contentview);
+            rootLayout.addView(mVideoFrame);
+            // get main content view and hide
+            mTabcontainer = ((Activity) mContext).findViewById(R.id.sliding_layout);
+            mTabcontainer.setVisibility(View.GONE);
         }
 
         @Override
@@ -222,7 +225,8 @@ public class TabWebFragment extends Fragment {
                 actionBar.show();
                 ((Activity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 mTabcontainer.setVisibility(View.VISIBLE);
-                ((Activity) mContext).setContentView(mTabcontainer);
+
+                rootLayout.removeView(mVideoFrame);
             }
         }
     };

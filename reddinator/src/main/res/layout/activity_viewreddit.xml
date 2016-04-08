@@ -1,168 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sliding_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="bottom"
-    sothree:umanoPanelHeight="26dp"
-    sothree:umanoShadowHeight="4dp">
+    android:orientation="vertical"
+    android:id="@+id/contentview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:id="@+id/redditview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <include
-            android:id="@+id/tab_widget"
-            layout="@layout/tabs"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
-        <au.com.wallaceit.reddinator.ui.RedditViewPager
-            android:id="@+id/tab_content"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/info_panel"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingBottom="15dp">
-        <RelativeLayout
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="26dp"
+        sothree:umanoShadowHeight="4dp">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/redditview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+                <include
+                    android:id="@+id/tab_widget"
+                    layout="@layout/tabs"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"/>
+                <au.com.wallaceit.reddinator.ui.RedditViewPager
+                    android:id="@+id/tab_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/info_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp">
-            <IconTextView
-                android:id="@+id/lockbutton"
-                android:contentDescription="@string/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/fa_lock"
-                android:shadowColor="#22000000"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:textSize="24sp"
-                android:textColor="#DBDBDB"/>
-            <TextView
-                android:id="@+id/source_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@id/lockbutton"
-                android:layout_toStartOf="@id/lockbutton"
-                android:text="@string/reddit_domain"
-                android:textColor="#336699"
-                android:singleLine="true"
-                android:ellipsize="marquee"/>
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:id="@+id/post_title"
-                style="@android:style/TextAppearance.Medium"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="15dp">
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"/>
+                android:layout_marginBottom="4dp">
+                <IconTextView
+                    android:id="@+id/lockbutton"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/fa_lock"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:textSize="24sp"
+                    android:textColor="#DBDBDB"/>
+                <TextView
+                    android:id="@+id/source_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_toLeftOf="@id/lockbutton"
+                    android:layout_toStartOf="@id/lockbutton"
+                    android:text="@string/reddit_domain"
+                    android:textColor="#336699"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"/>
 
-            <IconTextView
-                android:id="@+id/info_txt"
-                style="@android:style/TextAppearance.Small"
-                android:layout_below="@id/post_title"
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-18dp"
-                android:padding="0dp"
-                android:includeFontPadding="false"
-                android:clickable="true"
-                android:linksClickable="true"/>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/post_title"
+                    style="@android:style/TextAppearance.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"/>
 
-            <IconTextView
-                android:id="@+id/votes_icon"
-                android:contentDescription="@string/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/info_txt"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:text="@string/fa_star"
-                android:shadowColor="#22000000"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:padding="2dp"
-                android:textSize="16sp" />
+                <IconTextView
+                    android:id="@+id/info_txt"
+                    style="@android:style/TextAppearance.Small"
+                    android:layout_below="@id/post_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-18dp"
+                    android:padding="0dp"
+                    android:includeFontPadding="false"
+                    android:clickable="true"
+                    android:linksClickable="true"/>
 
-            <IconTextView
-                android:id="@+id/refresh_button"
-                android:contentDescription="@string/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/info_txt"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:text="@string/fa_refresh"
-                android:shadowColor="#22000000"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:paddingTop="2dp"
-                android:textSize="24sp"
-                android:textColor="#DBDBDB" />
+                <IconTextView
+                    android:id="@+id/votes_icon"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/info_txt"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/fa_star"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/votes_txt"
-                android:layout_below="@id/info_txt"
-                android:layout_toRightOf="@+id/votes_icon"
-                android:layout_toEndOf="@+id/votes_icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginStart="2dp"
-                android:textSize="16sp"/>
+                <IconTextView
+                    android:id="@+id/refresh_button"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/info_txt"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/fa_refresh"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:paddingTop="2dp"
+                    android:textSize="24sp"
+                    android:textColor="#DBDBDB" />
 
-            <IconTextView
-                android:id="@+id/comments_icon"
-                android:contentDescription="@string/icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_below="@id/votes_icon"
-                android:text="@string/fa_comment"
-                android:shadowColor="#22000000"
-                android:shadowDx="4"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:padding="2dp"
-                android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/votes_txt"
+                    android:layout_below="@id/info_txt"
+                    android:layout_toRightOf="@+id/votes_icon"
+                    android:layout_toEndOf="@+id/votes_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/comments_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/votes_txt"
-                android:layout_toRightOf="@+id/comments_icon"
-                android:layout_toEndOf="@+id/comments_icon"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="2dp"
-                android:layout_marginStart="2dp"
-                android:textSize="16sp"
-                android:textIsSelectable="false" />
-        </RelativeLayout>
-    </LinearLayout>
+                <IconTextView
+                    android:id="@+id/comments_icon"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_below="@id/votes_icon"
+                    android:text="@string/fa_comment"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:padding="2dp"
+                    android:textSize="16sp"/>
 
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+                <TextView
+                    android:id="@+id/comments_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/votes_txt"
+                    android:layout_toRightOf="@+id/comments_icon"
+                    android:layout_toEndOf="@+id/comments_icon"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"
+                    android:textIsSelectable="false" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</LinearLayout>

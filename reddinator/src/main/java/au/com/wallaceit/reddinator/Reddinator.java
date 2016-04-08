@@ -496,7 +496,7 @@ public class Reddinator extends Application {
         if (hasImageExtension(url))
             return true;
         // Check for imgur url without file extension (should not be album)
-        return url.toLowerCase().matches("(https?://(.*imgur.com/[^a/].*)$)");
+        return url.toLowerCase().matches("(https?://(.*imgur.com/[^gallery/][^a/].*)$)");
     }
 
     public static boolean hasImageExtension(String url){

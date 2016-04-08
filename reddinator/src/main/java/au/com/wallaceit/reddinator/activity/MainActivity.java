@@ -87,6 +87,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private ActionBar actionBar;
     private MenuItem messageIcon;
     private MenuItem sortItem;
+    private MenuItem sidebarIcon;
     private ProgressBar loader;
     private TextView srtext;
     private IconTextView errorIcon;
@@ -225,6 +226,12 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Reddinator.getActionbarIconColor();
             messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         }
+        if (sidebarIcon!=null)
+            if (feedId==-1 || !global.getSubredditManager().isFeedMulti(0)) {
+                sidebarIcon.setVisible(true);
+            } else {
+                sidebarIcon.setVisible(false);
+            }
     }
 
     @Override
@@ -239,8 +246,12 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         sortItem = (menu.findItem(R.id.menu_sort));
         sortItem.setIcon(new IconDrawable(this, Iconify.IconValue.fa_sort).color(iconColor).actionBarSize());
-        sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
-        (menu.findItem(R.id.menu_sidebar)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_book).color(iconColor).actionBarSize());
+        sortItem.setTitle(getString(R.string.sort_label) + " " + subredditSort);
+        sidebarIcon = menu.findItem(R.id.menu_sidebar);
+        sidebarIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_book).color(iconColor).actionBarSize());
+        if (feedId==-1 || !global.getSubredditManager().isFeedMulti(0)) {
+            sidebarIcon.setVisible(true);
+        }
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_feedprefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_list_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_thememanager)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_cogs).color(iconColor).actionBarSize());
