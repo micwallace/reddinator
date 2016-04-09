@@ -38,6 +38,7 @@
     <string name="fa_star" translatable="false">{fa_star}</string>
     <string name="fa_comment" translatable="false">{fa_comment}</string>
     <string name="fa_lock" translatable="false">{fa_lock}</string>
+    <string name="fa_file_text" translatable="false">{fa_file_text}</string>
     <string name="nsfw_flag" translatable="false">[NSFW]</string>
     <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->
@@ -306,7 +307,7 @@
     <string name="credits">Credits</string>
     <string name="changelog">Changelog</string>
     <string name="karma" translatable="false">Karma</string>
-    <string name="sidebar">Sidebar</string>
+    <string name="sidebar" translatable="false">Sidebar</string>
     <plurals name="num_comments">
         <item quantity="one">%d comment</item>
         <item quantity="other">%d comments</item>
@@ -317,4 +318,8 @@
     </plurals>
     <string name="submitted_details">submitted %1$s by &lt;a href="https://www.reddit.com/u/%2$s/"&gt;/u/%2$s&lt;/a&gt;</string>
     <string name="loading_sidebar">Loading sidebar…</string>
+    <string name="view_all_comments">View All {fa-comments}</string>
+    <string name="open_context_link">Open Link {fa-globe}</string>
+    <string name="error_loading_feed">Error loading feed</string>
+    <string name="post_text">Post Text</string>
 </resources>

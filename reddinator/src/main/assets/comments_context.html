@@ -56,28 +56,25 @@
     <button onclick="$(this).prop('disabled', true).next('button').prop('disabled', true); edit($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Save</button>
     <button onclick="cancelEdit($(this).parent().parent().attr('id'));">Cancel</button>
 </div>
-<div id="header" class="comments_header">
-    <i onclick="reloadComments();" class="fa fa-refresh"></i>
-    <label>Sort:</label>
-    <div>
-        <select id="sort_select" onchange="reloadComments();">
+<div id="header">
+    <i onclick="reloadCommentsContext();" class="fa fa-refresh"></i>
+    <label style="display:inline-block;">Sort:</label>
+    <select id="context_sort_select" onchange="reloadCommentsContext();" style="margin-right: 4px;">
             <option value="best">Best</option>
             <option value="top">Top</option>
             <option value="new">New</option>
             <option value="hot">Hot</option>
             <option value="controversial">Controversial</option>
             <option value="old">Old</option>
-        </select>
-    </div>
+    </select>
+    <label style="display:inline-block;">Context:</label>
+    <select id="context_select" onchange="reloadCommentsContext();">
+            <option value="3">3</option>
+            <option value="10">10</option>
+            <option value="10000">All</option>
+    </select>
 </div>
 <div id="container">
-    <div id="post_comment" class="post_box">
-        <div id="post_comment_box" style="margin:0;display:none;">
-            <textarea rows="5"></textarea>
-            <button onclick="$(this).prop('disabled', true); comment(articleId, $(this).prev('textarea').val());">Comment</button>
-        </div>
-        <button id="post_comment_button" onclick="$(this).css('display', 'none'); $('#post_comment_box').css('display', 'block');" style="width:100%; margin-top:5px;">Add Comment</button>
-    </div>
     <div id="base">
 
     </div>

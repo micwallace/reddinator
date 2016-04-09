@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,10 +50,11 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.AccountActivity;
+import au.com.wallaceit.reddinator.activity.CommentsContextDialogActivity;
 import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
-import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
 import au.com.wallaceit.reddinator.tasks.HidePostTask;
@@ -61,7 +63,6 @@ import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback, ComposeMessageTask.Callback {
-    private Context mContext;
     private Resources resources;
     public WebView mWebView;
     private boolean mFirstTime = true;
@@ -99,7 +100,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this.getActivity();
+        Context mContext = this.getActivity();
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (Reddinator) mContext.getApplicationContext();
         resources = getResources();
@@ -328,20 +329,18 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void openCommentLink(String link) {
-            Intent intent = new Intent(mContext, WebViewActivity.class);
-            intent.putExtra("url", global.getDefaultMobileSite() + link);
-            //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
+            Intent intent = new Intent(mContext, CommentsContextDialogActivity.class);
+            intent.setData(Uri.parse("https://www.reddit.com" + link));
             startActivity(intent);
         }
 
         @JavascriptInterface
         public void openRedditPost(String redditId, String postUrl, String permaLink, String userLikes) {
             Intent intent = new Intent(mContext, ViewRedditActivity.class);
-            intent.setAction(ViewRedditActivity.ACTION_VIEW_POST);
-            intent.putExtra("id", redditId);
-            intent.putExtra("url", postUrl);
-            intent.putExtra("permalink", permaLink);
-            intent.putExtra("likes", userLikes);
+            intent.putExtra(WidgetProvider.ITEM_ID, redditId);
+            intent.putExtra(WidgetProvider.ITEM_URL, postUrl);
+            intent.putExtra(WidgetProvider.ITEM_PERMALINK, permaLink);
+            intent.putExtra(WidgetProvider.ITEM_USERLIKES, userLikes);
             startActivity(intent);
         }
     }
@@ -428,7 +427,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                 case "-1":
                     // show error
                     if (!loadMore) {
-                        executeJavascript("showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
+                        executeJavascript("showLoadingView('" + resources.getString(R.string.error_loading_feed) + "');");
                     } else {
                         // reset load more button
                         executeJavascript("resetMoreClickEvent('" + mMoreId + "');");

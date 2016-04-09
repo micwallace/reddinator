@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -83,14 +82,6 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     }
 
-    /*boolean loaded = false;
-    public void load(){
-        if (!loaded) {
-            loadComments("best");
-            loaded = true;
-        }
-    }*/
-
     public JSONArray initialData = null;
     public void loadFromData(JSONObject postInfo, JSONArray comments){
         subData = postInfo;
@@ -129,8 +120,6 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
         webSettings.setDefaultFontSize(fontSize);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        mSharedPreferences.getString("titlefontpref", "16");
 
         final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString();
         mWebView.setWebViewClient(new WebViewClient() {

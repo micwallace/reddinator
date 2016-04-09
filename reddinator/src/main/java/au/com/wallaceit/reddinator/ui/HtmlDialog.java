@@ -37,20 +37,22 @@ public class HtmlDialog extends AlertDialog {
     }
 
     public HtmlDialog(Context context, String title, String html) {
-        super(context);
+        super(context, R.style.HtmlDialog);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_html, null);
         WebView wv = (WebView) view.findViewById(R.id.webView);
         setTitle(title);
         setView(view);
         setCancelable(true);
         wv.setWebViewClient(new NoNavClient());
-        wv.loadDataWithBaseURL("https://www.reddit.com", html, "text/html", "UTF-8", null);
+        wv.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
     }
 
     class NoNavClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // TODO: handle link clicks
+            if (url.indexOf("file://") == 0) { // fix for short sub and user links
+                url = url.replace("file://", "https://www.reddit.com");
+            }
             ((Reddinator) getContext().getApplicationContext()).handleLink(getContext(), url);
             return true;
         }

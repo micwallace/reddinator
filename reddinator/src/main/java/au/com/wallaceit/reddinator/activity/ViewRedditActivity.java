@@ -115,8 +115,6 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private IconTextView lockButton;
     private boolean viewsLocked = false;
 
-    public static final String ACTION_VIEW_POST = "view_post";
-
     /**
      * (non-Javadoc)
      *
@@ -206,7 +204,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         // setup needed members
         if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
             // open post via url, extract permalink and postId
-            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/.*/)");
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)");
             Matcher matcher = pattern.matcher(getIntent().getDataString());
             if (matcher.find()){
                 //System.out.println(matcher.group(2)+" "+matcher.group(1));
@@ -217,14 +215,8 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 this.finish();
                 return;
             }
-        } else if (getIntent().getAction()!=null && getIntent().getAction().equals(ACTION_VIEW_POST)){
-            // onclick action from account/message views
-            redditItemId = getIntent().getStringExtra("id");
-            postUrl = getIntent().getStringExtra("url");
-            postPermalink = getIntent().getStringExtra("permalink");
-            userLikes = getIntent().getStringExtra("likes");
         } else {
-            // from widget or app feed
+            // from widget, app or account feed post click
             widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
             feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
 

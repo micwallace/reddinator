@@ -1,5 +1,6 @@
 // set article from document hash
 var articleId = document.location.hash.substring(1);
+var baseId;
 var username;
 var subAuthor;
 var color_vote = "#A5A5A5";
@@ -30,6 +31,7 @@ function populateComments(author, json){
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
+    baseId = data[0].data.parent_id;
     recursivePopulate(data);
 }
 
@@ -56,10 +58,16 @@ function showLoadingView(text){
     loading.show();
 }
 // java bind functions
-function reloadComments(sort){
+function reloadComments(){
     showLoadingView("Loading...");
     $("#base").html('');
     Reddinator.reloadComments($("#sort_select").val());
+}
+
+function reloadCommentsContext(){
+    showLoadingView("Loading...");
+    $("#base").html('');
+    Reddinator.reloadComments($("#context_sort_select").val(), $("#context_select").val());
 }
 
 function loadChildComments(moreId, children){
@@ -285,7 +293,7 @@ function appendComment(parentId, commentData, prepend){
         }
         flag.show();
     }
-    if (parentId.indexOf("t3_")!==-1){
+    if (parentId.indexOf(baseId)!==-1){
         if (prepend){
             commentElem.prependTo("#base");
         } else {

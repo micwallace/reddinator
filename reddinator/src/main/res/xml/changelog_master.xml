@@ -5,8 +5,10 @@
         <change>Added viewpager gesture lock to info panel allowing horizontal scrolling when necessary.</change>
         <change>Added action menu to feed activity.</change>
         <change>Added sidebar dialog and feed/sort preferences to feed activity menu.</change>
+        <change>Added native comments context dialog.</change>
         <change>View reddit activity and feed activity can now be opened via url.</change>
         <change>Reddit urls in comments and messages now open in native views when possible.</change>
+        <change>Switched to app-only oauth for logged out api requests.</change>
     </release>
     <release version="3.07" versioncode="37">
         <change>Fixed bug causing failed login in oauth view by enabling DOM storage (possible Reddit change).</change>

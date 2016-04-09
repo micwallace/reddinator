@@ -31,6 +31,7 @@ import android.widget.IconButton;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class ViewImageDialogActivity extends Activity {
@@ -68,6 +69,11 @@ public class ViewImageDialogActivity extends Activity {
         webView.loadUrl(imageUrl);
         // setup open comments button
         IconButton button = (IconButton) findViewById(R.id.commentsbutton);
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerBg = Color.parseColor(theme.getValue("header_color"));
+        int headerText = Color.parseColor(theme.getValue("header_text"));
+        button.setBackgroundColor(headerBg);
+        button.setTextColor(headerText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -239,19 +239,20 @@ button:active {
     margin: 0 40px 0 45px;
     padding: 0;
 }
-#header select {
+.comments_header select {
     height: 22px;
     border: 0;
     width: 100%;
     vertical-align: top;
 }
-#header label {
+.comments_header label {
     position: absolute;
     left: 5px;
 }
 #header i {
     position: absolute;
     right: 5px;
+    margin-top: 2px;
     margin-right: 10px;
 }
 *:focus {
@@ -305,8 +306,12 @@ a {
 .comment_text textarea {
     margin-top:4px;
 }
-#sort_select {
-    height: 30px;
+#context_select, #context_sort_select {
+    height: 22px;
+    width: auto;
+    display: inline-block;
+    border: 0;
+    vertical-align: top;
 }
 #post_comment {
     margin-top: 10px;

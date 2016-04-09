@@ -21,7 +21,6 @@ package au.com.wallaceit.reddinator.tasks;
 
 import android.os.AsyncTask;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import au.com.wallaceit.reddinator.Reddinator;

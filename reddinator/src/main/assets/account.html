@@ -74,7 +74,7 @@
     <button onclick="$(this).prop('disabled', true).next('button').prop('disabled', true); edit($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Save</button>
     <button onclick="cancelEdit($(this).parent().parent().attr('id'));">Cancel</button>
 </div>
-<div id="header">
+<div id="header" class="comments_header">
     <label>Sort:</label>
     <i onclick="reloadFeed();" class="fa fa-refresh"></i>
     <div>

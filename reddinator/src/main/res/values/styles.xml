@@ -33,4 +33,7 @@
         <item name="android:paddingLeft">0dip</item>
         <item name="android:paddingRight">0dip</item>
     </style>
+    <style name="HtmlDialog" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

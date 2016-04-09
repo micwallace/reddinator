@@ -264,4 +264,10 @@
     <string name="view_comments">Ver Comentarios {fa-comments}</string>
     <string name="changelog">Cambios</string>
     <string name="credits">Créditos</string>
+    <string name="open_context_link">Abrir Link {fa-globe}</string>
+    <string name="view_all_comments">Ver todo {fa-comments}</string>
+    <string name="submitted_details"><![CDATA[presentado %1$s por <a href="https://www.reddit.com/u/%2$s/">/u/%2$s</a>]]></string>
+    <string name="loading_sidebar">Cargando sidebar…</string>
+    <string name="error_loading_feed">Avance de carga de error</string>
+    <string name="post_text">Mensaje de texto</string>
 </resources>

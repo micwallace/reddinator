@@ -55,6 +55,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import au.com.wallaceit.reddinator.activity.CommentsContextDialogActivity;
 import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
@@ -318,11 +319,15 @@ public class Reddinator extends Application {
 
     public void handleRedditLink(Context context, String url){
         //System.out.println(url);
-        Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*)(/comments/([^/]*)/[^/]*/)?/?$");
+        Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*)(/comments/[^/]*/[^/]*/)?([^/]*)?/?$");
         Matcher matcher = pattern.matcher(url);
         Intent i;
         boolean match = matcher.find();
-        if (match && matcher.group(2)!=null){
+        if (match && matcher.group(3)!=null && !matcher.group(3).equals("")){
+            // reddit comment links
+            i = new Intent(context, CommentsContextDialogActivity.class);
+            i.setData(Uri.parse(url));
+        } else if (match && matcher.group(2)!=null){
             // reddit post link
             i = new Intent(context, ViewRedditActivity.class);
             i.setAction(Intent.ACTION_VIEW);
@@ -496,7 +501,7 @@ public class Reddinator extends Application {
         if (hasImageExtension(url))
             return true;
         // Check for imgur url without file extension (should not be album)
-        return url.toLowerCase().matches("(https?://(.*imgur.com/[^gallery/][^a/].*)$)");
+        return url.toLowerCase().matches("(https?://(.*imgur.com/[^galery/][^a/].*)$)");
     }
 
     public static boolean hasImageExtension(String url){

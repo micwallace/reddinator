@@ -55,14 +55,12 @@ import au.com.wallaceit.reddinator.activity.OAuthView;
 public class RedditData {
     private SharedPreferences sharedPrefs;
     private OkHttpClient httpClient;
-    private static final String STANDARD_ENDPOINT = "https://www.reddit.com";
     private static final String OAUTH_ENDPOINT = "https://oauth.reddit.com";
     public static final String OAUTH_CLIENTID = "wY63YAHgSPSh5w";
-    //public static final String OAUTH_SCOPES_UNAUTHED = "read";
     public static final String OAUTH_SCOPES = "mysubreddits,vote,read,submit,edit,identity,subscribe,save,history,privatemessages,report";
     public static final String OAUTH_REDIRECT = "oauth://reddinator.wallaceit.com.au";
     private String userAgent;
-    //private JSONObject oauthUnauthed = null;
+    private JSONObject oauthAppToken = null;
     private JSONObject oauthToken = null;
     private String oauthstate = null; // random string for secure oauth flow
     private JSONObject userInfo;
@@ -100,6 +98,16 @@ public class RedditData {
                 oauthToken = null;
             }
         }
+        // load app only oauth token
+        String appTokenStr = sharedPrefs.getString("oauthAppToken", "");
+        if (!appTokenStr.equals("")) {
+            try {
+                oauthAppToken = new JSONObject(appTokenStr);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                oauthAppToken = null;
+            }
+        }
     }
 
     // ACCOUNT CONTROL
@@ -122,7 +130,7 @@ public class RedditData {
     // NON-AUTHED REQUESTS
     public JSONArray getPopularSubreddits() throws RedditApiException {
         JSONArray subreddits;
-        String url = STANDARD_ENDPOINT + "/subreddits/popular.json?limit=50";
+        String url = OAUTH_ENDPOINT + "/subreddits/popular.json?limit=50";
         try {
             subreddits = redditApiGet(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
@@ -134,7 +142,7 @@ public class RedditData {
 
     public JSONArray searchSubreddits(String query) throws RedditApiException {
         JSONArray subreddits;
-        String url = STANDARD_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
+        String url = OAUTH_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
             subreddits = redditApiGet(url, false).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
@@ -146,7 +154,7 @@ public class RedditData {
 
     public JSONArray searchRedditNames(String query) throws RedditApiException {
         JSONArray names;
-        String url = (isLoggedIn() ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/search_reddit_names.json?include_over_18=true&query=" + Uri.encode(query);
+        String url = OAUTH_ENDPOINT + "/api/search_reddit_names.json?include_over_18=true&query=" + Uri.encode(query);
         try {
             names = redditApiPost(url).getJSONArray("names");
         } catch (JSONException e) {
@@ -158,13 +166,13 @@ public class RedditData {
 
     public JSONObject getSubmitText(String subreddit) throws RedditApiException {
 
-        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/api/submit_text.json";
+        String url = OAUTH_ENDPOINT + "/r/"+subreddit+"/api/submit_text.json";
         return redditApiGet(url, false);
     }
 
     public JSONObject getSubredditInfo(String subreddit) throws RedditApiException {
 
-        String url = STANDARD_ENDPOINT + "/r/"+subreddit+"/about.json";
+        String url = OAUTH_ENDPOINT + "/r/"+subreddit+"/about.json";
         try {
             return redditApiGet(url, false).getJSONObject("data");
         } catch (JSONException e) {
@@ -174,8 +182,8 @@ public class RedditData {
     }
 
     public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) throws RedditApiException {
-        boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+
+        String url = OAUTH_ENDPOINT + feedPath + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed;
 
@@ -190,10 +198,10 @@ public class RedditData {
     }
 
     public JSONArray searchRedditPosts(String query, String feedPath, boolean restrictSub, String sort, String time, int limit, String afterid) throws RedditApiException {
-        boolean loggedIn = isLoggedIn();
+
         String url;
         try {
-            url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + feedPath + "/search.json?q=" + URLEncoder.encode(query, "UTF-8") + "&t=" + time + "&sort=" + sort + "&restrict_sr=" + restrictSub + "&type=link&syntax=plain&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
+            url = OAUTH_ENDPOINT + feedPath + "/search.json?q=" + URLEncoder.encode(query, "UTF-8") + "&t=" + time + "&sort=" + sort + "&restrict_sr=" + restrictSub + "&type=link&syntax=plain&limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -213,14 +221,21 @@ public class RedditData {
 
     public JSONArray getCommentsFeed(String permalink, String sort, int limit) throws RedditApiException {
         boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + permalink + ".json?api_type=json&sort=" + sort + "&limit=" + String.valueOf(limit);
+        String url = OAUTH_ENDPOINT + permalink + ".json?api_type=json&sort=" + sort + "&limit=" + String.valueOf(limit);
+
+        return redditApiGetArray(url, loggedIn);
+    }
+
+    public JSONArray getCommentsContextFeed(String permalink, String commentId, String sort, int context) throws RedditApiException {
+        boolean loggedIn = isLoggedIn();
+        String url = OAUTH_ENDPOINT + permalink + commentId + ".json?api_type=json&sort=" + sort + "&context=" + String.valueOf(context);
 
         return redditApiGetArray(url, loggedIn);
     }
 
     public JSONArray getChildComments(String moreId, String articleId, String children, String sort) throws RedditApiException {
-        boolean loggedIn = isLoggedIn();
-        String url = (loggedIn ? OAUTH_ENDPOINT : STANDARD_ENDPOINT) + "/api/morechildren.json?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
+
+        String url = OAUTH_ENDPOINT + "/api/morechildren.json?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
 
         JSONArray feed = new JSONArray();
 
@@ -808,11 +823,17 @@ public class RedditData {
                 // For oauth token retrieval and refresh
                 httpRequest.addHeader("Authorization", "Basic " + Base64.encodeToString((OAUTH_CLIENTID + ":").getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
             } else if (isLoggedIn() && oauthMode==REQUEST_MODE_AUTHED) {
-                if (isTokenExpired()) {
+                if (isTokenExpired(true)) {
                     refreshToken();
                 }
                 // add auth headers
-                String tokenStr = getTokenValue("token_type") + " " + getTokenValue("access_token");
+                String tokenStr = getTokenValue("token_type", true) + " " + getTokenValue("access_token", true);
+                httpRequest.addHeader("Authorization", tokenStr);
+            } else {
+                // Use app only oauth
+                checkAppToken();
+                // add auth headers
+                String tokenStr = getTokenValue("token_type", false) + " " + getTokenValue("access_token", false);
                 httpRequest.addHeader("Authorization", tokenStr);
             }
 
@@ -895,21 +916,21 @@ public class RedditData {
         return oauthToken != null;
     }
 
-    private boolean isTokenExpired() {
+    private boolean isTokenExpired(boolean userToken) {
         Long now = (System.currentTimeMillis() / 1000L);
         Long expiry = (long) 0;
         try {
-            expiry = oauthToken.getLong("expires_at");
+            expiry = userToken ?  oauthToken.getLong("expires_at") : oauthAppToken.getLong("expires_at");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return expiry < now;
     }
 
-    private String getTokenValue(String key) {
+    private String getTokenValue(String key, boolean userToken) {
         String token = "";
         try {
-            token = oauthToken.getString(key);
+            token = userToken ? oauthToken.getString(key) : oauthAppToken.getString(key);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -957,7 +978,7 @@ public class RedditData {
         JSONObject resultjson;
         HashMap<String, String> params = new HashMap<>();
         params.put("grant_type", "refresh_token");
-        params.put("refresh_token", getTokenValue("refresh_token"));
+        params.put("refresh_token", getTokenValue("refresh_token", true));
         resultjson = redditApiOauthRequest(url, params);
         if (resultjson.has("access_token")) {
             // login successful, update token and save
@@ -981,6 +1002,49 @@ public class RedditData {
         throwOAuthError(resultjson);
     }
 
+    private String getDeviceId(){
+        String uuid = sharedPrefs.getString("oauthUuid", "");
+        if (uuid.equals("")){
+            uuid = UUID.randomUUID().toString();
+            sharedPrefs.edit().putString("oauthUuid", uuid).apply();
+        }
+        return uuid;
+    }
+
+    private void checkAppToken() throws RedditApiException {
+        if (oauthAppToken==null)
+            retrieveAppToken();
+
+        if (isTokenExpired(false))
+            retrieveAppToken();
+    }
+
+    // retrieve application only oauth token, used for logged out api calls.
+    private void retrieveAppToken() throws RedditApiException {
+        String url = "https://www.reddit.com/api/v1/access_token";
+        JSONObject resultjson;
+        HashMap<String, String> params = new HashMap<>();
+        params.put("grant_type", "https://oauth.reddit.com/grants/installed_client");
+        params.put("device_id", getDeviceId());
+        resultjson = redditApiOauthRequest(url, params);
+        if (resultjson.has("access_token")) {
+            // login successful, set new token and save
+            oauthAppToken = resultjson;
+            try {
+                Long epoch = (System.currentTimeMillis() / 1000L);
+                Long expires_at = epoch + Integer.parseInt(oauthAppToken.getString("expires_in"));
+                oauthAppToken.put("expires_at", expires_at);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                throw new RedditApiException("OAuth Error: "+e.getMessage());
+            }
+            saveAppToken();
+            return;
+        }
+        // throw error
+        throwOAuthError(resultjson);
+    }
+
     private void throwOAuthError(JSONObject resultjson) throws RedditApiException {
         String error;
         if (resultjson.has("error")){
@@ -994,6 +1058,10 @@ public class RedditData {
             error = "Unknown Error D-:";
         }
         throw new RedditApiException("OAuth Error: "+error);
+    }
+
+    private void saveAppToken(){
+        sharedPrefs.edit().putString("oauthAppToken", oauthAppToken == null ? "" : oauthAppToken.toString()).apply();
     }
 
     public void saveUserData() {
