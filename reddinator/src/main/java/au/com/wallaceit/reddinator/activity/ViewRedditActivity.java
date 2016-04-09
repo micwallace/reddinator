@@ -106,6 +106,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private Resources resources;
     private int actionbarIconColor = Reddinator.getActionbarIconColor();
     // info panel views
+    private SlidingUpPanelLayout infoPanel;
     private TextView sourceText;
     private TextView titleText;
     private TextView votesText;
@@ -169,7 +170,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             viewPager.setCurrentItem(0);
         }
         // setup info panel views
-        final SlidingUpPanelLayout infoPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        infoPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         infoPanel.setFadeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,6 +328,8 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         if (webFragment != null)
         if (webFragment.mFullSView != null) {
             webFragment.mChromeClient.onHideCustomView();
+        } else if (infoPanel.getPanelState()==SlidingUpPanelLayout.PanelState.EXPANDED) {
+            infoPanel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else if (webFragment.mWebView.canGoBack()) {
             webFragment.mWebView.goBack();
         } else {
