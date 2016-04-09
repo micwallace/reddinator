@@ -15,21 +15,21 @@
         sothree:umanoPanelHeight="26dp"
         sothree:umanoShadowHeight="4dp">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:id="@+id/redditview"
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/redditview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <include
+                android:id="@+id/tab_widget"
+                layout="@layout/tabs"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-                <include
-                    android:id="@+id/tab_widget"
-                    layout="@layout/tabs"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"/>
-                <au.com.wallaceit.reddinator.ui.RedditViewPager
-                    android:id="@+id/tab_content"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"/>
-            </LinearLayout>
+                android:layout_height="wrap_content"/>
+            <au.com.wallaceit.reddinator.ui.RedditViewPager
+                android:id="@+id/tab_content"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/info_panel"
@@ -127,6 +127,26 @@
                     android:paddingTop="2dp"
                     android:textSize="24sp"
                     android:textColor="#DBDBDB" />
+
+                <IconTextView
+                    android:id="@+id/selftext_button"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/info_txt"
+                    android:layout_toLeftOf="@id/refresh_button"
+                    android:layout_toStartOf="@id/refresh_button"
+                    android:text="@string/fa_file_text"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:paddingTop="2dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="24sp"
+                    android:textColor="#DBDBDB"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/votes_txt"

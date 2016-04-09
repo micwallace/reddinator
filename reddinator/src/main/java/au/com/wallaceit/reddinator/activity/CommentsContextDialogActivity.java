@@ -212,22 +212,25 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             int comments = postInfo.getInt("num_comments");
             commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
 
-            if (postInfo.has("selftext_html")){
-                IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
-                textButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
+            try {
+                final String selftext = postInfo.getString("selftext_html");
+                if (!selftext.equals("null")){
+                    IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
+                    textButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
                             String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Html.fromHtml(postInfo.getString("selftext_html")).toString();
+                            html += Html.fromHtml(selftext).toString();
                             html += "</body></html>";
                             HtmlDialog.init(CommentsContextDialogActivity.this, getString(R.string.post_text), html);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+
                         }
-                    }
-                });
-                textButton.setVisibility(View.VISIBLE);
+                    });
+                    textButton.setVisibility(View.VISIBLE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
             findViewById(R.id.info_panel).setVisibility(View.VISIBLE);

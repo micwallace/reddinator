@@ -76,6 +76,7 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.LoadPostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
+import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.RedditViewPager;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
@@ -696,6 +697,26 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             votesText.setText(getResources().getQuantityString(R.plurals.vote_details, score, score, Math.round(ratio * 100)));
             int comments = postInfo.getInt("num_comments");
             commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
+            try {
+                final String selftext = postInfo.getString("selftext_html");
+                if (!selftext.equals("null")){
+                    IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
+                    textButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
+                            html += Html.fromHtml(selftext).toString();
+                            html += "</body></html>";
+                            HtmlDialog.init(ViewRedditActivity.this, getString(R.string.post_text), html);
+
+                    }
+                });
+                    textButton.setVisibility(View.VISIBLE);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

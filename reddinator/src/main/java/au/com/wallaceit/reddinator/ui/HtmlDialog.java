@@ -44,7 +44,7 @@ public class HtmlDialog extends AlertDialog {
         setView(view);
         setCancelable(true);
         wv.setWebViewClient(new NoNavClient());
-        wv.loadDataWithBaseURL("file:///android_asset/", html, "text/html", "UTF-8", null);
+        wv.loadData(html, "text/html", "UTF-8");
     }
 
     class NoNavClient extends WebViewClient {
