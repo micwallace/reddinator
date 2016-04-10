@@ -338,7 +338,7 @@ public class SearchActivity extends Activity {
         private String titleFontSize = "16";
         private HashMap<String, Integer> themeColors;
         private boolean loadThumbnails = false;
-        private boolean bigThumbs = false;
+        //private boolean bigThumbs = false;
         private boolean hideInf = false;
         private boolean isLoaded = false;
 
@@ -375,7 +375,7 @@ public class SearchActivity extends Activity {
         private void loadFeedPrefs() {
             // get thumbnail load preference for the widget
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
-            bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
+            //bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
         }
 
@@ -416,11 +416,7 @@ public class SearchActivity extends Activity {
                 ViewHolder viewHolder = new ViewHolder();
                 if (row == null || row.getTag() == null) {
                     // create remote view from specified layout
-                    if (bigThumbs) {
-                        row = getLayoutInflater().inflate(R.layout.applistrowbigthumb, parent, false);
-                    } else {
-                        row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
-                    }
+                    row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
                     ((ImageView) row.findViewById(R.id.votesicon)).setImageBitmap(images[0]);
                     ((ImageView) row.findViewById(R.id.commentsicon)).setImageBitmap(images[1]);
                     viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);

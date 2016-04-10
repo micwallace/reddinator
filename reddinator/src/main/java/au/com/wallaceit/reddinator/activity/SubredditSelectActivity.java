@@ -597,9 +597,9 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
     }
 
     private void showFeedPrefsDialog(){
-        final CharSequence[] names = {resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
-        String widgetId = (mAppWidgetId == 0 ? "app" : String.valueOf(mAppWidgetId));
-        final boolean[] initvalue = {mSharedPreferences.getBoolean("thumbnails-" + widgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + widgetId, false), mSharedPreferences.getBoolean("hideinf-" + widgetId, false)};
+        final CharSequence[] names = {getString(R.string.image_preview), resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
+        final String widgetId = (mAppWidgetId == 0 ? "app" : String.valueOf(mAppWidgetId));
+        final boolean[] initvalue = {mSharedPreferences.getBoolean("imagepreviews-" + widgetId, true), mSharedPreferences.getBoolean("thumbnails-" + widgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + widgetId, false), mSharedPreferences.getBoolean("hideinf-" + widgetId, false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         builder.setTitle(resources.getString(R.string.feed_prefs));
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
@@ -607,13 +607,16 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 Editor prefsedit = mSharedPreferences.edit();
                 switch (item) {
                     case 0:
-                        prefsedit.putBoolean("thumbnails-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        prefsedit.putBoolean("imagepreviews-" + widgetId, state);
                         break;
                     case 1:
-                        prefsedit.putBoolean("bigthumbs-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        prefsedit.putBoolean("thumbnails-" + widgetId, state);
                         break;
                     case 2:
-                        prefsedit.putBoolean("hideinf-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), state);
+                        prefsedit.putBoolean("bigthumbs-" + widgetId, state);
+                        break;
+                    case 3:
+                        prefsedit.putBoolean("hideinf-" + widgetId, state);
                         break;
                 }
                 prefsedit.apply();

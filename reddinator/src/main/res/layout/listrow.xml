@@ -9,7 +9,41 @@
         android:id="@+id/headcontainer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="4dp"
+        android:minHeight="50dip">
+
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/widget_votecontainer"
+            android:layout_toStartOf="@+id/widget_votecontainer"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:contentDescription="@string/img"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/thumbnail_top"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:maxHeight="80dp"
+            android:maxWidth="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/preview"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="3dp"
+            android:contentDescription="@string/img"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/widget_votecontainer"
@@ -19,8 +53,8 @@
             android:layout_alignParentEnd="true"
             android:orientation="vertical"
             android:gravity="end"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="4dp">
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp">
 
             <ImageButton
                 android:id="@+id/widget_upvote"
@@ -61,12 +95,12 @@
             android:id="@+id/listheading"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/thumbnail_top"
             android:layout_toLeftOf="@+id/widget_votecontainer"
             android:layout_toStartOf="@+id/widget_votecontainer"
             android:layout_toRightOf="@+id/thumbnail"
             android:layout_toEndOf="@+id/thumbnail"
             android:gravity="top"
-            android:minHeight="50dip"
             android:paddingBottom="4dp"
             android:layout_marginLeft="6dip"
             android:layout_marginStart="6dip"
@@ -106,9 +140,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="68dp"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="68dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
             android:contentDescription="@string/img"
             android:scaleType="centerCrop"
             android:visibility="gone" />

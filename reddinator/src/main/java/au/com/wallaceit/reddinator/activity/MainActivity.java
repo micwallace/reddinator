@@ -364,8 +364,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
     private boolean needsFeedViewUpdate = false;
     private void showFeedPrefsDialog(){
-        final CharSequence[] names = {getString(R.string.thumbnails), getString(R.string.thumbnails_on_top), getString(R.string.hide_post_info)};
-        final boolean[] initvalue = {prefs.getBoolean("thumbnails-app", true), prefs.getBoolean("bigthumbs-app", false), prefs.getBoolean("hideinf-app", false)};
+        final CharSequence[] names = {getString(R.string.image_preview), getString(R.string.thumbnails), getString(R.string.thumbnails_on_top), getString(R.string.hide_post_info)};
+        final boolean[] initvalue = {prefs.getBoolean("imagepreviews-app", true), prefs.getBoolean("thumbnails-app", true), prefs.getBoolean("bigthumbs-app", false), prefs.getBoolean("hideinf-app", false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.feed_prefs));
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
@@ -373,12 +373,15 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 SharedPreferences.Editor prefsedit = prefs.edit();
                 switch (item) {
                     case 0:
-                        prefsedit.putBoolean("thumbnails-app", state);
+                        prefsedit.putBoolean("imagepreviews-app", state);
                         break;
                     case 1:
-                        prefsedit.putBoolean("bigthumbs-app", state);
+                        prefsedit.putBoolean("thumbnails-app", state);
                         break;
                     case 2:
+                        prefsedit.putBoolean("bigthumbs-app", state);
+                        break;
+                    case 3:
                         prefsedit.putBoolean("hideinf-app", state);
                         break;
                 }
@@ -389,6 +392,11 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         builder.setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
                 if (needsFeedViewUpdate) {
                     listAdapter.loadFeedPrefs();
                     listView.invalidateViews();
@@ -553,6 +561,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         private SharedPreferences mSharedPreferences;
         private String titleFontSize = "16";
         private HashMap<String, Integer> themeColors;
+        private boolean loadPreviews = false;
         private boolean loadThumbnails = false;
         private boolean bigThumbs = false;
         private boolean hideInf = false;
@@ -603,6 +612,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
         private void loadFeedPrefs() {
             // get thumbnail load preference for the widget
+            loadPreviews = mSharedPreferences.getBoolean("imagepreviews-app", true);
             loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
             bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
             hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
@@ -642,20 +652,18 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 // inflate new view or load view holder if existing
                 ViewHolder viewHolder = new ViewHolder();
                 if (row == null || row.getTag() == null) {
-                    // create remote view from specified layout
-                    if (bigThumbs) {
-                        row = getLayoutInflater().inflate(R.layout.applistrowbigthumb, parent, false);
-                    } else {
-                        row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
-                    }
+                    // put views into viewholder
+                    row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
                     ((ImageView) row.findViewById(R.id.votesicon)).setImageBitmap(images[0]);
                     ((ImageView) row.findViewById(R.id.commentsicon)).setImageBitmap(images[1]);
                     viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
                     viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
                     viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
                     viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
+                    viewHolder.thumbview_top = (ImageView) row.findViewById(R.id.thumbnail_top);
                     viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
                     viewHolder.thumbview_expand = (ImageView) row.findViewById(R.id.thumbnail_expand);
+                    viewHolder.preview = (ImageView) row.findViewById(R.id.preview);
                     viewHolder.infview = row.findViewById(R.id.infbox);
                     viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
                     viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
@@ -664,7 +672,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     viewHolder = (ViewHolder) row.getTag();
                 }
                 // collect data
-                String name, thumbnail, domain, id, url, userLikes, subreddit;
+                String name, thumbnail, domain, id, url, userLikes, subreddit, previewUrl = null;
                 int score;
                 int numcomments;
                 boolean nsfw;
@@ -680,6 +688,20 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     userLikes = tempobj.getString("likes");
                     nsfw = tempobj.getBoolean("over_18");
                     subreddit = tempobj.getString("subreddit");
+                    // check and select preview url
+                    if (tempobj.has("preview")) {
+                        JSONObject prevObj = tempobj.getJSONObject("preview");
+                        if (prevObj.has("images")) {
+                            JSONArray arr = prevObj.getJSONArray("images");
+                            if (arr.length()>0) {
+                                prevObj = arr.getJSONObject(0);
+                                arr = prevObj.getJSONArray("resolutions");
+                                // get third resolution (320px wide)
+                                prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length()-1) : arr.getJSONObject(2);
+                                previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                            }
+                        }
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     return row; // The view is invalid;
@@ -729,67 +751,92 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                         listvote.execute();
                     }
                 });
-
-                // load thumbnail if they are enabled for this widget
-                if (loadThumbnails) {
-                    // check for thumbnail; detect default thumbnails
-                    if (!thumbnail.equals("")) {
-                        if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
-                            int resource = 0;
-                            switch (thumbnail) {
-                                case "nsfw":
-                                    resource = R.drawable.nsfw;
-                                    break;
-                                case "default":
-                                case "self":
-                                    resource = R.drawable.self_default;
-                                    break;
-                            }
-                            viewHolder.thumbview.setImageResource(resource);
-                            viewHolder.thumbview.setVisibility(View.VISIBLE);
-                            //System.out.println("Loading default image: "+thumbnail);
-                        } else {
-                            // check if the image is in cache
-                            String fileurl = getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + ".png";
-                            if (new File(fileurl).exists()) {
-                                Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
-                                if (bitmap == null) {
-                                    viewHolder.thumbview.setVisibility(View.GONE);
-                                } else {
-                                    viewHolder.thumbview.setImageBitmap(bitmap);
-                                    viewHolder.thumbview.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                // start the image load
-                                loadImage(position, thumbnail, id);
-                                viewHolder.thumbview.setVisibility(View.VISIBLE);
-                                // set image source as default to prevent an image from a previous view being used
-                                viewHolder.thumbview.setImageResource(android.R.drawable.screen_background_dark_transparent);
-                            }
+                // Get thumbnail view & hide the other
+                ImageView thumbView;
+                if (bigThumbs){
+                    thumbView = viewHolder.thumbview_top;
+                    viewHolder.thumbview.setVisibility(View.GONE);
+                } else {
+                    thumbView = viewHolder.thumbview;
+                    viewHolder.thumbview_top.setVisibility(View.GONE);
+                }
+                // check for preview images & thumbnails
+                String imageUrl = null;
+                int imageLoadFlag = 0; // 1 for thumbnail, 2 for preview, 3 for default thumbnail
+                if (loadPreviews  && !nsfw && previewUrl!=null){
+                    imageUrl = previewUrl;
+                    imageLoadFlag = 2;
+                    thumbView.setVisibility(View.GONE);
+                    viewHolder.thumbview_expand.setVisibility(View.GONE);
+                } else if (loadThumbnails && !thumbnail.equals("")) {
+                    // hide preview view
+                    viewHolder.preview.setVisibility(View.GONE);
+                    // check for default thumbnails
+                    if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
+                        int resource = 0;
+                        switch (thumbnail) {
+                            case "nsfw":
+                                resource = R.drawable.nsfw;
+                                break;
+                            case "default":
+                            case "self":
+                                resource = R.drawable.self_default;
+                                break;
                         }
-                        // check if url is image, if so, add ViewImageDialog intent and show indicator
-                        if (Reddinator.isImageUrl(url)){
-                            viewHolder.thumbview.setClickable(true);
-                            viewHolder.thumbview.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(MainActivity.this, ViewImageDialogActivity.class);
-                                    intent.putExtras(getItemExtras(position));
-                                    MainActivity.this.startActivity(intent);
-                                }
-                            });
-                            viewHolder.thumbview_expand.setImageBitmap(images[6]);
-                            viewHolder.thumbview_expand.setVisibility(View.VISIBLE);
-                        } else {
-                            viewHolder.thumbview.setClickable(false);
-                            viewHolder.thumbview_expand.setVisibility(View.GONE);
-                        }
+                        thumbView.setImageResource(resource);
+                        thumbView.setVisibility(View.VISIBLE);
+                        imageLoadFlag = 3;
+                        //System.out.println("Loading default image: "+thumbnail);
                     } else {
-                        viewHolder.thumbview.setVisibility(View.GONE);
-                        viewHolder.thumbview_expand.setVisibility(View.GONE);
+                        imageUrl = thumbnail;
+                        imageLoadFlag = 1;
                     }
                 } else {
-                    viewHolder.thumbview.setVisibility(View.GONE);
+                    // hide preview and thumbnails
+                    thumbView.setVisibility(View.GONE);
+                    viewHolder.thumbview_expand.setVisibility(View.GONE);
+                    viewHolder.preview.setVisibility(View.GONE);
+                }
+                // load external images into view
+                if (imageLoadFlag>0){
+                    ImageView imageView = imageLoadFlag == 1 ? thumbView : viewHolder.preview;
+                    // skip if default thumbnail, just check for image
+                    if (imageLoadFlag!=3) {
+                        // check if the image is in cache
+                        String fileurl = getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + (imageLoadFlag == 2 ? "-preview" : "") + ".png";
+                        if (new File(fileurl).exists()) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
+                            if (bitmap == null) {
+                                imageView.setVisibility(View.GONE);
+                            } else {
+                                imageView.setImageBitmap(bitmap);
+                                imageView.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            // start the image load
+                            loadImage(imageView, imageUrl, id + (imageLoadFlag == 2 ? "-preview" : ""));
+                            imageView.setVisibility(View.VISIBLE);
+                            // set image source as default to prevent an image from a previous view being used
+                            imageView.setImageResource(android.R.drawable.screen_background_dark_transparent);
+                        }
+                    }
+                    // check if url is image, if so, add ViewImageDialog intent and show indicator
+                    if (Reddinator.isImageUrl(url)){
+                        imageView.setClickable(true);
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(MainActivity.this, ViewImageDialogActivity.class);
+                                intent.putExtras(getItemExtras(position));
+                                MainActivity.this.startActivity(intent);
+                            }
+                        });
+                        viewHolder.thumbview_expand.setImageBitmap(images[6]);
+                        viewHolder.thumbview_expand.setVisibility(View.VISIBLE);
+                    } else {
+                        imageView.setClickable(false);
+                        viewHolder.thumbview_expand.setVisibility(View.GONE);
+                    }
                 }
                 // hide info bar if options set
                 if (hideInf) {
@@ -829,8 +876,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             }
         }
 
-        private void loadImage(final int itempos, final String urlstr, final String redditid) {
-            new ImageLoader(itempos, urlstr, redditid).execute();
+        private void loadImage(final ImageView view, final String urlstr, final String redditid) {
+            new ImageLoader(view, urlstr, redditid).execute();
         }
 
         class ViewHolder {
@@ -839,7 +886,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             TextView votestxt;
             TextView commentstxt;
             ImageView thumbview;
+            ImageView thumbview_top;
             ImageView thumbview_expand;
+            ImageView preview;
             ImageButton upvotebtn;
             ImageButton downvotebtn;
             View infview;
@@ -847,14 +896,16 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         }
 
         class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {
-            int itempos;
+            //int itempos;
             String urlstr;
             String redditid;
+            ImageView imageView;
 
-            ImageLoader(int position, String url, String id) {
-                itempos = position;
+            ImageLoader(ImageView view, String url, String id) {
+                //itempos = position;
                 urlstr = url;
                 redditid = id;
+                imageView = view;
             }
 
             @Override
@@ -877,21 +928,29 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
             @Override
             protected void onPostExecute(Bitmap result) {
-                View v = listView.getChildAt(itempos - listView.getFirstVisiblePosition());
+                /*View v = listView.getChildAt(itempos - listView.getFirstVisiblePosition());
                 if (v == null) {
                     return;
-                }
+                }*/
                 // save bitmap to cache, the item name will be the reddit id
                 global.saveThumbnailToCache(result, redditid);
                 // update view if it's being shown
-                ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
+                if (imageView!=null){
+                    if (result!=null){
+                        imageView.setImageBitmap(result);
+                    } else {
+                        imageView.setVisibility(View.GONE);
+                    }
+                }
+
+                /*ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
                 if (img != null) {
                     if (result != null) {
                         img.setImageBitmap(result);
                     } else {
                         img.setVisibility(View.GONE);
                     }
-                }
+                }*/
             }
         }
 

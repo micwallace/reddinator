@@ -68,6 +68,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private String titleFontSize = "16";
     private HashMap<String, Integer> themeColors;
     private boolean loadCached = false; // tells the ondatasetchanged function that it should not download any further items, cache is loaded
+    private boolean loadPreviews = false;
     private boolean loadThumbnails = false;
     private boolean bigThumbs = false;
     private boolean hideInf = false;
@@ -134,7 +135,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
-
+        loadPreviews = mSharedPreferences.getBoolean("imagepreviews-" + appWidgetId, true);
         loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);
@@ -177,20 +178,9 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             return loadmorerow;
         } else {
             // create remote view from specified layout
-            if (bigThumbs) {
-                row = new RemoteViews(mContext.getPackageName(), R.layout.listrowbigthumb);
-            } else {
-                row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
-            }
+            row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
             // build normal item
-            String title;
-            String url;
-            String permalink;
-            String thumbnail;
-            String domain;
-            String id;
-            String subreddit;
-            String userLikes;
+            String title, url, permalink, thumbnail, domain, id, subreddit, userLikes, previewUrl = null;
             int score;
             int numcomments;
             boolean nsfw;
@@ -207,6 +197,21 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 numcomments = tempobj.getInt("num_comments");
                 nsfw = tempobj.getBoolean("over_18");
                 subreddit = tempobj.getString("subreddit");
+
+                // check and select preview url
+                if (tempobj.has("preview")) {
+                    JSONObject prevObj = tempobj.getJSONObject("preview");
+                    if (prevObj.has("images")) {
+                        JSONArray arr = prevObj.getJSONArray("images");
+                        if (arr.length()>0) {
+                            prevObj = arr.getJSONObject(0);
+                            arr = prevObj.getJSONArray("resolutions");
+                            // get third resolution (320px wide)
+                            prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length()-1) : arr.getJSONObject(2);
+                            previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                        }
+                    }
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 return row;
@@ -270,61 +275,89 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             oextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_OPTIONS);
             ointent.putExtras(oextras);
             row.setOnClickFillInIntent(R.id.widget_item_options, ointent);
-            // load thumbnail if they are enabled for this widget
-            if (loadThumbnails) {
-                // load big image if preference is set
-                if (!thumbnail.equals("")) { // check for thumbnail; detect default thumbnails
-                    if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
-                        int resource = 0;
-                        switch (thumbnail) {
-                            case "nsfw":
-                                resource = R.drawable.nsfw;
-                                break;
-                            case "default":
-                            case "self":
-                                resource = R.drawable.self_default;
-                                break;
-                        }
-                        row.setImageViewResource(R.id.thumbnail, resource);
-                        row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
-                        //System.out.println("Loading default image: "+thumbnail);
-                    } else {
-                        Bitmap bitmap;
-                        String fileurl = mContext.getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + ".png";
-                        // check if the image is in cache
-                        if (new File(fileurl).exists()) {
-                            bitmap = BitmapFactory.decodeFile(fileurl);
-                        } else {
-                            // download the image
-                            bitmap = loadImage(thumbnail, id);
-                        }
-                        if (bitmap != null) {
-                            row.setImageViewBitmap(R.id.thumbnail, bitmap);
-                            row.setViewVisibility(R.id.thumbnail, View.VISIBLE);
-                        } else {
-                            // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
-                            row.setViewVisibility(R.id.thumbnail, View.GONE);
-                        }
+
+            // Get thumbnail view & hide the other
+            int thumbView;
+            if (bigThumbs){
+                thumbView = R.id.thumbnail_top;
+                row.setViewVisibility(R.id.thumbnail, View.GONE);
+            } else {
+                thumbView = R.id.thumbnail;
+                row.setViewVisibility(R.id.thumbnail_top, View.GONE);
+            }
+            // check for preview images & thumbnails
+            String imageUrl = null;
+            int imageLoadFlag = 0; // 1 for thumbnail, 2 for preview, 3 for default thumbnail
+            if (loadPreviews  && !nsfw && previewUrl!=null){
+                imageUrl = previewUrl;
+                imageLoadFlag = 2;
+                row.setViewVisibility(thumbView, View.GONE);
+                row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
+            } else if (loadThumbnails && !thumbnail.equals("")) {
+                // hide preview view
+                row.setViewVisibility(R.id.preview, View.GONE);
+                // check for default thumbnails
+                if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
+                    int resource = 0;
+                    switch (thumbnail) {
+                        case "nsfw":
+                            resource = R.drawable.nsfw;
+                            break;
+                        case "default":
+                        case "self":
+                            resource = R.drawable.self_default;
+                            break;
                     }
-                    // check if url is image, if so, add ViewImageDialog intent and show indicator
-                    if (Reddinator.isImageUrl(url)){
-                        Intent imageintent =  new Intent();
-                        Bundle imageextras = (Bundle) extras.clone();
-                        imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
-                        imageintent.putExtras(imageextras);
-                        row.setOnClickFillInIntent(R.id.thumbnail, imageintent);
-                        row.setViewVisibility(R.id.thumbnail_expand, View.VISIBLE);
-                        row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
-                    } else {
-                        row.setOnClickFillInIntent(R.id.thumbnail, i);
-                        row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
-                    }
+                    row.setImageViewResource(thumbView, resource);
+                    row.setViewVisibility(thumbView, View.VISIBLE);
+                    imageLoadFlag = 3;
+                    //System.out.println("Loading default image: "+thumbnail);
                 } else {
-                    row.setViewVisibility(R.id.thumbnail, View.GONE);
-                    row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
+                    imageUrl = thumbnail;
+                    imageLoadFlag = 1;
                 }
             } else {
-                row.setViewVisibility(R.id.thumbnail, View.GONE);
+                // hide preview and thumbnails
+                row.setViewVisibility(thumbView, View.GONE);
+                row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
+                row.setViewVisibility(R.id.preview, View.GONE);
+            }
+            // load external images into view
+            if (imageLoadFlag>0){
+                int imageView = imageLoadFlag == 1 ? thumbView : R.id.preview;
+                // skip if default thumbnail, just check for image
+                if (imageLoadFlag!=3) {
+                    // check if the image is in cache
+                    Bitmap bitmap;
+                    String fileurl = mContext.getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + (imageLoadFlag == 2 ? "-preview" : "") + ".png";
+                    // check if the image is in cache
+                    if (new File(fileurl).exists()) {
+                        bitmap = BitmapFactory.decodeFile(fileurl);
+                    } else {
+                        // download the image
+                        bitmap = loadImage(imageUrl, id + (imageLoadFlag == 2 ? "-preview" : ""));
+                    }
+                    if (bitmap != null) {
+                        row.setImageViewBitmap(imageView, bitmap);
+                        row.setViewVisibility(imageView, View.VISIBLE);
+                    } else {
+                        // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
+                        row.setViewVisibility(imageView, View.GONE);
+                    }
+                }
+                // check if url is image, if so, add ViewImageDialog intent and show indicator
+                if (Reddinator.isImageUrl(url)){
+                    Intent imageintent =  new Intent();
+                    Bundle imageextras = (Bundle) extras.clone();
+                    imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
+                    imageintent.putExtras(imageextras);
+                    row.setOnClickFillInIntent(imageView, imageintent);
+                    row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
+                    row.setViewVisibility(R.id.thumbnail_expand, View.VISIBLE);
+                } else {
+                    row.setOnClickFillInIntent(imageView, i);
+                    row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
+                }
             }
             // hide info bar if options set
             if (hideInf) {

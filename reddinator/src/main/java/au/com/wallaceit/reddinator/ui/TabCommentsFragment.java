@@ -360,7 +360,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                         // reset load more button
                         executeJavascript("resetMoreClickEvent('" + mMoreId + "');");
                     }
-                    Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
+                    if (getActivity()!=null)
+                        Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     if (loadMore) {
