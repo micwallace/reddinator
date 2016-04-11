@@ -322,5 +322,7 @@
     <string name="open_context_link">Open Link {fa-globe}</string>
     <string name="error_loading_feed">Error loading feed</string>
     <string name="post_text">Post Text</string>
-    <string name="image_preview">Image Preview</string>
+    <string name="image_previews">Image Previews</string>
+    <string name="app_feed_prefs">App Feed Preferences</string>
+    <string name="widget_feed_prefs">Widget Feed Preferences</string>
 </resources>

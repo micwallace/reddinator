@@ -364,10 +364,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
     private boolean needsFeedViewUpdate = false;
     private void showFeedPrefsDialog(){
-        final CharSequence[] names = {getString(R.string.image_preview), getString(R.string.thumbnails), getString(R.string.thumbnails_on_top), getString(R.string.hide_post_info)};
+        final CharSequence[] names = {getString(R.string.image_previews), getString(R.string.thumbnails), getString(R.string.thumbnails_on_top), getString(R.string.hide_post_info)};
         final boolean[] initvalue = {prefs.getBoolean("imagepreviews-app", true), prefs.getBoolean("thumbnails-app", true), prefs.getBoolean("bigthumbs-app", false), prefs.getBoolean("hideinf-app", false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.feed_prefs));
+        builder.setTitle(getString(R.string.app_feed_prefs));
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialogInterface, int item, boolean state) {
                 SharedPreferences.Editor prefsedit = prefs.edit();

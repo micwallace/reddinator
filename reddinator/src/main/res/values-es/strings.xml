@@ -270,4 +270,7 @@
     <string name="loading_sidebar">Cargando sidebar…</string>
     <string name="error_loading_feed">Avance de carga de error</string>
     <string name="post_text">Mensaje de texto</string>
+    <string name="image_previews">previas de imágenes</string>
+    <string name="app_feed_prefs">Preferencias de la aplicación de piensos</string>
+    <string name="widget_feed_prefs">Preferencias de piensos Widget</string>
 </resources>

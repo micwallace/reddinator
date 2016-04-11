@@ -135,7 +135,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
-        loadPreviews = mSharedPreferences.getBoolean("imagepreviews-" + appWidgetId, true);
+        // previews disabled by default due to listview dynamic height issue (causes views to jump around when scrolling up)
+        loadPreviews = mSharedPreferences.getBoolean("imagepreviews-" + appWidgetId, false);
         loadThumbnails = mSharedPreferences.getBoolean("thumbnails-" + appWidgetId, true);
         bigThumbs = mSharedPreferences.getBoolean("bigthumbs-" + appWidgetId, false);
         hideInf = mSharedPreferences.getBoolean("hideinf-" + appWidgetId, false);

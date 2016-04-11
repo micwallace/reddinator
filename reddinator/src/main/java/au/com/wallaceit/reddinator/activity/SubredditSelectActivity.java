@@ -597,11 +597,12 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
     }
 
     private void showFeedPrefsDialog(){
-        final CharSequence[] names = {getString(R.string.image_preview), resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
+        final CharSequence[] names = {getString(R.string.image_previews), resources.getString(R.string.thumbnails), resources.getString(R.string.thumbnails_on_top), resources.getString(R.string.hide_post_info)};
         final String widgetId = (mAppWidgetId == 0 ? "app" : String.valueOf(mAppWidgetId));
-        final boolean[] initvalue = {mSharedPreferences.getBoolean("imagepreviews-" + widgetId, true), mSharedPreferences.getBoolean("thumbnails-" + widgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + widgetId, false), mSharedPreferences.getBoolean("hideinf-" + widgetId, false)};
+        // previews disabled by default in widgets due to listview dynamic height issue (causes views to jump around when scrolling up)
+        final boolean[] initvalue = {mSharedPreferences.getBoolean("imagepreviews-" + widgetId, mAppWidgetId == 0), mSharedPreferences.getBoolean("thumbnails-" + widgetId, true), mSharedPreferences.getBoolean("bigthumbs-" + widgetId, false), mSharedPreferences.getBoolean("hideinf-" + widgetId, false)};
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        builder.setTitle(resources.getString(R.string.feed_prefs));
+        builder.setTitle( mAppWidgetId==0 ? resources.getString(R.string.app_feed_prefs) : resources.getString(R.string.widget_feed_prefs) );
         builder.setMultiChoiceItems(names, initvalue, new DialogInterface.OnMultiChoiceClickListener() {
             public void onClick(DialogInterface dialogInterface, int item, boolean state) {
                 Editor prefsedit = mSharedPreferences.edit();

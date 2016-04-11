@@ -36,6 +36,8 @@
             android:layout_height="80dp"
             android:maxHeight="80dp"
             android:maxWidth="80dp"
+            android:minHeight="80dp"
+            android:minWidth="80dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/preview"
             android:layout_marginTop="6dp"
