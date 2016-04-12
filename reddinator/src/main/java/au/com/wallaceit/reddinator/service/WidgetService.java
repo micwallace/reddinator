@@ -208,8 +208,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                             prevObj = arr.getJSONObject(0);
                             arr = prevObj.getJSONArray("resolutions");
                             // get third resolution (320px wide)
-                            prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length()-1) : arr.getJSONObject(2);
-                            previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                            if (arr.length() > 0){
+                                prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length() - 1) : arr.getJSONObject(2);
+                                previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                            } else {
+                                // or default to source
+                                previewUrl = Html.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
+                            }
                         }
                     }
                 }
