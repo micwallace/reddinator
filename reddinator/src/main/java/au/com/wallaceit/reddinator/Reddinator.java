@@ -350,7 +350,7 @@ public class Reddinator extends Application {
         fontSize = convertDiptoPix(context, fontSize);
         int pad = (fontSize / 9);
         Paint paint = new Paint();
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "css/fonts/fontawesome-webfont.ttf");
         paint.setAntiAlias(true);
         paint.setTypeface(typeface);
         paint.setColor(color);

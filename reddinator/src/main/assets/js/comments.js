@@ -332,9 +332,20 @@ function toggleReplies(element){
 }
 
 $(function(){
-    // Layout testing code
-    //$("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
-    //$("#comment_template").clone().show().attr("id", 'test1').appendTo("#test .comment_replies");
+    // Layout testing code, open reddinator/src/main/assets/comments.html#debug in a browser to view
+    if (location.hash=="#debug"){
+        $("#loading_view").hide();
+        $("body").show();
+        $("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
+        $("#comment_template").clone().show().attr("id", 'test1').appendTo("#test > .comment_replies");
+        $("#comment_template").clone().show().attr("id", 'test2').appendTo("#test > .comment_replies");
+        $("#more_template").clone().show().attr("id", 'more2').appendTo("#test > .comment_replies");
+        $("#test .reply_expand").css('visibility', 'visible');
+        $("#test1 .reply_expand").css('visibility', 'visible');
+        $("#comment_template").clone().show().attr("id", 'test3').appendTo("#test1 > .comment_replies");
+        $("#comment_template").clone().show().attr("id", 'test4').appendTo("#test1 > .comment_replies");
+    }
+
     $(document).on('click', ".upvote", function(){
         vote($(this).parent().parent().attr("id"), 1);
     });

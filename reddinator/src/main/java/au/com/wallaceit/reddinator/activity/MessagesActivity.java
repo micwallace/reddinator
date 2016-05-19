@@ -255,7 +255,8 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
 
     public void reloadSentMessages(){
         Fragment fragment = pageAdapter.getRegisteredFragment(2);
-        ((AccountFeedFragment) fragment).reload();
+        if (fragment!=null)
+            ((AccountFeedFragment) fragment).reload();
     }
 
     /**

@@ -486,12 +486,14 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             // initiate vote
             case 3:
             case 4:
-                listAdapter.showAppLoader();
-                int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
-                View view =  listView.getAdapter().getView(position, null, listView);
-                if (view!=null) {
-                    ListVoteTask listvote = new ListVoteTask((resultcode==3?1:-1), view, position);
-                    listvote.execute();
+                if (data!=null) {
+                    listAdapter.showAppLoader();
+                    int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+                    View view = listView.getAdapter().getView(position, null, listView);
+                    if (view != null) {
+                        ListVoteTask listvote = new ListVoteTask((resultcode == 3 ? 1 : -1), view, position);
+                        listvote.execute();
+                    }
                 }
                 break;
             // reload feed data from cache

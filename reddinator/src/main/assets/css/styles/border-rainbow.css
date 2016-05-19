@@ -1,0 +1,56 @@
+/* Color comments tree; sorry, i too wish css had :nthdecendant() */
+
+#base .border,
+#base .border .sub-border {
+    border-color: #2F6698;
+}
+
+#base .border .border,
+#base .border .border .sub-border {
+    border-color: #2CB0CF;
+}
+
+#base .border .border .border,
+#base .border .border .border .sub-border {
+    border-color: #1E9F72;
+}
+
+#base .border .border .border .border,
+#base .border .border .border .border .sub-border{
+    border-color: #2F9E2D;
+}
+
+#base .border .border .border .border .border,
+#base .border .border  .border .border .border .sub-border{
+    border-color: #98CF19;
+}
+
+#base .border .border .border .border .border .border
+#base .border .border .border .border .border .border .sub-border{
+    border-color: #CCE717;
+}
+
+#base .border .border .border .border .border .border .border,
+#base .border .border .border .border .border .border .border .sub-border{
+    border-color: #F7F618;
+}
+
+#base .border .border .border .border .border .border .border .border,
+#base .border .border .border .border .border .border .border .border .sub-border{
+    border-color: #FDCC0F;
+}
+
+#base .border .border .border .border .border .border .border .border .border,
+#base .border .border .border .border .border .border .border .border .border .sub-border{
+    border-color: #F7980E;
+}
+
+#base .border .border .border .border .border .border .border .border .border .border,
+#base .border .border .border .border .border .border .border .border .border .border .sub-border {
+    border-color: #F96610;
+}
+
+#base .border .border .border .border .border .border .border .border .border .border .border,
+#base .border .border .border .border .border .border .border .border .border .border .border .sub-border{
+    border-color: #FB0B0B;
+}

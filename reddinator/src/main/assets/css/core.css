@@ -10,7 +10,7 @@ body {
     border-radius: 4px;
 }
 .comment_box {
-    margin: 8px 0 5px 0;
+    margin: 5px 0 8px 0;
     position: relative;
 }
 .more_box {
@@ -68,7 +68,6 @@ body {
 
 .comment_replies, .message_replies {
     margin-left:6px;
-    padding-bottom:4px;
     margin-right:-2px;
 }
 
@@ -94,6 +93,7 @@ body {
     display:inline;
     padding:0;
     margin:0;
+    font-size: 12px;
 }
 .distinguish_flag {
     display:inline;
@@ -172,7 +172,7 @@ h5, h6 {
 }
 
 textarea {
-    border: 2px solid #D7D7D7;
+    border: 2px solid #FFF;
     border-radius: 4px;
     width:100%;
     margin-right:4px;

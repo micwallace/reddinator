@@ -330,7 +330,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             }
             // load external images into view
             if (imageLoadFlag>0){
-                int imageView = imageLoadFlag == 1 ? thumbView : R.id.preview;
+                int imageView = imageLoadFlag == 2 ? R.id.preview : thumbView;
                 // skip if default thumbnail, just check for image
                 if (imageLoadFlag!=3) {
                     // check if the image is in cache
