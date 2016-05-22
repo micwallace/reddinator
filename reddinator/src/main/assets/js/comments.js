@@ -9,13 +9,25 @@ var color_downvote_active = "#9494FF";
 
 function init(themeColors, user){
     username = user;
+    // setup layout css
+    var themeColors = JSON.parse(themeColors);
+    switch (themeColors["comments_layout"]){
+        case "2":
+            addCssFile("css/styles/border-alternate.css");
+        default:
+    }
+    switch (themeColors["comments_border_style"]){
+        case "3":
+            addCssFile("css/styles/border-rainbow.css");
+        default:
+    }
     setTheme(themeColors);
 }
 
 function setTheme(themeColors){
-    var themeColors = JSON.parse(themeColors);
     $("body").css("background-color", themeColors["background_color"]);
     $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
+    $(".border, .sub-border").css('border-color', themeColors['comments_border']);
     $(".comment_text").css("color", themeColors["headline_text"]);
     $(".comment_user").css("color", themeColors["source_text"]);
     $(".fa-star").css("color", themeColors["votes_icon"]);
@@ -329,6 +341,15 @@ function toggleReplies(element){
         $(element).children('h5').text("-");
         $(element).children('h6').text("hide replies");
     }
+}
+
+function addCssFile(url){
+    var link = document.createElement("link");
+    link.href = url;
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.media = "screen,print";
+    document.getElementsByTagName("head")[0].appendChild(link);
 }
 
 $(function(){

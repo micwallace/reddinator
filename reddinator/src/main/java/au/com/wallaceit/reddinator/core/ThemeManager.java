@@ -207,6 +207,17 @@ public class ThemeManager {
             return mTheme;
         }
 
+        public JSONObject getJsonValues(){
+            if (values==null)
+                loadValues();
+            try {
+                return new JSONObject(jsonValues, values.keySet().toArray(new String[values.size()]));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return new JSONObject();
+        }
+
         public String getValuesString(){
             return jsonValues.toString();
         }
@@ -286,13 +297,7 @@ public class ThemeManager {
                 } catch (IllegalArgumentException e){
                     colorException = new Exception("Color value invalid: "+srcColors.get(key), e); // This will give us more info in g.play console.
                     colorException.printStackTrace();
-                    try {
-                        colorVal = Color.parseColor(defaultValues.getValue(key)); // Use reddit_classic value if invalid.
-                    } catch (IllegalArgumentException e2){ // can possibly be remove eventually, getting illegal argument exception at the moment. Trying to figure out WHY! Want to rule out any issues with default themes aswell.
-                        colorException = new Exception("Color value invalid: "+srcColors.get(key), e2);
-                        colorException.printStackTrace();
-                        colorVal = Color.WHITE;
-                    }
+                    colorVal = Color.GRAY;
                 }
                 themeColors.put(key, colorVal);
             }

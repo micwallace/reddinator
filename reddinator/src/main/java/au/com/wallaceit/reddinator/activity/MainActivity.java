@@ -54,6 +54,7 @@ import android.widget.Toast;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -519,7 +520,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, feedId);
             extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
+            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml(item.getString("url")));
             extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
             extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
             extras.putString(WidgetProvider.ITEM_SUBREDDIT, item.getString("subreddit"));

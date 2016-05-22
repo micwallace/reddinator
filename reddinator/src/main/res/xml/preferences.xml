@@ -83,6 +83,24 @@
             android:entryValues="@array/widget_fontsize_preference"
             android:dialogTitle="@string/title_font_pref_summary" />
 
+        <ListPreference
+            android:key="@string/comments_layout_pref"
+            android:title="@string/comments_layout_pref_title"
+            android:defaultValue="1"
+            android:summary="@string/comments_layout_pref_summary"
+            android:entries="@array/comments_layout_pref_preferences"
+            android:entryValues="@array/comments_layout_pref_values"
+            android:dialogTitle="@string/comments_layout_pref_summary" />
+
+        <ListPreference
+            android:key="@string/comments_border_pref"
+            android:title="@string/comments_border_pref_title"
+            android:defaultValue="1"
+            android:summary="@string/comments_border_pref_summary"
+            android:entries="@array/comments_border_pref_preferences"
+            android:entryValues="@array/comments_border_pref_values"
+            android:dialogTitle="@string/comments_border_pref_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Reddinator View">

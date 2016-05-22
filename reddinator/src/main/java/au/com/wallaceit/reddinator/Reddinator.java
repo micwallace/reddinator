@@ -500,6 +500,11 @@ public class Reddinator extends Application {
         // Check image extension
         if (hasImageExtension(url))
             return true;
+        // Check for i.reddituploads.com images
+        return url.toLowerCase().matches("(https?://(i.reddituploads.com/.*)$)") || isImgurUrl(url);
+    }
+
+    public static boolean isImgurUrl(String url){
         // Check for imgur url without file extension (should not be album)
         return url.toLowerCase().matches("(https?://(.*imgur.com/[^galery/][^a/].*)$)");
     }

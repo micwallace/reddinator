@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.11" versioncode="39">
+        <change>Added image previews for i.reddituploads.com images</change>
+        <change>Fixed crash when replying to unread messages.</change>
+        <change>Fixed bug causing wrong preview image to show for NSFW images.</change>
+        <change>Fixed unauthorized error when viewing reddituploads.com URLs.</change>
+    </release>
     <release version="3.10" versioncode="38">
         <change>Added post info panel to view reddit activity.</change>
         <change>Added viewpager gesture lock to info panel allowing horizontal scrolling when necessary.</change>

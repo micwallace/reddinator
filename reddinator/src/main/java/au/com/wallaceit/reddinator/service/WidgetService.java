@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -255,7 +256,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, id);
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, url);
+            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml(url)); // decode html entities in url; fixes reddituploads.com urls
             extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
             extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
             extras.putString(WidgetProvider.ITEM_SUBREDDIT, subreddit);

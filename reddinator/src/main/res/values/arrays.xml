@@ -216,4 +216,26 @@
         <item>fresh</item>
     </string-array>
 
+    <string-array name="comments_layout_pref_preferences">
+        <item>Default</item>
+        <item>Top &amp; Left Border</item>
+    </string-array>
+
+    <string-array name="comments_layout_pref_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="comments_border_pref_preferences">
+        <item>Uniform</item>
+        <item>Alternate colors</item>
+        <item>Rainbow colors</item>
+    </string-array>
+
+    <string-array name="comments_border_pref_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
 </resources>

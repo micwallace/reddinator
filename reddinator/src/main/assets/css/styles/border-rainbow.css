@@ -7,50 +7,50 @@
 
 #base .border .border,
 #base .border .border .sub-border {
-    border-color: #2CB0CF;
+    border-color: #2CB0CF !important;
 }
 
 #base .border .border .border,
 #base .border .border .border .sub-border {
-    border-color: #1E9F72;
+    border-color: #1E9F72 !important;
 }
 
 #base .border .border .border .border,
 #base .border .border .border .border .sub-border{
-    border-color: #2F9E2D;
+    border-color: #2F9E2D !important;
 }
 
 #base .border .border .border .border .border,
 #base .border .border  .border .border .border .sub-border{
-    border-color: #98CF19;
+    border-color: #98CF19 !important;
 }
 
 #base .border .border .border .border .border .border
 #base .border .border .border .border .border .border .sub-border{
-    border-color: #CCE717;
+    border-color: #CCE717 !important;
 }
 
 #base .border .border .border .border .border .border .border,
 #base .border .border .border .border .border .border .border .sub-border{
-    border-color: #F7F618;
+    border-color: #F7F618 !important;
 }
 
 #base .border .border .border .border .border .border .border .border,
 #base .border .border .border .border .border .border .border .border .sub-border{
-    border-color: #FDCC0F;
+    border-color: #FDCC0F !important;
 }
 
 #base .border .border .border .border .border .border .border .border .border,
 #base .border .border .border .border .border .border .border .border .border .sub-border{
-    border-color: #F7980E;
+    border-color: #F7980E !important;
 }
 
 #base .border .border .border .border .border .border .border .border .border .border,
 #base .border .border .border .border .border .border .border .border .border .border .sub-border {
-    border-color: #F96610;
+    border-color: #F96610 !important;
 }
 
 #base .border .border .border .border .border .border .border .border .border .border .border,
 #base .border .border .border .border .border .border .border .border .border .border .border .sub-border{
-    border-color: #FB0B0B;
+    border-color: #FB0B0B !important;
 }

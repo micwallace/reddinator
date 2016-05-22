@@ -48,9 +48,12 @@ public class ViewImageDialogActivity extends Activity {
         setContentView(R.layout.activity_view_image_dialog);
         // get content url (which will be an image)
         imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-        imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
-        if (!Reddinator.hasImageExtension(imageUrl))
-            imageUrl += ".jpg"; // any extension will work
+        // fix imgur links so it's not redirected to full webpage
+        if (Reddinator.isImgurUrl(imageUrl)) {
+            imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
+            if (!Reddinator.hasImageExtension(imageUrl))
+                imageUrl += ".jpg"; // any extension will work
+        }
         // setup image view
         webView = (WebView) findViewById(R.id.imagewebview);
         webView.setBackgroundColor(Color.TRANSPARENT);
@@ -63,9 +66,8 @@ public class ViewImageDialogActivity extends Activity {
         webView.getSettings().setBuiltInZoomControls(true);
         boolean multi = getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
         webView.getSettings().setDisplayZoomControls(!multi);
-        // imgur redirects direct image urls to the imgur page when using high traffic browser user agents
-        // To be on the safe side, I am using a generic one which should never be redirected (suck on that imgur!)
-        webView.getSettings().setUserAgentString("Java/1.5.0_19");
+        // Make sure we specify a proper user agent. Many sites block generic ones.
+        webView.getSettings().setUserAgentString("Android/Reddinator v3.11");
         webView.loadUrl(imageUrl);
         // setup open comments button
         IconButton button = (IconButton) findViewById(R.id.commentsbutton);

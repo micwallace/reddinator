@@ -9,6 +9,8 @@
     <string name="refresh_rate_pref" translatable="false">refreshrate</string>
     <string name="widget_theme_pref" translatable="false">widgetthemepref</string>
     <string name="title_font_pref" translatable="false">titlefontpref</string>
+    <string name="comments_layout_pref">commentslayoutpref</string>
+    <string name="comments_border_pref">commentsborderpref</string>
     <string name="title_color_pref" translatable="false">titlecolorpref</string>
     <string name="comments_first_pref" translatable="false">commentsfirstpref</string>
     <string name="comments_webview_pref" translatable="false">commentswebviewpref</string>
@@ -213,6 +215,7 @@
     <string name="tl_tab_indicator">Tab Indicator</string>
     <string name="tl_headline_text">Post &amp; Comments Text</string>
     <string name="tl_load_text">Load Button Text</string>
+    <string name="tl_comments_border">Comments Border</string>
     <string name="tl_divider">List Divider</string>
     <string name="tl_default_icon">Default Icon</string>
     <string name="tl_source_text">Article Source Text</string>
@@ -325,4 +328,8 @@
     <string name="image_previews">Image Previews</string>
     <string name="app_feed_prefs">App Feed Preferences</string>
     <string name="widget_feed_prefs">Widget Feed Preferences</string>
+    <string name="comments_layout_pref_title">Comments layout</string>
+    <string name="comments_border_pref_title">Comments border style</string>
+    <string name="comments_layout_pref_summary">Change the layout of the comments feed</string>
+    <string name="comments_border_pref_summary">Select color pattern for nested borders</string>
 </resources>
