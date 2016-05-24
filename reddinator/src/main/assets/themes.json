@@ -7,6 +7,7 @@
         "header_text",
         "tab_indicator",
         "headline_text",
+        "comment_text",
         "load_text",
         "divider",
         "comments_border",
@@ -14,7 +15,7 @@
         "source_text",
         "votes_text",
         "votes_icon",
-        "comments_text",
+        "comments_count",
         "comments_icon",
         "icon_shadow"
     ],
@@ -36,6 +37,7 @@
                 "header_text":"#000000",
                 "tab_indicator":"#FF4500",
                 "headline_text":"#000000",
+                "comment_text":"#000000",
                 "load_text":"#000000",
                 "divider":"#D7D7D7",
                 "comments_border":"#D7D7D7",
@@ -43,7 +45,7 @@
                 "source_text":"#336699",
                 "votes_text":"#FF4500",
                 "votes_icon":"#F4C712",
-                "comments_text":"#FF4500",
+                "comments_count":"#FF4500",
                 "comments_icon":"#C3DBF6",
                 "icon_shadow":"#30000000"
             }
@@ -58,6 +60,7 @@
                 "header_text":"#FFFFFF",
                 "tab_indicator":"#FF4500",
                 "headline_text":"#FFFFFF",
+                "comment_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
                 "comments_border":"#D7D7D7",
@@ -65,7 +68,7 @@
                 "source_text":"#5F99CF",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
-                "comments_text":"#FF8B60",
+                "comments_count":"#FF8B60",
                 "comments_icon":"#C3DBF6",
                 "icon_shadow":"#22000000"
             }
@@ -80,6 +83,7 @@
                 "header_text":"#FFFFFF",
                 "tab_indicator":"#FF4500",
                 "headline_text":"#FFFFFF",
+                "comment_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
                 "comments_border":"#D7D7D7",
@@ -87,7 +91,7 @@
                 "source_text":"#CEE3F8",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
-                "comments_text":"#FF8B60",
+                "comments_count":"#FF8B60",
                 "comments_icon":"#C3DBF6",
                 "icon_shadow":"#22000000"
             }
@@ -102,14 +106,15 @@
                 "header_text":"#FFFFFF",
                 "tab_indicator":"#FF4500",
                 "headline_text":"#FFFFFF",
+                "comment_text":"#FFFFFF",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
-                "comments_border":"#D7D7D7",
+                "comments_border":"#505B6A",
                 "default_icon":"#DBDBDB",
                 "source_text":"#CEE3F8",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
-                "comments_text":"#FF8B60",
+                "comments_count":"#FF8B60",
                 "comments_icon":"#C3DBF6",
                 "icon_shadow":"#22000000"
             }
@@ -123,6 +128,7 @@
                 "header_color":"#5F99CF",
                 "header_text":"#FFFFFF",
                 "headline_text":"#FFFFFF",
+                "comment_text":"#FFFFFF",
                 "tab_indicator":"#FF4500",
                 "load_text":"#FFFFFF",
                 "divider":"#646464",
@@ -131,7 +137,7 @@
                 "source_text":"#CEE3F8",
                 "votes_text":"#FF8B60",
                 "votes_icon":"#F4C712",
-                "comments_text":"#FF8B60",
+                "comments_count":"#FF8B60",
                 "comments_icon":"#C3DBF6",
                 "icon_shadow":"#22000000"
             }

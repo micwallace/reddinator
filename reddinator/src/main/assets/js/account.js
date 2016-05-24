@@ -11,22 +11,14 @@ function init(themeColors, user, sect){
     section = sect;
     if (sect=="unread" || sect=="inbox" || sect=="sent")
         isMessages = true;
-    setTheme(themeColors);
-}
 
-function setTheme(themeColors){
     var themeColors = JSON.parse(themeColors);
-    $("body").css("background-color", themeColors["background_color"]);
-    $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
-    $(".comment_text").css("color", themeColors["headline_text"]);
-    $(".comment_user").css("color", themeColors["source_text"]);
-    $(".message_type, .message_subject").css("color", themeColors["load_text"]);
-    $(".fa-star").css("color", themeColors["votes_icon"]);
-    $(".comment_score").css("color", themeColors["votes_text"]);
-    $(".fa-comment").css("color", themeColors["comments_icon"]);
-    $(".comment_reply_count").css("color", themeColors["comments_text"]);
-    $("button").css("background-color", themeColors["header_color"]);
-    $("body").show();
+    switch (themeColors["comments_layout"]){
+        case "2":
+            addCssFile("css/styles/border-alternate.css");
+        default:
+    }
+    setTheme(themeColors);
 }
 
 function populateFeed(json, append){
@@ -460,12 +452,6 @@ function appendMessage(messageData, prepend){
     } else {
         messageElem.appendTo("#base");
     }
-}
-
-function htmlDecode(input){
-    var e = document.createElement('div');
-    e.innerHTML = input;
-    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
 $(function(){

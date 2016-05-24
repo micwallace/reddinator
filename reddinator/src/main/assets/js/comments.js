@@ -17,25 +17,15 @@ function init(themeColors, user){
         default:
     }
     switch (themeColors["comments_border_style"]){
+        /*case "2":
+            //console.log(LightenDarkenColor(themeColors['comments_border'], 25));
+            $(".even").css('border-color', "#"+LightenDarkenColor(themeColors['comments_border'], 50)+" !important");
+            break;*/
         case "3":
             addCssFile("css/styles/border-rainbow.css");
         default:
     }
     setTheme(themeColors);
-}
-
-function setTheme(themeColors){
-    $("body").css("background-color", themeColors["background_color"]);
-    $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
-    $(".border, .sub-border").css('border-color', themeColors['comments_border']);
-    $(".comment_text").css("color", themeColors["headline_text"]);
-    $(".comment_user").css("color", themeColors["source_text"]);
-    $(".fa-star").css("color", themeColors["votes_icon"]);
-    $(".comment_score").css("color", themeColors["votes_text"]);
-    $(".fa-comment").css("color", themeColors["comments_icon"]);
-    $(".comment_reply_count").css("color", themeColors["comments_text"]);
-    $("button").css("background-color", themeColors["header_color"]);
-    $("body").show();
 }
 
 function populateComments(author, json){
@@ -318,16 +308,13 @@ function appendComment(parentId, commentData, prepend){
             commentElem.appendTo("#"+parentId+"-replies");
         }
         var parent = $("#"+parentId);
+        if (!parent.hasClass("even"))
+            commentElem.addClass("even");
+
         parent.children('.option_container').children('.reply_expand').css('visibility', 'visible');
         var repliesElem = parent.children(".comment_info").children(".comment_reply_count");
         repliesElem.text(parseInt(repliesElem.text())+1);
     }
-}
-
-function htmlDecode(input){
-    var e = document.createElement('div');
-    e.innerHTML = input;
-    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
 function toggleReplies(element){
@@ -341,15 +328,6 @@ function toggleReplies(element){
         $(element).children('h5').text("-");
         $(element).children('h6').text("hide replies");
     }
-}
-
-function addCssFile(url){
-    var link = document.createElement("link");
-    link.href = url;
-    link.type = "text/css";
-    link.rel = "stylesheet";
-    link.media = "screen,print";
-    document.getElementsByTagName("head")[0].appendChild(link);
 }
 
 $(function(){

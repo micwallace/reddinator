@@ -125,7 +125,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
         mSharedPreferences.getString("titlefontpref", "16");
 
-        final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString();
+        final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -155,7 +155,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
     }
 
     public void updateTheme() {
-        String themeStr = ((AccountActivity) getActivity()).getCurrentTheme().getValuesString();
+        String themeStr = ((AccountActivity) getActivity()).getCurrentTheme().getValuesString(true);
         mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 

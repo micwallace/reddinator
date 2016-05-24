@@ -207,7 +207,7 @@ public class ThemeManager {
             return mTheme;
         }
 
-        public JSONObject getJsonValues(){
+        public JSONObject cloneJsonValues(){
             if (values==null)
                 loadValues();
             try {
@@ -218,8 +218,19 @@ public class ThemeManager {
             return new JSONObject();
         }
 
-        public String getValuesString(){
-            return jsonValues.toString();
+        public String getValuesString(boolean includeLayoutOptions){
+            if (includeLayoutOptions){
+                JSONObject valuesObject = cloneJsonValues();
+                try {
+                    valuesObject.put("comments_layout", prefs.getString("commentslayoutpref", "1"));
+                    valuesObject.put("comments_border_style", prefs.getString("commentsborderpref", "1"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return valuesObject.toString();
+            } else {
+                return jsonValues.toString();
+            }
         }
 
         public String getName(){

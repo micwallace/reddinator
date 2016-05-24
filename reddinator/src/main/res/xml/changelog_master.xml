@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release version="3.11" versioncode="39">
-        <change>Moved post info in comment context to pullup panel view.</change>
         <change>Added menu to widget.</change>
-        <change>Added comments border color and layout options.</change>
+        <change>Moved post info in comment context to pull-up panel view.</change>
+        <change>Added comments border color and text color to theme options.</change>
+        <change>Added comments layout and nested colour scheme preferences.</change>
         <change>Added image previews for i.reddituploads.com images.</change>
         <change>Fixed crash when replying to unread messages.</change>
         <change>Fixed bug causing wrong preview image to show for NSFW images.</change>

@@ -268,7 +268,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         }
 
         public void onPageFinished(WebView view, String url) {
-            String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString();
+            String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
             webView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
 
             loadComments(currentSort, contextLevels);

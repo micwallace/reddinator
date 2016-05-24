@@ -121,15 +121,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         webSettings.setDefaultFontSize(fontSize);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-        // append other comments layout preferences to theme values
-        JSONObject themeValues = global.mThemeManager.getActiveTheme("appthemepref").getJsonValues();
-        try {
-            themeValues.put("comments_layout", mSharedPreferences.getString("commentslayoutpref", "1"));
-            themeValues.put("comments_border_style", mSharedPreferences.getString("commentsborderpref", "1"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        final String themeStr = themeValues.toString();
+        // get theme values with comments layout prefs included
+        final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -159,7 +152,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
     }
 
     public void updateTheme() {
-        String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString();
+        String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString(true);
         mWebView.loadUrl("javascript:setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 

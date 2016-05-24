@@ -2,7 +2,7 @@
 
 #base .border,
 #base .border .sub-border {
-    border-color: #2F6698;
+    border-color: #2F6698 !important;
 }
 
 #base .border .border,
