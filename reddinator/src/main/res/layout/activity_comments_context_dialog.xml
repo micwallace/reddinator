@@ -1,156 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contentview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:padding="0dp"
-    android:layout_margin="0dp"
+    android:layout_margin="6dp"
+    android:layout_marginTop="24dp"
+    android:layout_marginBottom="24dp"
     android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".activity.ViewImageDialogActivity">
-    <RelativeLayout
-        android:id="@+id/info_panel"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingBottom="4dp"
-        android:visibility="gone">
-        <TextView
-            android:id="@+id/post_title"
-            style="@android:style/TextAppearance.Medium"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoPanelHeight="0dp">
+
+        <WebView
+            android:id="@+id/commentswebview"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"/>
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/info_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp">
+                <LinearLayout
+                    android:id="@+id/title_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/post_title"
+                        style="@android:style/TextAppearance.Medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"/>
+                    <IconTextView
+                        android:id="@+id/info_txt"
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="-24dp"
+                        android:padding="0dp"
+                        android:includeFontPadding="false"
+                        android:clickable="true"
+                        android:linksClickable="true"/>
+                </LinearLayout>
 
-        <IconTextView
-            android:id="@+id/info_txt"
-            style="@android:style/TextAppearance.Small"
-            android:layout_below="@id/post_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-26dp"
-            android:padding="0dp"
-            android:includeFontPadding="false"
-            android:clickable="true"
-            android:linksClickable="true"/>
+                <TextView
+                    android:id="@+id/source_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/title_box"
+                    android:text="@string/reddit_domain"
+                    android:textColor="#336699"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"/>
 
-        <TextView
-            android:id="@+id/source_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/info_txt"
-            android:text="@string/reddit_domain"
-            android:textColor="#336699"
-            android:singleLine="true"
-            android:ellipsize="marquee"/>
+                <IconTextView
+                    android:id="@+id/votes_icon"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/source_txt"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:text="@string/fa_star"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:padding="2dp"
+                    android:textSize="16sp" />
 
-        <IconTextView
-            android:id="@+id/votes_icon"
-            android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/source_txt"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:text="@string/fa_star"
-            android:shadowColor="#22000000"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="3"
-            android:padding="2dp"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/votes_txt"
+                    android:layout_below="@id/source_txt"
+                    android:layout_toRightOf="@+id/votes_icon"
+                    android:layout_toEndOf="@+id/votes_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/votes_txt"
-            android:layout_below="@id/source_txt"
-            android:layout_toRightOf="@+id/votes_icon"
-            android:layout_toEndOf="@+id/votes_icon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginStart="2dp"
-            android:textSize="16sp"/>
+                <IconTextView
+                    android:id="@+id/comments_icon"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_below="@id/votes_icon"
+                    android:text="@string/fa_comment"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:padding="2dp"
+                    android:textSize="16sp"/>
 
-        <IconTextView
-            android:id="@+id/comments_icon"
-            android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_below="@id/votes_icon"
-            android:text="@string/fa_comment"
-            android:shadowColor="#22000000"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="3"
-            android:padding="2dp"
-            android:textSize="16sp"/>
+                <TextView
+                    android:id="@+id/comments_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/votes_txt"
+                    android:layout_toRightOf="@+id/comments_icon"
+                    android:layout_toEndOf="@+id/comments_icon"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
+                    android:textSize="16sp"
+                    android:textIsSelectable="false" />
 
-        <TextView
-            android:id="@+id/comments_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/votes_txt"
-            android:layout_toRightOf="@+id/comments_icon"
-            android:layout_toEndOf="@+id/comments_icon"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginStart="2dp"
-            android:textSize="16sp"
-            android:textIsSelectable="false" />
-
-        <IconTextView
-            android:id="@+id/selftext_button"
-            android:contentDescription="@string/icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/source_txt"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:text="@string/fa_file_text"
-            android:shadowColor="#22000000"
-            android:shadowDx="4"
-            android:shadowDy="4"
-            android:shadowRadius="3"
-            android:paddingTop="2dp"
-            android:textSize="24sp"
-            android:textColor="#DBDBDB"
-            android:visibility="gone"/>
-    </RelativeLayout>
-    <WebView
-        android:id="@+id/commentswebview"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_width="match_parent"/>
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <IconButton
-            android:id="@+id/commentsbutton"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:padding="8dp"
-            android:background="#5F99CF"
-            android:text="@string/view_all_comments" />
-        <IconButton
-            android:id="@+id/linkbutton"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:padding="8dp"
-            android:background="#5F99CF"
-            android:text="@string/open_context_link" />
-    </LinearLayout>
+                <IconTextView
+                    android:id="@+id/selftext_button"
+                    android:contentDescription="@string/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/source_txt"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/fa_file_text"
+                    android:shadowColor="#22000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="3"
+                    android:paddingTop="2dp"
+                    android:textSize="24sp"
+                    android:textColor="#DBDBDB"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <IconButton
+                    android:id="@+id/commentsbutton"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:padding="8dp"
+                    android:background="#5F99CF"
+                    android:text="@string/view_all_comments" />
+                <IconButton
+                    android:id="@+id/linkbutton"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:padding="8dp"
+                    android:background="#5F99CF"
+                    android:text="@string/open_context_link" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </LinearLayout>

@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -91,6 +92,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private MenuItem upvote;
     private MenuItem downvote;
     private MenuItem messageIcon;
+    private AsyncTask loadPostTask;
     private JSONObject postInfo;
     private String userLikes = "null"; // string version of curvote, parsed when options menu generated.
     private String redditItemId;
@@ -198,7 +200,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             @Override
             public void onClick(View v) {
                 setTitle(R.string.loading);
-                new LoadPostTask(global, ViewRedditActivity.this).execute(postPermalink, "best");
+                loadPostTask = new LoadPostTask(global, ViewRedditActivity.this).execute(postPermalink, "best");
             }
         });
         // theme
@@ -233,7 +235,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         }
         // load post data; once loaded comment data is passed to the comment fragment
         // the content view is also loaded if postUrl is not provided via extras
-        new LoadPostTask(global, this).execute(postPermalink, "best");
+        loadPostTask = new LoadPostTask(global, this).execute(postPermalink, "best");
 
         // Init rate dialog
         RateThisApp.Config config = new RateThisApp.Config();
@@ -318,6 +320,8 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
             }
         }
+        if (loadPostTask!=null)
+            loadPostTask.cancel(false);
         ViewGroup view = (ViewGroup) getWindow().getDecorView();
         view.removeAllViews();
         super.finish();

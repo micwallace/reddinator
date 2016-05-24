@@ -119,7 +119,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
         sortItem.setTitle(getString(R.string.sort_label) + " " + prefs.getString("sort-"+widgetId, "hot"));
         MenuItem sidebarIcon = menu.findItem(R.id.menu_sidebar);
         sidebarIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_book).color(iconColor).actionBarSize());
-        if (widgetId==-1 || !global.getSubredditManager().isFeedMulti(widgetId)) {
+        if (!global.getSubredditManager().isFeedMulti(widgetId)) {
             sidebarIcon.setVisible(true);
         }
         (menu.findItem(R.id.menu_submit)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_pencil).color(iconColor).actionBarSize());
@@ -184,7 +184,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
 
             case R.id.menu_search:
                 Intent searchIntent = new Intent(this, SearchActivity.class);
-                if (widgetId==-1 || !global.getSubredditManager().isFeedMulti(widgetId))
+                if (!global.getSubredditManager().isFeedMulti(widgetId))
                     searchIntent.putExtra("feed_path", global.getSubredditManager().getCurrentFeedPath(widgetId));
                 startActivityAndFinish(searchIntent);
                 break;

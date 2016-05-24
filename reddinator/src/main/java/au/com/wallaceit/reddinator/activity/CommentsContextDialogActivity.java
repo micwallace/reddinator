@@ -47,6 +47,8 @@ import android.widget.IconTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,6 +73,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     VoteTask commentsVoteTask;
     CommentTask commentTask;
 
+    private SlidingUpPanelLayout panelLayout;
     private TextView sourceText;
     private TextView titleText;
     private TextView votesText;
@@ -166,6 +169,14 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                 finish();
             }
         });
+
+        panelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        panelLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
     }
 
     private void setTheme(){
@@ -233,7 +244,13 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                 e.printStackTrace();
             }
 
-            findViewById(R.id.info_panel).setVisibility(View.VISIBLE);
+            panelLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    panelLayout.setPanelHeight(findViewById(R.id.title_box).getMeasuredHeight()+22);
+                }
+            });
+            //findViewById(R.id.info_panel).setVisibility(View.VISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
         }

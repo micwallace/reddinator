@@ -56,7 +56,7 @@
     <button onclick="$(this).prop('disabled', true).next('button').prop('disabled', true); edit($(this).parent().parent().attr('id'), $(this).prev('textarea').val());">Save</button>
     <button onclick="cancelEdit($(this).parent().parent().attr('id'));">Cancel</button>
 </div>
-<div id="header">
+<div id="header" style="position:fixed;top:0;z-index:1000;">
     <i onclick="reloadCommentsContext();" class="fa fa-refresh"></i>
     <label style="display:inline-block;">Sort:</label>
     <select id="context_sort_select" onchange="reloadCommentsContext();" style="margin-right: 4px;">
@@ -75,7 +75,7 @@
     </select>
 </div>
 <div id="container">
-    <div id="base">
+    <div id="base" style="margin-top:40px;">
 
     </div>
 </div>
