@@ -33,6 +33,7 @@
             android:scaleType="fitCenter"
             android:text="@string/fa_arrow_up"
             android:textSize="34sp"
+            android:textColor="#A5A5A5"
             android:layout_margin="4dp"
             android:focusableInTouchMode="true"
             android:clickable="true"/>
@@ -45,6 +46,7 @@
             android:scaleType="fitCenter"
             android:text="@string/fa_arrow_down"
             android:textSize="34sp"
+            android:textColor="#A5A5A5"
             android:layout_margin="4dp"
             android:focusableInTouchMode="true"
             android:clickable="true"/>

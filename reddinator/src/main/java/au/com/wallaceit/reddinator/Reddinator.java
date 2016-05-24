@@ -402,7 +402,7 @@ public class Reddinator extends Application {
         }
     }
 
-    public static void showInfoDialog(final Activity context, final boolean isInfo){
+    public static AlertDialog showInfoDialog(final Activity context, final boolean isInfo){
         Resources resources = context.getResources();
         LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(dialog_info, null);
         // setup view pager
@@ -459,7 +459,7 @@ public class Reddinator extends Application {
         wv.loadData(cl.getLog(), "text/html", "UTF-8");
         // initialize dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(aboutView)
+        return builder.setView(aboutView)
         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -467,6 +467,8 @@ public class Reddinator extends Application {
             }
         }).show();
     }
+
+
 
     public boolean saveThumbnailToCache(Bitmap image, String redditId){
         try {

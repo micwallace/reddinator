@@ -136,19 +136,25 @@
             android:name=".activity.FeedItemDialogActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/TransparentActivityDimmed" />
 
         <activity
             android:name=".activity.ViewImageDialogActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/TransparentActivityDimmed" />
 
         <activity
             android:name=".activity.CommentsContextDialogActivity"
             android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@style/TransparentActivityDimmed" />
+
+        <activity
+            android:name=".activity.WidgetMenuDialogActivity"
+            android:label="@string/app_name"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/TransparentActivity" />
     </application>
 
 </manifest>

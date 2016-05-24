@@ -42,11 +42,11 @@ import java.util.HashMap;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.MainActivity;
-import au.com.wallaceit.reddinator.activity.PrefsActivity;
 import au.com.wallaceit.reddinator.activity.SubredditSelectActivity;
 import au.com.wallaceit.reddinator.activity.ViewImageDialogActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.FeedItemDialogActivity;
+import au.com.wallaceit.reddinator.activity.WidgetMenuDialogActivity;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -84,7 +84,7 @@ public class WidgetProvider extends AppWidgetProvider {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
             // CONFIG BUTTON
-            Intent intent = new Intent(context, PrefsActivity.class);
+            Intent intent = new Intent(context, WidgetMenuDialogActivity.class);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);  // Identifies the particular widget...
             intent.putExtra("firsttimeconfig", 0); // not first time config
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -148,7 +148,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
             int iconColor = themeColors.get("default_icon");
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
-            views.setImageViewBitmap(R.id.prefsbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_wrench.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.prefsbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_bars.character()), iconColor, 28, shadow));
             views.setImageViewBitmap(R.id.refreshbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
             views.setImageViewBitmap(R.id.srcaret, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
             views.setImageViewBitmap(R.id.erroricon, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));

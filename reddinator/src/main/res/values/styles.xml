@@ -19,6 +19,7 @@
         <item name="android:button">@android:color/transparent</item>
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuStyle</item>
     </style>
     <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
@@ -35,5 +36,20 @@
     </style>
     <style name="HtmlDialog" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+    <style name="TransparentActivity" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
+    </style>
+    <style name="TransparentActivityDimmed" parent="TransparentActivity">
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    <style name="PopupMenuStyle" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <item name="android:textSize">12sp</item>
     </style>
 </resources>
