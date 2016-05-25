@@ -164,7 +164,7 @@
     <string name="tl_header_color">Tabs/Cabeceras de la Aplicacion</string>
     <string name="tl_header_text">Texto de Cabecera</string>
     <string name="tl_tab_indicator">Indicator de Tab</string>
-    <string name="tl_headline_text">Post &amp; Comentarios del texto</string>
+    <string name="tl_headline_text">Texto del título de la entrada</string>
     <string name="tl_load_text">Cargar el texto del Boton</string>
     <string name="tl_divider">Divisor de lista</string>
     <string name="tl_default_icon">Icon por defecto</string>
@@ -172,7 +172,7 @@
     <string name="tl_votes_text">Votar Texto</string>
     <string name="tl_votes_icon">Votar Icono</string>
     <string name="tl_comments_text">Comentar Count Text</string>
-    <string name="tl_comments_icon">Comentar Count Icon</string>
+    <string name="tl_comments_icon">Comentarios cuenta icono</string>
     <string name="tl_icon_shadow">Sombra del Icono</string>
     <!-- preference label strings -->
     <string name="on_click_pref_title">Accion del Click</string>
@@ -273,4 +273,11 @@
     <string name="image_previews">previas de imágenes</string>
     <string name="app_feed_prefs">Preferencias de la aplicación de piensos</string>
     <string name="widget_feed_prefs">Preferencias de piensos Widget</string>
+    <string name="comments_border_pref_summary">Elija un patrón de color para los bordes anidadas</string>
+    <string name="comments_border_pref_title">Comentarios del estilo de borde</string>
+    <string name="comments_layout_pref_title">Comentarios del diseño</string>
+    <string name="comments_layout_pref_summary">Cambiar el diseño de la alimentación de los comentarios</string>
+    <string name="tl_comment_text">Comentarios de texto</string>
+    <string name="tl_comments_border">Comentarios Frontera</string>
+    <string name="tl_comments_count">Comentarios cuenta de texto</string>
 </resources>

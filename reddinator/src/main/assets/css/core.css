@@ -170,7 +170,7 @@ h5, h6 {
 }
 
 textarea {
-    border: 2px solid #FFF;
+    border: 1px solid #999999;
     border-radius: 4px;
     width:100%;
     margin-right:4px;
@@ -178,6 +178,7 @@ textarea {
     box-sizing:border-box;
     border-bottom-left-radius:0;
     text-decoration: none;
+    min-height: 100px;
 }
 
 button {

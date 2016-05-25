@@ -13,14 +13,15 @@ function init(themeColors, user){
     var themeColors = JSON.parse(themeColors);
     switch (themeColors["comments_layout"]){
         case "2":
-            addCssFile("css/styles/border-alternate.css");
+            addCssFile("css/styles/layout-alternate.css");
         default:
     }
     switch (themeColors["comments_border_style"]){
-        /*case "2":
-            //console.log(LightenDarkenColor(themeColors['comments_border'], 25));
-            $(".even").css('border-color', "#"+LightenDarkenColor(themeColors['comments_border'], 50)+" !important");
-            break;*/
+        case "2":
+            var alt_color = LightenDarkenColor(themeColors['comments_border'], 40);
+            var style = $('<style>.even { border-color: #'+alt_color+' !important; }</style>');
+            $('html > head').append(style);
+            break;
         case "3":
             addCssFile("css/styles/border-rainbow.css");
         default:
@@ -308,8 +309,11 @@ function appendComment(parentId, commentData, prepend){
             commentElem.appendTo("#"+parentId+"-replies");
         }
         var parent = $("#"+parentId);
-        if (!parent.hasClass("even"))
+
+        if (!parent.hasClass("even")){
             commentElem.addClass("even");
+            commentElem.children('.option_container').children('.reply_expand').addClass("even");
+        }
 
         parent.children('.option_container').children('.reply_expand').css('visibility', 'visible');
         var repliesElem = parent.children(".comment_info").children(".comment_reply_count");

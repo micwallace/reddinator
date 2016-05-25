@@ -1,9 +1,0 @@
-/* Color comments tree; sorry, i too wish css had :nthdecendant() */
-
-.comment_box {
-    border-right:none;
-    border-bottom:none;
-    border-radius:0;
-    border-top-left-radius: 4px;
-    padding-bottom: 0;
-}

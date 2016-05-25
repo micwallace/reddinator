@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
         params.width  = WindowManager.LayoutParams.MATCH_PARENT;
         getWindow().setAttributes(params);
 
-        popupMenu = new PopupMenu(this, findViewById(R.id.menu_anchor));
+        popupMenu = new PopupMenu(new ContextThemeWrapper(this, R.style.PopupMenuStyle), findViewById(R.id.menu_anchor));
         popupMenu.getMenuInflater().inflate(R.menu.feed_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(this);
 

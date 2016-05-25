@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -64,6 +65,8 @@ public class ViewImageDialogActivity extends Activity {
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         boolean multi = getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
         webView.getSettings().setDisplayZoomControls(!multi);
         // Make sure we specify a proper user agent. Many sites block generic ones.

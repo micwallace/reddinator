@@ -1,0 +1,20 @@
+/* Alternate layout with top and left border only */
+.comment_box {
+    border-right:none;
+    border-bottom:none;
+    border-radius:0;
+    border-top-left-radius: 4px;
+    padding-bottom: 0;
+}
+
+.more_box {
+    margin-right: 0 !important;
+}
+
+.comment_replies {
+    padding-right: 2px;
+}
+
+.reply_expand {
+    margin-right: 0px;
+}

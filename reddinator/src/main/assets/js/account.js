@@ -15,7 +15,7 @@ function init(themeColors, user, sect){
     var themeColors = JSON.parse(themeColors);
     switch (themeColors["comments_layout"]){
         case "2":
-            addCssFile("css/styles/border-alternate.css");
+            addCssFile("css/styles/layout-alternate.css");
         default:
     }
     setTheme(themeColors);
