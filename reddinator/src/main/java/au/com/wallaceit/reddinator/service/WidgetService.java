@@ -133,7 +133,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                 Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
+                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         // previews disabled by default due to listview dynamic height issue (causes views to jump around when scrolling up)
@@ -233,7 +233,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextViewText(R.id.sourcetxt, (showItemSubreddit ? subreddit + " - " :"")+domain);
             row.setTextColor(R.id.sourcetxt, themeColors.get("source_text"));
             row.setTextColor(R.id.votestxt, themeColors.get("votes_text"));
-            row.setTextColor(R.id.commentstxt, themeColors.get("comments_text"));
+            row.setTextColor(R.id.commentstxt, themeColors.get("comments_count"));
             row.setTextViewText(R.id.votestxt, String.valueOf(score));
             row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
             row.setInt(R.id.listdivider, "setBackgroundColor", themeColors.get("divider"));

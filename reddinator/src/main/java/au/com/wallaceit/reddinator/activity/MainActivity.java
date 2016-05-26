@@ -606,7 +606,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
                     Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_text"), 12, shadow)
+                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
             };
 
             // get font size preference
@@ -724,7 +724,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 viewHolder.votestxt.setText(String.valueOf(score));
                 viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));
                 viewHolder.commentstxt.setText(String.valueOf(numcomments));
-                viewHolder.commentstxt.setTextColor(themeColors.get("comments_text"));
+                viewHolder.commentstxt.setTextColor(themeColors.get("comments_count"));
                 viewHolder.nsfw.setVisibility((nsfw ? TextView.VISIBLE : TextView.GONE));
                 row.findViewById(R.id.listdivider).setBackgroundColor(themeColors.get("divider"));
                 // set vote button

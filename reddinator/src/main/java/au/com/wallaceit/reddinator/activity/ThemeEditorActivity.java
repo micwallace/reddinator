@@ -108,7 +108,7 @@ public class ThemeEditorActivity extends ListActivity {
 
         @Override
         public int getCount() {
-            return theme.getValues().size()+1; // +1 for theme name
+            return global.mThemeManager.getPreferenceOrder().length()+1; // +1 for theme name
         }
 
         @Override

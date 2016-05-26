@@ -200,7 +200,14 @@ public class ThemeManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //System.out.println(theme.toString());
+            // backward compatibility fix for old value
+            if (!jsonValues.has("comments_count"))
+                try {
+                    jsonValues.put("comments_count", (jsonValues.has("comments_text")?jsonValues.get("comments_text"):"#000000"));
+                    jsonValues.remove("comments_text");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
         }
 
         public JSONObject getTheme(){
