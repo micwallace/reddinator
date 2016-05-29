@@ -466,7 +466,7 @@ public class SearchActivity extends Activity {
                 viewHolder.votestxt.setText(String.valueOf(score));
                 viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));
                 viewHolder.commentstxt.setText(String.valueOf(numcomments));
-                viewHolder.commentstxt.setTextColor(themeColors.get("comments_text"));
+                viewHolder.commentstxt.setTextColor(themeColors.get("comments_count"));
                 viewHolder.nsfw.setVisibility((nsfw ? TextView.VISIBLE : TextView.GONE));
                 row.findViewById(R.id.listdivider).setBackgroundColor(themeColors.get("divider"));
                 // set vote button
