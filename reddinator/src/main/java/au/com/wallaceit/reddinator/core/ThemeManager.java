@@ -89,7 +89,7 @@ public class ThemeManager {
         return valueOrder;
     }
 
-    private JSONObject getThemeJSON(String key){
+    public JSONObject getThemeJSON(String key){
         JSONObject theme = null;
         if (themes.has(key)){
             try {

@@ -140,6 +140,18 @@ public class RedditData {
         return subreddits;
     }
 
+    public JSONArray getDefaultSubreddits() throws RedditApiException {
+        JSONArray subreddits;
+        String url = OAUTH_ENDPOINT + "/subreddits/default.json";
+        try {
+            subreddits = redditApiGet(url, false).getJSONObject("data").getJSONArray("children");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return subreddits;
+    }
+
     public JSONArray searchSubreddits(String query) throws RedditApiException {
         JSONArray subreddits;
         String url = OAUTH_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
@@ -652,7 +664,7 @@ public class RedditData {
 
         try {
             content = URLEncoder.encode(content, "UTF-8");
-            String url = OAUTH_ENDPOINT + "/api/submit?api_type=json&extension=json&then=comments&sr=" + URLEncoder.encode(subreddit, "UTF-8") + "&kind=" + (isLink?"link":"self") + "&title=" + URLEncoder.encode(title, "UTF-8") + "&" + (isLink?"url="+content:"text="+content);
+            String url = OAUTH_ENDPOINT + "/api/submit?api_type=json&extension=json&then=comments&sr=" + URLEncoder.encode(subreddit, "UTF-8") + "&kind=" + (isLink?"link":"self") + "&title=" + URLEncoder.encode(title, "UTF-8") + "&" + (isLink?"url=":"text=")+content;
 
             return redditApiPost(url).getJSONObject("json");
 

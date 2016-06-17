@@ -22,6 +22,7 @@
 package au.com.wallaceit.reddinator.core;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -34,20 +35,21 @@ import java.util.Iterator;
 
 public class SubredditManager {
     private SharedPreferences prefs;
+    private RedditData redditData;
     private JSONObject subreddits;
     private JSONObject multis;
     private JSONObject postFilters;
-    private final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
+    public final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
-    public SubredditManager(SharedPreferences prefs){
+    public SubredditManager(RedditData redditData, SharedPreferences prefs){
         this.prefs = prefs;
+        this.redditData = redditData;
         // load subreddits & multis
         try {
             subreddits = new JSONObject(prefs.getString("userSubreddits", "{}"));
             if (subreddits.length()==0){
-                subreddits = new JSONObject(defaultSubreddits);
-                saveSubs();
+                loadDefaultSubreddits();
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -62,6 +64,52 @@ public class SubredditManager {
             postFilters = new JSONObject(prefs.getString("postFilters", "{}"));
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void loadDefaultSubreddits(){
+        try {
+            subreddits = new JSONObject(defaultSubreddits); // start with front page and all
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new LoadDefaultSubredditsTask().execute();
+    }
+
+    public void clearMultis(){
+        multis = new JSONObject();
+        saveMultis();
+    }
+
+    private class LoadDefaultSubredditsTask extends AsyncTask<Void, Void, JSONArray>{
+
+        @Override
+        protected JSONArray doInBackground(Void... params) {
+            try {
+                return redditData.getDefaultSubreddits();
+            } catch (RedditData.RedditApiException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+            if (result!=null){
+                for (int i=0; i<result.length(); i++){
+                    try {
+                        JSONObject subSrc = result.getJSONObject(i).getJSONObject("data");
+                        JSONObject sub = new JSONObject();
+                        String name = subSrc.getString("display_name");
+                        sub.put("display_name", name);
+                        sub.put("public_description", subSrc.getString("public_description"));
+                        subreddits.put(name, sub);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                saveSubs();
+            }
         }
     }
 
@@ -300,6 +348,11 @@ public class SubredditManager {
     }
 
     public void setSubreddits(JSONArray subsArray){
+        try {
+            subreddits = new JSONObject(defaultSubreddits); // start with front page and all
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i<subsArray.length(); i++){
             try {
                 addSubredditData(subsArray.getJSONObject(i));
@@ -310,9 +363,9 @@ public class SubredditManager {
         saveSubs();
     }
 
-    private void addSubredditData(JSONObject multiObj){
+    private void addSubredditData(JSONObject subObj){
         try {
-            JSONObject data =  multiObj.getJSONObject("data");
+            JSONObject data =  subObj.getJSONObject("data");
             String name = data.getString("display_name");
             subreddits.put(name, data);
         } catch (JSONException e) {

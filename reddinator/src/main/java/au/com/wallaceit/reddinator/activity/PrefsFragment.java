@@ -55,8 +55,10 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             logoutbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    // clear oauth token and save prefs
+                    // clear oauth token and userdata and load default subreddits
                     global.mRedditData.purgeAccountData();
+                    global.getSubredditManager().clearMultis();
+                    global.getSubredditManager().loadDefaultSubreddits();
                     // remove mail check alarm
                     MailCheckReceiver.setAlarm(getActivity());
                     // remove account prefs

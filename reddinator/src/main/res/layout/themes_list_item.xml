@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp" >
+
+	<TextView
+	    android:id="@+id/theme_name"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+	    android:layout_alignParentTop="true"
+	    android:layout_marginLeft="10dp"
+		android:layout_marginStart="10dp"
+	    android:layout_toLeftOf="@+id/theme_share_btn"
+		android:layout_toStartOf="@+id/theme_share_btn"
+	    android:gravity="center_vertical"
+	    android:textSize="19sp" />
+
+	<IconTextView
+		android:id="@+id/theme_delete_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true"
+		android:layout_centerVertical="true"
+		android:contentDescription="@string/delete"
+		android:text="@string/fa_trash"
+		android:shadowColor="#22000000"
+		android:shadowDx="4"
+		android:shadowDy="4"
+		android:shadowRadius="3"
+		android:layout_marginRight="12dp"
+		android:layout_marginEnd="12dp"
+		android:textSize="32sp"
+		android:textColor="#ff8c8c8c" />
+
+	<IconTextView
+		android:id="@+id/theme_share_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignRight="@id/theme_delete_btn"
+		android:layout_alignEnd="@id/theme_delete_btn"
+		android:layout_centerVertical="true"
+		android:contentDescription="@string/share"
+		android:text="@string/fa_share"
+		android:shadowColor="#22000000"
+		android:shadowDx="4"
+		android:shadowDy="4"
+		android:shadowRadius="3"
+		android:layout_marginRight="35dp"
+		android:layout_marginEnd="35dp"
+		android:textSize="32sp"
+		android:textColor="#25C48F" />
+
+</RelativeLayout>

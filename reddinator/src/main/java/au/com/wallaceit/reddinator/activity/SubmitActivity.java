@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.tasks.SubmitTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
@@ -45,7 +46,7 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 
-public class SubmitActivity extends Activity {
+public class SubmitActivity extends Activity implements SubmitTask.Callback {
 
     private Reddinator global;
     private AutoCompleteTextView subreddit;
@@ -56,6 +57,7 @@ public class SubmitActivity extends Activity {
     private EditText text;
     private ViewPager pager;
     private Resources resources;
+    private ProgressDialog progressDialog;
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -143,11 +145,58 @@ public class SubmitActivity extends Activity {
                     if (validateInput()) {
                         boolean isLink = pager.getCurrentItem()==0;
                         String data = isLink ? link.getText().toString() : text.getText().toString();
-                        (new SubmitTask(subreddit.getText().toString(), title.getText().toString(), data, isLink)).execute();
+                        progressDialog = ProgressDialog.show(SubmitActivity.this, "", resources.getString(R.string.submitting), true);
+                        new SubmitTask(global, subreddit.getText().toString(), title.getText().toString(), data, isLink, SubmitActivity.this).execute();
                     }
                 }
             }
         });
+    }
+
+    @Override
+    public void onSubmitted(JSONObject result, RedditData.RedditApiException exception, boolean isLink) {
+        progressDialog.cancel();
+        if (result!=null){
+            try {
+                if (result.has("errors")) {
+                    JSONArray errors = result.getJSONArray("errors");
+                    if (errors.length()>0) {
+                        submitText.setText(Html.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
+                        return;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String id;
+            String permalink;
+            try {
+                JSONObject data = result.getJSONObject("data");
+                id = data.getString("name");
+                permalink = StringEscapeUtils.unescapeJava(data.getString("url").replace(".json", ""));
+                String url = isLink?link.getText().toString():permalink+".compact";
+
+                if (permalink != null)
+                    permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
+
+                Intent intent = new Intent(SubmitActivity.this, ViewRedditActivity.class);
+                intent.putExtra(WidgetProvider.ITEM_ID, id);
+                intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
+                intent.putExtra(WidgetProvider.ITEM_URL, url);
+                intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                // show api error
+                Toast.makeText(SubmitActivity.this, resources.getString(R.string.cannot_open_post_error)+" "+e.getMessage(), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        } else {
+            // show api error
+            Toast.makeText(SubmitActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private class SafeLinkMethod extends LinkMovementMethod {
@@ -226,80 +275,4 @@ public class SubmitActivity extends Activity {
         }
     }
 
-    class SubmitTask extends AsyncTask<String, Long, Boolean> {
-        JSONObject jsonResult;
-        String errorText;
-        ProgressDialog progressDialog;
-        boolean isLink;
-        String subreddit;
-        String title;
-        String data;
-
-        public SubmitTask(String subreddit, String title, String data, boolean isLink){
-            this.isLink = isLink;
-            this.title = title;
-            this.data = data;
-            this.subreddit = subreddit;
-            progressDialog = ProgressDialog.show(SubmitActivity.this, "", resources.getString(R.string.submitting), true);
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-
-            try {
-                jsonResult = global.mRedditData.submit(subreddit, isLink, title, data);
-                return true;
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                errorText = e.getMessage();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            progressDialog.cancel();
-            if (result){
-                try {
-                    if (jsonResult.has("errors")) {
-                        JSONArray errors = jsonResult.getJSONArray("errors");
-                        if (errors.length()>0) {
-                            submitText.setText(Html.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
-                            return;
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                String id;
-                String permalink;
-                try {
-                    JSONObject data = jsonResult.getJSONObject("data");
-                    id = data.getString("name");
-                    permalink = StringEscapeUtils.unescapeJava(data.getString("url").replace(".json", ""));
-                    String url = isLink?link.getText().toString():permalink+".compact";
-
-                    if (permalink != null)
-                        permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
-
-                    Intent intent = new Intent(SubmitActivity.this, ViewRedditActivity.class);
-                    intent.putExtra(WidgetProvider.ITEM_ID, id);
-                    intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
-                    intent.putExtra(WidgetProvider.ITEM_URL, url);
-                    intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    // show api error
-                    Toast.makeText(SubmitActivity.this, resources.getString(R.string.cannot_open_post_error)+errorText, Toast.LENGTH_LONG).show();
-                    finish();
-                }
-            } else {
-                // show api error
-                Toast.makeText(SubmitActivity.this, errorText, Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 }

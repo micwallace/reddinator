@@ -212,7 +212,7 @@ public class Reddinator extends Application {
     // subreddit list, settings & filter management
     public SubredditManager getSubredditManager(){
         if (mSubManager==null)
-            mSubManager = new SubredditManager(mSharedPreferences);
+            mSubManager = new SubredditManager(mRedditData, mSharedPreferences);
 
         return mSubManager;
     }
@@ -513,5 +513,13 @@ public class Reddinator extends Application {
 
     public static boolean hasImageExtension(String url){
         return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif?v|bmp))$)");
+    }
+
+    public static void executeJavascriptInWebview(WebView webView, String javascript){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            webView.evaluateJavascript(javascript, null);
+        } else {
+            webView.loadUrl("javascript:"+javascript);
+        }
     }
 }

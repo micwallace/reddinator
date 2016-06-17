@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.SubredditManager;
 
 public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_ADD_TO_MULTI = 3;
@@ -173,8 +174,9 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private void loadDefaults(){
         defaultsreddits = new ArrayList<>();
         try {
-            defaultsreddits.add(new JSONObject("{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}")); // slap the front page on there
-            defaultsreddits.add(new JSONObject("{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}")); // and an all
+            JSONObject defaults = new JSONObject(SubredditManager.defaultSubreddits);
+            defaultsreddits.add(defaults.getJSONObject("Front Page")); // slap the front page on there
+            defaultsreddits.add(defaults.getJSONObject("all")); // and an all
         } catch (JSONException e) {
             e.printStackTrace();
         }

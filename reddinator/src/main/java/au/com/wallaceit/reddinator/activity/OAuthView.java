@@ -172,6 +172,15 @@ public class OAuthView extends Activity {
     }
 
     @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (wv != null) {
+            wv.removeAllViews();
+            wv.destroy();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {

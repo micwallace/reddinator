@@ -107,6 +107,15 @@ public class WebViewActivity extends Activity {
     }
 
     @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (wv != null) {
+            wv.removeAllViews();
+            wv.destroy();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.web_view_menu, menu);

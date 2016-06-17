@@ -191,6 +191,10 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             commentsVoteTask.cancel(false);
         if (commentTask!=null)
             commentTask.cancel(false);
+        if (mWebView != null) {
+            mWebView.removeAllViews();
+            mWebView.destroy();
+        }
     }
 
     @Override
@@ -348,25 +352,25 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        executeJavascript("showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+                        Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
                     } else {
-                        executeJavascript("noChildrenCallback('"+mMoreId+"');");
+                        Reddinator.executeJavascriptInWebview(mWebView, "noChildrenCallback('"+mMoreId+"');");
                     }
                     break;
                 case "-1":
                     // show error
                     if (!loadMore) {
-                        executeJavascript("showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
+                        Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
                     } else {
                         // reset load more button
-                        executeJavascript("resetMoreClickEvent('" + mMoreId + "');");
+                        Reddinator.executeJavascriptInWebview(mWebView, "resetMoreClickEvent('" + mMoreId + "');");
                     }
                     if (getActivity()!=null)
                         Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     if (loadMore) {
-                        executeJavascript("populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        Reddinator.executeJavascriptInWebview(mWebView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
                     } else {
                         populateCommentsFromData(result);
                     }
@@ -383,17 +387,9 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             e.printStackTrace();
         }
         if (data.equals("[]")){
-            executeJavascript("showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+            Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            executeJavascript("populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
-        }
-    }
-
-    private void executeJavascript(String javascript){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mWebView.evaluateJavascript(javascript, null);
-        } else {
-            mWebView.loadUrl("javascript:"+javascript);
+            Reddinator.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
         }
     }
 }

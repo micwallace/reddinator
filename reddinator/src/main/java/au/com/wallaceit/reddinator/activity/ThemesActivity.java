@@ -3,6 +3,7 @@ package au.com.wallaceit.reddinator.activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -13,24 +14,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.IconTextView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.SubmitTask;
 
 
-public class ThemesActivity extends ListActivity {
-    Reddinator global;
-    Resources resources;
-    HashMap<String, String> themesList;
+public class ThemesActivity extends ListActivity implements SubmitTask.Callback {
+    private Reddinator global;
+    private Resources resources;
+    private HashMap<String, String> themesList;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,11 +125,53 @@ public class ThemesActivity extends ListActivity {
         return true;
     }
 
-    private class ThemesListAdapter extends BaseAdapter {
+    @Override
+    public void onSubmitted(JSONObject result, RedditData.RedditApiException exception, boolean isLink) {
+        progressDialog.cancel();
+        if (result!=null){
+            try {
+                if (result.has("errors")) {
+                    JSONArray errors = result.getJSONArray("errors");
+                    if (errors.length()>0) {
+                        Toast.makeText(ThemesActivity.this, errors.getJSONArray(0).getString(1), Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        public ThemesListAdapter(){
+            String id;
+            String permalink;
+            try {
+                JSONObject data = result.getJSONObject("data");
+                id = data.getString("name");
+                permalink = StringEscapeUtils.unescapeJava(data.getString("url").replace(".json", ""));
+                String url = permalink+".compact";
 
+                if (permalink != null)
+                    permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
+
+                Intent intent = new Intent(ThemesActivity.this, ViewRedditActivity.class);
+                intent.putExtra(WidgetProvider.ITEM_ID, id);
+                intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
+                intent.putExtra(WidgetProvider.ITEM_URL, url);
+                intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                // show api error
+                Toast.makeText(ThemesActivity.this, resources.getString(R.string.cannot_open_post_error)+" "+e.getMessage(), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        } else {
+            // show api error
+            Toast.makeText(ThemesActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private class ThemesListAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -139,10 +193,11 @@ public class ThemesActivity extends ListActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView==null || convertView.getTag()==null) {
-                convertView = getLayoutInflater().inflate(R.layout.myredditlistitem, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.themes_list_item, parent, false);
                 viewHolder = new ViewHolder();
-                viewHolder.name = (TextView) convertView.findViewById(R.id.subreddit_name);
-                viewHolder.delete = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
+                viewHolder.name = (TextView) convertView.findViewById(R.id.theme_name);
+                viewHolder.delete = (IconTextView) convertView.findViewById(R.id.theme_delete_btn);
+                viewHolder.share = (IconTextView) convertView.findViewById(R.id.theme_share_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -176,6 +231,41 @@ public class ThemesActivity extends ListActivity {
                     }).show();
                 }
             });
+            viewHolder.share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!global.mRedditData.isLoggedIn()){
+                        Toast.makeText(ThemesActivity.this, "Reddit Login Required", Toast.LENGTH_SHORT).show();
+                    }
+                    final EditText input = new EditText(ThemesActivity.this);
+                    input.setHint(R.string.title);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ThemesActivity.this);
+                    builder.setTitle(resources.getString(R.string.share_theme)).setMessage(resources.getString(R.string.share_theme_message))
+                        .setView(input)
+                        .setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String title = input.getText().toString();
+                                if (title.length()>292){
+                                    Toast.makeText(ThemesActivity.this, getText(R.string.title_too_long_error), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                if (title.length()==0){
+                                    Toast.makeText(ThemesActivity.this, getText(R.string.no_title_error), Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                String theme = global.mThemeManager.getThemeJSON(themeId).toString();
+                                progressDialog = ProgressDialog.show(ThemesActivity.this, "", resources.getString(R.string.submitting), true);
+                                new SubmitTask(global, "reddinator", "[Theme] "+title, "This theme was shared through Reddinator\n\r    reddinator_theme="+theme, false, ThemesActivity.this).execute();
+                            }
+                        }).setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                    }).show();
+                }
+            });
             return convertView;
         }
 
@@ -192,6 +282,7 @@ public class ThemesActivity extends ListActivity {
 
     class ViewHolder {
         TextView name;
+        IconTextView share;
         IconTextView delete;
     }
 }

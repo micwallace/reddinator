@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 
 public class TabWebFragment extends Fragment {
@@ -115,6 +116,9 @@ public class TabWebFragment extends Fragment {
             boolean multi = getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
             mWebView.getSettings().setDisplayZoomControls(!multi);
             mWebView.getSettings().setDefaultFontSize(fontsize);
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                WebView.setWebContentsDebuggingEnabled(true);
+            }*/
             // enable cookies
             CookieManager.getInstance().setAcceptCookie(true);
             mChromeClient = newchromeclient;
@@ -129,6 +133,9 @@ public class TabWebFragment extends Fragment {
                         clearhistory = false;
                         mWebView.clearHistory();
                     }
+                    if (url.contains("https://m.reddit.com"))
+                        Reddinator.executeJavascriptInWebview(mWebView, "document.getElementsByClassName('SmartBannerContainer')[0].remove();");
+
                     super.onPageFinished(view, url);
                 }
             });
@@ -152,6 +159,15 @@ public class TabWebFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //mWebView.saveState(WVState);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (mWebView != null) {
+            mWebView.removeAllViews();
+            mWebView.destroy();
+        }
     }
 
     // web chrome client

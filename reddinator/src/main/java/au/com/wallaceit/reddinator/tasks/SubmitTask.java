@@ -16,46 +16,51 @@ package au.com.wallaceit.reddinator.tasks;
  * You should have received a copy of the GNU General Public License
  * along with Reddinator (COPYING). If not, see <http://www.gnu.org/licenses/>.
  *
- * Created by michael on 9/02/16.
+ * Created by michael on 17/06/16.
  */
-
 import android.os.AsyncTask;
-
+import org.json.JSONObject;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 
-public class ComposeMessageTask extends AsyncTask<String, Integer, Boolean> {
+public class SubmitTask extends AsyncTask<String, Integer, Boolean> {
     private Reddinator global;
-    private RedditData.RedditApiException exception = null;
-    private Callback messageCallback = null;
-    private String[] args; // [to, subject, text, subreddit, optional args...]
+    private Callback submitCallback;
+    private JSONObject jsonResult;
+    private RedditData.RedditApiException exception;
+    private boolean isLink;
+    private String subreddit;
+    private String title;
+    private String data;
 
     public interface Callback {
-        void onMessageSent(boolean result, RedditData.RedditApiException exception, String[] args);
+        void onSubmitted(JSONObject result, RedditData.RedditApiException exception, boolean isLink);
     }
 
-    public ComposeMessageTask(Reddinator global, Callback messageCallback, String[] args) {
+    public SubmitTask(Reddinator global, String subreddit, String title, String data, boolean isLink, Callback callback){
         this.global = global;
-        this.messageCallback = messageCallback;
-        this.args = args;
+        this.submitCallback = callback;
+        this.isLink = isLink;
+        this.title = title;
+        this.data = data;
+        this.subreddit = subreddit;
     }
 
     @Override
     protected Boolean doInBackground(String... strings) {
-        // Do the vote
         try {
-            global.mRedditData.composeMessage(args[0], args[1], args[2], args.length>3?args[3]:null);
+            jsonResult = global.mRedditData.submit(subreddit, isLink, title, data);
+            return true;
         } catch (RedditData.RedditApiException e) {
             e.printStackTrace();
             exception = e;
-            return false;
         }
-        return true;
+        return false;
     }
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (messageCallback !=null)
-            messageCallback.onMessageSent(result, exception, args);
+        if (submitCallback!=null)
+            submitCallback.onSubmitted(jsonResult, exception, isLink);
     }
 }
