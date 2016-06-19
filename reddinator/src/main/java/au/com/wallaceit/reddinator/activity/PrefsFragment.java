@@ -1,7 +1,6 @@
 package au.com.wallaceit.reddinator.activity;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -76,7 +75,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(getActivity(), ThemesActivity.class);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES);
                 return true;
             }
         });
@@ -87,7 +86,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(getActivity(), ThemeEditorActivity.class);
                 intent.putExtra("themeId", mAppTheme);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES);
                 return true;
             }
         });
@@ -209,26 +208,17 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         // check if theme or style has changed and update if needed
         if (themeChanged || !mTitleFontSize.equals(mSharedPreferences.getString(getString(R.string.title_font_pref), "16"))) {
             // if we are returning to app view,set the result intent, indicating a theme update is needed
-            if (isfromappview) {
-                Intent intent = new Intent();
-                intent.putExtra("themeupdate", true);
-                getActivity().setResult(6, intent);
-            } else {
-                updateWidget();
+            Intent intent = new Intent();
+            intent.putExtra("themeupdate", true);
+            getActivity().setResult(6, intent);
+            if (getActivity().getIntent().getIntExtra("requestCode", 0)!=ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES) {
+                Reddinator global = ((Reddinator) getActivity().getApplicationContext());
+                if (global != null) {
+                    WidgetProvider.refreshAllWidgetViews(global);
+                }
             }
         }
 
         getActivity().finish();
-    }
-
-    private void updateWidget() {
-        AppWidgetManager mgr = AppWidgetManager.getInstance(getActivity());
-        int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(getActivity(), WidgetProvider.class));
-        WidgetProvider.updateAppWidgets(getActivity(), mgr, appWidgetIds);
-        Reddinator global = ((Reddinator) getActivity().getApplicationContext());
-        if (global != null) {
-            global.setRefreshView();
-        }
-        mgr.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.listview);
     }
 }

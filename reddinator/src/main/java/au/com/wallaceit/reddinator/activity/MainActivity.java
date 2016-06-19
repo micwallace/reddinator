@@ -410,12 +410,12 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
             case R.id.menu_thememanager:
                 Intent intent = new Intent(this, ThemesActivity.class);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, ThemesActivity.REQUEST_CODE_UPDATE_WIDGETS);
                 break;
 
             case R.id.menu_prefs:
                 Intent intent2 = new Intent(this, PrefsActivity.class);
-                startActivityForResult(intent2, 2);
+                startActivityForResult(intent2, ThemesActivity.REQUEST_CODE_UPDATE_WIDGETS);
                 break;
 
             case R.id.menu_about:

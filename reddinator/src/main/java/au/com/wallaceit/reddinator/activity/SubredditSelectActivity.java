@@ -522,12 +522,12 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
 
             case R.id.menu_thememanager:
                 Intent intent = new Intent(SubredditSelectActivity.this, ThemesActivity.class);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES);
                 break;
 
             case R.id.menu_prefs:
                 Intent intent2 = new Intent(SubredditSelectActivity.this, PrefsActivity.class);
-                startActivityForResult(intent2, 2);
+                startActivityForResult(intent2, ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES);
                 break;
 
             case R.id.menu_about:

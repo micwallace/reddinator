@@ -44,6 +44,10 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
     private Resources resources;
     private HashMap<String, String> themesList;
     private ProgressDialog progressDialog;
+    private boolean themesEdited = false;
+    public final static int REQUEST_CODE_UPDATE_WIDGETS = 1;
+    public final static int REQUEST_CODE_NO_WIDGET_UPDATES = 2; // the parent activity will handle widget updates when the theme is changed
+    public final static int RESULT_CODE_THEME_UPDATED = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +101,20 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode==6) {
+        if (resultCode==RESULT_CODE_THEME_UPDATED) {
             refreshList();
-            setResult(6); // indicate theme edit
+            themesEdited = true;
+            setResult(RESULT_CODE_THEME_UPDATED);
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (themesEdited && getIntent().getExtras().getInt("requestCode")!=REQUEST_CODE_NO_WIDGET_UPDATES){
+            // update widgets straight away if the requesting activity does not process the result
+            WidgetProvider.refreshAllWidgetViews(global);
+        }
+        super.onBackPressed();
     }
 
     public void refreshList(){
@@ -244,7 +258,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
                 public void onClick(View v) {
                 Intent intent = new Intent(ThemesActivity.this, ThemeEditorActivity.class);
                 intent.putExtra("themeId", themeId);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES);
                 }
             });
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {

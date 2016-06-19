@@ -33,6 +33,7 @@ import java.util.UUID;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 
 public class ThemeEditorActivity extends ListActivity {
@@ -83,11 +84,13 @@ public class ThemeEditorActivity extends ListActivity {
 
     @Override
     public void onBackPressed(){
-        if (themeChanged)
+        if (themeChanged) {
             global.mThemeManager.saveCustomTheme(themeId, theme);
+            if (getIntent().getExtras().getInt("requestCode")!=ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES) // update widgets straight away if the requesting activity does not process the result
+                WidgetProvider.refreshAllWidgetViews(global);
 
-        setResult((themeChanged?6:0));
-
+            setResult(ThemesActivity.RESULT_CODE_THEME_UPDATED);
+        }
         super.onBackPressed();
     }
 
