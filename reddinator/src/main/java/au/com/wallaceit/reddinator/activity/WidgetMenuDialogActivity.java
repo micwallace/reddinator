@@ -303,6 +303,13 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
                 WidgetMenuDialogActivity.this.finish();
             }
         });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+                WidgetMenuDialogActivity.this.finish();
+            }
+        });
         builder.show().setCanceledOnTouchOutside(true);
     }
 
