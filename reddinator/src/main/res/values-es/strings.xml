@@ -280,4 +280,18 @@
     <string name="tl_comment_text">Comentarios de texto</string>
     <string name="tl_comments_border">Comentarios Frontera</string>
     <string name="tl_comments_count">Comentarios cuenta de texto</string>
+    <string name="view_comments_noicon">Ver Comentarios</string>
+    <string name="install">Instalar</string>
+    <string name="install_theme_message">Este post es un tema instalable.\n¿Le gustaría obtener una vista previa o instalar el tema ?</string>
+    <string name="install_theme_title">Instalar el tema</string>
+    <string name="preview">Avance</string>
+    <string name="share_theme">Compartir el tema</string>
+    <string name="share_theme_message">Proporcionar una breve descripción de su tema y haga clic en OK para compartir su tema con /r/reddinator.</string>
+    <string name="sub_reddinator">Suscribirse a /r/reddinator</string>
+    <string name="sub_reddinator_message">Suscribirse a /r/reddinator para obtener las últimas noticias, instalar temas creados por el usuario, enviar comentarios y solicitar nuevas características?</string>
+    <string name="theme_install_success">El tema se ha instalado correctamente</string>
+    <string name="theme_load_error">Error al cargar el tema</string>
+    <string name="theme_preview">Previsualización del tema</string>
+    <string name="theme_preview_applied_message">El tema se ha aplicado en el modo de vista previa y anulará todas las demás preferencias temáticas.\nPara la salida desde el modo de vista previa, vaya a la apariencia de la página de preferencias.</string>
+    <string name="theme_preview_clear_message">En este momento está previsualizando el tema %1$s.\nPulsa cancelar o instalar para salir del modo de vista previa. Pulse el botón atrás para mantener la vista previa.</string>
 </resources>

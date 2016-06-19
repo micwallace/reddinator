@@ -1066,7 +1066,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             new FeedLoader(loadMore).execute();
         }
 
-        class FeedLoader extends AsyncTask<Void, Integer, Long> {
+        class FeedLoader extends AsyncTask<Void, Integer, JSONArray> {
 
             private Boolean loadMore;
             private RedditData.RedditApiException exception;
@@ -1076,7 +1076,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             }
 
             @Override
-            protected Long doInBackground(Void... none) {
+            protected JSONArray doInBackground(Void... none) {
                 String curFeed = subredditPath;
                 boolean isAll = subredditName.equals("all");
                 String sort = subredditSort;
@@ -1086,66 +1086,35 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     // fetch 25 more after current last item and append to the list
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
-                        // exclude all non theme posts if viewThemes mode is true (used to browse themes on /r/reddinator)
-                        if (viewThemes)
-                            tempArray = filterThemes(tempArray);
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
                         exception = e;
-                        return (long) 0;
-                    }
-                    if (tempArray.length() == 0) {
-                        endOfFeed = true;
-                    } else {
-                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, data, isAll, !global.mRedditData.isLoggedIn());
-
-                        int i = 0;
-                        while (i < tempArray.length()) {
-                            try {
-                                data.put(tempArray.get(i));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            i++;
-                        }
+                        return null;
                     }
                 } else {
                     // reloading
                     int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
-                        // exclude all non theme posts if viewThemes mode is true (used to browse themes on /r/reddinator)
-                        if (viewThemes)
-                            tempArray = filterThemes(tempArray);
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
                         exception = e;
-                        return (long) 0;
+                        return null;
                     }
-                    // check if end of feed, if not process & set feed data
-                    if (tempArray.length() == 0) {
-                        endOfFeed = true;
-                    } else {
-                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, null, isAll, !global.mRedditData.isLoggedIn());
-                    }
-                    data = tempArray;
                 }
-                // save feed
-                if (feedId>-1)
-                    global.setFeed(prefs, feedId, data);
-
-                if (endOfFeed){
-                    lastItemId = "0";
+                // check if end of feed, if not, run filters and return data
+                if (tempArray.length() == 0) {
+                    endOfFeed = true;
                 } else {
-                    try {
-                        lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
-                    } catch (JSONException e) {
-                        lastItemId = "0"; // Could not get last item ID; perform a reload next time
-                        endOfFeed = true;
-                        e.printStackTrace();
+                    // exclude all non theme posts if viewThemes mode is true (used to browse themes on /r/reddinator)
+                    if (viewThemes) {
+                        tempArray = filterThemes(tempArray);
+                    } else {
+                        tempArray = global.getSubredditManager().filterFeed(0, tempArray, loadMore?data:null, isAll, !global.mRedditData.isLoggedIn());
                     }
                 }
-                return (long) 1;
+
+                return tempArray;
             }
 
             private JSONArray filterThemes(JSONArray feed){
@@ -1162,15 +1131,40 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             }
 
             @Override
-            protected void onPostExecute(Long result) {
-                if (result > 0) {
+            protected void onPostExecute(JSONArray result) {
+                if (result !=null) {
                     // hide loader
                     if (loadMore) {
                         hideAppLoader(false, false); // don't go to top of list
+                        int i = 0;
+                        while (i < result.length()) {
+                            try {
+                                data.put(result.get(i));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            i++;
+                        }
                     } else {
                         hideAppLoader(true, false); // go to top
+                        data = result;
                     }
                     listAdapter.notifyDataSetChanged();
+                    // save feed
+                    if (feedId>-1)
+                        global.setFeed(prefs, feedId, data);
+                    // set last item id
+                    if (endOfFeed){
+                        lastItemId = "0";
+                    } else {
+                        try {
+                            lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+                        } catch (JSONException e) {
+                            lastItemId = "0"; // Could not get last item ID; perform a reload next time
+                            endOfFeed = true;
+                            e.printStackTrace();
+                        }
+                    }
                 } else {
                     Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
                     hideAppLoader(false, true); // don't go to top of list and show error icon
