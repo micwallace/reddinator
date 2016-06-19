@@ -387,11 +387,11 @@ public class Reddinator extends Application {
         return pInfo;
     }
 
-    public static void doShowWelcomeDialog(final Activity context){
+    public static boolean doShowWelcomeDialog(final Activity context){
         try {
             ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
             if (appInfo.metaData.getBoolean("suppressChangelog"))
-                return;
+                return false;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -399,7 +399,9 @@ public class Reddinator extends Application {
         boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, false);
         if (!aboutDismissed){
             showInfoDialog(context, false);
+            return true;
         }
+        return false;
     }
 
     public static AlertDialog showInfoDialog(final Activity context, final boolean isInfo){

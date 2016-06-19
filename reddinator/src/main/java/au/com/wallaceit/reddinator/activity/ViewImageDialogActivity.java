@@ -90,6 +90,7 @@ public class ViewImageDialogActivity extends Activity {
                 finish();
             }
         });
+        setFinishOnTouchOutside(true);
     }
 
     class ImageWebViewClient extends WebViewClient {

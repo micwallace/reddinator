@@ -129,17 +129,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 //System.out.println(sreddit+" selected");
             }
         });
-        subsAdapter.sort(new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                if (s.equals("Front Page") || s.equals("all")){
-                    return -100;
-                } else if (t1.equals("Front Page") || t1.equals("all")){
-                    return 100;
-                }
-                return s.compareToIgnoreCase(t1);
-            }
-        });
+        subsAdapter.sort(subComparator);
         // get multi list and set adapter
         mMultiAdapter = new MyMultisAdapter(this);
         ListView multiListView = (ListView) findViewById(R.id.multilist);
@@ -168,7 +158,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                             new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
                             dialogInterface.dismiss();
                         }
-                    }).show();
+                    }).show().setCanceledOnTouchOutside(true);
                 } else {
                     JSONObject multiObj = mMultiAdapter.getItem(position);
                     try {
@@ -247,7 +237,29 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         // set theme colors
         setThemeColors();
 
-        Reddinator.doShowWelcomeDialog(SubredditSelectActivity.this);
+        if (!Reddinator.doShowWelcomeDialog(SubredditSelectActivity.this)){
+            if (global.mRedditData.isLoggedIn() && !mSharedPreferences.getBoolean("subscribeDialogShown", false) && !subredditList.contains("reddinator")){
+                new AlertDialog.Builder(this)
+                    .setTitle(R.string.sub_reddinator)
+                    .setMessage(R.string.sub_reddinator_message)
+                    .setNegativeButton(R.string.no, null)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            JSONObject subObj = new JSONObject();
+                            try {
+                                subObj.put("name", "t5_37ysa");
+                                subObj.put("display_name", "reddinator");
+                                subObj.put("public description", "Reddinator provides a hightly customisable Reddit experience on Android, with both an Application and Widget interface.\n\nThis is the official subreddit of Reddinator.\n\nCome here to get support, discuss improvements and request new features.");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_SUBSCRIBE).execute(subObj);
+                        }
+                    }).show();
+                mSharedPreferences.edit().putBoolean("subscribeDialogShown", true).apply();
+            }
+        }
     }
 
     public void onResume(){
@@ -555,7 +567,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 }
             }
         });
-        builder.show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     // show sort select dialog
@@ -593,7 +605,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 dialog.dismiss();
             }
         });
-        builder.show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     private void showFeedPrefsDialog(){
@@ -629,7 +641,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 dialog.cancel();
             }
         });
-        builder.create().show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     private void showWidgetThemeDialog(){
@@ -663,7 +675,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
-        }).show();
+        }).show().setCanceledOnTouchOutside(true);
     }
 
     // import personal subreddits
@@ -750,13 +762,20 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         subsAdapter.clear();
         subsAdapter.addAll(subredditList);
         subsAdapter.notifyDataSetChanged();
-        subsAdapter.sort(new Comparator<String>() {
-            @Override
-            public int compare(String s, String t1) {
-                return s.compareToIgnoreCase(t1);
-            }
-        });
+        subsAdapter.sort(subComparator);
     }
+
+    private Comparator<String> subComparator = new Comparator<String>() {
+        @Override
+        public int compare(String s, String t1) {
+            if (s.equals("Front Page") || s.equals("all")){
+                return -100;
+            } else if (t1.equals("Front Page") || t1.equals("all")){
+                return 100;
+            }
+            return s.compareToIgnoreCase(t1);
+        }
+    };
 
     // list adapter
     class MySubredditsAdapter extends ArrayAdapter<String> {
@@ -790,17 +809,17 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                     final String sreddit = ((TextView) ((View) v.getParent()).findViewById(R.id.subreddit_name)).getText().toString();
                     if (global.mRedditData.isLoggedIn() && (!sreddit.equals("Front Page") && !sreddit.equals("all"))) {
                         new AlertDialog.Builder(SubredditSelectActivity.this).setTitle(resources.getString(R.string.unsubscribe))
-                                .setMessage(resources.getString(R.string.confirm_unsubscribe, sreddit))
-                                .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                    }
-                                }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
-                            }
-                        }).show();
+                            .setMessage(resources.getString(R.string.confirm_unsubscribe, sreddit))
+                            .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(sreddit);
+                                }
+                        }).show().setCanceledOnTouchOutside(true);
                     } else {
                         global.getSubredditManager().removeSubreddit(sreddit);
                         subredditList.remove(sreddit);
@@ -980,7 +999,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 dialogInterface.dismiss();
                 new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_DELETE).execute(multiPath);
             }
-        }).show();
+        }).show().setCanceledOnTouchOutside(true);
     }
 
     private void showMultiRenameDialog(final String multiPath){
@@ -999,7 +1018,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 dialogInterface.dismiss();
                 new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_RENAME).execute(multiPath, nameInput.getText().toString().replaceAll("\\s+",""));
             }
-        }).show();
+        }).show().setCanceledOnTouchOutside(true);
     }
 
     private SubsListAdapter multiSubsAdapter;
@@ -1093,6 +1112,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
 
         multiDialog = builder.setView(dialogView).show();
+        multiDialog.setCanceledOnTouchOutside(true);
     }
 
     private void showFilterEditDialog(){
@@ -1112,7 +1132,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         subList.setAdapter(filterSubsAdapter);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-        builder.setView(dialogView)
+        AlertDialog dialog = builder.setView(dialogView)
                 .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -1126,7 +1146,9 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                         global.getSubredditManager().setAllFilter(filterSubsAdapter.getSubsList());
                         needsFeedUpdate = true; // mark feed for updating
                     }
-                }).show().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                }).show();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 
     class SubsListAdapter extends BaseAdapter {

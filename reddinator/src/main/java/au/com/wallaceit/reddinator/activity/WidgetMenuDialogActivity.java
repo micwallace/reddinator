@@ -262,7 +262,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
                 WidgetMenuDialogActivity.this.finish();
             }
         });
-        builder.show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     private boolean needsUpdate = false;
@@ -303,7 +303,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
                 WidgetMenuDialogActivity.this.finish();
             }
         });
-        builder.create().show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     private ProgressDialog sidebarProg;

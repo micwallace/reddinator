@@ -45,6 +45,7 @@ public class HtmlDialog extends AlertDialog {
         setCancelable(true);
         wv.setWebViewClient(new NoNavClient());
         wv.loadData(html, "text/html", "UTF-8");
+        setCanceledOnTouchOutside(true);
     }
 
     class NoNavClient extends WebViewClient {

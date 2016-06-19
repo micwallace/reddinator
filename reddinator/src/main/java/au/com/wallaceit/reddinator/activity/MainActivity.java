@@ -469,7 +469,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 }
             }
         });
-        builder.create().show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     // show sort select dialog
@@ -509,7 +509,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 listAdapter.reloadReddits();
             }
         });
-        builder.show();
+        builder.show().setCanceledOnTouchOutside(true);
     }
 
     private void setThemeColors() {

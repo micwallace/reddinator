@@ -350,4 +350,6 @@
     <string name="view_comments_noicon">View Comments</string>
     <string name="fa_globe">{fa-globe}</string>
     <string name="default_front_page">Default Front Page</string>
+    <string name="sub_reddinator">Subscribe to /r/reddinator</string>
+    <string name="sub_reddinator_message">Subscribe to /r/reddinator to get the latest news, install user created themes, submit feedback and request new features?</string>
 </resources>
