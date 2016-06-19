@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.13" versioncode="45">
+        <change>Share and apply custom themes at /r/reddinator</change>
+        <change>View the default FrontPage when logged in.</change>
+        <change>Default Subreddits are now loaded when the user is logged out.</change>
+    </release>
     <release version="3.11" versioncode="41">
         <change>Added menu to widget.</change>
         <change>Added comments border color and text color to theme options.</change>

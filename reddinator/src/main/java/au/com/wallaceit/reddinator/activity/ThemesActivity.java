@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,13 +67,37 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
             view.setPadding(5, 0, 5, 0);
         }
         setResult(0);
+
+        // check if preview theme is applied
+        String previewName = global.mThemeManager.getPreviewName();
+        if (previewName!=null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.theme_preview)
+                .setMessage(getString(R.string.theme_preview_clear_message, previewName))
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        global.mThemeManager.clearPreviewTheme();
+                        setResult(6); // indicate theme edit
+                    }
+                })
+                .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        global.mThemeManager.savePreviewTheme();
+                        setResult(6); // indicate theme edit
+                        refreshList();
+                    }
+                });
+            builder.show().setCanceledOnTouchOutside(true);
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (resultCode==3) {
             refreshList();
-            setResult(3); // indicate theme edit
+            setResult(6); // indicate theme edit
         }
     }
 
@@ -87,6 +112,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
         getMenuInflater().inflate(R.menu.themes_menu, menu);
         int iconColor = Color.parseColor("#25C48F");
         (menu.findItem(R.id.action_add)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus).color(iconColor).actionBarSize());
+        (menu.findItem(R.id.action_sharedthemes)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
         return true;
     }
@@ -115,6 +141,13 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
                             }
                         });
                 builder.show();
+                break;
+            case R.id.action_sharedthemes:
+                Intent intent = new Intent(ThemesActivity.this, MainActivity.class);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://reddit.com/r/reddinator"));
+                intent.putExtra("view_themes", true);
+                startActivity(intent);
                 break;
             case R.id.menu_about:
                 Reddinator.showInfoDialog(this, true);

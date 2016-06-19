@@ -8,6 +8,12 @@
         android:showAsAction="always" />
 
     <item
+        android:id="@+id/action_sharedthemes"
+        android:title="@string/download_themes"
+        android:orderInCategory="101"
+        android:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_about"
         android:title="@string/about"
         android:showAsAction="never" />

@@ -99,6 +99,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private String subredditName;
     private String subredditPath;
     private String subredditSort;
+    private boolean viewThemes = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +158,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 }
             };
             findViewById(R.id.appcaret).setVisibility(View.GONE);
+            // put into theme viewing mode if view_themes extra is provided
+            if (getIntent().getBooleanExtra("view_themes", false)){
+                viewThemes = true;
+            }
         } else {
             subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
             subredditName = global.getSubredditManager().getCurrentFeedName(0);
@@ -181,15 +186,65 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // open in the reddinator view
-                Bundle extras = getItemExtras(position);
+                final Bundle extras = getItemExtras(position);
                 if (extras == null) {
                     Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
                     return;
                 }
-                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                clickIntent1.putExtras(extras);
-                context.startActivity(clickIntent1);
+                if ("reddinator".equals(extras.getString(WidgetProvider.ITEM_SUBREDDIT))){
+                    try {
+                        JSONObject postData = listAdapter.getItem(position);
+                        if (viewThemes || postData.getString("title").indexOf("[Theme]")==0) {
+                            // extract and parse json from theme
+                            String postText = postData.getString("selftext");
+                            Pattern pattern = Pattern.compile("reddinator_theme=(.*\\}\\})");
+                            Matcher matcher = pattern.matcher(postText);
+                            if (matcher.find()){
+                                final JSONObject themeJson = new JSONObject(matcher.group(1));
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle(R.string.install_theme_title)
+                                    .setMessage(R.string.install_theme_message)
+                                    .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (global.mThemeManager.importTheme(themeJson)){
+                                                Toast.makeText(MainActivity.this, R.string.theme_install_success, Toast.LENGTH_LONG).show();
+                                            } else {
+                                                Toast.makeText(MainActivity.this, R.string.theme_load_error, Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    })
+                                    .setNeutralButton(R.string.preview, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (global.mThemeManager.setPreviewTheme(themeJson)){
+                                                refreshTheme();
+                                                new AlertDialog.Builder(MainActivity.this)
+                                                        .setTitle(R.string.theme_preview)
+                                                        .setMessage(R.string.theme_preview_applied_message)
+                                                        .show().setCanceledOnTouchOutside(true);
+                                            } else {
+                                                Toast.makeText(MainActivity.this, R.string.theme_load_error, Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.view_comments_noicon, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            openPostView(extras, true);
+                                        }
+                                    });
+                                builder.show();
+                                return;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // open in the reddinator view
+                openPostView(extras, false);
             }
         });
 
@@ -209,11 +264,20 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         });
 
         // set the current subreddit name
-        srtext.setText(subredditName);
+        String heading = subredditName + (viewThemes?" themes":"");
+        srtext.setText(heading);
 
         // always load a temp feed (from intent action_view) and when there's no cached data or when the preference is set to always reload when opened
         if (feedId==-1 || (prefs.getBoolean("appreloadpref", false) || listAdapter.getCount() < 2))
             listAdapter.reloadReddits();
+    }
+
+    public void openPostView(Bundle extras, boolean viewComments){
+        Intent intent = new Intent(context, ViewRedditActivity.class);
+        intent.putExtras(extras);
+        if (viewComments)
+            intent.putExtra("view_comments", true);
+        context.startActivity(intent);
     }
 
     @Override
@@ -465,6 +529,12 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
     }
 
+    private void refreshTheme(){
+        setThemeColors();
+        listAdapter.loadTheme();
+        listView.invalidateViews();
+    }
+
     @Override
     protected void onActivityResult(int reqcode, int resultcode, Intent data) {
         switch (resultcode) {
@@ -503,10 +573,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 listView.invalidateViews();
                 break;
         }
-        if (data!=null && data.getBooleanExtra("themeupdate", true)){
-            setThemeColors();
-            listAdapter.loadTheme();
-            listView.invalidateViews();
+        if (resultcode==6 || (data!=null && data.getBooleanExtra("themeupdate", true))){
+            refreshTheme();
         }
     }
 
@@ -1018,6 +1086,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     // fetch 25 more after current last item and append to the list
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, 25, lastItemId);
+                        // exclude all non theme posts if viewThemes mode is true (used to browse themes on /r/reddinator)
+                        if (viewThemes)
+                            tempArray = filterThemes(tempArray);
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
                         exception = e;
@@ -1043,6 +1114,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
                     try {
                         tempArray = global.mRedditData.getRedditFeed(curFeed, sort, limit, "0");
+                        // exclude all non theme posts if viewThemes mode is true (used to browse themes on /r/reddinator)
+                        if (viewThemes)
+                            tempArray = filterThemes(tempArray);
                     } catch (RedditData.RedditApiException e) {
                         e.printStackTrace();
                         exception = e;
@@ -1057,7 +1131,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     data = tempArray;
                 }
                 // save feed
-                global.setFeed(prefs, feedId, data);
+                if (feedId>-1)
+                    global.setFeed(prefs, feedId, data);
+
                 if (endOfFeed){
                     lastItemId = "0";
                 } else {
@@ -1070,6 +1146,19 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     }
                 }
                 return (long) 1;
+            }
+
+            private JSONArray filterThemes(JSONArray feed){
+                JSONArray filtered = new JSONArray();
+                for (int i=0; i<feed.length(); i++){
+                    try {
+                        if (feed.getJSONObject(i).getJSONObject("data").getString("title").contains("[Theme]"))
+                            filtered.put(feed.getJSONObject(i));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return filtered;
             }
 
             @Override

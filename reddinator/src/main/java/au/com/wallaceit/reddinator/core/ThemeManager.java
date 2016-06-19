@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.UUID;
 
 public class ThemeManager {
     private Context context;
@@ -41,6 +42,7 @@ public class ThemeManager {
     private JSONObject themes;
     private JSONArray themeOrder;
     private JSONObject customThemes;
+    private JSONObject previewTheme = null;
     public static final int LISTMODE_ALL= 0;
     public static final int LISTMODE_CUSTOM= 1;
     public static final int LISTMODE_DEFAULT= 2;
@@ -91,6 +93,8 @@ public class ThemeManager {
 
     public JSONObject getThemeJSON(String key){
         JSONObject theme = null;
+        if (previewTheme!=null)
+            return previewTheme;
         if (themes.has(key)){
             try {
                 theme =  themes.getJSONObject(key);
@@ -112,6 +116,83 @@ public class ThemeManager {
         }
 
         return theme;
+    }
+
+    // below 5 functions are used for previewing custom themes from /r/reddinator
+    public boolean setPreviewTheme(JSONObject theme){
+        if (!validateThemeJson(theme))
+            return false;
+
+        previewTheme = theme;
+        return true;
+    }
+
+    public String getPreviewName(){
+        if (previewTheme==null)
+            return null;
+        try {
+            return previewTheme.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
+    }
+
+    public void clearPreviewTheme(){
+        previewTheme = null;
+    }
+
+    public boolean savePreviewTheme(){
+        if (previewTheme==null)
+            return false;
+
+        saveCustomTheme("theme-"+ UUID.randomUUID(), new Theme(previewTheme));
+        previewTheme = null;
+        return true;
+    }
+
+    public boolean importTheme(JSONObject theme){
+        if (!validateThemeJson(theme))
+            return false;
+
+        saveCustomTheme("theme-"+ UUID.randomUUID(), new Theme(theme));
+        return true;
+    }
+
+    private boolean validateThemeJson(JSONObject theme){
+        // check name
+        try {
+            if (!theme.has("name") || "".equals(theme.get("name")))
+                return false;
+
+            JSONObject impValues = theme.getJSONObject("values");
+            JSONObject defaults = defaultValues.getTheme().getJSONObject("values");
+
+            Iterator<String> keys = impValues.keys();
+            while (keys.hasNext()){
+                String key = keys.next();
+                if (defaults.has(key)){
+                    // check if value has the right format
+                    if (impValues.getString(key).length()==defaults.getString(key).length()){
+                        // try to parse color value
+                        try {
+                            Color.parseColor(impValues.getString(key));
+                            continue;
+                        } catch (IllegalArgumentException ignored){
+                        }
+                    }
+                    // validation failed, use default value
+                    impValues.put(key, defaults.getString(key));
+                } else {
+                    // remove unused key
+                    keys.remove();
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public Theme cloneTheme(String key){

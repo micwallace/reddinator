@@ -337,4 +337,17 @@
     <string name="fa_share">{fa-share}</string>
     <string name="share_theme">Share Theme</string>
     <string name="share_theme_message">Share your theme with /r/reddinator</string>
+    <string name="download_themes">Download Themes</string>
+    <string name="theme_preview">Theme Preview</string>
+    <string name="theme_preview_clear_message">You are currently previewing the theme %1$s.\nClick cancel or install to exit from preview mode. Press the back button to keep previewing.</string>
+    <string name="install">Install</string>
+    <string name="preview">Preview</string>
+    <string name="install_theme_title">Install Theme</string>
+    <string name="install_theme_message">This post is an installable theme.\nWould you like to preview or install the theme?</string>
+    <string name="theme_load_error">Error loading theme</string>
+    <string name="theme_install_success">The theme has been successfully installed</string>
+    <string name="theme_preview_applied_message">The theme has been applied in preview mode and will override all other theme preferences.\nTo exit from preview mode, go to the theme manager from preferences.</string>
+    <string name="view_comments_noicon">View Comments</string>
+    <string name="fa_globe">{fa-globe}</string>
+    <string name="default_front_page">Default Front Page</string>
 </resources>

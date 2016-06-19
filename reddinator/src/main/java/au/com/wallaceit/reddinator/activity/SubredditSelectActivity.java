@@ -319,7 +319,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             }
             return;
         }
-        if (requestCode==2 && resultCode==3){
+        if (requestCode==2 && resultCode==6){
             needsThemeUpdate = true;
             setThemeColors();
         }
@@ -778,6 +778,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 viewHolder.name = (TextView) convertView.findViewById(R.id.subreddit_name);
                 viewHolder.deleteIcon = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
                 viewHolder.filterIcon = (IconTextView) convertView.findViewById(R.id.subreddit_filter_btn);
+                viewHolder.defaultIcon = (IconTextView) convertView.findViewById(R.id.subreddit_default_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -818,6 +819,19 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             } else{
                 viewHolder.filterIcon.setVisibility(View.GONE);
             }
+            // Display default front page button when logged in
+            if (getItem(position).equals("Front Page") && global.mRedditData.isLoggedIn()){
+                viewHolder.defaultIcon.setVisibility(View.VISIBLE);
+                viewHolder.defaultIcon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        global.getSubredditManager().setFeed(mAppWidgetId, "Default Front Page", "/default", true);
+                        updateFeedAndFinish();
+                    }
+                });
+            } else{
+                viewHolder.defaultIcon.setVisibility(View.GONE);
+            }
 
             convertView.setTag(viewHolder);
 
@@ -828,6 +842,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             TextView name;
             IconTextView deleteIcon;
             IconTextView filterIcon;
+            IconTextView defaultIcon;
         }
     }
 
@@ -909,13 +924,6 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                             showMultiEditDialog(path);
                         }
                     });
-                    // will use for viewing subreddits list when not editable; later!
-                    /*viewHolder.subsIcon.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showMultiEditDialog(path);
-                        }
-                    });*/
                 }
             }
 

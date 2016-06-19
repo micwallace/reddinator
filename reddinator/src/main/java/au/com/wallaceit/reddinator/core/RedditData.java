@@ -195,11 +195,17 @@ public class RedditData {
 
     public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) throws RedditApiException {
 
+        boolean authedFeed = true;
+        if (feedPath.equals("/default")){
+            authedFeed = false;
+            feedPath = "";
+        }
+
         String url = OAUTH_ENDPOINT + feedPath + "/" + sort + ".json?limit=" + String.valueOf(limit) + (!afterid.equals("0") ? "&after=" + afterid : "");
         JSONObject result;
         JSONArray feed;
 
-        result = redditApiGet(url, true); // use oauth if logged in
+        result = redditApiGet(url, authedFeed); // use oauth if logged in and not requesting default front page
         try {
             feed = result.getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
