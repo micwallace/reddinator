@@ -220,6 +220,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                                         public void onClick(DialogInterface dialog, int which) {
                                             if (global.mThemeManager.setPreviewTheme(themeJson)){
                                                 refreshTheme();
+                                                WidgetProvider.refreshAllWidgetViews(global);
                                                 new AlertDialog.Builder(MainActivity.this)
                                                         .setTitle(R.string.theme_preview)
                                                         .setMessage(R.string.theme_preview_applied_message)

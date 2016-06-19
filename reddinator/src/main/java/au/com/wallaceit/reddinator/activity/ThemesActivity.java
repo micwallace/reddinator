@@ -79,14 +79,16 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
                     public void onClick(DialogInterface dialog, int which) {
                         global.mThemeManager.clearPreviewTheme();
                         setResult(6); // indicate theme edit
+                        WidgetProvider.refreshAllWidgetViews(global);
                     }
                 })
                 .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         global.mThemeManager.savePreviewTheme();
-                        setResult(6); // indicate theme edit
                         refreshList();
+                        setResult(6); // indicate theme edit
+                        WidgetProvider.refreshAllWidgetViews(global);
                     }
                 });
             builder.show().setCanceledOnTouchOutside(true);
@@ -95,7 +97,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (resultCode==3) {
+        if (resultCode==6) {
             refreshList();
             setResult(6); // indicate theme edit
         }

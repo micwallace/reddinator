@@ -356,6 +356,14 @@ public class WidgetProvider extends AppWidgetProvider {
         mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.listview);
     }
 
+    public static void refreshAllWidgetViews(Reddinator global){
+        global.setRefreshView();
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(global);
+        int[] widgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(global, WidgetProvider.class));
+        WidgetProvider.updateAppWidgets(global, appWidgetManager, widgetIds);
+        appWidgetManager.notifyAppWidgetViewDataChanged(widgetIds, R.id.listview);
+    }
+
     public static void showLoaderAndRefreshViews(Context context, int widgetId){
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         // show loader

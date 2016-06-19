@@ -76,7 +76,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(getActivity(), ThemesActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 2);
                 return true;
             }
         });
@@ -87,7 +87,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(getActivity(), ThemeEditorActivity.class);
                 intent.putExtra("themeId", mAppTheme);
-                startActivity(intent);
+                startActivityForResult(intent, 2);
                 return true;
             }
         });
@@ -127,7 +127,6 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         switch(key){
             case "appthemepref":
                 setupThemePrefs();
-            case "userThemes":
             case "logoopenpref":
                 themeChanged = true;
                 break;
@@ -163,6 +162,13 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         themePref.setEntryValues(themeList.keySet().toArray(new CharSequence[themeList.keySet().size()]));
 
         //Toast.makeText(this, "Press the back button to save settings", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        if (resultCode==6) {
+            themeChanged = true;
+        }
     }
 
     private void setupThemePrefs(){
@@ -206,7 +212,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             if (isfromappview) {
                 Intent intent = new Intent();
                 intent.putExtra("themeupdate", true);
-                getActivity().setResult(3, intent);
+                getActivity().setResult(6, intent);
             } else {
                 updateWidget();
             }

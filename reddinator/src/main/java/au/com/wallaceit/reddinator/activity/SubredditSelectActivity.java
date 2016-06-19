@@ -24,7 +24,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -395,11 +394,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                     setResult(1, intent); // tells main activity to update feed prefs
                 }
                 if (needsThemeUpdate){
-                    global.setRefreshView();
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(SubredditSelectActivity.this);
-                    int[] widgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(SubredditSelectActivity.this, WidgetProvider.class));
-                    WidgetProvider.updateAppWidgets(SubredditSelectActivity.this, appWidgetManager, widgetIds);
-                    appWidgetManager.notifyAppWidgetViewDataChanged(widgetIds, R.id.listview);
+                    WidgetProvider.refreshAllWidgetViews(global);
                 }
             }
         } else {

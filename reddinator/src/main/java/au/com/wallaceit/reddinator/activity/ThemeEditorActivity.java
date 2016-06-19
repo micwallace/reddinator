@@ -86,7 +86,7 @@ public class ThemeEditorActivity extends ListActivity {
         if (themeChanged)
             global.mThemeManager.saveCustomTheme(themeId, theme);
 
-        setResult((themeChanged?3:0));
+        setResult((themeChanged?6:0));
 
         super.onBackPressed();
     }
