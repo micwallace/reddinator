@@ -100,9 +100,14 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        refreshList();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (resultCode==RESULT_CODE_THEME_UPDATED) {
-            refreshList();
             themesEdited = true;
             setResult(RESULT_CODE_THEME_UPDATED);
         }

@@ -23,6 +23,7 @@ package au.com.wallaceit.reddinator.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.text.Html;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -164,6 +165,9 @@ public class ThemeManager {
         try {
             if (!theme.has("name") || "".equals(theme.get("name")))
                 return false;
+
+            // decode Html entities in name
+            theme.put("name", Html.fromHtml(theme.getString("name")));
 
             JSONObject impValues = theme.getJSONObject("values");
             JSONObject defaults = defaultValues.getTheme().getJSONObject("values");
