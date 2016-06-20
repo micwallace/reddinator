@@ -294,4 +294,6 @@
     <string name="theme_preview">Previsualización del tema</string>
     <string name="theme_preview_applied_message">El tema se ha aplicado en el modo de vista previa y anulará todas las demás preferencias temáticas.\nPara la salida desde el modo de vista previa, vaya a la apariencia de la página de preferencias.</string>
     <string name="theme_preview_clear_message">En este momento está previsualizando el tema %1$s.\nPulsa cancelar o instalar para salir del modo de vista previa. Pulse el botón atrás para mantener la vista previa.</string>
+    <string name="default_front_page">Defecto página delantera</string>
+    <string name="download_themes">Descargar temas</string>
 </resources>
