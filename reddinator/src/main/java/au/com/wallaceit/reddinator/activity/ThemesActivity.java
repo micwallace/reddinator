@@ -115,7 +115,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
 
     @Override
     public void onBackPressed(){
-        if (themesEdited && getIntent().getExtras().getInt("requestCode")!=REQUEST_CODE_NO_WIDGET_UPDATES){
+        if (themesEdited && (getIntent().hasExtra("requestCode") && getIntent().getExtras().getInt("requestCode")!=REQUEST_CODE_NO_WIDGET_UPDATES)){
             // update widgets straight away if the requesting activity does not process the result
             WidgetProvider.refreshAllWidgetViews(global);
         }

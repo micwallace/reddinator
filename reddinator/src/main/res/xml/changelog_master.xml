@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.14" versioncode="46">
+        <change>Various bug fixes</change>
+    </release>
     <release version="3.13" versioncode="45">
         <change>Share and apply custom themes at /r/reddinator</change>
         <change>View the default FrontPage when logged in.</change>
