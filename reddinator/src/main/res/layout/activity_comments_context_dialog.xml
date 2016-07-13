@@ -21,7 +21,7 @@
         sothree:umanoShadowHeight="4dp"
         sothree:umanoPanelHeight="0dp">
 
-        <WebView
+        <au.com.wallaceit.reddinator.ui.RWebView
             android:id="@+id/commentswebview"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />

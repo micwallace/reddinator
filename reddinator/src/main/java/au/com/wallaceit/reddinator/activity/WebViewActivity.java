@@ -93,6 +93,7 @@ public class WebViewActivity extends Activity {
         if (url==null){
             url = "https://m.reddit.com/";
         }
+        registerForContextMenu(wv);
         wv.loadUrl(url);
     }
 

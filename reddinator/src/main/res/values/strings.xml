@@ -352,4 +352,5 @@
     <string name="default_front_page">Default Front Page</string>
     <string name="sub_reddinator">Subscribe to /r/reddinator</string>
     <string name="sub_reddinator_message">Subscribe to /r/reddinator to get the latest news, install user created themes, submit feedback and request new features?</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
 </resources>

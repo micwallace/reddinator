@@ -145,6 +145,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         webView.requestFocus(View.FOCUS_DOWN);
         WebInterface webInterface = new WebInterface(this);
         webView.addJavascriptInterface(webInterface, "Reddinator");
+        registerForContextMenu(webView);
         webView.loadUrl("file:///android_asset/comments_context.html#"+articleId);
         // setup open comments button
         IconButton button = (IconButton) findViewById(R.id.commentsbutton);

@@ -139,6 +139,7 @@ public class TabWebFragment extends Fragment {
                     super.onPageFinished(view, url);
                 }
             });
+            getActivity().registerForContextMenu(mWebView);
             if (load) load();
             mFirstTime = false;
             //System.out.println("Created fragment");

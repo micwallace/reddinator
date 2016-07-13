@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -54,6 +53,7 @@ import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class TabCommentsFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
     private Resources resources;
+    private SharedPreferences mSharedPreferences;
     public WebView mWebView;
     private boolean webviewInit = false;
     private boolean mFirstTime = true;
@@ -96,7 +96,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context mContext = this.getActivity();
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (Reddinator) mContext.getApplicationContext();
         resources = getResources();
         //final boolean load = getArguments().getBoolean("load");
@@ -105,50 +105,6 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         articleId = getArguments().getString("id");
         permalink = getArguments().getString("permalink");
 
-        ll = new LinearLayout(mContext);
-        ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
-        // fixes for activity_webview not taking keyboard input on some devices
-        mWebView = new WebView(mContext);
-        mWebView.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
-        ll.addView(mWebView);
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true); // enable ecmascript
-        webSettings.setDomStorageEnabled(true); // some video sites require dom storage
-        webSettings.setSupportZoom(false);
-        webSettings.setBuiltInZoomControls(false);
-        webSettings.setDisplayZoomControls(false);
-        int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
-        webSettings.setDefaultFontSize(fontSize);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        // get theme values with comments layout prefs included
-        final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //System.out.println(url);
-                if (url.indexOf("file://")==0){ // fix for short sub and user links
-                    url = url.replace("file://", "https://www.reddit.com");
-                }
-                global.handleLink(getContext(), url);
-                return true; // always override url
-            }
-
-            public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
-                if (initialData!=null) {
-                    populateCommentsFromData(initialData.toString());
-                }
-                webviewInit = true;
-            }
-        });
-        mWebView.setWebChromeClient(new WebChromeClient());
-
-        mWebView.requestFocus(View.FOCUS_DOWN);
-        WebInterface webInterface = new WebInterface(mContext);
-        mWebView.addJavascriptInterface(webInterface, "Reddinator");
-
-        mWebView.loadUrl("file:///android_asset/comments.html#"+articleId);
     }
 
     public void updateTheme() {
@@ -162,6 +118,48 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             return null;
         }
         if (mFirstTime) {
+            ll = (LinearLayout) inflater.inflate(R.layout.webtab, container, false);
+            mWebView = (WebView) ll.findViewById(R.id.webView1);
+            WebSettings webSettings = mWebView.getSettings();
+            webSettings.setJavaScriptEnabled(true); // enable ecmascript
+            webSettings.setDomStorageEnabled(true); // some video sites require dom storage
+            webSettings.setSupportZoom(false);
+            webSettings.setBuiltInZoomControls(false);
+            webSettings.setDisplayZoomControls(false);
+            int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
+            webSettings.setDefaultFontSize(fontSize);
+            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+            // get theme values with comments layout prefs included
+            final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    //System.out.println(url);
+                    if (url.indexOf("file://")==0){ // fix for short sub and user links
+                        url = url.replace("file://", "https://www.reddit.com");
+                    }
+                    global.handleLink(getContext(), url);
+                    return true; // always override url
+                }
+
+                public void onPageFinished(WebView view, String url) {
+                    mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
+                    if (initialData!=null) {
+                        populateCommentsFromData(initialData.toString());
+                    }
+                    webviewInit = true;
+                }
+            });
+            mWebView.setWebChromeClient(new WebChromeClient());
+
+            mWebView.requestFocus(View.FOCUS_DOWN);
+            WebInterface webInterface = new WebInterface(getActivity());
+            mWebView.addJavascriptInterface(webInterface, "Reddinator");
+            getActivity().registerForContextMenu(mWebView);
+
+            mWebView.loadUrl("file:///android_asset/comments.html#"+articleId);
+
             mFirstTime = false;
         } else {
             ((ViewGroup) ll.getParent()).removeView(ll);
