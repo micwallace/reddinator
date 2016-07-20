@@ -102,50 +102,6 @@ function commentCallback(parentId, commentData){
     postElem.children("button").prop("disabled", false);
 }
 
-function startEdit(thingId){
-    // skip if current is being edited
-    var post_box = $("#"+thingId+" > .comment_text");
-    if (!post_box.hasClass("editing")){
-        // store html comment text
-        post_box.data('comment_html', post_box.html());
-        // prepare edit element
-        var editElem = $("#edit_template").clone().show();
-        editElem.find('textarea').val(post_box.text());
-        // remove current html and append edit box
-        post_box.html('');
-        editElem.children().appendTo(post_box);
-        post_box.addClass('editing');
-    }
-}
-function cancelEdit(thingId){
-    // skip if not being edited
-    var post_box = $("#"+thingId+" > .comment_text");
-    if (post_box.hasClass("editing")){
-        // remove edit box and restore html content
-        post_box.empty().html(post_box.data('comment_html'));
-        post_box.removeClass('editing');
-    }
-}
-function edit(thingId, text){
-    if (text==""){
-        alert("Enter some text for the comment.");
-        editCallback(thingId, false);
-        return;
-    }
-    Reddinator.edit(thingId, text);
-}
-function editCallback(thingId, commentData){
-    // skip if not being edited or result false
-    var post_box = $("#"+thingId+" > .comment_text");
-    if (commentData && post_box.hasClass("editing")){
-        commentData = JSON.parse(commentData);
-        post_box.empty().html(htmlDecode(commentData.body_html));
-        post_box.removeClass('editing');
-    } else {
-        post_box.children("button, textarea").prop("disabled", false);
-    }
-}
-
 function populateChildComments(moreId, json){
     //console.log(json)
     var data = JSON.parse(json);
@@ -203,6 +159,7 @@ function appendComment(parentId, commentData, prepend){
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
+    commentElem.data("comment_md", commentData.body);
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
@@ -307,6 +264,7 @@ $(function(){
         } else {
             $('.post_reply').hide();
             elem.show();
+            elem.children("textarea").focus();
         }
     });
 });

@@ -36,12 +36,13 @@ function htmlDecode(input){
 
 function vote(thingId, direction){
     // determine if neutral vote
+    var vote_elem = $("#"+thingId).children(".vote");
     if (direction == 1) {
-        if ($("#"+thingId+" .upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
+        if (vote_elem.children(".upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
             direction = 0;
         }
     } else { // downvote
-        if ($("#"+thingId+" .downvote").css("color")=="rgb(148, 148, 255)") {
+        if (vote_elem.children(".downvote").css("color")=="rgb(148, 148, 255)") {
             direction = 0;
         }
     }
@@ -52,21 +53,38 @@ function vote(thingId, direction){
 function voteCallback(thingId, direction){
     var upvote = $("#"+thingId).children(".vote").children(".upvote");
     var downvote = $("#"+thingId).children(".vote").children(".downvote");
+    var net_vote = 1;
     switch(direction){
         case "-1":
+            if (upvote.css("color")=="rgb(255, 139, 96)") { // if already upvoted net vote is -2
+                net_vote = -2;
+            } else {
+                net_vote = -1;
+            }
             upvote.css("color", color_vote);
             downvote.css("color", color_downvote_active);
+
             break;
         case "0":
+            if (upvote.css("color")=="rgb(255, 139, 96)") { // if already upvoted net vote is -1
+                net_vote = -1;
+            }
             upvote.css("color", color_vote);
             downvote.css("color", color_vote);
             break;
         case "1":
+            if (downvote.css("color")=="rgb(148, 148, 255)") { // if already downvoted net vote is 2
+                net_vote = 2;
+            }
             upvote.css("color", color_upvote_active);
             downvote.css("color", color_vote);
             break;
     }
-    console.log("vote callback received: "+direction);
+    // increment vote count
+    var vote_count = $("#"+thingId).children(".comment_info").children(".comment_scores").children(".comment_score");
+    var count = parseInt(vote_count.text()) || 0;
+    vote_count.text(count + net_vote);
+    //console.log("vote callback received: "+direction);
 }
 
 function comment(parentId, text){
@@ -88,4 +106,55 @@ function deleteComment(thingId){
 
 function deleteCallback(thingId){
     $("#"+thingId).remove();
+}
+
+function startEdit(thingId){
+    // skip if current is being edited
+    var post_box = $("#"+thingId+" > .comment_text");
+    if (!post_box.hasClass("editing")){
+        // store html comment text
+        post_box.data('comment_html', post_box.html());
+        // prepare edit element
+        var editElem = $("#edit_template").clone().show();
+        var textarea = editElem.find('textarea');
+        textarea.val($("#"+thingId).data("comment_md")); // use markdown text provided in data attribute
+        // remove current html and append edit box
+        post_box.html('');
+        editElem.children().appendTo(post_box);
+        post_box.addClass('editing');
+        $('.message_reply, .post_reply').hide(); // hide other reply boxes
+        textarea.focus();
+    }
+}
+
+function cancelEdit(thingId){
+    // skip if not being edited
+    var post_box = $("#"+thingId+" > .comment_text");
+    if (post_box.hasClass("editing")){
+        // remove edit box and restore html content
+        post_box.empty().html(post_box.data('comment_html'));
+        post_box.removeClass('editing');
+    }
+}
+
+function edit(thingId, text){
+    if (text==""){
+        alert("Enter some text for the comment.");
+        editCallback(thingId, false);
+        return;
+    }
+    Reddinator.edit(thingId, text);
+}
+
+function editCallback(thingId, commentData){
+    // skip if not being edited or result false
+    var post_box = $("#"+thingId+" > .comment_text");
+    if (commentData && post_box.hasClass("editing")){
+        commentData = JSON.parse(commentData);
+        $("#"+thingId).data("comment_md", commentData.body);
+        post_box.empty().html(htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;"))); // clean up extra line breaks
+        post_box.removeClass('editing');
+    } else {
+        post_box.children("button, textarea").prop("disabled", false);
+    }
 }
