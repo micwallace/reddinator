@@ -1,5 +1,6 @@
 body {
     margin:0;
+    font-family:arial, helvetica, sans-serif;
 }
 #container {
     padding-left:7px;
@@ -190,7 +191,6 @@ button {
     border-top-left-radius:0;
     border-top-right-radius:0;
     font-size:12px;
-    font-family:arial, helvetica, sans-serif;
     margin:0 !important;
     padding: 6px 6px 6px 6px;
     text-decoration:none;
@@ -324,4 +324,30 @@ a {
 }
 pre {
     overflow-y: scroll;
+}
+
+.editor-toolbar {
+    background-color: white;
+    opacity: 1 !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+}
+
+.editor-toolbar:focus {
+    background-color: white;
+    opacity: 1 !important;
+}
+
+.editor-statusbar {
+    float: right;
+    display: inline-flex;
+}
+
+.editor-statusbar .autosave {
+    display: none !important;
+}
+
+.CodeMirror, .CodeMirror-scroll {
+    min-height: 100px !important;
+    margin-bottom: 6px;
 }

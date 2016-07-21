@@ -529,7 +529,6 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                         openUrlExternally("https://reddit.com" + postPermalink);
                     }
                 });
-        // Create the AlertDialog
         builder.create().show();
     }
 
@@ -550,7 +549,6 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                         shareText("https://reddit.com" + postPermalink);
                     }
                 });
-        // Create the AlertDialog
         builder.create().show();
     }
 
@@ -741,7 +739,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         public CharSequence getPageTitle(int position) {
             switch (position){
                 case 0: return resources.getString(R.string.content);
-                case 1: return resources.getString(R.string.reddit);
+                case 1: return resources.getString(R.string.comments);
             }
             return resources.getString(R.string.app_name);
         }

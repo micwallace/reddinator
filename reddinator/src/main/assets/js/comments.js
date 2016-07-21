@@ -236,6 +236,12 @@ function toggleReplies(element){
     }
 }
 
+function showPostCommentBox(){
+    $("#post_comment_button").css('display', 'none');
+    $('#post_comment_box').css('display', 'block');
+    initialiseMarkdownEditor($("#post_comment_textarea"));
+}
+
 $(function(){
     // Layout testing code, open reddinator/src/main/assets/comments.html#debug in a browser to view
     if (location.hash=="#debug"){
@@ -249,6 +255,7 @@ $(function(){
         $("#test1 .reply_expand").css('visibility', 'visible');
         $("#comment_template").clone().show().attr("id", 'test3').appendTo("#test1 > .comment_replies");
         $("#comment_template").clone().show().attr("id", 'test4').appendTo("#test1 > .comment_replies");
+        $(".user_option").show();
     }
 
     $(document).on('click', ".upvote", function(){
@@ -257,14 +264,20 @@ $(function(){
     $(document).on('click', ".downvote", function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
+    var simplemde;
     $(document).on('click', ".post_toggle", function(){
         var elem = $(this).parent().parent().parent().children(".post_reply");
+        if (simplemde!=null){
+            simplemde.toTextArea();
+            simplemde = null;
+        }
         if (elem.is(":visible")){
             elem.hide();
         } else {
             $('.post_reply').hide();
             elem.show();
-            elem.children("textarea").focus();
+            simplemde = initialiseMarkdownEditor(elem.children("textarea"));
+            //elem.children("textarea").focus();
         }
     });
 });

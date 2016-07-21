@@ -142,6 +142,8 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
         webSettings.setDefaultFontSize(fontSize);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.setFocusable(true);
+        webView.setFocusableInTouchMode(true);
         webView.requestFocus(View.FOCUS_DOWN);
         WebInterface webInterface = new WebInterface(this);
         webView.addJavascriptInterface(webInterface, "Reddinator");

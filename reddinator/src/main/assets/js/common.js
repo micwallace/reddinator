@@ -108,6 +108,15 @@ function deleteCallback(thingId){
     $("#"+thingId).remove();
 }
 
+var mdeEditors = {};
+
+function removeCommentEditor(thingId){
+    if (mdeEditors.hasOwnProperty(thingId)){
+        mdeEditors[thingId].toTextArea();
+        delete mdeEditors[thingId];
+    }
+}
+
 function startEdit(thingId){
     // skip if current is being edited
     var post_box = $("#"+thingId+" > .comment_text");
@@ -123,7 +132,8 @@ function startEdit(thingId){
         editElem.children().appendTo(post_box);
         post_box.addClass('editing');
         $('.message_reply, .post_reply').hide(); // hide other reply boxes
-        textarea.focus();
+        //textarea.focus();
+        mdeEditors[thingId] = initialiseMarkdownEditor(textarea);
     }
 }
 
@@ -131,6 +141,7 @@ function cancelEdit(thingId){
     // skip if not being edited
     var post_box = $("#"+thingId+" > .comment_text");
     if (post_box.hasClass("editing")){
+        removeCommentEditor(thingId);
         // remove edit box and restore html content
         post_box.empty().html(post_box.data('comment_html'));
         post_box.removeClass('editing');
@@ -150,6 +161,7 @@ function editCallback(thingId, commentData){
     // skip if not being edited or result false
     var post_box = $("#"+thingId+" > .comment_text");
     if (commentData && post_box.hasClass("editing")){
+        removeCommentEditor(thingId);
         commentData = JSON.parse(commentData);
         $("#"+thingId).data("comment_md", commentData.body);
         post_box.empty().html(htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;"))); // clean up extra line breaks
@@ -157,4 +169,15 @@ function editCallback(thingId, commentData){
     } else {
         post_box.children("button, textarea").prop("disabled", false);
     }
+}
+
+function initialiseMarkdownEditor(textarea){
+    return new SimpleMDE({
+        autofocus: true,
+        element: textarea[0],
+        forceSync: true,
+        showIcons: ["code", "table"],
+        spellChecker: false,
+        autoDownloadFontAwesome: false
+    });
 }
