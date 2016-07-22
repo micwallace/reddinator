@@ -343,8 +343,9 @@ pre {
     display: inline-flex;
 }
 
-.editor-statusbar .autosave {
-    display: none !important;
+.editor-toolbar a {
+    width: 22px !important;
+    height: 22px !important;
 }
 
 .CodeMirror, .CodeMirror-scroll {

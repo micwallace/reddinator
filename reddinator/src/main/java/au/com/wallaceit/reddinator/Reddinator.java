@@ -62,6 +62,7 @@ import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.ui.RWebView;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import de.cketti.library.changelog.ChangeLog;
@@ -94,6 +95,9 @@ public class Reddinator extends Application {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(Reddinator.this.getApplicationContext());
         mRedditData = new RedditData(Reddinator.this.getApplicationContext());
         mThemeManager = new ThemeManager(Reddinator.this.getApplicationContext(), mSharedPreferences);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            RWebView.setWebContentsDebuggingEnabled(true);
+        }
     }
 
     // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume

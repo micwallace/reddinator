@@ -15,10 +15,11 @@ function init(themeColors, user, sect){
     var themeColors = JSON.parse(themeColors);
     switch (themeColors["comments_layout"]){
         case "2":
-            addCssFile("css/styles/layout-alternate.css");
+            addCssFile("file:///android_asset/css/styles/layout-alternate.css");
         default:
     }
     setTheme(themeColors);
+    useMdeEditor = themeColors.comments_editor; // defined in common.js
 }
 
 function populateFeed(json, append){
@@ -64,7 +65,7 @@ function loadMore(moreId){
 }
 
 function message(elem){
-    var text = elem.prev('textarea').val();
+    var text = elem.siblings('.message_textarea').val();
     var id = elem.parent().parent().attr('id');
     if (text==""){
         alert("Enter some text for the message.");
@@ -370,25 +371,45 @@ $(function(){
         vote($(this).parent().parent().attr("id"), -1);
         e.stopPropagation();
     });
+    var cMdeEditor = null;
     $(document).on('click', ".post_toggle", function(){
         var elem = $(this).parent().parent().parent().children(".post_reply");
+        if (cMdeEditor!=null){
+            cMdeEditor.toTextArea();
+            cMdeEditor = null;
+        }
         if (elem.is(":visible")){
             elem.hide();
         } else {
             $('.message_reply, .post_reply').hide();
             elem.show();
-            elem.children("textarea").focus();
-        }
-    });
-    $(document).on('click', ".message_reply_toggle", function(){
-            var elem = $(this).parent().parent().parent().children(".message_reply");
-            if (elem.is(":visible")){
-                elem.hide();
+            if (useMdeEditor){
+                cMdeEditor = initialiseMarkdownEditor(elem.children("textarea"));
+                elem.find(".CodeMirror-code").focus();
             } else {
-                $('.message_reply, .post_reply').hide();
-                elem.show();
                 elem.children("textarea").focus();
             }
+        }
+    });
+    var mMdeEditor = null;
+    $(document).on('click', ".message_reply_toggle", function(){
+        var elem = $(this).parent().parent().parent().children(".message_reply");
+        if (mMdeEditor!=null){
+            mMdeEditor.toTextArea();
+            mMdeEditor = null;
+        }
+        if (elem.is(":visible")){
+            elem.hide();
+        } else {
+            $('.message_reply, .post_reply').hide();
+            elem.show();
+            if (useMdeEditor){
+                mMdeEditor = initialiseMarkdownEditor(elem.children("textarea"));
+                elem.find(".CodeMirror-code").focus();
+            } else {
+                elem.children("textarea").focus();
+            }
+        }
     });
     $(document).on('click', ".post_main", function(e){
         var elem = $(this).parent();

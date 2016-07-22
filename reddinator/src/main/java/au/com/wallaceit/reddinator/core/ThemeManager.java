@@ -316,6 +316,7 @@ public class ThemeManager {
                 try {
                     valuesObject.put("comments_layout", prefs.getString("commentslayoutpref", "1"));
                     valuesObject.put("comments_border_style", prefs.getString("commentsborderpref", "1"));
+                    valuesObject.put("comments_editor", prefs.getBoolean("commenteditorpref", false));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

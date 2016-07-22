@@ -13,7 +13,7 @@ function init(themeColors, user){
     var themeColors = JSON.parse(themeColors);
     switch (themeColors["comments_layout"]){
         case "2":
-            addCssFile("css/styles/layout-alternate.css");
+            addCssFile("file:///android_asset/css/styles/layout-alternate.css");
         default:
     }
     switch (themeColors["comments_border_style"]){
@@ -23,10 +23,11 @@ function init(themeColors, user){
             $('html > head').append(style);
             break;
         case "3":
-            addCssFile("css/styles/border-rainbow.css");
+            addCssFile("file:///android_asset/css/styles/border-rainbow.css");
         default:
     }
     setTheme(themeColors);
+    useMdeEditor = themeColors.comments_editor; // defined in common.js
 }
 
 function populateComments(author, json){
@@ -239,7 +240,12 @@ function toggleReplies(element){
 function showPostCommentBox(){
     $("#post_comment_button").css('display', 'none');
     $('#post_comment_box').css('display', 'block');
-    initialiseMarkdownEditor($("#post_comment_textarea"));
+    if (useMdeEditor){
+        initialiseMarkdownEditor($("#post_comment_textarea"));
+        $('#post_comment_box').find(".CodeMirror-code").focus();
+    } else {
+        $('#post_comment_textarea').focus();
+    }
 }
 
 $(function(){
@@ -264,20 +270,24 @@ $(function(){
     $(document).on('click', ".downvote", function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
-    var simplemde;
+    var cMdeEditor = null;
     $(document).on('click', ".post_toggle", function(){
         var elem = $(this).parent().parent().parent().children(".post_reply");
-        if (simplemde!=null){
-            simplemde.toTextArea();
-            simplemde = null;
+        if (cMdeEditor!=null){
+            cMdeEditor.toTextArea();
+            cMdeEditor = null;
         }
         if (elem.is(":visible")){
             elem.hide();
         } else {
             $('.post_reply').hide();
             elem.show();
-            simplemde = initialiseMarkdownEditor(elem.children("textarea"));
-            //elem.children("textarea").focus();
+            if (useMdeEditor){
+                cMdeEditor = initialiseMarkdownEditor(elem.children("textarea"));
+                elem.find(".CodeMirror-code").focus();
+            } else {
+                elem.children("textarea").focus();
+            }
         }
     });
 });

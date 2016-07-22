@@ -16,6 +16,7 @@
     <string name="comments_webview_pref" translatable="false">commentswebviewpref</string>
     <string name="comment_font_pref" translatable="false">commentfontpref</string>
     <string name="content_font_pref" translatable="false">contentfontpref</string>
+    <string name="comment_editor_pref" translatable="false">commenteditorpref</string>
     <string name="preload_pref" translatable="false">preloadpref</string>
     <string name="reddit_mobile_site_pref" translatable="false">redditmobilepref</string>
     <string name="reddit_mobile_site_comments_pref" translatable="false">mobilecommentspref</string>
@@ -353,4 +354,6 @@
     <string name="sub_reddinator">Subscribe to /r/reddinator</string>
     <string name="sub_reddinator_message">Subscribe to /r/reddinator to get the latest news, install user created themes, submit feedback and request new features?</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="comment_editor_pref_title">Use Markdown Editor (beta)</string>
+    <string name="comment_editor_pref_summary"><![CDATA[Use markdown editor for comments & mesages]]></string>
 </resources>

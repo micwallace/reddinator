@@ -101,6 +101,12 @@
             android:entryValues="@array/comments_border_pref_values"
             android:dialogTitle="@string/comments_border_pref_summary" />
 
+        <CheckBoxPreference
+            android:key="@string/comment_editor_pref"
+            android:title="@string/comment_editor_pref_title"
+            android:defaultValue="false"
+            android:summary="@string/comment_editor_pref_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Reddinator View">
