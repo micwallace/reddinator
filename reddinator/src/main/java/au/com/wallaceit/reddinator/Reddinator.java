@@ -62,7 +62,6 @@ import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.ui.RWebView;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import de.cketti.library.changelog.ChangeLog;
@@ -95,8 +94,10 @@ public class Reddinator extends Application {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(Reddinator.this.getApplicationContext());
         mRedditData = new RedditData(Reddinator.this.getApplicationContext());
         mThemeManager = new ThemeManager(Reddinator.this.getApplicationContext(), mSharedPreferences);
+        // make webviews debuggable when running debug version
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            RWebView.setWebContentsDebuggingEnabled(true);
+            if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE))
+                WebView.setWebContentsDebuggingEnabled(true);
         }
     }
 
