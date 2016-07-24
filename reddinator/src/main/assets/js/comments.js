@@ -237,11 +237,12 @@ function toggleReplies(element){
     }
 }
 
+var postCommentMde;
 function showPostCommentBox(){
     $("#post_comment_button").css('display', 'none');
     $('#post_comment_box').css('display', 'block');
     if (useMdeEditor){
-        initialiseMarkdownEditor($("#post_comment_textarea"));
+        postCommentMde = initialiseMarkdownEditor($("#post_comment_textarea"));
         $('#post_comment_box').find(".CodeMirror-code").focus();
     } else {
         $('#post_comment_textarea').focus();
