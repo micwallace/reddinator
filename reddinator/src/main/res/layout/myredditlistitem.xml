@@ -74,4 +74,23 @@
 		android:textColor="#5F99CF"
 		android:visibility="gone"/>
 
+	<IconTextView
+		android:id="@+id/subreddit_random_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignRight="@id/subreddit_default_btn"
+		android:layout_alignEnd="@id/subreddit_default_btn"
+		android:layout_centerVertical="true"
+		android:contentDescription="@string/random_subreddit"
+		android:text="@string/fa_random"
+		android:shadowColor="#22000000"
+		android:shadowDx="4"
+		android:shadowDy="4"
+		android:shadowRadius="3"
+		android:layout_marginRight="35dp"
+		android:layout_marginEnd="35dp"
+		android:textSize="32sp"
+		android:textColor="#5F99CF"
+		android:visibility="gone"/>
+
 </RelativeLayout>

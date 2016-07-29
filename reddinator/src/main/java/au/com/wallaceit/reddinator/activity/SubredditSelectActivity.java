@@ -79,6 +79,7 @@ import java.util.regex.Pattern;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.tasks.LoadRandomTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -86,7 +87,7 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 
-public class SubredditSelectActivity extends Activity implements SubscriptionEditTask.Callback {
+public class SubredditSelectActivity extends Activity implements SubscriptionEditTask.Callback, LoadRandomTask.Callback {
     private ArrayList<String> subredditList;
     private ArrayAdapter<String> subsAdapter;
     private MyMultisAdapter mMultiAdapter;
@@ -116,16 +117,22 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         // get subreddit list and set adapter
         subredditList = global.getSubredditManager().getSubredditNames();
         subsAdapter = new MySubredditsAdapter(this, subredditList);
-        ListView subListView = (ListView) findViewById(R.id.sublist);
+        final ListView subListView = (ListView) findViewById(R.id.sublist);
         subListView.setAdapter(subsAdapter);
         subListView.setTextFilterEnabled(true);
         subListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 String subreddit = ((TextView) view.findViewById(R.id.subreddit_name)).getText().toString();
-                global.getSubredditManager().setFeedSubreddit(mAppWidgetId, subreddit);
-                updateFeedAndFinish();
-                //System.out.println(sreddit+" selected");
+                try {
+                    JSONObject subData = global.getSubredditManager().getSubredditData(subreddit);
+                    String url = subData.has("url") ? subData.getString("url") : null;
+                    global.getSubredditManager().setFeedSubreddit(mAppWidgetId, subreddit, url);
+                    updateFeedAndFinish();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
         subsAdapter.sort(subComparator);
@@ -316,7 +323,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                         }
                         break;
                     case ViewAllSubredditsActivity.RESULT_SET_SUBREDDIT:
-                        global.getSubredditManager().setFeedSubreddit(mAppWidgetId, name);
+                        global.getSubredditManager().setFeedSubreddit(mAppWidgetId, name, subreddit.getString("url"));
                         updateFeedAndFinish();
                         break;
 
@@ -772,6 +779,21 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         }
     };
 
+    private ProgressDialog randomProg = null;
+    @Override
+    public void onRandomSubredditLoaded(JSONObject result, RedditData.RedditApiException exception) {
+        if (result!=null) {
+            try {
+                global.getSubredditManager().setFeedSubreddit(mAppWidgetId, result.getString("title"), result.getString("url"));
+                updateFeedAndFinish();
+                return;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (randomProg!=null) randomProg.dismiss();
+    }
+
     // list adapter
     class MySubredditsAdapter extends ArrayAdapter<String> {
         private LayoutInflater inflater;
@@ -793,6 +815,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                 viewHolder.deleteIcon = (IconTextView) convertView.findViewById(R.id.subreddit_delete_btn);
                 viewHolder.filterIcon = (IconTextView) convertView.findViewById(R.id.subreddit_filter_btn);
                 viewHolder.defaultIcon = (IconTextView) convertView.findViewById(R.id.subreddit_default_btn);
+                viewHolder.randomIcon = (IconTextView) convertView.findViewById(R.id.subreddit_random_btn);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
@@ -843,8 +866,19 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
                         updateFeedAndFinish();
                     }
                 });
+                viewHolder.randomIcon.setVisibility(View.VISIBLE);
+                viewHolder.randomIcon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        randomProg = new ProgressDialog(SubredditSelectActivity.this);
+                        randomProg.setTitle(R.string.loading);
+                        randomProg.show();
+                        new LoadRandomTask(global, SubredditSelectActivity.this).execute();
+                    }
+                });
             } else{
                 viewHolder.defaultIcon.setVisibility(View.GONE);
+                viewHolder.randomIcon.setVisibility(View.GONE);
             }
 
             convertView.setTag(viewHolder);
@@ -857,6 +891,7 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
             IconTextView deleteIcon;
             IconTextView filterIcon;
             IconTextView defaultIcon;
+            IconTextView randomIcon;
         }
     }
 

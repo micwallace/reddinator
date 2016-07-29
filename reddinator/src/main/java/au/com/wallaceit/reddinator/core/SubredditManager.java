@@ -39,7 +39,7 @@ public class SubredditManager {
     private JSONObject subreddits;
     private JSONObject multis;
     private JSONObject postFilters;
-    public final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\"}}";
+    public final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\",\"url\"=\"\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\",\"url\"=\"/r/all\"}}";
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
     public SubredditManager(RedditData redditData, SharedPreferences prefs){
@@ -156,9 +156,16 @@ public class SubredditManager {
         editor.apply();
     }
     // shortcut method for setting the feed to a subreddit
-    public void setFeedSubreddit(int feedId, String subreddit){
+    public void setFeedSubreddit(int feedId, String subreddit, String path){
         boolean isMulti = (subreddit.equals("Front Page") || subreddit.equals("all"));
-        setFeed(feedId, subreddit, subreddit.equals("Front Page") ? "" : "/r/" + subreddit, isMulti);
+        // backwards compatibility; using name in url causes issues on subreddits with non-url-compatible characters
+        if (path==null) {
+            path = subreddit.equals("Front Page") ? "" : "/r/" + subreddit;
+            // Strip last / from url if present
+        } else if (path.charAt(path.length()-1)=='/')
+            path = path.substring(0, path.length()-1);
+
+        setFeed(feedId, subreddit, path, isMulti);
     }
     // shortcut method for setting the feed to a domain
     public void setFeedDomain(int feedId, String domain){

@@ -110,7 +110,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         ll = new LinearLayout(mContext);
         ll.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         // fixes for activity_webview not taking keyboard input on some devices
-        mWebView = new WebView(mContext);
+        mWebView = new RWebView(mContext);
         mWebView.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
         ll.addView(mWebView);
         WebSettings webSettings = mWebView.getSettings();
@@ -147,6 +147,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         mWebView.requestFocus(View.FOCUS_DOWN);
         WebInterface webInterface = new WebInterface(mContext);
         mWebView.addJavascriptInterface(webInterface, "Reddinator");
+        getActivity().registerForContextMenu(mWebView);
 
         if (type.equals("unread") || type.equals("inbox") || type.equals("sent"))
             isMessages = true;

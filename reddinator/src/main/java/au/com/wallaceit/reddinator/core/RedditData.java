@@ -215,6 +215,20 @@ public class RedditData {
         return feed;
     }
 
+    public JSONObject getRandomSubreddit() throws RedditApiException {
+        String url = OAUTH_ENDPOINT + "/r/random/about.json";
+        JSONObject result;
+
+        result = redditApiGet(url, true);
+        try {
+            result = result.getJSONObject("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Parsing error: "+e.getMessage());
+        }
+        return result;
+    }
+
     public JSONArray searchRedditPosts(String query, String feedPath, boolean restrictSub, String sort, String time, int limit, String afterid) throws RedditApiException {
 
         String url;

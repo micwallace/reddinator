@@ -17,7 +17,7 @@
         android:background="#5F99CF"
         android:layout_alignParentBottom="true"
         android:text="@string/view_comments" />
-    <WebView
+    <au.com.wallaceit.reddinator.ui.RWebView
         android:id="@+id/imagewebview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"

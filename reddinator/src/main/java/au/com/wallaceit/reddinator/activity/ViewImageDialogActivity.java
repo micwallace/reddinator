@@ -72,6 +72,7 @@ public class ViewImageDialogActivity extends Activity {
         // Make sure we specify a proper user agent. Many sites block generic ones.
         webView.getSettings().setUserAgentString("Android/Reddinator v3.11");
         webView.loadUrl(imageUrl);
+        registerForContextMenu(webView);
         // setup open comments button
         IconButton button = (IconButton) findViewById(R.id.commentsbutton);
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");

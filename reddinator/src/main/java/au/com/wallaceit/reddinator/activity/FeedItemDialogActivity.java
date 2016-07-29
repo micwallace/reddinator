@@ -112,7 +112,7 @@ public class FeedItemDialogActivity extends Activity {
                     case "view_subreddit":
                         // view subreddit of this item
                         String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
-                        global.getSubredditManager().setFeedSubreddit(widgetId, subreddit);
+                        global.getSubredditManager().setFeedSubreddit(widgetId, subreddit, null);
                         if (widgetId>0) {
                             WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                         } else {

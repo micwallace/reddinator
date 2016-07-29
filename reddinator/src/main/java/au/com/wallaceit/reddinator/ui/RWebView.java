@@ -38,7 +38,7 @@ public class RWebView extends android.webkit.WebView {
     private static final int ID_COPYLINK = 2;
     private static final int ID_OPENLINK = 3;
     //private static final int ID_SHAREIMAGE = 4;
-    private static final int ID_SAVEIMAGE = 5;
+    //private static final int ID_SAVEIMAGE = 5;
 
     public RWebView(Context context) {
         this(context, null);
@@ -85,6 +85,18 @@ public class RWebView extends android.webkit.WebView {
                         context.startActivity(intent);
                         return true;
 
+                    // This stuff needs additional permissions so saving it for next version
+                    /*case ID_SAVEIMAGE:
+                        downloadFile(result.getExtra());
+                        return true;
+
+                    case ID_SHAREIMAGE:
+                        intent = new Intent(Intent.ACTION_SEND);
+                        Uri uri = Uri.parse(result.getExtra());
+                        intent.setType("image/*");
+                        intent.putExtra(Intent.EXTRA_STREAM, uri);
+                        context.startActivity(Intent.createChooser(intent, "Share Image"));
+                        return true;*/
                 }
                 return false;
             }
@@ -94,7 +106,7 @@ public class RWebView extends android.webkit.WebView {
             // Menu options for an image.
             //set the header title to the image url
             menu.setHeaderTitle(result.getExtra());
-            menu.add(0, ID_SAVEIMAGE, 0, "Save Image").setOnMenuItemClickListener(handler);
+            //menu.add(0, ID_SAVEIMAGE, 0, "Save Image").setOnMenuItemClickListener(handler);
             //menu.add(0, ID_SHAREIMAGE, 0, "Share Image").setOnMenuItemClickListener(handler);
             menu.add(0, ID_OPENLINK, 0, "Open Link").setOnMenuItemClickListener(handler);
             menu.add(0, ID_SHARELINK, 0, "Share Link").setOnMenuItemClickListener(handler);
@@ -109,4 +121,20 @@ public class RWebView extends android.webkit.WebView {
             menu.add(0, ID_COPYLINK, 0, "Copy Link").setOnMenuItemClickListener(handler);
         }
     }
+
+    /*public void downloadFile(String url) {
+
+        DownloadManager mgr = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+
+        Uri downloadUri = Uri.parse(url);
+        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(downloadUri.getLastPathSegment())
+                .setDescription("Reddinator image download")
+                .setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), downloadUri.getLastPathSegment());
+
+        mgr.enqueue(request);
+    }*/
 }

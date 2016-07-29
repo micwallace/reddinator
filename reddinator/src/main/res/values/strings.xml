@@ -44,6 +44,7 @@
     <string name="fa_file_text" translatable="false">{fa_file_text}</string>
     <string name="fa_share" translatable="false">{fa-share}</string>
     <string name="fa_globe" translatable="false">{fa-globe}</string>
+    <string name="fa_random" translatable="false">{fa-random}</string>
     <string name="nsfw_flag" translatable="false">[NSFW]</string>
     <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->
@@ -356,4 +357,5 @@
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="comment_editor_pref_title">Use Markdown Editor (beta)</string>
     <string name="comment_editor_pref_summary"><![CDATA[Use markdown editor for comments & mesages]]></string>
+    <string name="random_subreddit">Random subreddit</string>
 </resources>
