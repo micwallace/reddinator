@@ -162,7 +162,7 @@ public class SubredditManager {
         if (path==null) {
             path = subreddit.equals("Front Page") ? "" : "/r/" + subreddit;
             // Strip last / from url if present
-        } else if (path.charAt(path.length()-1)=='/')
+        } else if (path.length()>0 && path.charAt(path.length()-1)=='/')
             path = path.substring(0, path.length()-1);
 
         setFeed(feedId, subreddit, path, isMulti);

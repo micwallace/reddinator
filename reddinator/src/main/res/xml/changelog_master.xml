@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="3.15" versioncode="47">
+    <release version="3.16" versioncode="48">
         <change>Added context menu for WebView links.</change>
         <change>Added random subreddits.</change>
         <change>Added markdown editor for comments &amp; messages (experimental: enable from preferences).</change>
