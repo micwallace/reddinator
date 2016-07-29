@@ -296,4 +296,8 @@
     <string name="theme_preview_clear_message">En este momento está previsualizando el tema %1$s.\nPulsa cancelar o instalar para salir del modo de vista previa. Pulse el botón atrás para mantener la vista previa.</string>
     <string name="default_front_page">Defecto página delantera</string>
     <string name="download_themes">Descargar temas</string>
+    <string name="random_subreddit">Aleatorio subreddit</string>
+    <string name="copied_to_clipboard">Copiado al portapapeles</string>
+    <string name="comment_editor_pref_title">Utilice el Mardown Editor (beta)</string>
+    <string name="comment_editor_pref_summary">Utilice un markdown editor para comentarios y mesages</string>
 </resources>

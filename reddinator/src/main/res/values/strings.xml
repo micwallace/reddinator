@@ -356,6 +356,6 @@
     <string name="sub_reddinator_message">Subscribe to /r/reddinator to get the latest news, install user created themes, submit feedback and request new features?</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="comment_editor_pref_title">Use Markdown Editor (beta)</string>
-    <string name="comment_editor_pref_summary"><![CDATA[Use markdown editor for comments & mesages]]></string>
+    <string name="comment_editor_pref_summary">Use markdown editor for comments &amp; mesages</string>
     <string name="random_subreddit">Random subreddit</string>
 </resources>
