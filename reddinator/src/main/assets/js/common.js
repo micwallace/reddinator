@@ -126,7 +126,7 @@ function startEdit(thingId){
         // prepare edit element
         var editElem = $("#edit_template").clone().show();
         var textarea = editElem.find('textarea');
-        textarea.val($("#"+thingId).data("comment_md")); // use markdown text provided in data attribute
+        textarea.html($("#"+thingId).data("comment_md")); // use markdown text provided in data attribute; use .html() to decode entities
         // remove current html and append edit box
         post_box.html('');
         editElem.children().appendTo(post_box);

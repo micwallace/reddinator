@@ -122,6 +122,9 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
         webSettings.setDefaultFontSize(fontSize);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.setFocusable(true);
+        mWebView.setFocusableInTouchMode(true);
+        mWebView.requestFocus(View.FOCUS_DOWN);
 
         mSharedPreferences.getString("titlefontpref", "16");
 
