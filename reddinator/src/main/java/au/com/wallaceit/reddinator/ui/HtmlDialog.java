@@ -51,7 +51,7 @@ public class HtmlDialog extends AlertDialog {
     class NoNavClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.indexOf("file://") == 0) { // fix for short sub and user links
+            if (url.indexOf("file://") == 0) { // fix for relative links
                 url = url.replace("file://", "https://www.reddit.com");
             }
             ((Reddinator) getContext().getApplicationContext()).handleLink(getContext(), url);

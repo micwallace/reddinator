@@ -262,10 +262,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     class CommentViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //System.out.println(url);
-            if (url.indexOf("file://")==0){ // fix for short sub and user links
-                url = url.replace("file://", "https://www.reddit.com");
-            }
+
             global.handleLink(CommentsContextDialogActivity.this, url);
             return true; // always override url
         }
