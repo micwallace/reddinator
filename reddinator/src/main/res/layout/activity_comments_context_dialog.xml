@@ -34,23 +34,24 @@
                 android:id="@+id/info_panel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="6dp">
+                android:padding="6dp"
+                android:paddingTop="0dp">
                 <LinearLayout
                     android:id="@+id/title_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <IconTextView
-                        android:id="@+id/info_txt"
-                        style="@android:style/TextAppearance.Small"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/source_txt"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="-24dp"
-                        android:padding="0dp"
-                        android:includeFontPadding="false"
-                        android:clickable="true"
-                        android:linksClickable="true"/>
+                        android:text="@string/reddit_domain"
+                        android:textColor="#336699"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:paddingBottom="4dp"/>
+
                 </LinearLayout>
 
                 <TextView
@@ -58,27 +59,33 @@
                     style="@android:style/TextAppearance.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"/>
-
-                <TextView
-                    android:id="@+id/source_txt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_below="@id/title_box"
-                    android:text="@string/reddit_domain"
-                    android:textColor="#336699"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"/>
+                    android:layout_marginBottom="2dp"/>
+
+                <IconTextView
+                    android:id="@+id/info_txt"
+                    style="@android:style/TextAppearance.Small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/post_title"
+                    android:layout_marginBottom="-24dp"
+                    android:padding="0dp"
+                    android:includeFontPadding="false"
+                    android:clickable="true"
+                    android:linksClickable="true"/>
 
                 <IconTextView
                     android:id="@+id/votes_icon"
                     android:contentDescription="@string/icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/source_txt"
+                    android:layout_below="@id/info_txt"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:text="@string/fa_star"
@@ -91,7 +98,7 @@
 
                 <TextView
                     android:id="@+id/votes_txt"
-                    android:layout_below="@id/source_txt"
+                    android:layout_below="@id/info_txt"
                     android:layout_toRightOf="@+id/votes_icon"
                     android:layout_toEndOf="@+id/votes_icon"
                     android:layout_width="match_parent"
@@ -135,7 +142,7 @@
                     android:contentDescription="@string/icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/source_txt"
+                    android:layout_below="@id/info_txt"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     android:text="@string/fa_file_text"
