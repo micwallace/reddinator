@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -66,6 +67,9 @@ public class WebViewActivity extends Activity {
         mActivity.setTitle(R.string.loading);
         // set and load activity_webview
         wv = (WebView) findViewById(R.id.webView);
+        wv.setFocusable(true);
+        wv.setFocusableInTouchMode(true);
+        wv.requestFocus(View.FOCUS_DOWN);
         wvclient = new WebViewClient();
         wv.setWebViewClient(wvclient);
         wv.setWebChromeClient(new WebChromeClient() {

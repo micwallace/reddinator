@@ -67,6 +67,9 @@ public class OAuthView extends Activity {
         mActivity.setTitle(R.string.loading);
         // set and load activity_webview
         wv = (WebView) findViewById(R.id.webView);
+        wv.setFocusable(true);
+        wv.setFocusableInTouchMode(true);
+        wv.requestFocus(View.FOCUS_DOWN);
         wvclient = new OverrideClient();
 
         wv.setWebViewClient(wvclient);
