@@ -27,7 +27,7 @@ function init(themeColors, user){
         default:
     }
     setTheme(themeColors);
-    useMdeEditor = themeColors.comments_editor; // defined in common.js
+    useMdEditor = themeColors.comments_editor; // defined in common.js
 }
 
 function populateComments(author, json){
@@ -241,9 +241,8 @@ var postCommentMde;
 function showPostCommentBox(){
     $("#post_comment_button").css('display', 'none');
     $('#post_comment_box').css('display', 'block');
-    if (useMdeEditor){
+    if (useMdEditor){
         postCommentMde = initialiseMarkdownEditor($("#post_comment_textarea"));
-        $('#post_comment_box').find(".CodeMirror-code").focus();
     } else {
         $('#post_comment_textarea').focus();
     }
@@ -252,6 +251,7 @@ function showPostCommentBox(){
 $(function(){
     // Layout testing code, open reddinator/src/main/assets/comments.html#debug in a browser to view
     if (location.hash=="#debug"){
+        useMdEditor = true;
         $("#loading_view").hide();
         $("body").show();
         $("#comment_template").clone().show().attr("id", 'test').appendTo("#base");
@@ -271,21 +271,20 @@ $(function(){
     $(document).on('click', ".downvote", function(){
         vote($(this).parent().parent().attr("id"), -1);
     });
-    var cMdeEditor = null;
+    var cMdEditor = null;
     $(document).on('click', ".post_toggle", function(){
         var elem = $(this).parent().parent().parent().children(".post_reply");
-        if (cMdeEditor!=null){
-            cMdeEditor.toTextArea();
-            cMdeEditor = null;
+        if (cMdEditor!=null){
+            cMdEditor.toTextArea();
+            cMdEditor = null;
         }
         if (elem.is(":visible")){
             elem.hide();
         } else {
             $('.post_reply').hide();
             elem.show();
-            if (useMdeEditor){
-                cMdeEditor = initialiseMarkdownEditor(elem.children("textarea"));
-                elem.find(".CodeMirror-code").focus();
+            if (useMdEditor){
+                cMdEditor = initialiseMarkdownEditor(elem.children("textarea"));
             } else {
                 elem.children("textarea").focus();
             }

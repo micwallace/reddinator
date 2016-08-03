@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="jquery-2.1.3.min.js"></script>
+		<style type="text/css">
+			.ProseMirror {
+				border: 1px solid #999999;
+				border-radius: 4px;
+				width:100%;
+				margin-right:4px;
+				margin:0 0 0 0;
+				box-sizing:border-box;
+				border-bottom-left-radius:0;
+				text-decoration: none;
+				min-height: 100px;
+				background-color: #fff;
+			}
+
+		</style>
+	</head>
+	<body>
+		<textarea id="markdown_content">This is a comment written in [Markdown](http://commonmark.org). *You* may know the syntax for inserting a link, but does your whole audience?
+			So we've given people the **choice** to use a more familiar, discoverable interface.
+		</textarea>
+		<script src="prosemirror.js"></script>
+		<script>
+			var proseMirror = ProseMirror.toProseMirror(document.querySelector("#markdown_content"));
+		</script>
+	</body>
+</html>
+

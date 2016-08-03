@@ -1,11 +1,12 @@
 body {
     margin:0;
     font-family:arial, helvetica, sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 #container {
     padding-left:7px;
     padding-right:7px;
-    overflow-x: hidden;
 }
 .comment_box, .more_box, .reply_expand {
     border: 2px solid #D7D7D7;
@@ -170,23 +171,28 @@ h5, h6 {
     margin-top:8px;
 }
 
-textarea {
+textarea, .ProseMirror {
     border: 1px solid #999999;
     border-radius: 4px;
     width:100%;
     margin-right:4px;
-    margin:0 0 0 0;
+    margin:0;
     box-sizing:border-box;
     border-bottom-left-radius:0;
     text-decoration: none;
     min-height: 100px;
+    background-color: #fff;
+    color: #000;
+}
+
+textarea {
+    resize: vertical;
+    margin-bottom: -5px;
 }
 
 button {
     position:relative;
-    top:-5px;
     border:2px solid #2D71B0;
-    /*-webkit-border-radius: 4px;*/
     border-radius: 3px;
     border-top-left-radius:0;
     border-top-right-radius:0;
@@ -198,8 +204,6 @@ button {
     font-weight:bold;
     color: #FFFFFF;
     background-color: #6AABE8;
-    /*background-image:-webkit-gradient(linear, left top, left bottom, from(#6AABE8), to(#5F99CF));*/
-    /*background-image: -webkit-linear-gradient(top, #6AABE8, #5F99CF);*/
     background-image: linear-gradient(to bottom, #6AABE8, #5F99CF);
 }
 
@@ -326,29 +330,23 @@ pre {
     overflow-y: scroll;
 }
 
-.editor-toolbar {
-    background-color: white;
-    opacity: 1 !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
+.ProseMirror-tooltip {
+    z-index: 100;
 }
 
-.editor-toolbar:focus {
-    background-color: white;
-    opacity: 1 !important;
+.ProseMirror-tooltip-pointer {
+    z-index: 101;
+    margin-top: -1px;
 }
 
-.editor-statusbar {
-    float: right;
-    display: inline-flex;
+.comment_text.editing {
+    overflow-x: unset;
 }
 
-.editor-toolbar a {
-    width: 22px !important;
-    height: 22px !important;
+.ProseMirror-content p:first-child {
+    margin-top: 5px;
 }
 
-.CodeMirror, .CodeMirror-scroll {
-    min-height: 100px !important;
-    margin-bottom: 6px;
+.ProseMirror-content {
+    margin: 0 4px;
 }

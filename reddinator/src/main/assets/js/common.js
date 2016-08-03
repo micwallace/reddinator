@@ -108,12 +108,12 @@ function deleteCallback(thingId){
     $("#"+thingId).remove();
 }
 
-var mdeEditors = {};
+var mdEditors = {};
 
 function removeCommentEditor(thingId){
-    if (mdeEditors.hasOwnProperty(thingId)){
-        mdeEditors[thingId].toTextArea();
-        delete mdeEditors[thingId];
+    if (mdEditors.hasOwnProperty(thingId)){
+        mdEditors[thingId].toTextArea();
+        delete mdEditors[thingId];
     }
 }
 
@@ -132,9 +132,8 @@ function startEdit(thingId){
         editElem.children().appendTo(post_box);
         post_box.addClass('editing');
         $('.message_reply, .post_reply').hide(); // hide other reply boxes
-        if (useMdeEditor){
-            mdeEditors[thingId] = initialiseMarkdownEditor(textarea);
-            textarea.parent().find(".CodeMirror-code").focus();
+        if (useMdEditor){
+            mdEditors[thingId] = initialiseMarkdownEditor(textarea);
         } else {
             textarea.focus();
         }
@@ -175,17 +174,9 @@ function editCallback(thingId, commentData){
     }
 }
 
-var useMdeEditor = false;
+var useMdEditor = false;
 
 function initialiseMarkdownEditor(textarea){
-    return new SimpleMDE({
-        autofocus: true,
-        element: textarea[0],
-        forceSync: true,
-        showIcons: ["code", "table"],
-        hideIcons: ["guide"],
-        status: ["lines", "words"],
-        spellChecker: false,
-        autoDownloadFontAwesome: false
-    });
+    if (ProseMirror)
+        return ProseMirror.toProseMirror(textarea[0]);
 }
