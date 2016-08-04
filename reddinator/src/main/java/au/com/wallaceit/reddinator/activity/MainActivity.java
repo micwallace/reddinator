@@ -521,13 +521,33 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(theme.getValue("header_color"))));
         srtext.setTextColor(Color.parseColor(theme.getValue("header_text")));
 
-        int iconColor = Color.parseColor(theme.getValue("default_icon"));
+        final int iconColor = Color.parseColor(theme.getValue("default_icon"));
         int[] shadow = new int[]{3, 4, 4, Color.parseColor(theme.getValue("icon_shadow"))};
 
         refreshbutton.setTextColor(iconColor);
         refreshbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
         ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
-        ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
+
+        // Try to set actionbar overflow icon color
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            @SuppressLint("PrivateResource")
+            final String overflowDescription = getString(R.string.abc_action_menu_overflow_description);
+            final ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
+            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                @Override
+                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                    final ArrayList<View> outViews = new ArrayList<>();
+                    decorView.findViewsWithText(outViews, overflowDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
+                    if (outViews.isEmpty()) {
+                        return;
+                    }
+                    ImageView overflow = (ImageView) outViews.get(0);
+                    overflow.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP);
+                    decorView.removeOnLayoutChangeListener(this);
+                }
+            });
+        }*/
     }
 
     private void refreshTheme(){

@@ -14,7 +14,7 @@ function setTheme(themeColors){
     $(".fa-star").css("color", themeColors["votes_icon"]);
     $(".comment_score").css("color", themeColors["votes_text"]);
     $(".fa-comment").css("color", themeColors["comments_icon"]);
-    $(".comment_reply_count").css("color", themeColors["comments_text"]);
+    $(".comment_reply_count").css("color", themeColors["comments_count"]);
     $("button").css("background-color", themeColors["header_color"]);
     $("body").show();
 }

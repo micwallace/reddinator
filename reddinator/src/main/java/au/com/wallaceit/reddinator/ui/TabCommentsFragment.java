@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -120,6 +121,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         if (mFirstTime) {
             ll = (LinearLayout) inflater.inflate(R.layout.webtab, container, false);
             mWebView = (WebView) ll.findViewById(R.id.webView1);
+            int backgroundColor = Color.parseColor(((ViewRedditActivity) getActivity()).getCurrentTheme().getValue("background_color"));
+            mWebView.setBackgroundColor(backgroundColor);
             WebSettings webSettings = mWebView.getSettings();
             webSettings.setJavaScriptEnabled(true); // enable ecmascript
             webSettings.setDomStorageEnabled(true); // some video sites require dom storage

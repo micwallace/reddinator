@@ -18,7 +18,6 @@
 package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,8 +30,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
@@ -276,14 +275,14 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private void setThemeColors(){
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
-        sortBtn.getBackground().setColorFilter(headerColor, PorterDuff.Mode.ADD);
-        addButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.ADD);
-        refreshButton.getBackground().setColorFilter(headerColor, PorterDuff.Mode.ADD);
+        ColorMatrixColorFilter filter = Reddinator.getColorFilterFromColor(headerColor, 210);
+        sortBtn.getBackground().setColorFilter(filter);
+        addButton.getBackground().setColorFilter(filter);
+        refreshButton.getBackground().setColorFilter(filter);
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));

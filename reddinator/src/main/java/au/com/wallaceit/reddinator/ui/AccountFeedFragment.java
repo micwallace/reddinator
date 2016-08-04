@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -54,6 +55,7 @@ import au.com.wallaceit.reddinator.activity.CommentsContextDialogActivity;
 import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
@@ -112,7 +114,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         // fixes for activity_webview not taking keyboard input on some devices
         mWebView = new RWebView(mContext);
         mWebView.setLayoutParams(new WebView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 0, 0));
+        int backgroundColor = Color.parseColor(((ActivityInterface) getActivity()).getCurrentTheme().getValue("background_color"));
+        mWebView.setBackgroundColor(backgroundColor);
         ll.addView(mWebView);
+
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true); // enable ecmascript
         webSettings.setDomStorageEnabled(true); // some video sites require dom storage
@@ -348,6 +353,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     public interface ActivityInterface {
         void setTitleText(String titleText);
+        ThemeManager.Theme getCurrentTheme();
     }
 
     private void loadComments(String sort) {

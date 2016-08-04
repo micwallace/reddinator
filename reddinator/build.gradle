@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
     }
 }
 
@@ -15,11 +15,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion '21.1.2'
     defaultConfig {
         minSdkVersion 11
-        targetSdkVersion 23
+        targetSdkVersion 24
         return
     }
     signingConfigs {
@@ -43,9 +43,10 @@ android {
     }
 }
 
+
 dependencies {
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:support-v4:24.1.1'
+    compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'org.mod4j.org.apache.commons:lang:2.1.0'
     compile 'com.joanzapata.android:android-iconify:1.0.9'

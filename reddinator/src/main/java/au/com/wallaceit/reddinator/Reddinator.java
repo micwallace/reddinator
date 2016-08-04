@@ -32,6 +32,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -530,5 +532,22 @@ public class Reddinator extends Application {
         } else {
             webView.loadUrl("javascript:"+javascript);
         }
+    }
+
+    public static ColorMatrixColorFilter getColorFilterFromColor(int color, int lighten){
+        float r = (Color.red(color)+lighten) / 255f;
+        float g = (Color.green(color)+lighten) / 255f;
+        float b = (Color.blue(color)+lighten) / 255f;
+        ColorMatrix cm = new ColorMatrix(new float[] {
+                // Change red channel
+                r, 0, 0, 0, 0,
+                // Change green channel
+                0, g, 0, 0, 0,
+                // Change blue channel
+                0, 0, b, 0, 0,
+                // Keep alpha channel
+                0, 0, 0, 1, 0,
+        });
+        return new ColorMatrixColorFilter(cm);
     }
 }

@@ -117,6 +117,8 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
     private IconTextView commentsIcon;
     private TextView infoText;
     private IconTextView lockButton;
+    private IconTextView refreshButton;
+    private IconTextView selfTextButton;
     private boolean viewsLocked = false;
 
     /**
@@ -223,7 +225,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 viewPager.setPagingEnabled(!viewsLocked);
             }
         });
-        IconTextView refreshButton = (IconTextView) findViewById(R.id.refresh_button);
+        refreshButton = (IconTextView) findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,6 +233,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 loadPostTask = new LoadPostTask(global, ViewRedditActivity.this).execute(postPermalink, "best");
             }
         });
+        selfTextButton = (IconTextView) findViewById(R.id.selftext_button);
         // theme
         updateTheme();
         // load post data; once loaded comment data is passed to the comment fragment
@@ -262,11 +265,15 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         ThemeManager.Theme theme = getCurrentTheme();
         int headerBg = Color.parseColor(theme.getValue("header_color"));
         int headerText = Color.parseColor(theme.getValue("header_text"));
+        int defaultIcon = Color.parseColor(theme.getValue("default_icon"));
         tabsIndicator.setBackgroundColor(headerBg);
         tabsIndicator.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabsIndicator.setTextColor(headerText);
         // info panel
         findViewById(R.id.info_panel).setBackgroundColor(headerBg);
+        lockButton.setTextColor(defaultIcon);
+        refreshButton.setTextColor(defaultIcon);
+        selfTextButton.setTextColor(defaultIcon);
         sourceText.setTextColor(headerText);
         titleText.setTextColor(headerText);
         infoText.setTextColor(headerText);
@@ -705,8 +712,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
             try {
                 final String selftext = postInfo.getString("selftext_html");
                 if (!selftext.equals("null")){
-                    IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
-                    textButton.setOnClickListener(new View.OnClickListener() {
+                    selfTextButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
@@ -717,7 +723,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
 
                     }
                 });
-                    textButton.setVisibility(View.VISIBLE);
+                    selfTextButton.setVisibility(View.VISIBLE);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
