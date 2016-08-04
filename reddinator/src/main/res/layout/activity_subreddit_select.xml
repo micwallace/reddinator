@@ -43,7 +43,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:textStyle="bold"
-            android:textColor="#FF4500" />
+            android:textColor="#e63d00" />
     </RelativeLayout>
 
     <include

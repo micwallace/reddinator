@@ -278,23 +278,24 @@ public class SubredditSelectActivity extends Activity implements SubscriptionEdi
     private void setThemeColors(){
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
+        int headerText = Color.parseColor(theme.getValue("header_text"));
         findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
         ColorMatrixColorFilter filter = Reddinator.getColorFilterFromColor(headerColor, 210);
         sortBtn.getBackground().setColorFilter(filter);
         addButton.getBackground().setColorFilter(filter);
+        addButton.setTextColor(headerText);
         refreshButton.getBackground().setColorFilter(filter);
+        refreshButton.setTextColor(headerText);
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
-        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
-        int buttonIconColor = Color.parseColor("#666666");
-        refreshButton.setTextColor(buttonIconColor);
-        addButton.setTextColor(buttonIconColor);
-        sortBtn.setCompoundDrawables(new IconDrawable(this, Iconify.IconValue.fa_sort).color(buttonIconColor).sizeDp(24), null, null, null);
+        tabs.setTextColor(headerText);
+        sortBtn.setPadding(18, sortBtn.getPaddingTop(), sortBtn.getPaddingRight(), sortBtn.getPaddingBottom());
+        sortBtn.setCompoundDrawables(new IconDrawable(this, Iconify.IconValue.fa_sort).color(headerText).sizeDp(24), null, null, null);
         if (global.mRedditData.isLoggedIn()) {
-            refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_refresh).color(buttonIconColor).sizeDp(24), null, null, null);
+            refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_refresh).color(headerText).sizeDp(24), null, null, null);
             refreshButton.setText(R.string.refresh);
         } else {
-            refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_key).color(buttonIconColor).sizeDp(24), null, null, null);
+            refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_key).color(headerText).sizeDp(24), null, null, null);
             refreshButton.setText(R.string.login);
         }
         refreshButton.setCompoundDrawablePadding(6);

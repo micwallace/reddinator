@@ -69,8 +69,8 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
@@ -533,20 +533,19 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             @SuppressLint("PrivateResource")
             final String overflowDescription = getString(R.string.abc_action_menu_overflow_description);
             final ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
-            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            decorView.postDelayed(new Runnable() {
                 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 @Override
-                public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                public void run() {
                     final ArrayList<View> outViews = new ArrayList<>();
                     decorView.findViewsWithText(outViews, overflowDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
                     if (outViews.isEmpty()) {
                         return;
                     }
                     ImageView overflow = (ImageView) outViews.get(0);
-                    overflow.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP);
-                    decorView.removeOnLayoutChangeListener(this);
+                    overflow.setColorFilter(Reddinator.getColorFilterFromColor(iconColor, 0));
                 }
-            });
+            }, 500);
         }*/
     }
 
