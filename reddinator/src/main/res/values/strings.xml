@@ -358,4 +358,7 @@
     <string name="comment_editor_pref_title">Use Markdown Editor (beta)</string>
     <string name="comment_editor_pref_summary">Use markdown editor for comments &amp; mesages</string>
     <string name="random_subreddit">Random subreddit</string>
+    <string name="clear_cookies_title">Clear Cookies</string>
+    <string name="clear_cookies_summary">Clear all web view cookies</string>
+    <string name="cookies_cleared">Cookies have been successfully cleared</string>
 </resources>

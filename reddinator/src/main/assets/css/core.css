@@ -1,6 +1,28 @@
+/* TODO: Maybe....Possible font preference
+@font-face {
+    font-family: OpenSans;
+    src: url(file:///android_asset/css/fonts/OpenSans-Regular.ttf);
+}
+@font-face {
+    font-family: OpenSans;
+    src: url(file:///android_asset/css/fonts/OpenSans-Italic.ttf);
+    font-style: italic;
+}
+@font-face {
+    font-family: OpenSans;
+    src: url(file:///android_asset/css/fonts/OpenSans-Bold.ttf);
+    font-weight: bold;
+}
+@font-face {
+    font-family: OpenSans;
+    src: url(file:///android_asset/css/fonts/OpenSans-BoldItalic.ttf);
+    font-style: italic;
+    font-weight: bold;
+}*/
+
 body {
     margin:0;
-    font-family:arial, helvetica, sans-serif;
+    font-family: "OpenSans", helvetica, sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -330,12 +352,8 @@ pre {
     overflow-y: scroll;
 }
 
-.ProseMirror-tooltip {
-    z-index: 100;
-}
-
 .ProseMirror-tooltip-pointer {
-    z-index: 101;
+    z-index: 12;
     margin-top: -1px;
 }
 
@@ -349,4 +367,8 @@ pre {
 
 .ProseMirror-content {
     margin: 0 4px;
+}
+
+.ProseMirror-menuitem:last-child {
+    margin-right: 0;
 }

@@ -175,6 +175,9 @@
             android:entryValues="@array/fontsize_list_preference"
             android:defaultValue="20"
             android:dialogTitle="@string/reddit_content_font_pref_title" />
+        <Preference android:title="@string/clear_cookies_title"
+            android:key="clear_cookies"
+            android:summary="@string/clear_cookies_summary"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

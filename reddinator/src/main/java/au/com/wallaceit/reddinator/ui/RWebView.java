@@ -51,6 +51,7 @@ public class RWebView extends android.webkit.WebView {
     public RWebView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
+        this.getSettings().setDefaultTextEncodingName("utf-8");
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -11,6 +12,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
+import android.webkit.CookieManager;
 import android.widget.Toast;
 
 import java.util.LinkedHashMap;
@@ -34,6 +36,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
     private PreferenceCategory appearanceCat;
     private ListPreference themePref;
     private Preference themeEditorButton;
+    private Preference clearCookiesBtn;
     @Override
     public void onCreate(final Bundle savedInstanceState)
     {
@@ -44,9 +47,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String token = mSharedPreferences.getString("oauthtoken", "");
-        if (!token.equals("")){
+        if (global.mRedditData.isLoggedIn()){
             // Load the account preferences when logged in
             addPreferencesFromResource(R.xml.account_preferences);
             Preference logoutbtn = findPreference("logout");
@@ -54,13 +55,14 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             logoutbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    // clear oauth token and userdata and load default subreddits
+                    // clear oauth token, userdata, webview cookies and load default subreddits
                     global.mRedditData.purgeAccountData();
                     global.getSubredditManager().clearMultis();
                     global.getSubredditManager().loadDefaultSubreddits();
+                    clearWebviewCookies();
                     // remove mail check alarm
                     MailCheckReceiver.setAlarm(getActivity());
-                    // remove account prefs
+                    // remove account prefs screen
                     getPreferenceScreen().removePreference(accountSettings);
                     Toast.makeText(getActivity(), getResources().getString(R.string.account_disconnected), Toast.LENGTH_LONG).show();
                     return true;
@@ -116,9 +118,29 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             });
         }
 
+        clearCookiesBtn = findPreference("clear_cookies");
+        clearCookiesBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                clearWebviewCookies();
+                Toast.makeText(getActivity(), getResources().getString(R.string.cookies_cleared), Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
         themePref = (ListPreference) findPreference("appthemepref");
 
         mSharedPreferences.registerOnSharedPreferenceChangeListener(PrefsFragment.this);
+    }
+
+    private void clearWebviewCookies(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().removeAllCookies(null);
+        } else {
+            //noinspection deprecation
+            CookieManager.getInstance().removeAllCookie();
+        }
+        clearCookiesBtn.setEnabled(false);
     }
 
     @Override

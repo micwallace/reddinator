@@ -144,6 +144,34 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         if (view != null) {
             view.setPadding(5, 0, 5, 0);
         }
+        // setup needed members
+        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
+            // open post via url, extract permalink and postId
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)");
+            Matcher matcher = pattern.matcher(getIntent().getDataString());
+            if (matcher.find()){
+                //System.out.println(matcher.group(2)+" "+matcher.group(1));
+                postPermalink = matcher.group(1);
+                redditItemId = "t3_"+matcher.group(2);
+            } else {
+                Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
+                this.finish();
+                return;
+            }
+        } else {
+            // from widget, app or account feed post click
+            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+
+            redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+            postUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+            postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
+            userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
+            // Get selected item from feed and user vote preference
+            if (getIntent().getBooleanExtra("submitted", false)){
+                userLikes = "true";
+            }
+        }
         // set content view
         setContentView(R.layout.activity_viewreddit);
         // Setup View Pager and widget
@@ -205,36 +233,8 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         });
         // theme
         updateTheme();
-        // setup needed members
-        if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
-            // open post via url, extract permalink and postId
-            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)");
-            Matcher matcher = pattern.matcher(getIntent().getDataString());
-            if (matcher.find()){
-                //System.out.println(matcher.group(2)+" "+matcher.group(1));
-                postPermalink = matcher.group(1);
-                redditItemId = "t3_"+matcher.group(2);
-            } else {
-                Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
-                this.finish();
-                return;
-            }
-        } else {
-            // from widget, app or account feed post click
-            widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
-
-            redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-            postUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-            postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-            userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
-            // Get selected item from feed and user vote preference
-            if (getIntent().getBooleanExtra("submitted", false)){
-                userLikes = "true";
-            }
-        }
         // load post data; once loaded comment data is passed to the comment fragment
-        // the content view is also loaded if postUrl is not provided via extras
+        // The content view is also loaded if postUrl is not provided via extras
         loadPostTask = new LoadPostTask(global, this).execute(postPermalink, "best");
 
         // Init rate dialog
@@ -691,7 +691,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         try {
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
-            titleText.setText(postInfo.getString("title"));
+            titleText.setText(Html.fromHtml(postInfo.getString("title")));
 
             String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
             infoText.setText(Html.fromHtml(infoStr));
@@ -756,8 +756,10 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                 default:
                 case 0: // content
                     // use reddit mobile view
+                    System.out.println(postUrl);
                     if (postUrl !=null && postUrl.contains("//www.reddit.com/")){
                         postUrl = postUrl.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
+                        System.out.println(postUrl);
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
                     return TabWebFragment.init(postUrl, fontsize, (postUrl!=null && (!commentsPref || (preloadPref==3 || preloadPref==1))));

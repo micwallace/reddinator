@@ -128,7 +128,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             webSettings.setDisplayZoomControls(false);
             int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
             webSettings.setDefaultFontSize(fontSize);
-            webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+            //webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
             // get theme values with comments layout prefs included
             final String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);

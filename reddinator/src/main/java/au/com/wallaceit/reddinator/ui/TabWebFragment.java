@@ -116,11 +116,11 @@ public class TabWebFragment extends Fragment {
             boolean multi = getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
             mWebView.getSettings().setDisplayZoomControls(!multi);
             mWebView.getSettings().setDefaultFontSize(fontsize);
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                WebView.setWebContentsDebuggingEnabled(true);
-            }*/
             // enable cookies
             CookieManager.getInstance().setAcceptCookie(true);
+            // Prevent cookie from redirecting to desktop site
+            CookieManager.getInstance().setCookie(".reddit.com", "mweb-no-redirect=");
+
             mChromeClient = newchromeclient;
 
             mWebView.setWebChromeClient(mChromeClient);

@@ -481,6 +481,7 @@ public class Reddinator extends Application {
         try {
             File file = new File(getCacheDir().getPath() + Reddinator.THUMB_CACHE_DIR, redditId + ".png");
             if (!file.getParentFile().exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 file.getParentFile().mkdirs();
             }
             FileOutputStream fos = new FileOutputStream(file);
@@ -499,6 +500,7 @@ public class Reddinator extends Application {
             for (File file : cacheDir.listFiles()) {
                 long diff = System.currentTimeMillis() - file.lastModified();
                 if (diff > 86400000) // delete cached images older than 24 hours
+                    //noinspection ResultOfMethodCallIgnored
                     file.delete();
             }
     }

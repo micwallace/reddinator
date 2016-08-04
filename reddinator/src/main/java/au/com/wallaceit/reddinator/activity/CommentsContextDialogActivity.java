@@ -141,7 +141,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         webSettings.setDisplayZoomControls(false);
         int fontSize = Integer.parseInt(mSharedPreferences.getString("commentfontpref", "18"));
         webSettings.setDefaultFontSize(fontSize);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        //webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.setFocusable(true);
         webView.setFocusableInTouchMode(true);
         webView.requestFocus(View.FOCUS_DOWN);
@@ -214,7 +214,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         try {
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
-            titleText.setText(postInfo.getString("title"));
+            titleText.setText(Html.fromHtml(postInfo.getString("title")));
 
             String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
             infoText.setText(Html.fromHtml(infoStr));

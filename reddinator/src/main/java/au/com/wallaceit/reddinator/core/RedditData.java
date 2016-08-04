@@ -80,7 +80,7 @@ public class RedditData {
         userAgent += " (by /u/micwallace)";
         // load account
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String tokenStr = sharedPrefs.getString("oauthtoken", "");
+        String tokenStr = sharedPrefs.getString("oauthtoken", null);
         try {
             userInfo = new JSONObject(sharedPrefs.getString("user_info", "{}"));
         } catch (JSONException e) {
@@ -90,7 +90,7 @@ public class RedditData {
         username = sharedPrefs.getString("username", "");
         inboxCount = sharedPrefs.getInt("inbox_count", 0);
         lastUpdateTime = sharedPrefs.getLong("last_info_update", 0);
-        if (!tokenStr.equals("")) {
+        if (tokenStr!=null) {
             try {
                 oauthToken = new JSONObject(tokenStr);
             } catch (JSONException e) {
@@ -99,8 +99,8 @@ public class RedditData {
             }
         }
         // load app only oauth token
-        String appTokenStr = sharedPrefs.getString("oauthAppToken", "");
-        if (!appTokenStr.equals("")) {
+        String appTokenStr = sharedPrefs.getString("oauthAppToken", null);
+        if (appTokenStr!=null) {
             try {
                 oauthAppToken = new JSONObject(appTokenStr);
             } catch (JSONException e) {
@@ -124,7 +124,13 @@ public class RedditData {
         oauthToken = null;
         username = null;
         userInfo = new JSONObject();
-        saveUserData();
+        SharedPreferences.Editor edit = sharedPrefs.edit();
+        edit.remove("oauthtoken");
+        edit.remove("user_info");
+        edit.remove("username");
+        edit.remove("inbox_count");
+        edit.remove("last_info_update");
+        edit.apply();
     }
 
     // NON-AUTHED REQUESTS

@@ -3019,6 +3019,7 @@ var Input = function () {
       if (from == to && !text) return;
       var pm = this.pm,
           marks = pm.input.storedMarks || pm.doc.marksAt(from);
+          //console.log("insertText: "+text);
       var tr = pm.tr.replaceWith(from, to, text ? pm.schema.text(text, marks) : null);
       tr.setSelection(findSelection && findSelection(tr.doc) || findSelectionNear(tr.doc.resolve(tr.map(to)), -1, true));
       tr.applyAndScroll();
@@ -6265,7 +6266,7 @@ var InputRules = function () {
 
           textBefore = _getContext.textBefore;
           isCode = _getContext.isCode;
-
+            //console.log(isCode);
           if (isCode) return;
         }
         if (match = rule.match.exec(textBefore)) {
@@ -7566,7 +7567,8 @@ var icons = {
     width: 1024, height: 1024,
     path: "M219 310v329q0 7-5 12t-12 5q-8 0-13-5l-164-164q-5-5-5-13t5-13l164-164q5-5 13-5 7 0 12 5t5 12zM1024 749v109q0 7-5 12t-12 5h-987q-7 0-12-5t-5-12v-109q0-7 5-12t12-5h987q7 0 12 5t5 12zM1024 530v109q0 7-5 12t-12 5h-621q-7 0-12-5t-5-12v-109q0-7 5-12t12-5h621q7 0 12 5t5 12zM1024 310v109q0 7-5 12t-12 5h-621q-7 0-12-5t-5-12v-109q0-7 5-12t12-5h621q7 0 12 5t5 12zM1024 91v109q0 7-5 12t-12 5h-987q-7 0-12-5t-5-12v-109q0-7 5-12t12-5h987q7 0 12 5t5 12z"
   },
-  selectParentNode: { text: "⬚", css: "font-weight: bold" },
+  //original-text: ⬚
+  selectParentNode: { text: "\u2B06", css: "font-size: 13px; vertical-align:35%;" },
   undo: {
     width: 1024, height: 1024,
     path: "M761 1024c113-206 132-520-313-509v253l-384-384 384-384v248c534-13 594 472 313 775z"
