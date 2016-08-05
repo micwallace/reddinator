@@ -300,4 +300,9 @@
     <string name="copied_to_clipboard">Copiado al portapapeles</string>
     <string name="comment_editor_pref_title">Utilice el Mardown Editor (beta)</string>
     <string name="comment_editor_pref_summary">Utilice un markdown editor para comentarios y mesages</string>
+    <string name="clear_cookies_title">Eliminar Cookies</string>
+    <string name="clear_cookies_summary">Borrar todas las cookies web</string>
+    <string name="tl_header_text_2">Texto de Cabecera 2</string>
+    <string name="tl_header_color_2">Color de Cabecera 2</string>
+    <string name="cookies_cleared">Las cookies se han limpiado con éxito</string>
 </resources>
