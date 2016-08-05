@@ -1,25 +1,4 @@
-/* TODO: Maybe....Possible font preference
-@font-face {
-    font-family: OpenSans;
-    src: url(file:///android_asset/css/fonts/OpenSans-Regular.ttf);
-}
-@font-face {
-    font-family: OpenSans;
-    src: url(file:///android_asset/css/fonts/OpenSans-Italic.ttf);
-    font-style: italic;
-}
-@font-face {
-    font-family: OpenSans;
-    src: url(file:///android_asset/css/fonts/OpenSans-Bold.ttf);
-    font-weight: bold;
-}
-@font-face {
-    font-family: OpenSans;
-    src: url(file:///android_asset/css/fonts/OpenSans-BoldItalic.ttf);
-    font-style: italic;
-    font-weight: bold;
-}*/
-
+/* Core layout css for all account, messages and comments */
 body {
     margin:0;
     font-family: "Helvetica", helvetica, sans-serif;
@@ -225,15 +204,14 @@ button {
     text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
     font-weight:bold;
     color: #FFFFFF;
-    background-color: #6AABE8;
+    background-image: linear-gradient(to bottom, #6AABE8, #5F99CF);
 }
 
 button:active {
-    border:1px solid #317BBF;
-    background-color: #5E98CF;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#5E98CF), to(#4F7EAB));
-    background-image: -webkit-linear-gradient(top, #5E98CF, #4F7EAB);
-    background-image: linear-gradient(to bottom, #5E98CF, #4F7EAB);
+    opacity: .91;
+}
+button:disabled {
+    opacity: .65;
 }
 
 #loading_view {
@@ -247,8 +225,9 @@ button:active {
     text-align: center;
 }
 #header {
-    background-color: #5F99CF;
-    color: #FFFFF;
+    /*background-color: #5F99CF;
+    color: #FFFFF;*/
+    background: linear-gradient(#7BA7CE, #5F99CF);
     height:32px;
     padding: 5px;
     width: 100%;

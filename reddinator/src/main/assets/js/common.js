@@ -1,7 +1,7 @@
 
 function LightenDarkenColor(col,amt) {
     col = parseInt(col.substring(1, 7),16);
-    return (((col & 0x0000FF) + amt) | ((((col>> 8) & 0x00FF) + amt) << 8) | (((col >> 16) + amt) << 16)).toString(16);
+    return "#"+(((col & 0x0000FF) + amt) | ((((col>> 8) & 0x00FF) + amt) << 8) | (((col >> 16) + amt) << 16)).toString(16);
 }
 
 function setTheme(themeColors){
@@ -15,13 +15,21 @@ function setTheme(themeColors){
     $(".comment_score").css("color", themeColors["votes_text"]);
     $(".fa-comment").css("color", themeColors["comments_icon"]);
     $(".comment_reply_count").css("color", themeColors["comments_count"]);
-    var alt_color = LightenDarkenColor(themeColors['header_color_2'].substring(0, 6), -25);
-    var gradient = "linear-gradient(to bottom, #"+alt_color+", "+themeColors['header_color_2']+")";
-    //$("button").css("background-color", themeColors["header_color_2"]);
-    $("button").css("background-image", gradient);
+    var alt_color;
+    if (themeColors.hasOwnProperty('header_color_2')){
+        alt_color = LightenDarkenColor(themeColors['header_color_2'], -25);
+    } else {
+        themeColors['header_color_2'] = "#5F99CF";
+        themeColors["header_text_2"] = "#FFFFFF";
+        alt_color = "#6AABE8";
+    }
+    var gradient = "linear-gradient(to bottom, "+themeColors['header_color_2']+", "+alt_color+")";
+    //var alt_color2 = LightenDarkenColor(themeColors['header_color_2'], -30);
+    $("button").css("background", gradient);
+    $("button:active").css("background", alt_color);
     $("button").css("color", themeColors["header_text_2"]);
-    //$("#header").css("background-color", themeColors["header_color_2"]);
-    $("#header").css("background-image", gradient);
+    $("button").css("border", "2px solid "+themeColors['comments_border']);
+    $("#header").css("background", gradient);
     $("#header").css("color", themeColors["header_text_2"]);
     $("body").show();
 }
