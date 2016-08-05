@@ -28,7 +28,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -329,7 +328,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
             try {
                 String html = "&lt;p&gt;"+result.getString("subscribers")+" readers&lt;br/&gt;"+result.getString("accounts_active")+" users here now&lt;/p&gt;";
                 html += result.getString("description_html");
-                HtmlDialog.init(this, global.getSubredditManager().getCurrentFeedPath(widgetId), Html.fromHtml(html).toString())
+                HtmlDialog.init(this, global.getSubredditManager().getCurrentFeedPath(widgetId), Reddinator.fromHtml(html).toString())
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {

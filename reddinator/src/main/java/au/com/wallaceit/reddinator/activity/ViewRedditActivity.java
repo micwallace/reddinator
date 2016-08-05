@@ -35,11 +35,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.SparseArray;
@@ -77,6 +75,7 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.LoadPostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
+import au.com.wallaceit.reddinator.ui.ActionbarFragmentActivity;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.RedditViewPager;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -85,7 +84,7 @@ import au.com.wallaceit.reddinator.ui.TabWebFragment;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
-public class ViewRedditActivity extends FragmentActivity implements LoadPostTask.Callback, VoteTask.Callback {
+public class ViewRedditActivity extends ActionbarFragmentActivity implements LoadPostTask.Callback, VoteTask.Callback {
 
     private Reddinator global;
     private SharedPreferences prefs;
@@ -128,12 +127,13 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         // request loading bar first
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        super.onCreate(savedInstanceState);
+
         global = ((Reddinator) ViewRedditActivity.this.getApplicationContext());
         prefs = PreferenceManager.getDefaultSharedPreferences(ViewRedditActivity.this);
         resources = getResources();
@@ -698,10 +698,10 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
         try {
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
-            titleText.setText(Html.fromHtml(postInfo.getString("title")));
+            titleText.setText(Reddinator.fromHtml(postInfo.getString("title")));
 
             String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
-            infoText.setText(Html.fromHtml(infoStr));
+            infoText.setText(Reddinator.fromHtml(infoStr));
             infoText.setMovementMethod(LinkMovementMethod.getInstance());
 
             int score = postInfo.getInt("score");
@@ -717,7 +717,7 @@ public class ViewRedditActivity extends FragmentActivity implements LoadPostTask
                         public void onClick(View v) {
 
                             String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Html.fromHtml(selftext).toString();
+                            html += Reddinator.fromHtml(selftext).toString();
                             html += "</body></html>";
                             HtmlDialog.init(ViewRedditActivity.this, getString(R.string.post_text), html);
 

@@ -42,8 +42,9 @@ import java.lang.reflect.Method;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends ActionbarActivity {
     WebView wv;
     WebViewClient wvclient;
     Activity mActivity;
@@ -53,11 +54,12 @@ public class WebViewActivity extends Activity {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        global = ((Reddinator) WebViewActivity.this.getApplicationContext());
         // request loading bar
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
+        super.onCreate(savedInstanceState);
+
+        global = ((Reddinator) WebViewActivity.this.getApplicationContext());
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

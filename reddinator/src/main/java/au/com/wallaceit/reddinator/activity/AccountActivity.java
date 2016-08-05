@@ -32,7 +32,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,10 +60,11 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
+import au.com.wallaceit.reddinator.ui.ActionbarFragmentActivity;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
-public class AccountActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
+public class AccountActivity extends ActionbarFragmentActivity implements AccountFeedFragment.ActivityInterface {
 
     private Reddinator global;
     private MenuItem messageIcon;
@@ -86,12 +86,12 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        global = ((Reddinator) AccountActivity.this.getApplicationContext());
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        super.onCreate(savedInstanceState);
 
+        global = ((Reddinator) AccountActivity.this.getApplicationContext());
         resources = getResources();
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
@@ -169,7 +169,7 @@ public class AccountActivity extends FragmentActivity implements AccountFeedFrag
         String linkKarma = NumberFormat.getInstance().format(global.mRedditData.getLinkKarma());
         String commentKarma = NumberFormat.getInstance().format(global.mRedditData.getCommentKarma());
         actionBar.setSubtitle(
-                Html.fromHtml("<font color='" + theme.getValue("votes_icon") + "'>" + linkKarma + "</font> - " +
+                Reddinator.fromHtml("<font color='" + theme.getValue("votes_icon") + "'>" + linkKarma + "</font> - " +
                         "<font color='" + theme.getValue("comments_icon") + "'>" + commentKarma + "</font>"));
     }
 

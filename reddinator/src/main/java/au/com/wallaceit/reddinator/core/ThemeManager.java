@@ -23,7 +23,6 @@ package au.com.wallaceit.reddinator.core;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.text.Html;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +34,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.UUID;
+
+import au.com.wallaceit.reddinator.Reddinator;
 
 public class ThemeManager {
     private Context context;
@@ -167,7 +168,7 @@ public class ThemeManager {
                 return false;
 
             // decode Html entities in name
-            theme.put("name", Html.fromHtml(theme.getString("name")));
+            theme.put("name", Reddinator.fromHtml(theme.getString("name")));
 
             JSONObject impValues = theme.getJSONObject("values");
             JSONObject defaults = defaultValues.getTheme().getJSONObject("values");

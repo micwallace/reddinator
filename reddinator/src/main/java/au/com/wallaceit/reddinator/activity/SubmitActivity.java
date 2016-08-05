@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -161,7 +160,7 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
                 if (result.has("errors")) {
                     JSONArray errors = result.getJSONArray("errors");
                     if (errors.length()>0) {
-                        submitText.setText(Html.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
+                        submitText.setText(Reddinator.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
                         return;
                     }
                 }
@@ -271,7 +270,7 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            submitText.setText(Html.fromHtml(result?Html.fromHtml(submitHtml).toString():"<strong><font color=\"red\">"+resources.getString(R.string.sub_doesnt_look_valid)+"</font></strong>"));
+            submitText.setText(Reddinator.fromHtml(result?Reddinator.fromHtml(submitHtml).toString():"<strong><font color=\"red\">"+resources.getString(R.string.sub_doesnt_look_valid)+"</font></strong>"));
         }
     }
 

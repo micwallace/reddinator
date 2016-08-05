@@ -34,7 +34,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -528,25 +527,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         refreshbutton.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
         ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
 
-        // Try to set actionbar overflow icon color
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            @SuppressLint("PrivateResource")
-            final String overflowDescription = getString(R.string.abc_action_menu_overflow_description);
-            final ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
-            decorView.postDelayed(new Runnable() {
-                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                @Override
-                public void run() {
-                    final ArrayList<View> outViews = new ArrayList<>();
-                    decorView.findViewsWithText(outViews, overflowDescription, View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION);
-                    if (outViews.isEmpty()) {
-                        return;
-                    }
-                    ImageView overflow = (ImageView) outViews.get(0);
-                    overflow.setColorFilter(Reddinator.getColorFilterFromColor(iconColor, 0));
-                }
-            }, 500);
-        }*/
+        // Set actionbar overflow icon drawable
+        Reddinator.updateActionbarOverflowIcon(this, iconColor);
     }
 
     private void refreshTheme(){
@@ -634,7 +616,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             try {
                 String html = "&lt;p&gt;"+result.getString("subscribers")+" readers&lt;br/&gt;"+result.getString("accounts_active")+" users here now&lt;/p&gt;";
                 html += result.getString("description_html");
-                HtmlDialog.init(this, subredditPath, Html.fromHtml(html).toString());
+                HtmlDialog.init(this, subredditPath, Reddinator.fromHtml(html).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -790,10 +772,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                                 // get third resolution (320px wide)
                                 if (arr.length() > 0){
                                     prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length() - 1) : arr.getJSONObject(2);
-                                    previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                                    previewUrl = Reddinator.fromHtml(prevObj.getString("url")).toString();
                                 } else {
                                     // or default to source
-                                    previewUrl = Html.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
+                                    previewUrl = Reddinator.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
                                 }
                             }
                         }
@@ -803,7 +785,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     return row; // The view is invalid;
                 }
                 // Update view
-                viewHolder.listheading.setText(Html.fromHtml(name).toString());
+                viewHolder.listheading.setText(Reddinator.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
                 String sourceText = (showItemSubreddit?subreddit+" - ":"")+domain;

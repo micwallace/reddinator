@@ -49,9 +49,10 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
+import au.com.wallaceit.reddinator.ui.ActionbarFragmentActivity;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 
-public class MessagesActivity extends FragmentActivity implements AccountFeedFragment.ActivityInterface {
+public class MessagesActivity extends ActionbarFragmentActivity implements AccountFeedFragment.ActivityInterface {
 
     private Reddinator global;
     private ActionBar actionBar;
@@ -70,12 +71,12 @@ public class MessagesActivity extends FragmentActivity implements AccountFeedFra
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        global = ((Reddinator) MessagesActivity.this.getApplicationContext());
         // set window flags
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+        super.onCreate(savedInstanceState);
 
+        global = ((Reddinator) MessagesActivity.this.getApplicationContext());
         resources = getResources();
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();

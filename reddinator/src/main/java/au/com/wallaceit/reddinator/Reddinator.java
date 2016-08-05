@@ -17,6 +17,7 @@
  */
 package au.com.wallaceit.reddinator;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -41,11 +42,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.joanzapata.android.iconify.IconDrawable;
+import com.joanzapata.android.iconify.Iconify;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,8 +76,6 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import de.cketti.library.changelog.ChangeLog;
-
-import static au.com.wallaceit.reddinator.R.layout.dialog_info;
 
 public class Reddinator extends Application {
 
@@ -411,8 +418,9 @@ public class Reddinator extends Application {
         return false;
     }
 
-    public static AlertDialog showInfoDialog(final Activity context, final boolean isInfo){
+    public static AlertDialog showInfoDialog(final Activity context, final boolean isUserInitiated){
         Resources resources = context.getResources();
+        @SuppressLint("InflateParams")
         LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(R.layout.dialog_info, null);
         // setup view pager
         final ViewPager pager = (ViewPager) aboutView.findViewById(R.id.pager);
@@ -433,7 +441,7 @@ public class Reddinator extends Application {
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
         // do install/upgrade dialog specific stuff
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!isInfo) {
+        if (!isUserInitiated) {
             if (prefs.getBoolean("welcomeDialogShown", false)){
                 pager.setCurrentItem(2); // show changelog view on upgrade
             } else {
@@ -541,10 +549,10 @@ public class Reddinator extends Application {
         }
     }
 
-    public static ColorMatrixColorFilter getColorFilterFromColor(int color, int lighten){
-        float r = (Color.red(color)+lighten) / 255f;
-        float g = (Color.green(color)+lighten) / 255f;
-        float b = (Color.blue(color)+lighten) / 255f;
+    public static ColorMatrixColorFilter getColorFilterFromColor(int color, int darken){
+        float r = (Color.red(color)+darken) / 255f;
+        float g = (Color.green(color)+darken) / 255f;
+        float b = (Color.blue(color)+darken) / 255f;
         ColorMatrix cm = new ColorMatrix(new float[] {
                 // Change red channel
                 r, 0, 0, 0, 0,
@@ -556,5 +564,48 @@ public class Reddinator extends Application {
                 0, 0, 0, 1, 0,
         });
         return new ColorMatrixColorFilter(cm);
+    }
+
+    public static Spanned fromHtml(String html){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            //noinspection deprecation
+            return Html.fromHtml(html);
+        }
+    }
+
+    public static void updateActionbarOverflowIcon(final Activity context, final int iconColor){
+        final ViewGroup decorView = (ViewGroup) context.getWindow().getDecorView();
+        decorView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<View> outViews = new ArrayList<>();
+                @SuppressLint("PrivateResource")
+                String overflowDescription = context.getString(R.string.abc_action_menu_overflow_description);
+                findViewsWithText(outViews, decorView, overflowDescription);
+                if (outViews.isEmpty()) {
+                    return;
+                }
+                ImageView overflow = (ImageView) outViews.get(0);
+                IconDrawable iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_bars).color(iconColor).sizeDp(28);
+                overflow.setImageDrawable(iconDrawable);
+            }
+            private void findViewsWithText(ArrayList<View> outViews, ViewGroup parent, String targetDescription) {
+                if (parent == null || TextUtils.isEmpty(targetDescription)) {
+                    return;
+                }
+                final int count = parent.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    final View child = parent.getChildAt(i);
+                    final CharSequence desc = child.getContentDescription();
+                    if (!TextUtils.isEmpty(desc) && targetDescription.equals(desc.toString())) {
+                        outViews.add(child);
+                    } else if (child instanceof ViewGroup && child.getVisibility() == View.VISIBLE) {
+                        findViewsWithText(outViews, (ViewGroup) child, targetDescription);
+                    }
+                }
+            }
+        }, 50);
     }
 }

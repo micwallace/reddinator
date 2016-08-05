@@ -19,7 +19,6 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
@@ -80,13 +79,14 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.tasks.LoadRandomTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
+import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 
-public class SubredditSelectActivity extends Activity implements SubscriptionEditTask.Callback, LoadRandomTask.Callback {
+public class SubredditSelectActivity extends ActionbarActivity implements SubscriptionEditTask.Callback, LoadRandomTask.Callback {
     private ArrayList<String> subredditList;
     private ArrayAdapter<String> subsAdapter;
     private MyMultisAdapter mMultiAdapter;

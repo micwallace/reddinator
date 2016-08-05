@@ -30,7 +30,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -457,7 +456,7 @@ public class SearchActivity extends Activity {
                     return row; // The view is invalid;
                 }
                 // Update view
-                viewHolder.listheading.setText(Html.fromHtml(name).toString());
+                viewHolder.listheading.setText(Reddinator.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
                 String sourceText = (restrictSub?subreddit+" - ":"")+domain;

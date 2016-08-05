@@ -31,7 +31,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -214,10 +213,10 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         try {
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
-            titleText.setText(Html.fromHtml(postInfo.getString("title")));
+            titleText.setText(Reddinator.fromHtml(postInfo.getString("title")));
 
             String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
-            infoText.setText(Html.fromHtml(infoStr));
+            infoText.setText(Reddinator.fromHtml(infoStr));
             infoText.setMovementMethod(LinkMovementMethod.getInstance());
 
             int score = postInfo.getInt("score");
@@ -235,7 +234,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                         public void onClick(View v) {
 
                             String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Html.fromHtml(selftext).toString();
+                            html += Reddinator.fromHtml(selftext).toString();
                             html += "</body></html>";
                             HtmlDialog.init(CommentsContextDialogActivity.this, getString(R.string.post_text), html);
 

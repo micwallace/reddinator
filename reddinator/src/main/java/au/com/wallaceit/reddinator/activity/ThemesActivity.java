@@ -2,7 +2,6 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.IconTextView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,9 +37,10 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.SubmitTask;
+import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 
 
-public class ThemesActivity extends ListActivity implements SubmitTask.Callback {
+public class ThemesActivity extends ActionbarActivity implements SubmitTask.Callback {
     private Reddinator global;
     private Resources resources;
     private HashMap<String, String> themesList;
@@ -48,6 +49,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
     public final static int REQUEST_CODE_UPDATE_WIDGETS = 1;
     public final static int REQUEST_CODE_NO_WIDGET_UPDATES = 2; // the parent activity will handle widget updates when the theme is changed
     public final static int RESULT_CODE_THEME_UPDATED = 6;
+    private ThemesListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,8 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
         themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_CUSTOM);
 
         setContentView(R.layout.activity_themes);
-
-        setListAdapter(new ThemesListAdapter());
+        adapter = new ThemesListAdapter();
+        ((ListView) findViewById(R.id.listview)).setAdapter(adapter);
 
         // get actionbar and set home button, pad the icon
         ActionBar actionBar = getActionBar();
@@ -124,7 +126,7 @@ public class ThemesActivity extends ListActivity implements SubmitTask.Callback 
 
     public void refreshList(){
         themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_CUSTOM);
-        ((BaseAdapter) getListView().getAdapter()).notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     @Override

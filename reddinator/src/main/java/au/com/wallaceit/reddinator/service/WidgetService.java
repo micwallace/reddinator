@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -211,10 +210,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                             // get third resolution (320px wide)
                             if (arr.length() > 0){
                                 prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length() - 1) : arr.getJSONObject(2);
-                                previewUrl = Html.fromHtml(prevObj.getString("url")).toString();
+                                previewUrl = Reddinator.fromHtml(prevObj.getString("url")).toString();
                             } else {
                                 // or default to source
-                                previewUrl = Html.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
+                                previewUrl = Reddinator.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
                             }
                         }
                     }
@@ -227,7 +226,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setImageViewBitmap(R.id.votesicon, images[0]);
             row.setImageViewBitmap(R.id.commentsicon, images[1]);
             row.setBitmap(R.id.widget_item_options, "setImageBitmap", images[2]);
-            row.setTextViewText(R.id.listheading, Html.fromHtml(title).toString());
+            row.setTextViewText(R.id.listheading, Reddinator.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors.get("headline_text"));
             row.setTextViewText(R.id.sourcetxt, (showItemSubreddit ? subreddit + " - " :"")+domain);
