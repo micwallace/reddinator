@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5F99CF"
     android:gravity="center_horizontal">
     <LinearLayout
         android:id="@+id/info_header"
@@ -18,7 +17,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="28sp"
             android:text="@string/app_name"
-            android:id="@+id/textView"
+            android:id="@+id/title"
             android:textColor="#fff"
             android:layout_gravity="center_horizontal" />
         <TextView
@@ -35,7 +34,7 @@
             android:layout_marginTop="4dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/about_thankyou"
-            android:id="@+id/textView2"
+            android:id="@+id/subtitle"
             android:textColor="#fff"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>

@@ -177,12 +177,12 @@ function appendPost(postData, prepend){
             if (thumbnail=="nsfw" || thumbnail=="self" || thumbnail=="default") {
                 switch (thumbnail) {
                     case "nsfw":
-                        thumbnail = "images/nsfw.png";
+                        thumbnail = "file:///android_asset/images/nsfw.png";
                         break;
                     case "default":
                     case "self":
                     default:
-                        thumbnail = "images/self_default.png";
+                        thumbnail = "file:///android_asset/images/self_default.png";
                         break;
                 }
             }

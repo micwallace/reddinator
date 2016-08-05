@@ -15,7 +15,14 @@ function setTheme(themeColors){
     $(".comment_score").css("color", themeColors["votes_text"]);
     $(".fa-comment").css("color", themeColors["comments_icon"]);
     $(".comment_reply_count").css("color", themeColors["comments_count"]);
-    $("button").css("background-color", themeColors["header_color"]);
+    var alt_color = LightenDarkenColor(themeColors['header_color_2'].substring(0, 6), -25);
+    var gradient = "linear-gradient(to bottom, #"+alt_color+", "+themeColors['header_color_2']+")";
+    //$("button").css("background-color", themeColors["header_color_2"]);
+    $("button").css("background-image", gradient);
+    $("button").css("color", themeColors["header_text_2"]);
+    //$("#header").css("background-color", themeColors["header_color_2"]);
+    $("#header").css("background-image", gradient);
+    $("#header").css("color", themeColors["header_text_2"]);
     $("body").show();
 }
 

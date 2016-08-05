@@ -22,7 +22,7 @@
 
 body {
     margin:0;
-    font-family: "OpenSans", helvetica, sans-serif;
+    font-family: "Helvetica", helvetica, sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
 }
@@ -226,7 +226,6 @@ button {
     font-weight:bold;
     color: #FFFFFF;
     background-color: #6AABE8;
-    background-image: linear-gradient(to bottom, #6AABE8, #5F99CF);
 }
 
 button:active {
@@ -249,8 +248,7 @@ button:active {
 }
 #header {
     background-color: #5F99CF;
-    background: linear-gradient(#7BA7CE, #5F99CF); /* Standard syntax */
-    color: #DBDBDB;
+    color: #FFFFF;
     height:32px;
     padding: 5px;
     width: 100%;

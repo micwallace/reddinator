@@ -216,6 +216,8 @@
     <string name="tl_widget_header_color">Widget Header</string>
     <string name="tl_header_color">App Tabs/Headers</string>
     <string name="tl_header_text">Header Text</string>
+    <string name="tl_header_color_2">Secondary Header Color</string>
+    <string name="tl_header_text_2">Secondary Header Text</string>
     <string name="tl_tab_indicator">Tab Indicator</string>
     <string name="tl_headline_text">Post Title Text</string>
     <string name="tl_comment_text">Comments Text</string>

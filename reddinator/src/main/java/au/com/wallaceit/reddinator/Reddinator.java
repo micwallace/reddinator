@@ -413,7 +413,7 @@ public class Reddinator extends Application {
 
     public static AlertDialog showInfoDialog(final Activity context, final boolean isInfo){
         Resources resources = context.getResources();
-        LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(dialog_info, null);
+        LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(R.layout.dialog_info, null);
         // setup view pager
         final ViewPager pager = (ViewPager) aboutView.findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
@@ -423,6 +423,11 @@ public class Reddinator extends Application {
         tabs.setViewPager(pager);
         ThemeManager.Theme theme = ((Reddinator) context.getApplicationContext()).mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
+        int headerColor2 = Color.parseColor(theme.getValue("header_color_2"));
+        int headerText2 = Color.parseColor(theme.getValue("header_text_2"));
+        aboutView.findViewById(R.id.info_header).setBackgroundColor(headerColor2);
+        ((TextView) aboutView.findViewById(R.id.title)).setTextColor(headerText2);
+        ((TextView) aboutView.findViewById(R.id.subtitle)).setTextColor(headerText2);
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
         tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
@@ -437,7 +442,9 @@ public class Reddinator extends Application {
             prefs.edit().putBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, true).apply();
         }
         // setup about view
-        ((TextView) aboutView.findViewById(R.id.version)).setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));
+        TextView version = ((TextView) aboutView.findViewById(R.id.version));
+        version.setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));
+        version.setTextColor(headerText2);
         aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

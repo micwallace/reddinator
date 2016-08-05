@@ -18,7 +18,7 @@ function init(themeColors, user){
     }
     switch (themeColors["comments_border_style"]){
         case "2":
-            var alt_color = LightenDarkenColor(themeColors['comments_border'], 40);
+            var alt_color = LightenDarkenColor(themeColors['comments_border'], 35);
             var style = $('<style>.even { border-color: #'+alt_color+' !important; }</style>');
             $('html > head').append(style);
             break;
