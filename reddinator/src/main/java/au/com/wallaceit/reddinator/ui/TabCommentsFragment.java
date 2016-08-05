@@ -100,12 +100,10 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         global = (Reddinator) mContext.getApplicationContext();
         resources = getResources();
-        //final boolean load = getArguments().getBoolean("load");
 
         // get needed activity values
         articleId = getArguments().getString("id");
         permalink = getArguments().getString("permalink");
-
     }
 
     public void updateTheme() {
