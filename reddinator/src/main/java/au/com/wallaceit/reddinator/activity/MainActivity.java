@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -78,7 +77,6 @@ import au.com.wallaceit.reddinator.ui.HtmlDialog;
 
 public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback {
 
-    private Context context;
     private SharedPreferences prefs;
     private Reddinator global;
     private ReddinatorListAdapter listAdapter;
@@ -103,9 +101,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = MainActivity.this;
-        global = ((Reddinator) context.getApplicationContext());
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        global = ((Reddinator) getApplicationContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
         // Setup actionbar
         appView = findViewById(R.id.appview);
@@ -168,7 +165,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             srclick = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent srintent = new Intent(context, SubredditSelectActivity.class);
+                    Intent srintent = new Intent(MainActivity.this, SubredditSelectActivity.class);
                     startActivityForResult(srintent, 0);
                 }
             };
@@ -273,11 +270,11 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     }
 
     public void openPostView(Bundle extras, boolean viewComments){
-        Intent intent = new Intent(context, ViewRedditActivity.class);
+        Intent intent = new Intent(MainActivity.this, ViewRedditActivity.class);
         intent.putExtras(extras);
         if (viewComments)
             intent.putExtra("view_comments", true);
-        context.startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -575,7 +572,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 listView.invalidateViews();
                 break;
         }
-        if (resultcode==6 || (data!=null && data.getBooleanExtra("themeupdate", true))){
+        if (resultcode==6 || (data!=null && data.getBooleanExtra("themeupdate", false))){
             refreshTheme();
         }
     }
@@ -670,13 +667,13 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             // load images
             images = new Bitmap[]{
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
+                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
             };
 
             // get font size preference
@@ -1168,7 +1165,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                         }
                     }
                 } else {
-                    Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                     hideAppLoader(false, true); // don't go to top of list and show error icon
                 }
             }

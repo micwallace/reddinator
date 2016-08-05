@@ -254,10 +254,11 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 3) {
+        if (resultCode == 6) {
             updateTheme();
-            if (pageAdapter.getRegisteredFragment(1)!=null && pageAdapter.getRegisteredFragment(1).getClass().getSimpleName().equals("TabCommentsFragment"))
+            if (pageAdapter.getRegisteredFragment(1)!=null && pageAdapter.getRegisteredFragment(1) instanceof TabCommentsFragment)
                 ((TabCommentsFragment) pageAdapter.getRegisteredFragment(1)).updateTheme();
+            setResult(6);
         }
     }
 
