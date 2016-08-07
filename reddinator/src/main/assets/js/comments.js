@@ -157,7 +157,7 @@ function appendComment(parentId, commentData, prepend){
         }
         commentElem.data("likes", commentData.likes);
     } else {
-        commentElem.data("likes", "null");
+        commentElem.data("likes", null);
     }
     // check if author
     if (commentData.author==username)

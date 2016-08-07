@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="3.17" versioncode="51">
+    <release version="3.17" versioncode="52">
         <change>Fixed image preview dialog to wrap image height.</change>
         <change>Added new overflow menu icon.</change>
         <change>Added additional theme options and tweaked inbuilt themes.</change>
+        <change>Added themes to search, subreddit search &amp; post options dialog.</change>
         <change>Updated markdown editor (beta: enable from preferences).</change>
         <change>Various bug fixes, see gitlog for details.</change>
     </release>
