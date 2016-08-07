@@ -228,13 +228,15 @@
 
     <string-array name="comments_border_pref_preferences">
         <item>Uniform</item>
-        <item>Alternate colors</item>
+        <item>Alternate lighter</item>
+        <item>Alternate darker</item>
         <item>Rainbow colors</item>
     </string-array>
 
     <string-array name="comments_border_pref_values">
         <item>1</item>
         <item>2</item>
+        <item>4</item>
         <item>3</item>
     </string-array>
 

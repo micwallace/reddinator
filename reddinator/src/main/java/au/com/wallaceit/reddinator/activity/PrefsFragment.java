@@ -149,6 +149,8 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             case "appthemepref":
                 setupThemePrefs();
             case "logoopenpref":
+            case "commentslayoutpref":
+            case "commentsborderpref":
                 themeChanged = true;
                 break;
         }

@@ -9,25 +9,7 @@ var color_downvote_active = "#9494FF";
 
 function init(themeColors, user){
     username = user;
-    // setup layout css
-    var themeColors = JSON.parse(themeColors);
-    switch (themeColors["comments_layout"]){
-        case "2":
-            addCssFile("file:///android_asset/css/styles/layout-alternate.css");
-        default:
-    }
-    switch (themeColors["comments_border_style"]){
-        case "2":
-            var alt_color = LightenDarkenColor(themeColors['comments_border'], 35);
-            var style = $('<style>.even { border-color: '+alt_color+' !important; }</style>');
-            $('html > head').append(style);
-            break;
-        case "3":
-            addCssFile("file:///android_asset/css/styles/border-rainbow.css");
-        default:
-    }
     setTheme(themeColors);
-    useMdEditor = themeColors.comments_editor; // defined in common.js
 }
 
 function populateComments(author, json){

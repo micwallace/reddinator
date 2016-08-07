@@ -12,14 +12,8 @@ function init(themeColors, user, sect){
     if (sect=="unread" || sect=="inbox" || sect=="sent")
         isMessages = true;
 
-    var themeColors = JSON.parse(themeColors);
-    switch (themeColors["comments_layout"]){
-        case "2":
-            addCssFile("file:///android_asset/css/styles/layout-alternate.css");
-        default:
-    }
+    viewType = "account";
     setTheme(themeColors);
-    useMdEditor = themeColors.comments_editor; // defined in common.js
 }
 
 function populateFeed(json, append){

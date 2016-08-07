@@ -1,3 +1,4 @@
+var viewType = "comments";
 
 function LightenDarkenColor(col,amt) {
     col = parseInt(col.substring(1, 7),16);
@@ -5,6 +6,13 @@ function LightenDarkenColor(col,amt) {
 }
 
 function setTheme(themeColors){
+    themeColors = JSON.parse(themeColors);
+    // setup custom layout & border css
+    updateBorderCss(themeColors["comments_border_style"], themeColors['comments_border']);
+    updateLayoutCss(themeColors["comments_layout"]);
+    // enable markdown editor if requested
+    useMdEditor = themeColors.comments_editor;
+    // setup theme colors
     $("body").css("background-color", themeColors["background_color"]);
     $("#loading_view, .reply_expand, .more_box").css("color", themeColors["load_text"]);
     $(".border, .sub-border").css('border-color', themeColors['comments_border']);
@@ -24,7 +32,6 @@ function setTheme(themeColors){
         alt_color = "#6AABE8";
     }
     var gradient = "linear-gradient(to bottom, "+themeColors['header_color_2']+", "+alt_color+")";
-    //var alt_color2 = LightenDarkenColor(themeColors['header_color_2'], -30);
     $("button").css("background", gradient);
     $("button:active").css("background", alt_color);
     $("button").css("color", themeColors["header_text_2"]);
@@ -34,12 +41,49 @@ function setTheme(themeColors){
     $("body").show();
 }
 
-function addCssFile(url){
+var layoutStyle = null;
+function updateLayoutCss(style){
+    if (layoutStyle != style){
+        if (layoutStyle!=null)
+            $("#custom-layout").remove();
+        switch (style){
+            case "2":
+                addCssFile("file:///android_asset/css/styles/layout-alternate.css", "custom-layout");
+            default:
+        }
+        layoutStyle = style;
+    }
+}
+
+var initiated = false;
+function updateBorderCss(style, borderColor){
+    if (viewType!="comments")
+        return; // no nested comment style needed for account views
+    // remove all border css if already initiated; allows updating of border style when theme changes
+    if (initiated)
+        $("#custom-style").remove();
+    initiated = true;
+    // setup custom styles css
+    switch (style){
+        case "2":
+        case "4":
+            var alt_color = LightenDarkenColor(borderColor, (style=="2" ? 35 : -35));
+            var style = $('<style id="custom-style">.even { border-color: '+alt_color+' !important; }</style>');
+            $('html > head').append(style);
+            break;
+        case "3":
+            addCssFile("file:///android_asset/css/styles/border-rainbow.css", "custom-style");
+        default:
+    }
+}
+
+function addCssFile(url, id){
     var link = document.createElement("link");
     link.href = url;
     link.type = "text/css";
     link.rel = "stylesheet";
     link.media = "screen,print";
+    link.id = id;
     document.getElementsByTagName("head")[0].appendChild(link);
 }
 

@@ -108,7 +108,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     public void updateTheme() {
         String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString(true);
-        Reddinator.executeJavascriptInWebview(mWebView, "setTheme(JSON.parse(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\"))");
+        Reddinator.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
