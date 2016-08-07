@@ -166,7 +166,7 @@ function appendPost(postData, prepend){
             }
             postElem.data("likes", postData.likes);
         } else {
-            postElem.data("likes", "null");
+            postElem.data("likes", null);
         }
         // check thumbnail
         var thumbnail = postData.thumbnail;
@@ -260,7 +260,7 @@ function appendComment(commentData, prepend, parentId){
         }
         commentElem.data("likes", commentData.likes);
     } else {
-        commentElem.data("likes", "null");
+        commentElem.data("likes", null);
     }
     // check if author
     if (commentData.author==username)

@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/topbar"
             android:text="@string/limit_sr"
-            android:textColor="#FF4500"
+            android:textColor="#e63d00"
             android:id="@+id/limit_sr" />
 
         <LinearLayout
