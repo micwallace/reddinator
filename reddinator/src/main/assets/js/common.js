@@ -95,54 +95,41 @@ function htmlDecode(input){
 
 function vote(thingId, direction){
     // determine if neutral vote
-    var vote_elem = $("#"+thingId).children(".vote");
-    if (direction == 1) {
-        if (vote_elem.children(".upvote").css("color")=="rgb(255, 139, 96)") { // if already upvoted, neutralize.
-            direction = 0;
-        }
-    } else { // downvote
-        if (vote_elem.children(".downvote").css("color")=="rgb(148, 148, 255)") {
-            direction = 0;
-        }
+    var currentVote = 0;
+    var likes = $("#"+thingId).data("likes");
+    if (likes=="true") { // if already upvoted, neutralize.
+        currentVote = 1;
+    } else if (likes=="false") {
+        currentVote = -1;
     }
-
-    Reddinator.vote(thingId, direction);
+    Reddinator.vote(thingId, direction, currentVote);
 }
 
-function voteCallback(thingId, direction){
+function voteCallback(thingId, direction, netVote){
     var upvote = $("#"+thingId).children(".vote").children(".upvote");
     var downvote = $("#"+thingId).children(".vote").children(".downvote");
-    var net_vote = 1;
+    var likes = "null"
     switch(direction){
         case "-1":
-            if (upvote.css("color")=="rgb(255, 139, 96)") { // if already upvoted net vote is -2
-                net_vote = -2;
-            } else {
-                net_vote = -1;
-            }
             upvote.css("color", color_vote);
             downvote.css("color", color_downvote_active);
-
+            likes = "false";
             break;
         case "0":
-            if (upvote.css("color")=="rgb(255, 139, 96)") { // if already upvoted net vote is -1
-                net_vote = -1;
-            }
             upvote.css("color", color_vote);
             downvote.css("color", color_vote);
             break;
         case "1":
-            if (downvote.css("color")=="rgb(148, 148, 255)") { // if already downvoted net vote is 2
-                net_vote = 2;
-            }
             upvote.css("color", color_upvote_active);
             downvote.css("color", color_vote);
+            likes = "true";
             break;
     }
+    $("#"+thingId).data("likes", likes);
     // increment vote count
     var vote_count = $("#"+thingId).children(".comment_info").children(".comment_scores").children(".comment_score");
     var count = parseInt(vote_count.text()) || 0;
-    vote_count.text(count + net_vote);
+    vote_count.text(count + netVote);
     //console.log("vote callback received: "+direction);
 }
 
