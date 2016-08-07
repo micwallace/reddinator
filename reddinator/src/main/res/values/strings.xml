@@ -187,7 +187,6 @@
     <string name="yes">Yes</string>
     <string name="delete_theme">Delete Theme</string>
     <string name="delete_theme_message">Are you sure you want to delete this theme?</string>
-    <string name="no_query">No Query</string>
     <string name="no_query_message">Please enter something to search for</string>
     <string name="searching">Searching…</string>
     <string name="no_subreddits_found">No subreddits found</string>

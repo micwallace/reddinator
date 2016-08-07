@@ -18,12 +18,12 @@
 package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -53,6 +53,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
+import au.com.wallaceit.reddinator.core.ThemeManager;
 
 public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_ADD_TO_MULTI = 3;
@@ -66,6 +67,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private JSONArray srjson;
     private SubredditsAdapter listadapter;
     private EditText searchbox;
+    private IconTextView searchbtn;
     private TextView emptyview;
     private Resources resources;
 
@@ -102,16 +104,12 @@ public class ViewAllSubredditsActivity extends ListActivity {
             }
 
         });
-        IconTextView searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
+        searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
         searchbtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 String query = searchbox.getText().toString();
-                if (!query.equals("")) {
-                    search(query);
-                } else {
-                    new AlertDialog.Builder(ViewAllSubredditsActivity.this).setTitle(resources.getString(R.string.no_query)).setMessage(resources.getString(R.string.no_query_message)).show();
-                }
+                search(query);
             }
         });
         loadDefaults();
@@ -126,6 +124,19 @@ public class ViewAllSubredditsActivity extends ListActivity {
             loadPopularSubreddits();
         }
         listview.setAdapter(listadapter);
+
+        setThemeColors();
+    }
+
+    private void setThemeColors() {
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
+        int headerText = Color.parseColor(theme.getValue("header_text"));
+        int iconColor = Color.parseColor(theme.getValue("default_icon"));
+        findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        searchbox.setHintTextColor(headerText);
+        searchbox.setTextColor(headerText);
+        searchbox.getBackground().setColorFilter(Reddinator.getColorFilterFromColor(iconColor, -50));
+        searchbtn.setTextColor(iconColor);
     }
 
     private boolean cancelrevert = false;
@@ -188,6 +199,10 @@ public class ViewAllSubredditsActivity extends ListActivity {
     }
 
     private void search(final String query) {
+        if (query.equals("")) {
+            Toast.makeText(ViewAllSubredditsActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
+            return;
+        }
         //System.out.println("Searching: " + query);
         if (dlpopulartask != null) {
             dlpopulartask.cancel(true);

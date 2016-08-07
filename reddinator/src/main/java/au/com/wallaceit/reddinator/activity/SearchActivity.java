@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ColorMatrixColorFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -69,13 +70,16 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.VoteTask;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements VoteTask.Callback {
 
     private Context context;
     private Reddinator global;
     private SearchListAdapter listAdapter;
     private AbsListView listView;
+    private EditText searchbox;
+    private IconTextView searchbtn;
     private View appView;
     private ThemeManager.Theme theme;
     private Bitmap[] images;
@@ -100,35 +104,8 @@ public class SearchActivity extends Activity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // set theme colors
-        setThemeColors();
 
-        // Setup list adapter
-        listView = (ListView) findViewById(R.id.applistview);
-        listAdapter = new SearchListAdapter(global, prefs);
-        listView.setAdapter(listAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // open in the reddinator view
-                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                clickIntent1.putExtras(getItemExtras(position));
-                context.startActivity(clickIntent1);
-            }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent ointent = new Intent(SearchActivity.this, FeedItemDialogActivity.class);
-                ointent.putExtras(getItemExtras(position));
-                SearchActivity.this.startActivityForResult(ointent, 1);
-                return true;
-            }
-        });
-
-        final EditText searchbox = (EditText) this.findViewById(R.id.query);
+        searchbox = (EditText) this.findViewById(R.id.query);
         searchbox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -145,7 +122,7 @@ public class SearchActivity extends Activity {
 
         });
 
-        IconTextView searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
+        searchbtn = (IconTextView) this.findViewById(R.id.searchbutton);
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,8 +154,12 @@ public class SearchActivity extends Activity {
             });
         }
 
+        // set theme colors
+        setThemeColors();
+
         Spinner sortselect = (Spinner) findViewById(R.id.sort);
-        sortselect.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_sorts)));
+        sortselect.getBackground().setColorFilter(buttonfilter);
+        sortselect.setAdapter(new SearchSpinnerAdapter(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_sorts)));
         sortselect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -208,7 +189,8 @@ public class SearchActivity extends Activity {
         });
 
         Spinner timeselect = (Spinner) findViewById(R.id.time);
-        timeselect.setAdapter(new ArrayAdapter<>(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_times)));
+        timeselect.getBackground().setColorFilter(buttonfilter);
+        timeselect.setAdapter(new SearchSpinnerAdapter(SearchActivity.this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1, getResources().getStringArray(R.array.reddit_search_times)));
         timeselect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -244,6 +226,31 @@ public class SearchActivity extends Activity {
             }
         });
 
+        // Setup list adapter
+        listView = (ListView) findViewById(R.id.applistview);
+        listAdapter = new SearchListAdapter(global, prefs);
+        listView.setAdapter(listAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // open in the reddinator view
+                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
+                clickIntent1.putExtras(getItemExtras(position));
+                context.startActivity(clickIntent1);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent ointent = new Intent(SearchActivity.this, FeedItemDialogActivity.class);
+                ointent.putExtras(getItemExtras(position));
+                SearchActivity.this.startActivityForResult(ointent, 1);
+                return true;
+            }
+        });
+
         if (Intent.ACTION_SEARCH.equals(getIntent().getAction())){
             query = getIntent().getStringExtra("query");
             sort = getIntent().getStringExtra("sort");
@@ -259,14 +266,37 @@ public class SearchActivity extends Activity {
         super.onResume();
         Bundle update = global.getItemUpdate();
         if (update != null) {
-            listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"));
+            listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"), update.getInt("netvote"));
         }
     }
 
+    int headerText = Color.BLACK;
+    ColorMatrixColorFilter buttonfilter;
     private void setThemeColors() {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
-        //findViewById(R.id.searchbar).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        headerText = Color.parseColor(theme.getValue("header_text"));
+        int headerColor = Color.parseColor(theme.getValue("header_color"));
+        int iconColor = Color.parseColor(theme.getValue("default_icon"));
+        findViewById(R.id.searchbar).setBackgroundColor(headerColor);
+        searchbox.setHintTextColor(headerText);
+        searchbox.setTextColor(headerText);
+        searchbox.getBackground().setColorFilter(Reddinator.getColorFilterFromColor(iconColor, -50));
+        searchbtn.setTextColor(iconColor);
+        buttonfilter = Reddinator.getColorFilterFromColor(iconColor, 250);
+    }
+
+    private class SearchSpinnerAdapter extends ArrayAdapter<String>{
+
+        public SearchSpinnerAdapter(Context context, int resource, int textViewResourceId, String[] objects) {
+            super(context, resource, textViewResourceId, objects);
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = super.getView(position, convertView, parent);
+            ((TextView) v).setTextColor(headerText);
+            return v;
+        }
     }
 
     @Override
@@ -280,13 +310,8 @@ public class SearchActivity extends Activity {
             // initiate vote
             case 3:
             case 4:
-                listAdapter.showAppLoader();
                 int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
-                View view =  listView.getAdapter().getView(position, null, listView);
-                if (view!=null) {
-                    ListVoteTask listvote = new ListVoteTask((resultcode==3?1:-1), view, position);
-                    listvote.execute();
-                }
+                initialiseVote(position, (resultcode==3?1:-1));
                 break;
             // reload feed data from cache
             case 5:
@@ -327,6 +352,36 @@ public class SearchActivity extends Activity {
             e.printStackTrace();
         }
         return extras;
+    }
+
+    private void initialiseVote(int listposition, int direction){
+        listAdapter.showAppLoader();
+        // Get data by position in list
+        JSONObject item = listAdapter.getItem(listposition);
+        String redditid;
+        int curVote = 0;
+        try {
+            redditid = item.getString("name");
+            if (item.has("likes"))
+                curVote = Reddinator.voteDirectionToInt(item.getString("likes"));
+            new VoteTask(global, this, redditid, listposition, direction, curVote).execute();
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error initializing vote: "+e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listposition) {
+        if (result) {
+            String voteVal = Reddinator.voteDirectionToString(direction);
+            listAdapter.updateUiVote(listposition, redditId, voteVal, netVote);
+        } else {
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(SearchActivity.this, false);
+            // show error
+            Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        listAdapter.hideAppLoader(false);
     }
 
     public class SearchListAdapter extends BaseAdapter {
@@ -485,19 +540,13 @@ public class SearchActivity extends Activity {
                 viewHolder.upvotebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        listAdapter.showAppLoader();
-                        view = (View) view.getParent().getParent();
-                        ListVoteTask listvote = new ListVoteTask(1, view, position);
-                        listvote.execute();
+                        initialiseVote(position, 1);
                     }
                 });
                 viewHolder.downvotebtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        listAdapter.showAppLoader();
-                        view = (View) view.getParent().getParent();
-                        ListVoteTask listvote = new ListVoteTask(-1, view, position);
-                        listvote.execute();
+                        initialiseVote(position, -1);
                     }
                 });
 
@@ -567,13 +616,15 @@ public class SearchActivity extends Activity {
             }
         }
 
-        public void updateUiVote(int position, String id, String val) {
+        public void updateUiVote(int position, String id, String val, int netVote) {
             try {
                 // Incase the feed updated after opening reddinator view, check that the id's match to update the correct view.
                 boolean recordexists = data.getJSONObject(position).getJSONObject("data").getString("name").equals(id);
                 if (recordexists) {
                     // update in current data (already updated in saved feed)
-                    data.getJSONObject(position).getJSONObject("data").put("likes", val);
+                    JSONObject post = data.getJSONObject(position).getJSONObject("data");
+                    post.put("likes", val);
+                    post.put("score", post.getInt("score")+netVote);
                     // refresh view; unfortunately we have to refresh them all :( invalidateViewAtPosition(); please android?
                     listView.invalidateViews();
                 }
@@ -793,90 +844,6 @@ public class SearchActivity extends Activity {
         private void showAppLoader() {
             //loader.setVisibility(View.VISIBLE);
             setProgressBarIndeterminateVisibility(true);
-        }
-    }
-
-    class ListVoteTask extends AsyncTask<String, Integer, Boolean> {
-        JSONObject item;
-        private String redditid;
-        private int direction;
-        private String curVote;
-        private int listposition;
-        private ImageButton upvotebtn;
-        private ImageButton downvotebtn;
-        private RedditData.RedditApiException exception;
-
-        public ListVoteTask(int dir, View view, int position) {
-            direction = dir;
-            upvotebtn = (ImageButton) view.findViewById(R.id.app_upvote);
-            downvotebtn = (ImageButton) view.findViewById(R.id.app_downvote);
-            // Get data by position in list
-            listposition = position;
-            item = listAdapter.getItem(listposition);
-            try {
-                redditid = item.getString("name");
-                curVote = item.getString("likes");
-            } catch (JSONException e) {
-                redditid = "null";
-                curVote = "null";
-            }
-        }
-
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            // enumerate current vote and clicked direction
-            if (direction == 1) {
-                if (curVote.equals("true")) { // if already upvoted, neutralize.
-                    direction = 0;
-                }
-            } else { // downvote
-                if (curVote.equals("false")) {
-                    direction = 0;
-                }
-            }
-            // Do the vote
-            try {
-                return global.mRedditData.vote(redditid, direction);
-            } catch (RedditData.RedditApiException e) {
-                e.printStackTrace();
-                exception = e;
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                // set icon + current "likes" in the data array, this way ViewRedditActivity will get the new version without updating the hole feed.
-                String value = "null";
-                switch (direction) {
-                    case -1:
-                        upvotebtn.setImageBitmap(images[3]);
-                        downvotebtn.setImageBitmap(images[5]);
-                        value = "false";
-                        break;
-
-                    case 0:
-                        upvotebtn.setImageBitmap(images[2]);
-                        downvotebtn.setImageBitmap(images[4]);
-                        value = "null";
-                        break;
-
-                    case 1:
-                        upvotebtn.setImageBitmap(images[3]);
-                        downvotebtn.setImageBitmap(images[4]);
-                        value = "true";
-                        break;
-                }
-                listAdapter.updateUiVote(listposition, redditid, value);
-                //global.setItemVote(prefs, 0, listposition, redditid, value);
-            } else {
-                // check login required
-                if (exception.isAuthError()) global.mRedditData.initiateLogin(SearchActivity.this, false);
-                // show error
-                Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-            }
-            listAdapter.hideAppLoader(false);
         }
     }
 

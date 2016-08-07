@@ -372,7 +372,10 @@ public class ThemeManager {
             if (values.containsKey(key))
                 return values.get(key);
 
-            return defaultValues.getValue(key);
+            if (!this.equals(defaultValues))
+                return defaultValues.getValue(key);
+            System.err.println("Theme value not found in current theme or fallback values");
+            return "#DBDBDB";
         }
 
         public void setValue(String key, String newValue){

@@ -38,6 +38,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
@@ -176,6 +177,10 @@ public class FeedItemDialogActivity extends Activity {
                 close(4);
             }
         });
+        // setup theme, use widget theme if coming from a widget
+        ThemeManager.Theme theme = global.mThemeManager.getActiveTheme((widgetId>0 ? "widgettheme-"+widgetId : "appthemepref"));
+        dialog.findViewById(R.id.dialog).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
+        ((TextView) dialog.findViewById(R.id.title)).setTextColor(Color.parseColor(theme.getValue("header_text")));
         // show the dialog
         dialog.show();
     }

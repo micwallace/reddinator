@@ -134,7 +134,6 @@
     <string name="yes">Si</string>
     <string name="delete_theme">Borrar Tema</string>
     <string name="delete_theme_message">Estas seguro que quieres borrar este Tema?</string>
-    <string name="no_query">No hay consulta</string>
     <string name="no_query_message">Por favor ingrese algo para buscar</string>
     <string name="searching">Buscando…</string>
     <string name="no_subreddits_found">No se encontraron subreddits</string>
