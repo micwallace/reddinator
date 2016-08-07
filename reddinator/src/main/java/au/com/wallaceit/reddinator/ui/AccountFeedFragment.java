@@ -201,10 +201,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
     }
 
     @Override
-    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listPosition) {
         ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result) {
-            mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
+            mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\", "+netVote+")");
         } else {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
@@ -273,9 +273,9 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         }
 
         @JavascriptInterface
-        public void vote(String thingId, int direction) {
+        public void vote(String thingId, int direction, int currentVote) {
             ((ActivityInterface) getActivity()).setTitleText(resources.getString(R.string.voting));
-            commentsVoteTask = new VoteTask(global, AccountFeedFragment.this, thingId, direction);
+            commentsVoteTask = new VoteTask(global, AccountFeedFragment.this, thingId, direction, currentVote);
             commentsVoteTask.execute();
         }
 

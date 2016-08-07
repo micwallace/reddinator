@@ -40,6 +40,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     private String redditid;
     private int direction;
     private String curVote;
+    private int netvote;
     private int listposition;
     private RedditData.RedditApiException exception;
 
@@ -48,6 +49,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
         global = (Reddinator) context.getApplicationContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         direction = dir;
+        netvote = dir;
         this.widgetId = widgetId;
         // Get data by position in list
         listposition = position;
@@ -64,14 +66,20 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... strings) {
-        // enumerate current vote and clicked direction
+        // enumerate current vote, score change & clicked direction
         if (direction == 1) {
             if (curVote.equals("true")) { // if already upvoted, neutralize.
                 direction = 0;
+                netvote = -1;
+            } else if (curVote.equals("false")){
+                netvote = 2;
             }
         } else { // downvote
             if (curVote.equals("false")) {
                 direction = 0;
+                netvote = 1;
+            } else if (curVote.equals("true")){
+                netvote = -2;
             }
         }
         // Do the vote
@@ -100,7 +108,8 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
                     value = "true";
                     break;
             }
-            global.setItemVote(prefs, widgetId, listposition, redditid, value);
+
+            global.setItemVote(prefs, widgetId, listposition, redditid, value, netvote);
         } else {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, true);

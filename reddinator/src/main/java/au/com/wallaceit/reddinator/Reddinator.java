@@ -122,20 +122,23 @@ public class Reddinator extends Application {
         return tempdata;
     }
 
-    public void setItemUpdate(int position, String id, String val) {
+    public void setItemUpdate(int position, String id, String val, int netVote) {
         itemupdate = new Bundle();
         itemupdate.putInt("position", position);
         itemupdate.putString("id", id);
         itemupdate.putString("val", val);
+        itemupdate.putInt("netvote", netVote);
     }
 
     // methods for setting/getting vote statuses, this keeps vote status persistent accross apps and widgets
-    public void setItemVote(SharedPreferences prefs, int widgetId, int position, String id, String val) {
+    public void setItemVote(SharedPreferences prefs, int widgetId, int position, String id, String val, int netVote) {
         try {
             JSONArray data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
             JSONObject record = data.getJSONObject(position).getJSONObject("data");
             if (record.getString("name").equals(id)) {
-                data.getJSONObject(position).getJSONObject("data").put("likes", val);
+                JSONObject postData = data.getJSONObject(position).getJSONObject("data");
+                postData.put("likes", val);
+                postData.put("score", postData.getInt("score")+netVote);
                 // commit to shared prefs
                 SharedPreferences.Editor mEditor = prefs.edit();
                 mEditor.putString("feeddata-" + (widgetId == 0 ? "app" : widgetId), data.toString());
@@ -607,5 +610,31 @@ public class Reddinator extends Application {
                 }
             }
         }, 50);
+    }
+
+    public static int voteDirectionToInt(String vote){
+        switch (vote) {
+            case "null":
+                return 0;
+            case "true":
+                return 1;
+            case "false":
+                return -1;
+            default:
+                return 0;
+        }
+    }
+
+    public static String voteDirectionToString(int vote){
+        switch (vote) {
+            case 0:
+                return "null";
+            case 1:
+                return "true";
+            case -1:
+                return "false";
+            default:
+                return "null";
+        }
     }
 }

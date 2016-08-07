@@ -26,23 +26,48 @@ import au.com.wallaceit.reddinator.core.RedditData;
 public class VoteTask extends AsyncTask<String, Integer, Boolean> {
     private Reddinator global;
     private String redditId;
+    private int listPosition = -1;
     private int direction;
+    private int netVote; // how the score will change after the vote is successful (ie. if already upvoted, downvoting causes -2 score change)
+    private int currentVote;
     private RedditData.RedditApiException exception = null;
     private Callback voteCallback = null;
 
     public interface Callback {
-        void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction);
+        void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listPosition);
     }
 
-    public VoteTask(Reddinator global, Callback voteCallback, String redditId, int direction) {
+    public VoteTask(Reddinator global, Callback voteCallback, String redditId, int listPosition, int direction, int currentVote) {
+        this(global, voteCallback, redditId, direction, currentVote);
+        this.listPosition = listPosition;
+    }
+
+    public VoteTask(Reddinator global, Callback voteCallback, String redditId, int direction, int currentVote) {
         this.global = global;
         this.voteCallback = voteCallback;
         this.direction = direction;
+        this.netVote = direction;
+        this.currentVote = currentVote;
         this.redditId = redditId;
     }
 
     @Override
     protected Boolean doInBackground(String... strings) {
+        if (direction == 1) {
+            if (currentVote==1) { // if already upvoted, neutralize.
+                direction = 0;
+                netVote = -1;
+            } else if (currentVote==-1){
+                netVote = 2;
+            }
+        } else { // downvote
+            if (currentVote==-1) {
+                direction = 0;
+                netVote = 1;
+            } else if (currentVote==1){
+                netVote = -2;
+            }
+        }
         // Do the vote
         try {
             return global.mRedditData.vote(redditId, direction);
@@ -56,6 +81,6 @@ public class VoteTask extends AsyncTask<String, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (voteCallback!=null)
-            voteCallback.onVoteComplete(result, exception, redditId, direction);
+            voteCallback.onVoteComplete(result, exception, redditId, direction, netVote, listPosition);
     }
 }

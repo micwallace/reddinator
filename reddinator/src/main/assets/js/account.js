@@ -164,6 +164,9 @@ function appendPost(postData, prepend){
             } else if (postData.likes==false) {
                 postElem.find(".downvote").css("color", color_downvote_active);
             }
+            postElem.data("likes", postData.likes);
+        } else {
+            postElem.data("likes", "null");
         }
         // check thumbnail
         var thumbnail = postData.thumbnail;
@@ -255,6 +258,9 @@ function appendComment(commentData, prepend, parentId){
         } else if (commentData.likes==false) {
             commentElem.find(".downvote").css("color", color_downvote_active);
         }
+        commentElem.data("likes", commentData.likes);
+    } else {
+        commentElem.data("likes", "null");
     }
     // check if author
     if (commentData.author==username)

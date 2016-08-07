@@ -296,9 +296,9 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         }
 
         @JavascriptInterface
-        public void vote(String thingId, int direction) {
+        public void vote(String thingId, int direction, int currentVote) {
             //setTitleText(resources.getString(R.string.voting));
-            commentsVoteTask = new VoteTask(global, CommentsContextDialogActivity.this, thingId, direction);
+            commentsVoteTask = new VoteTask(global, CommentsContextDialogActivity.this, thingId, direction, currentVote);
             commentsVoteTask.execute();
         }
 
@@ -333,10 +333,10 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     }
 
     @Override
-    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listPosition) {
         //setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result) {
-            webView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\")");
+            webView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\", "+netVote+")");
         } else {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(this, false);

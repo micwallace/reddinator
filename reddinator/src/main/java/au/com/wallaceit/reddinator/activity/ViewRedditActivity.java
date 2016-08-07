@@ -580,35 +580,21 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
     }
 
     private void upVote() {
-        VoteTask task;
-        if (curvote == 1) {
-            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 0);
-            //System.out.println("Neutral Vote");
-        } else {
-            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 1);
-            //System.out.println("Upvote");
-        }
+        VoteTask task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 1, curvote);
         voteinprogress = true;
         ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
         task.execute();
     }
 
     private void downVote() {
-        VoteTask task;
-        if (curvote == -1) {
-            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 0);
-            //System.out.println("Neutral Vote");
-        } else {
-            task = new VoteTask(global, ViewRedditActivity.this, redditItemId, -1);
-            //System.out.println("Downvote");
-        }
+        VoteTask task = new VoteTask(global, ViewRedditActivity.this, redditItemId, -1, curvote);
         voteinprogress = true;
         ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
         task.execute();
     }
 
     @Override
-    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction) {
+    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listPosition) {
         ViewRedditActivity.this.setTitleText(resources.getString(R.string.app_name)); // reset title
         voteinprogress = false;
         if (result) {
@@ -618,21 +604,19 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
                 case -1:
                     upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
                     downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE)).actionBarSize());
-                    setVoteUpdateRecord(redditId, "false");
                     break;
 
                 case 0:
                     upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(iconColor).actionBarSize());
                     downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
-                    setVoteUpdateRecord(redditId, "null");
                     break;
 
                 case 1:
                     upvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_up).color(Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE)).actionBarSize());
                     downvote.setIcon(new IconDrawable(ViewRedditActivity.this, Iconify.IconValue.fa_arrow_down).color(iconColor).actionBarSize());
-                    setVoteUpdateRecord(redditId, "true");
                     break;
             }
+            setVoteUpdateRecord(redditId, Reddinator.voteDirectionToString(direction), netVote);
         } else {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
@@ -641,11 +625,11 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         }
     }
 
-    private void setVoteUpdateRecord(String redditId, String val) {
+    private void setVoteUpdateRecord(String redditId, String val, int netVote) {
         if (feedposition>=0) {
-            global.setItemUpdate(feedposition, redditId, val);
+            global.setItemUpdate(feedposition, redditId, val, netVote);
             // save in feed data
-            global.setItemVote(prefs, widgetId, feedposition, redditId, val);
+            global.setItemVote(prefs, widgetId, feedposition, redditId, val, netVote);
         }
     }
 

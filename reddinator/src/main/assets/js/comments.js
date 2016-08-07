@@ -155,6 +155,9 @@ function appendComment(parentId, commentData, prepend){
         } else if (commentData.likes==false) {
             commentElem.find(".downvote").css("color", color_downvote_active);
         }
+        commentElem.data("likes", commentData.likes);
+    } else {
+        commentElem.data("likes", "null");
     }
     // check if author
     if (commentData.author==username)
