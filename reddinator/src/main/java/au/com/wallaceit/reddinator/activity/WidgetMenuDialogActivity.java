@@ -49,6 +49,7 @@ import java.lang.reflect.Method;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
@@ -110,7 +111,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
             });
         }
 
-        int iconColor = Reddinator.getActionbarIconColor();
+        int iconColor = Utilities.getActionbarIconColor();
         int inboxColor = global.mRedditData.getInboxCount()>0? Color.parseColor("#E06B6C"): iconColor;
         MenuItem messageIcon = (menu.findItem(R.id.menu_inbox));
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
@@ -328,7 +329,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
             try {
                 String html = "&lt;p&gt;"+result.getString("subscribers")+" readers&lt;br/&gt;"+result.getString("accounts_active")+" users here now&lt;/p&gt;";
                 html += result.getString("description_html");
-                HtmlDialog.init(this, global.getSubredditManager().getCurrentFeedPath(widgetId), Reddinator.fromHtml(html).toString())
+                HtmlDialog.init(this, global.getSubredditManager().getCurrentFeedPath(widgetId), Utilities.fromHtml(html).toString())
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {

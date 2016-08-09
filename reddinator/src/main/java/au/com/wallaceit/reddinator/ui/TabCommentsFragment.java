@@ -49,6 +49,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
@@ -108,7 +109,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     public void updateTheme() {
         String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString(true);
-        Reddinator.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
+        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -348,25 +349,25 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+                        Utilities.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
                     } else {
-                        Reddinator.executeJavascriptInWebview(mWebView, "noChildrenCallback('"+mMoreId+"');");
+                        Utilities.executeJavascriptInWebview(mWebView, "noChildrenCallback('"+mMoreId+"');");
                     }
                     break;
                 case "-1":
                     // show error
                     if (!loadMore) {
-                        Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
+                        Utilities.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
                     } else {
                         // reset load more button
-                        Reddinator.executeJavascriptInWebview(mWebView, "resetMoreClickEvent('" + mMoreId + "');");
+                        Utilities.executeJavascriptInWebview(mWebView, "resetMoreClickEvent('" + mMoreId + "');");
                     }
                     if (getActivity()!=null)
                         Toast.makeText(getActivity(), lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     if (loadMore) {
-                        Reddinator.executeJavascriptInWebview(mWebView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        Utilities.executeJavascriptInWebview(mWebView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
                     } else {
                         populateCommentsFromData(result);
                     }
@@ -383,9 +384,9 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             e.printStackTrace();
         }
         if (data.equals("[]")){
-            Reddinator.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+            Utilities.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Reddinator.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
         }
     }
 }

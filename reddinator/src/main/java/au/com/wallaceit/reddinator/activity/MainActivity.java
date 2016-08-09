@@ -58,11 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,7 +67,9 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.tasks.LoadImageBitmapTask;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
@@ -286,7 +284,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"), update.getInt("netvote"));
         }
         if (messageIcon!=null){
-            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Reddinator.getActionbarIconColor();
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Utilities.getActionbarIconColor();
             messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         }
         if (sidebarIcon!=null)
@@ -303,7 +301,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         getMenuInflater().inflate(R.menu.feed_menu, menu);
 
         // set options menu view
-        int iconColor = Reddinator.getActionbarIconColor();
+        int iconColor = Utilities.getActionbarIconColor();
         int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
         messageIcon = (menu.findItem(R.id.menu_inbox));
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
@@ -526,7 +524,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         ((IconTextView) findViewById(R.id.appcaret)).setTextColor(iconColor);
 
         // Set actionbar overflow icon drawable
-        Reddinator.updateActionbarOverflowIcon(this, iconColor);
+        Utilities.updateActionbarOverflowIcon(this, iconColor);
     }
 
     private void refreshTheme(){
@@ -609,7 +607,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             try {
                 String html = "&lt;p&gt;"+result.getString("subscribers")+" readers&lt;br/&gt;"+result.getString("accounts_active")+" users here now&lt;/p&gt;";
                 html += result.getString("description_html");
-                HtmlDialog.init(this, subredditPath, Reddinator.fromHtml(html).toString());
+                HtmlDialog.init(this, subredditPath, Utilities.fromHtml(html).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -629,7 +627,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         try {
             redditid = item.getString("name");
             if (item.has("likes"))
-                curVote = Reddinator.voteDirectionToInt(item.getString("likes"));
+                curVote = Utilities.voteDirectionToInt(item.getString("likes"));
             new VoteTask(global, this, redditid, listposition, direction, curVote).execute();
         } catch (JSONException e) {
             Toast.makeText(this, "Error initializing vote: "+e.getMessage(), Toast.LENGTH_LONG).show();
@@ -639,7 +637,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     @Override
     public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listposition) {
         if (result) {
-            String voteVal = Reddinator.voteDirectionToString(direction);
+            String voteVal = Utilities.voteDirectionToString(direction);
             listAdapter.updateUiVote(listposition, redditId, voteVal, netVote);
             global.setItemVote(prefs, 0, listposition, redditId, voteVal, netVote);
         } else {
@@ -694,13 +692,13 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             // load images
             images = new Bitmap[]{
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
+                    Utilities.getFontBitmap(MainActivity.this, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
             };
 
             // get font size preference
@@ -796,10 +794,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                                 // get third resolution (320px wide)
                                 if (arr.length() > 0){
                                     prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length() - 1) : arr.getJSONObject(2);
-                                    previewUrl = Reddinator.fromHtml(prevObj.getString("url")).toString();
+                                    previewUrl = Utilities.fromHtml(prevObj.getString("url")).toString();
                                 } else {
                                     // or default to source
-                                    previewUrl = Reddinator.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
+                                    previewUrl = Utilities.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
                                 }
                             }
                         }
@@ -809,7 +807,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     return row; // The view is invalid;
                 }
                 // Update view
-                viewHolder.listheading.setText(Reddinator.fromHtml(name).toString());
+                viewHolder.listheading.setText(Utilities.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
                 String sourceText = (showItemSubreddit?subreddit+" - ":"")+domain;
@@ -917,7 +915,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                         }
                     }
                     // check if url is image, if so, add ViewImageDialog intent and show indicator
-                    if (Reddinator.isImageUrl(url)){
+                    if (Utilities.isImageUrl(url)){
                         imageView.setClickable(true);
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -975,7 +973,21 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         }
 
         private void loadImage(final ImageView view, final String urlstr, final String redditid) {
-            new ImageLoader(view, urlstr, redditid).execute();
+            new LoadImageBitmapTask(urlstr, new LoadImageBitmapTask.ImageCallback(){
+                @Override
+                public void run() {
+                    if (image!=null){
+                        // save bitmap to cache, the item name will be the reddit id
+                        global.saveThumbnailToCache(image, redditid);
+                        if (view!=null){
+                            view.setImageBitmap(image);
+                        }
+                        return;
+                    }
+                    if (view!=null)
+                        view.setVisibility(View.GONE);
+                }
+            }).execute();
         }
 
         class ViewHolder {
@@ -991,52 +1003,6 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             ImageButton downvotebtn;
             View infview;
             TextView nsfw;
-        }
-
-        class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {
-            //int itempos;
-            String urlstr;
-            String redditid;
-            ImageView imageView;
-
-            ImageLoader(ImageView view, String url, String id) {
-                //itempos = position;
-                urlstr = url;
-                redditid = id;
-                imageView = view;
-            }
-
-            @Override
-            protected Bitmap doInBackground(Void... voids) {
-                URL url;
-                try {
-                    url = new URL(urlstr);
-                    URLConnection con = url.openConnection();
-                    con.setConnectTimeout(8000);
-                    con.setReadTimeout(8000);
-                    return BitmapFactory.decodeStream(con.getInputStream());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    return null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                // save bitmap to cache, the item name will be the reddit id
-                global.saveThumbnailToCache(result, redditid);
-                // update view if it's being shown
-                if (imageView!=null){
-                    if (result!=null){
-                        imageView.setImageBitmap(result);
-                    } else {
-                        imageView.setVisibility(View.GONE);
-                    }
-                }
-            }
         }
 
         @Override

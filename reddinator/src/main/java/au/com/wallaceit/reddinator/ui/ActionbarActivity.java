@@ -20,7 +20,7 @@ package au.com.wallaceit.reddinator.ui;
 import android.app.Activity;
 import android.os.Bundle;
 
-import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class ActionbarActivity extends Activity {
 
@@ -28,6 +28,6 @@ public class ActionbarActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Set actionbar overflow icon drawable
-        Reddinator.updateActionbarOverflowIcon(this, Reddinator.getActionbarIconColor());
+        Utilities.updateActionbarOverflowIcon(this, Utilities.getActionbarIconColor());
     }
 }

@@ -69,6 +69,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 
@@ -281,9 +282,9 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         findViewById(R.id.searchbar).setBackgroundColor(headerColor);
         searchbox.setHintTextColor(headerText);
         searchbox.setTextColor(headerText);
-        searchbox.getBackground().setColorFilter(Reddinator.getColorFilterFromColor(iconColor, -50));
+        searchbox.getBackground().setColorFilter(Utilities.getColorFilterFromColor(iconColor, -50));
         searchbtn.setTextColor(iconColor);
-        buttonfilter = Reddinator.getColorFilterFromColor(iconColor, 250);
+        buttonfilter = Utilities.getColorFilterFromColor(iconColor, 250);
     }
 
     private class SearchSpinnerAdapter extends ArrayAdapter<String>{
@@ -363,7 +364,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         try {
             redditid = item.getString("name");
             if (item.has("likes"))
-                curVote = Reddinator.voteDirectionToInt(item.getString("likes"));
+                curVote = Utilities.voteDirectionToInt(item.getString("likes"));
             new VoteTask(global, this, redditid, listposition, direction, curVote).execute();
         } catch (JSONException e) {
             Toast.makeText(this, "Error initializing vote: "+e.getMessage(), Toast.LENGTH_LONG).show();
@@ -373,7 +374,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
     @Override
     public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listposition) {
         if (result) {
-            String voteVal = Reddinator.voteDirectionToString(direction);
+            String voteVal = Utilities.voteDirectionToString(direction);
             listAdapter.updateUiVote(listposition, redditId, voteVal, netVote);
         } else {
             // check login required
@@ -414,12 +415,12 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
             // load images
             images = new Bitmap[]{
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow)
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow)
             };
 
             // get font size preference
@@ -511,7 +512,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
                     return row; // The view is invalid;
                 }
                 // Update view
-                viewHolder.listheading.setText(Reddinator.fromHtml(name).toString());
+                viewHolder.listheading.setText(Utilities.fromHtml(name).toString());
                 viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
                 viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
                 String sourceText = (restrictSub?subreddit+" - ":"")+domain;

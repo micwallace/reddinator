@@ -54,6 +54,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_ADD_TO_MULTI = 3;
@@ -135,7 +136,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
         findViewById(R.id.srtoolbar).setBackgroundColor(Color.parseColor(theme.getValue("header_color")));
         searchbox.setHintTextColor(headerText);
         searchbox.setTextColor(headerText);
-        searchbox.getBackground().setColorFilter(Reddinator.getColorFilterFromColor(iconColor, -50));
+        searchbox.getBackground().setColorFilter(Utilities.getColorFilterFromColor(iconColor, -50));
         searchbtn.setTextColor(iconColor);
     }
 

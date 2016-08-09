@@ -33,6 +33,7 @@ import android.widget.IconButton;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class ViewImageDialogActivity extends Activity {
@@ -50,9 +51,9 @@ public class ViewImageDialogActivity extends Activity {
         // get content url (which will be an image)
         imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
         // fix imgur links so it's not redirected to full webpage
-        if (Reddinator.isImgurUrl(imageUrl)) {
+        if (Utilities.isImgurUrl(imageUrl)) {
             imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
-            if (!Reddinator.hasImageExtension(imageUrl))
+            if (!Utilities.hasImageExtension(imageUrl))
                 imageUrl += ".jpg"; // any extension will work
         }
         // setup image view

@@ -19,17 +19,24 @@
  */
 package au.com.wallaceit.reddinator.ui;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.tasks.LoadImageBitmapTask;
 
 public class RWebView extends android.webkit.WebView {
 
@@ -37,8 +44,8 @@ public class RWebView extends android.webkit.WebView {
     private static final int ID_SHARELINK = 1;
     private static final int ID_COPYLINK = 2;
     private static final int ID_OPENLINK = 3;
-    //private static final int ID_SHAREIMAGE = 4;
-    //private static final int ID_SAVEIMAGE = 5;
+    private static final int ID_SHAREIMAGE = 4;
+    private static final int ID_SAVEIMAGE = 5;
 
     public RWebView(Context context) {
         this(context, null);
@@ -87,7 +94,7 @@ public class RWebView extends android.webkit.WebView {
                         return true;
 
                     // This stuff needs additional permissions so saving it for next version
-                    /*case ID_SAVEIMAGE:
+                    case ID_SAVEIMAGE:
                         downloadFile(result.getExtra());
                         return true;
 
@@ -97,7 +104,7 @@ public class RWebView extends android.webkit.WebView {
                         intent.setType("image/*");
                         intent.putExtra(Intent.EXTRA_STREAM, uri);
                         context.startActivity(Intent.createChooser(intent, "Share Image"));
-                        return true;*/
+                        return true;
                 }
                 return false;
             }
@@ -107,8 +114,8 @@ public class RWebView extends android.webkit.WebView {
             // Menu options for an image.
             //set the header title to the image url
             menu.setHeaderTitle(result.getExtra());
-            //menu.add(0, ID_SAVEIMAGE, 0, "Save Image").setOnMenuItemClickListener(handler);
-            //menu.add(0, ID_SHAREIMAGE, 0, "Share Image").setOnMenuItemClickListener(handler);
+            menu.add(0, ID_SAVEIMAGE, 0, "Save Image").setOnMenuItemClickListener(handler);
+            menu.add(0, ID_SHAREIMAGE, 0, "Share Image").setOnMenuItemClickListener(handler);
             menu.add(0, ID_OPENLINK, 0, "Open Link").setOnMenuItemClickListener(handler);
             menu.add(0, ID_SHARELINK, 0, "Share Link").setOnMenuItemClickListener(handler);
             menu.add(0, ID_COPYLINK, 0, "Copy Link").setOnMenuItemClickListener(handler);
@@ -123,7 +130,14 @@ public class RWebView extends android.webkit.WebView {
         }
     }
 
-    /*public void downloadFile(String url) {
+    public void downloadFile(String url) {
+        // Check permissions for android M
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED) {
+                ((Activity) getContext()).requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                return;
+            }
+        }
 
         DownloadManager mgr = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 
@@ -137,5 +151,17 @@ public class RWebView extends android.webkit.WebView {
                 .setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), downloadUri.getLastPathSegment());
 
         mgr.enqueue(request);
-    }*/
+    }
+
+    public void shareImage(String url){
+        new LoadImageBitmapTask(url, new LoadImageBitmapTask.ImageCallback() {
+            @Override
+            public void run() {
+                if (image!=null){
+                    String file = getContext().getCacheDir().toString();
+
+                }
+            }
+        }).execute();
+    }
 }

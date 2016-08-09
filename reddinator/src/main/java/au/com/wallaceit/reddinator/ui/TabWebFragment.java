@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class TabWebFragment extends Fragment {
     /**
@@ -134,7 +135,7 @@ public class TabWebFragment extends Fragment {
                         mWebView.clearHistory();
                     }
                     if (url.contains("https://m.reddit.com"))
-                        Reddinator.executeJavascriptInWebview(mWebView, "document.getElementsByClassName('SmartBannerContainer')[0].remove();");
+                        Utilities.executeJavascriptInWebview(mWebView, "document.getElementsByClassName('SmartBannerContainer')[0].remove();");
 
                     super.onPageFinished(view, url);
                 }

@@ -51,6 +51,7 @@ import java.util.HashMap;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class WidgetService extends RemoteViewsService {
     @Override
@@ -125,14 +126,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         //int iconColor = Color.parseColor(themeColors[6]);
         int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
         images = new Bitmap[]{
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_cogs.character()), themeColors.get("default_icon"), 26, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
-                Reddinator.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_cogs.character()), themeColors.get("default_icon"), 26, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow),
+                Utilities.getFontBitmap(mContext, String.valueOf(Iconify.IconValue.fa_expand.character()), themeColors.get("comments_count"), 12, shadow)
         };
         titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
         // previews disabled by default due to listview dynamic height issue (causes views to jump around when scrolling up)
@@ -210,10 +211,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                             // get third resolution (320px wide)
                             if (arr.length() > 0){
                                 prevObj = arr.length() < 3 ? arr.getJSONObject(arr.length() - 1) : arr.getJSONObject(2);
-                                previewUrl = Reddinator.fromHtml(prevObj.getString("url")).toString();
+                                previewUrl = Utilities.fromHtml(prevObj.getString("url")).toString();
                             } else {
                                 // or default to source
-                                previewUrl = Reddinator.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
+                                previewUrl = Utilities.fromHtml(prevObj.getJSONObject("source").getString("url")).toString();
                             }
                         }
                     }
@@ -226,7 +227,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setImageViewBitmap(R.id.votesicon, images[0]);
             row.setImageViewBitmap(R.id.commentsicon, images[1]);
             row.setBitmap(R.id.widget_item_options, "setImageBitmap", images[2]);
-            row.setTextViewText(R.id.listheading, Reddinator.fromHtml(title).toString());
+            row.setTextViewText(R.id.listheading, Utilities.fromHtml(title).toString());
             row.setFloat(R.id.listheading, "setTextSize", Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
             row.setTextColor(R.id.listheading, themeColors.get("headline_text"));
             row.setTextViewText(R.id.sourcetxt, (showItemSubreddit ? subreddit + " - " :"")+domain);
@@ -352,7 +353,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     }
                 }
                 // check if url is image, if so, add ViewImageDialog intent and show indicator
-                if (Reddinator.isImageUrl(url)){
+                if (Utilities.isImageUrl(url)){
                     Intent imageintent =  new Intent();
                     Bundle imageextras = (Bundle) extras.clone();
                     imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);

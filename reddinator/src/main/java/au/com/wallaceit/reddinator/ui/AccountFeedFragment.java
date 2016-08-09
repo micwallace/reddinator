@@ -56,6 +56,7 @@ import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
@@ -162,7 +163,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     public void updateTheme() {
         String themeStr = ((AccountActivity) getActivity()).getCurrentTheme().getValuesString(true);
-        Reddinator.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
+        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

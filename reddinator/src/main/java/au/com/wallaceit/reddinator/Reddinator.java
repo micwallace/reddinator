@@ -27,34 +27,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.joanzapata.android.iconify.IconDrawable;
-import com.joanzapata.android.iconify.Iconify;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +58,7 @@ import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import de.cketti.library.changelog.ChangeLog;
@@ -363,47 +349,6 @@ public class Reddinator extends Application {
         context.startActivity(i);
     }
 
-    public static Bitmap getFontBitmap(Context context, String text, int color, int fontSize, int[] shadow) {
-        fontSize = convertDiptoPix(context, fontSize);
-        int pad = (fontSize / 9);
-        Paint paint = new Paint();
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "css/fonts/fontawesome-webfont.ttf");
-        paint.setAntiAlias(true);
-        paint.setTypeface(typeface);
-        paint.setColor(color);
-        paint.setTextSize(fontSize);
-        paint.setShadowLayer(shadow[0], shadow[1], shadow[2], shadow[3]);
-
-        int textWidth = (int) (paint.measureText(text) + pad * 2);
-        int height = (int) (fontSize / 0.75);
-        Bitmap bitmap = Bitmap.createBitmap(textWidth, height, Bitmap.Config.ARGB_4444);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawText(text, (float) pad, fontSize, paint);
-        return bitmap;
-    }
-
-    public static int getActionbarIconColor(){
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return Color.parseColor("#A5A5A5");
-        }
-        return Color.parseColor("#DBDBDB");
-    }
-
-    public static int convertDiptoPix(Context context, float dip) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
-    }
-
-    public static PackageInfo getPackageInfo(Context context){
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return pInfo;
-    }
-
     public static boolean doShowWelcomeDialog(final Activity context){
         try {
             ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
@@ -413,7 +358,7 @@ public class Reddinator extends Application {
             e.printStackTrace();
         }
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, false);
+        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, false);
         if (!aboutDismissed){
             showInfoDialog(context, false);
             return true;
@@ -450,11 +395,11 @@ public class Reddinator extends Application {
             } else {
                 prefs.edit().putBoolean("welcomeDialogShown", true).apply(); // show details view on first run
             }
-            prefs.edit().putBoolean("changelogDialogShown-" + getPackageInfo(context).versionName, true).apply();
+            prefs.edit().putBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, true).apply();
         }
         // setup about view
         TextView version = ((TextView) aboutView.findViewById(R.id.version));
-        version.setText(context.getResources().getString(R.string.version_label, getPackageInfo(context).versionName));
+        version.setText(context.getResources().getString(R.string.version_label, Utilities.getPackageInfo(context).versionName));
         version.setTextColor(headerText2);
         aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,8 +440,6 @@ public class Reddinator extends Application {
         }).show();
     }
 
-
-
     public boolean saveThumbnailToCache(Bitmap image, String redditId){
         try {
             File file = new File(getCacheDir().getPath() + Reddinator.THUMB_CACHE_DIR, redditId + ".png");
@@ -523,118 +466,5 @@ public class Reddinator extends Application {
                     //noinspection ResultOfMethodCallIgnored
                     file.delete();
             }
-    }
-
-    public static boolean isImageUrl(String url) {
-        if (url == null)
-            return false;
-        // Check image extension
-        if (hasImageExtension(url))
-            return true;
-        // Check for i.reddituploads.com images
-        return url.toLowerCase().matches("(https?://(i.reddituploads.com/.*)$)") || isImgurUrl(url);
-    }
-
-    public static boolean isImgurUrl(String url){
-        // Check for imgur url without file extension (should not be album)
-        return url.toLowerCase().matches("(https?://(.*imgur.com/[^galery/][^a/].*)$)");
-    }
-
-    public static boolean hasImageExtension(String url){
-        return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif?v|bmp))$)");
-    }
-
-    public static void executeJavascriptInWebview(WebView webView, String javascript){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(javascript, null);
-        } else {
-            webView.loadUrl("javascript:"+javascript);
-        }
-    }
-
-    public static ColorMatrixColorFilter getColorFilterFromColor(int color, int darken){
-        float r = (Color.red(color)+darken) / 255f;
-        float g = (Color.green(color)+darken) / 255f;
-        float b = (Color.blue(color)+darken) / 255f;
-        ColorMatrix cm = new ColorMatrix(new float[] {
-                // Change red channel
-                r, 0, 0, 0, 0,
-                // Change green channel
-                0, g, 0, 0, 0,
-                // Change blue channel
-                0, 0, b, 0, 0,
-                // Keep alpha channel
-                0, 0, 0, 1, 0,
-        });
-        return new ColorMatrixColorFilter(cm);
-    }
-
-    public static Spanned fromHtml(String html){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            //noinspection deprecation
-            return Html.fromHtml(html);
-        }
-    }
-
-    public static void updateActionbarOverflowIcon(final Activity context, final int iconColor){
-        final ViewGroup decorView = (ViewGroup) context.getWindow().getDecorView();
-        decorView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final ArrayList<View> outViews = new ArrayList<>();
-                @SuppressLint("PrivateResource")
-                String overflowDescription = context.getString(R.string.abc_action_menu_overflow_description);
-                findViewsWithText(outViews, decorView, overflowDescription);
-                if (outViews.isEmpty()) {
-                    return;
-                }
-                ImageView overflow = (ImageView) outViews.get(0);
-                IconDrawable iconDrawable = new IconDrawable(context, Iconify.IconValue.fa_bars).color(iconColor).sizeDp(28);
-                overflow.setImageDrawable(iconDrawable);
-            }
-            private void findViewsWithText(ArrayList<View> outViews, ViewGroup parent, String targetDescription) {
-                if (parent == null || TextUtils.isEmpty(targetDescription)) {
-                    return;
-                }
-                final int count = parent.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    final View child = parent.getChildAt(i);
-                    final CharSequence desc = child.getContentDescription();
-                    if (!TextUtils.isEmpty(desc) && targetDescription.equals(desc.toString())) {
-                        outViews.add(child);
-                    } else if (child instanceof ViewGroup && child.getVisibility() == View.VISIBLE) {
-                        findViewsWithText(outViews, (ViewGroup) child, targetDescription);
-                    }
-                }
-            }
-        }, 50);
-    }
-
-    public static int voteDirectionToInt(String vote){
-        switch (vote) {
-            case "null":
-                return 0;
-            case "true":
-                return 1;
-            case "false":
-                return -1;
-            default:
-                return 0;
-        }
-    }
-
-    public static String voteDirectionToString(int vote){
-        switch (vote) {
-            case 0:
-                return "null";
-            case 1:
-                return "true";
-            case -1:
-                return "false";
-            default:
-                return "null";
-        }
     }
 }

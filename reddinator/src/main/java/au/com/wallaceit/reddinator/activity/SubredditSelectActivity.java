@@ -77,6 +77,7 @@ import java.util.regex.Pattern;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.LoadRandomTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
@@ -270,7 +271,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
     public void onResume(){
         super.onResume();
         if (messageIcon!=null){
-            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Reddinator.getActionbarIconColor();
+            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Utilities.getActionbarIconColor();
             messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         }
     }
@@ -280,7 +281,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         int headerText = Color.parseColor(theme.getValue("header_text"));
         findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
-        ColorMatrixColorFilter filter = Reddinator.getColorFilterFromColor(headerColor, 210);
+        ColorMatrixColorFilter filter = Utilities.getColorFilterFromColor(headerColor, 210);
         sortBtn.getBackground().setColorFilter(filter);
         addButton.getBackground().setColorFilter(filter);
         addButton.setTextColor(headerText);
@@ -415,7 +416,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.subreddit_select_menu, menu);
         // set options menu view
-        int iconColor = Reddinator.getActionbarIconColor();
+        int iconColor = Utilities.getActionbarIconColor();
         int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): iconColor;
         messageIcon = (menu.findItem(R.id.menu_inbox));
         messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());

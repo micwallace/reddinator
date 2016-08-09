@@ -59,6 +59,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.ActionbarFragmentActivity;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
@@ -73,7 +74,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
-    private int actionbarIconColor = Reddinator.getActionbarIconColor();
+    private int actionbarIconColor = Utilities.getActionbarIconColor();
     public static final String ACTION_SAVED = "saved";
     public static final String ACTION_HIDDEN = "hidden";
     private String section = "overview";
@@ -169,7 +170,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
         String linkKarma = NumberFormat.getInstance().format(global.mRedditData.getLinkKarma());
         String commentKarma = NumberFormat.getInstance().format(global.mRedditData.getCommentKarma());
         actionBar.setSubtitle(
-                Reddinator.fromHtml("<font color='" + theme.getValue("votes_icon") + "'>" + linkKarma + "</font> - " +
+                Utilities.fromHtml("<font color='" + theme.getValue("votes_icon") + "'>" + linkKarma + "</font> - " +
                         "<font color='" + theme.getValue("comments_icon") + "'>" + commentKarma + "</font>"));
     }
 

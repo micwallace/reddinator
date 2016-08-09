@@ -47,6 +47,7 @@ import au.com.wallaceit.reddinator.activity.ViewImageDialogActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.FeedItemDialogActivity;
 import au.com.wallaceit.reddinator.activity.WidgetMenuDialogActivity;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -148,10 +149,10 @@ public class WidgetProvider extends AppWidgetProvider {
 
             int iconColor = themeColors.get("default_icon");
             int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
-            views.setImageViewBitmap(R.id.prefsbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_bars.character()), iconColor, 28, shadow));
-            views.setImageViewBitmap(R.id.refreshbutton, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
-            views.setImageViewBitmap(R.id.srcaret, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
-            views.setImageViewBitmap(R.id.erroricon, Reddinator.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
+            views.setImageViewBitmap(R.id.prefsbutton, Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_bars.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.refreshbutton, Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_refresh.character()), iconColor, 28, shadow));
+            views.setImageViewBitmap(R.id.srcaret, Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_caret_down.character()), iconColor, 16, shadow));
+            views.setImageViewBitmap(R.id.erroricon, Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_exclamation_triangle.character()), Color.parseColor("#E06B6C"), 28, shadow));
 
             // set current feed title
             String curFeed = global.getSubredditManager().getCurrentFeedName(appWidgetId);

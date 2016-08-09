@@ -8,7 +8,7 @@
     <!-- Needed by some activity_webview HTML5 video implementations (Bug report received for Android 4.1) -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> //TODO:Enable image download & share -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".Reddinator"

@@ -48,6 +48,7 @@ import java.lang.reflect.Method;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.ui.AccountFeedFragment;
 import au.com.wallaceit.reddinator.ui.ActionbarFragmentActivity;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -61,7 +62,7 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
     private RedditPageAdapter pageAdapter;
     private SimpleTabsWidget tabsIndicator;
     private Resources resources;
-    private int actionbarIconColor = Reddinator.getActionbarIconColor();
+    private int actionbarIconColor = Utilities.getActionbarIconColor();
     public static final String ACTION_UNREAD = "unread";
 
     /**

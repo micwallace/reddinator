@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 
 public class WebViewActivity extends ActionbarActivity {
@@ -127,7 +128,7 @@ public class WebViewActivity extends ActionbarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.web_view_menu, menu);
         // set options menu view
-        int iconColor = Reddinator.getActionbarIconColor();
+        int iconColor = Utilities.getActionbarIconColor();
         (menu.findItem(R.id.menu_share)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_share_alt).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_open)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_globe).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());

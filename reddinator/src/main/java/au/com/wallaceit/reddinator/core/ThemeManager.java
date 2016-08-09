@@ -168,7 +168,7 @@ public class ThemeManager {
                 return false;
 
             // decode Html entities in name
-            theme.put("name", Reddinator.fromHtml(theme.getString("name")));
+            theme.put("name", Utilities.fromHtml(theme.getString("name")));
 
             JSONObject impValues = theme.getJSONObject("values");
             JSONObject defaults = defaultValues.getTheme().getJSONObject("values");

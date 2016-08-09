@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.18" versioncode="53">
+        <change>Added image sharing and download.</change>
+    </release>
     <release version="3.17" versioncode="52">
         <change>Fixed image preview dialog to wrap image height.</change>
         <change>Added new overflow menu icon.</change>

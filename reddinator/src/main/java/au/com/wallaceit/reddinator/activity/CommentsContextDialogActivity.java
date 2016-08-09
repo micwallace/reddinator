@@ -60,6 +60,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.CommentTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
@@ -213,10 +214,10 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         try {
             String source = postInfo.getString("subreddit")+" - "+postInfo.getString("domain");
             sourceText.setText(source);
-            titleText.setText(Reddinator.fromHtml(postInfo.getString("title")));
+            titleText.setText(Utilities.fromHtml(postInfo.getString("title")));
 
             String infoStr = getString(R.string.submitted_details, DateUtils.getRelativeDateTimeString(this, Math.round(postInfo.getDouble("created_utc")) * 1000, DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL), postInfo.getString("author"));
-            infoText.setText(Reddinator.fromHtml(infoStr));
+            infoText.setText(Utilities.fromHtml(infoStr));
             infoText.setMovementMethod(LinkMovementMethod.getInstance());
 
             int score = postInfo.getInt("score");
@@ -234,7 +235,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                         public void onClick(View v) {
 
                             String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Reddinator.fromHtml(selftext).toString();
+                            html += Utilities.fromHtml(selftext).toString();
                             html += "</body></html>";
                             HtmlDialog.init(CommentsContextDialogActivity.this, getString(R.string.post_text), html);
 

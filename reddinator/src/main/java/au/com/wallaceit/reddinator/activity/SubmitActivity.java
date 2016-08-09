@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.SubmitTask;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -160,7 +161,7 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
                 if (result.has("errors")) {
                     JSONArray errors = result.getJSONArray("errors");
                     if (errors.length()>0) {
-                        submitText.setText(Reddinator.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
+                        submitText.setText(Utilities.fromHtml("<strong><font color=\"red\">" + errors.getJSONArray(0).getString(1) + "</font></strong>"));
                         return;
                     }
                 }
@@ -270,7 +271,7 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            submitText.setText(Reddinator.fromHtml(result?Reddinator.fromHtml(submitHtml).toString():"<strong><font color=\"red\">"+resources.getString(R.string.sub_doesnt_look_valid)+"</font></strong>"));
+            submitText.setText(Utilities.fromHtml(result?Utilities.fromHtml(submitHtml).toString():"<strong><font color=\"red\">"+resources.getString(R.string.sub_doesnt_look_valid)+"</font></strong>"));
         }
     }
 
