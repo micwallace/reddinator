@@ -211,7 +211,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
                 break;
 
             case R.id.menu_about:
-                Reddinator.showInfoDialog(this, true).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                AboutDialog.show(this, true).setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         WidgetMenuDialogActivity.this.finish();

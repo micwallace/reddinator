@@ -17,7 +17,6 @@
  */
 package au.com.wallaceit.reddinator;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -28,18 +27,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +44,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import au.com.wallaceit.reddinator.activity.AboutDialog;
 import au.com.wallaceit.reddinator.activity.CommentsContextDialogActivity;
 import au.com.wallaceit.reddinator.activity.MainActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
@@ -59,9 +53,6 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
-import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
-import de.cketti.library.changelog.ChangeLog;
 
 public class Reddinator extends Application {
 
@@ -360,84 +351,10 @@ public class Reddinator extends Application {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, false);
         if (!aboutDismissed){
-            showInfoDialog(context, false);
+            AboutDialog.show(context, false);
             return true;
         }
         return false;
-    }
-
-    public static AlertDialog showInfoDialog(final Activity context, final boolean isUserInitiated){
-        Resources resources = context.getResources();
-        @SuppressLint("InflateParams")
-        LinearLayout aboutView = (LinearLayout) context.getLayoutInflater().inflate(R.layout.dialog_info, null);
-        // setup view pager
-        final ViewPager pager = (ViewPager) aboutView.findViewById(R.id.pager);
-        pager.setOffscreenPageLimit(3);
-        pager.setAdapter(new SimpleTabsAdapter(new String[]{resources.getString(R.string.about), resources.getString(R.string.credits), resources.getString(R.string.changelog)}, new int[]{R.id.info_about, R.id.info_credits, R.id.info_changelog}, context, aboutView));
-        LinearLayout tabsLayout = (LinearLayout) aboutView.findViewById(R.id.tab_widget);
-        SimpleTabsWidget tabs = new SimpleTabsWidget(context, tabsLayout);
-        tabs.setViewPager(pager);
-        ThemeManager.Theme theme = ((Reddinator) context.getApplicationContext()).mThemeManager.getActiveTheme("appthemepref");
-        int headerColor = Color.parseColor(theme.getValue("header_color"));
-        int headerColor2 = Color.parseColor(theme.getValue("header_color_2"));
-        int headerText2 = Color.parseColor(theme.getValue("header_text_2"));
-        aboutView.findViewById(R.id.info_header).setBackgroundColor(headerColor2);
-        ((TextView) aboutView.findViewById(R.id.title)).setTextColor(headerText2);
-        ((TextView) aboutView.findViewById(R.id.subtitle)).setTextColor(headerText2);
-        tabs.setBackgroundColor(headerColor);
-        tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
-        tabs.setTextColor(Color.parseColor(theme.getValue("header_text")));
-        // do install/upgrade dialog specific stuff
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!isUserInitiated) {
-            if (prefs.getBoolean("welcomeDialogShown", false)){
-                pager.setCurrentItem(2); // show changelog view on upgrade
-            } else {
-                prefs.edit().putBoolean("welcomeDialogShown", true).apply(); // show details view on first run
-            }
-            prefs.edit().putBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, true).apply();
-        }
-        // setup about view
-        TextView version = ((TextView) aboutView.findViewById(R.id.version));
-        version.setText(context.getResources().getString(R.string.version_label, Utilities.getPackageInfo(context).versionName));
-        version.setTextColor(headerText2);
-        aboutView.findViewById(R.id.github).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/micwallace/reddinator"));
-                context.startActivity(intent);
-            }
-        });
-        aboutView.findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RFUQJ6EP5FLD2"));
-                context.startActivity(intent);
-            }
-        });
-        aboutView.findViewById(R.id.gold).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com/gold?goldtype=gift&months=1&thing=t3_4e10jl"));
-                context.startActivity(intent);
-            }
-        });
-        // setup credits
-        WebView cwv = (WebView) aboutView.findViewById(R.id.info_credits);
-        cwv.loadUrl("file:///android_asset/credits.html");
-        // setup changelog_master
-        ChangeLog cl = new ChangeLog(context);
-        WebView wv = (WebView) aboutView.findViewById(R.id.info_changelog);
-        wv.loadData(cl.getLog(), "text/html", "UTF-8");
-        // initialize dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        return builder.setView(aboutView)
-        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        }).show();
     }
 
     public boolean saveThumbnailToCache(Bitmap image, String redditId){
@@ -458,7 +375,7 @@ public class Reddinator extends Application {
     }
 
     public void triggerThunbnailCacheClean(){
-        File cacheDir = new File(getCacheDir() + THUMB_CACHE_DIR);
+        File cacheDir = new File(getCacheDir().getPath() + THUMB_CACHE_DIR);
         if (cacheDir.exists() && cacheDir.isDirectory())
             for (File file : cacheDir.listFiles()) {
                 long diff = System.currentTimeMillis() - file.lastModified();

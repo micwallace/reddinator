@@ -237,7 +237,7 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
                 break;
 
             case R.id.menu_about:
-                Reddinator.showInfoDialog(this, true);
+                AboutDialog.show(this, true);
                 break;
 
             default:

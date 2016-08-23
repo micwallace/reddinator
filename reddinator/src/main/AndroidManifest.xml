@@ -182,6 +182,16 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/TransparentActivityUndimmed"
             android:noHistory="true" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="au.com.wallaceit.reddinator.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>

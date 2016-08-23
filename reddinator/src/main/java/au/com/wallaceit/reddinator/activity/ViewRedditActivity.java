@@ -502,7 +502,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
                 break;
 
             case R.id.menu_about:
-                Reddinator.showInfoDialog(this, true);
+                AboutDialog.show(this, true);
                 break;
 
             default:

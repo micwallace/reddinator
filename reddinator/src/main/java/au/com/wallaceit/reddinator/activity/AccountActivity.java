@@ -284,7 +284,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
                 break;
 
             case R.id.menu_about:
-                Reddinator.showInfoDialog(this, true);
+                AboutDialog.show(this, true);
                 break;
 
             default:
