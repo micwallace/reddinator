@@ -242,8 +242,10 @@ function appendComment(commentData, prepend, parentId){
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);
     if (isMessages){
         commentElem.find(".comment_scores").hide();
-        commentElem.find(".message_type").text("("+commentData.subject+")").show();
-        commentElem.find(".message_subject").text(commentData.link_title).show();
+        if (commentData.subject){
+            commentElem.find(".message_type").text("("+commentData.subject+")").show();
+            commentElem.find(".message_subject").text(commentData.link_title).show();
+        }
         commentElem.data("context", commentData.context);
     } else {
         commentElem.find(".comment_score").text(commentData.score_hidden?'hidden':commentData.score);

@@ -2,6 +2,7 @@
 <changelog>
     <release version="3.18" versioncode="53">
         <change>Added image sharing and download.</change>
+        <change>Various bug fixes, see gitlog for details.</change>
     </release>
     <release version="3.17" versioncode="52">
         <change>Fixed image preview dialog to wrap image height.</change>

@@ -695,24 +695,21 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
             votesText.setText(getResources().getQuantityString(R.plurals.vote_details, score, score, Math.round(ratio * 100)));
             int comments = postInfo.getInt("num_comments");
             commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
-            try {
-                final String selftext = postInfo.getString("selftext_html");
-                if (!selftext.equals("null")){
-                    selfTextButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
 
-                            String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Utilities.fromHtml(selftext).toString();
-                            html += "</body></html>";
-                            HtmlDialog.init(ViewRedditActivity.this, getString(R.string.post_text), html);
+            final String selftext = postInfo.getString("selftext_html");
+            if (!selftext.equals("null")){
+                selfTextButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
+                        html += Utilities.fromHtml(selftext).toString();
+                        html += "</body></html>";
+                        HtmlDialog.init(ViewRedditActivity.this, getString(R.string.post_text), html);
 
                     }
                 });
-                    selfTextButton.setVisibility(View.VISIBLE);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+                selfTextButton.setVisibility(View.VISIBLE);
             }
         } catch (JSONException e) {
             e.printStackTrace();

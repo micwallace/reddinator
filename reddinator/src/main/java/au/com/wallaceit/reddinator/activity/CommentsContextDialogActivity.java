@@ -28,7 +28,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
@@ -106,7 +105,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)([^/]*)?");
             Matcher matcher = pattern.matcher(url);
             if (matcher.find()){
-                System.out.println(url + " " + matcher.group(1)+" "+matcher.group(2) + " " + matcher.group(3));
+                //System.out.println(url + " " + matcher.group(1)+" "+matcher.group(2) + " " + matcher.group(3));
                 permalink = matcher.group(1);
                 articleId = "t3_"+matcher.group(2);
                 commentId = matcher.group(3);
@@ -226,34 +225,22 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             int comments = postInfo.getInt("num_comments");
             commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
 
-            try {
-                final String selftext = postInfo.getString("selftext_html");
-                if (!selftext.equals("null")){
-                    IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
-                    textButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+            final String selftext = postInfo.getString("selftext_html");
+            if (!selftext.equals("null")){
+                IconTextView textButton = (IconTextView) findViewById(R.id.selftext_button);
+                textButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                            String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
-                            html += Utilities.fromHtml(selftext).toString();
-                            html += "</body></html>";
-                            HtmlDialog.init(CommentsContextDialogActivity.this, getString(R.string.post_text), html);
+                        String html = "<html><head><style type=\"text/css\"> a { word-wrap: break-word; } </style></head><body>";
+                        html += Utilities.fromHtml(selftext).toString();
+                        html += "</body></html>";
+                        HtmlDialog.init(CommentsContextDialogActivity.this, getString(R.string.post_text), html);
 
-                        }
-                    });
-                    textButton.setVisibility(View.VISIBLE);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+                    }
+                });
+                textButton.setVisibility(View.VISIBLE);
             }
-
-            panelLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    panelLayout.setPanelHeight(findViewById(R.id.title_box).getMeasuredHeight()+22);
-                }
-            });
-            //findViewById(R.id.info_panel).setVisibility(View.VISIBLE);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -436,24 +423,24 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        executeJavascript("showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+                        Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
                     } else {
-                        executeJavascript("noChildrenCallback('"+mMoreId+"');");
+                        Utilities.executeJavascriptInWebview(webView, "noChildrenCallback('"+mMoreId+"');");
                     }
                     break;
                 case "-1":
                     // show error
                     if (!loadMore) {
-                        executeJavascript("showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
+                        Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.error_loading_comments) + "');");
                     } else {
                         // reset load more button
-                        executeJavascript("resetMoreClickEvent('" + mMoreId + "');");
+                        Utilities.executeJavascriptInWebview(webView, "resetMoreClickEvent('" + mMoreId + "');");
                     }
                     Toast.makeText(CommentsContextDialogActivity.this, lastError, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     if (loadMore) {
-                        executeJavascript("populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        Utilities.executeJavascriptInWebview(webView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
                     } else {
                         populateInfoPanel();
                         populateCommentsFromData(result);
@@ -471,17 +458,9 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             e.printStackTrace();
         }
         if (data.equals("[]")){
-            executeJavascript("showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
+            Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            executeJavascript("populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
-        }
-    }
-
-    private void executeJavascript(String javascript){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(javascript, null);
-        } else {
-            webView.loadUrl("javascript:"+javascript);
+            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
         }
     }
 }
