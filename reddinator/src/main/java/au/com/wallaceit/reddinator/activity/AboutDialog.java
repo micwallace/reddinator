@@ -46,9 +46,7 @@ public class AboutDialog extends AlertDialog {
     private boolean isUserInitiated = true;
 
     public static AboutDialog show(Context context, boolean isUserInitiated){
-        AboutDialog dialog = new AboutDialog(context, isUserInitiated);
-        dialog.show();
-        return  dialog;
+        return new AboutDialog(context, isUserInitiated);
     }
 
     protected AboutDialog(Context context, boolean isUserInitiated) {
@@ -59,7 +57,8 @@ public class AboutDialog extends AlertDialog {
     protected AboutDialog(final Context context) {
         super(context);
         Resources resources = context.getResources();
-        setContentView(R.layout.dialog_info);
+        setView(getLayoutInflater().inflate(R.layout.dialog_info, null));
+        show();
         // setup view pager
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
