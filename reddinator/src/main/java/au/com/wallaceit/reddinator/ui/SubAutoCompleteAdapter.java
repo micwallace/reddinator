@@ -32,8 +32,8 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 
 public class SubAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-    Reddinator global;
-    JSONArray suggestions = new JSONArray();
+    private Reddinator global;
+    private JSONArray suggestions = new JSONArray();
 
     public SubAutoCompleteAdapter(Context context, int resource) {
         super(context, resource);

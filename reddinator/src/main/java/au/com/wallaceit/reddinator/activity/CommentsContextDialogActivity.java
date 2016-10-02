@@ -65,12 +65,12 @@ import au.com.wallaceit.reddinator.tasks.VoteTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 
 public class CommentsContextDialogActivity extends Activity implements VoteTask.Callback, CommentTask.Callback {
-    Reddinator global;
-    Resources resources;
-    WebView webView;
-    CommentsContextLoader commentsLoader;
-    VoteTask commentsVoteTask;
-    CommentTask commentTask;
+    private Reddinator global;
+    private Resources resources;
+    private WebView webView;
+    private CommentsContextLoader commentsLoader;
+    private VoteTask commentsVoteTask;
+    private CommentTask commentTask;
 
     private SlidingUpPanelLayout panelLayout;
     private TextView sourceText;
@@ -81,13 +81,13 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     private IconTextView commentsIcon;
     private TextView infoText;
 
-    String url;
-    String articleId;
-    String commentId;
-    String permalink;
+    private String url;
+    private String articleId;
+    private String commentId;
+    private String permalink;
 
-    String currentSort = "best";
-    int contextLevels = 3;
+    private String currentSort = "best";
+    private int contextLevels = 3;
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
@@ -246,7 +246,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         }
     }
 
-    class CommentViewClient extends WebViewClient {
+    private class CommentViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 

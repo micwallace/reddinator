@@ -55,12 +55,12 @@ import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 
 public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMenuItemClickListener, View.OnClickListener, LoadSubredditInfoTask.Callback {
-    Reddinator global;
-    SharedPreferences prefs;
-    int widgetId;
-    boolean menuShown = false;
-    boolean menuSelected = false;
-    PopupMenu popupMenu;
+    private Reddinator global;
+    private SharedPreferences prefs;
+    private int widgetId;
+    private boolean menuShown = false;
+    private boolean menuSelected = false;
+    private PopupMenu popupMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

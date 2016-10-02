@@ -46,9 +46,9 @@ import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
 public class FeedItemDialogActivity extends Activity {
-    Reddinator global;
-    Dialog dialog;
-    int widgetId;
+    private Reddinator global;
+    private Dialog dialog;
+    private int widgetId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

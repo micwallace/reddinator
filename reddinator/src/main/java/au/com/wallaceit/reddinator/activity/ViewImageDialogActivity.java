@@ -37,19 +37,16 @@ import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class ViewImageDialogActivity extends Activity {
-    Reddinator global;
-    WebView webView;
-    String imageUrl;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        global = (Reddinator) getApplicationContext();
+        Reddinator global = (Reddinator) getApplicationContext();
         setContentView(R.layout.activity_view_image_dialog);
         // get content url (which will be an image)
-        imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+        String imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
         // fix imgur links so it's not redirected to full webpage
         if (Utilities.isImgurUrl(imageUrl)) {
             imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
@@ -57,7 +54,7 @@ public class ViewImageDialogActivity extends Activity {
                 imageUrl += ".jpg"; // any extension will work
         }
         // setup image view
-        webView = (WebView) findViewById(R.id.imagewebview);
+        WebView webView = (WebView) findViewById(R.id.imagewebview);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setWebViewClient(new ImageWebViewClient());
         webView.getSettings().setDomStorageEnabled(true);
@@ -95,7 +92,7 @@ public class ViewImageDialogActivity extends Activity {
         setFinishOnTouchOutside(true);
     }
 
-    class ImageWebViewClient extends WebViewClient {
+    private class ImageWebViewClient extends WebViewClient {
         public void onPageFinished(WebView webView, String url) {
             findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         }

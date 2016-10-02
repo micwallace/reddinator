@@ -134,7 +134,7 @@ public class RWebView extends android.webkit.WebView {
 
     private String callbackUrl = null;
 
-    public void downloadFile(String url) {
+    private void downloadFile(String url) {
         // Check permissions for android M
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED) {
@@ -158,14 +158,14 @@ public class RWebView extends android.webkit.WebView {
         mgr.enqueue(request);
     }
 
-    public void onDownloadPermissionSuccess(){
+    /*public void onDownloadPermissionSuccess(){
         if (callbackUrl!=null){
             downloadFile(callbackUrl);
             callbackUrl = null;
         }
-    }
+    }*/
 
-    public void shareImage(final String url){
+    private void shareImage(final String url){
         final ProgressDialog dialog = ProgressDialog.show(getContext(), "Downloading", "Please wait...", true);
         new LoadImageBitmapTask(url, new LoadImageBitmapTask.ImageCallback() {
             @Override

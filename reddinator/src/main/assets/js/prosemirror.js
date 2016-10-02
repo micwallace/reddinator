@@ -580,7 +580,8 @@ function toProseMirror(element) {
     doc: defaultMarkdownParser.parse(element.textContent),
     plugins: [exampleSetup.config({
       menuBar: false,
-      tooltipMenu: true
+      tooltipMenu: true,
+
     })]
   });
   pm.editorElement = editorElement;
@@ -8213,7 +8214,7 @@ var tooltipMenu = new Plugin(TooltipMenu, {
   inlineContent: [],
   blockContent: [],
   selectedBlockContent: null,
-  position: "above"
+  position: "below"
 });
 exports.tooltipMenu = tooltipMenu;
 

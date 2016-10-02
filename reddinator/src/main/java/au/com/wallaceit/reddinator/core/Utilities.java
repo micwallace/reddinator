@@ -236,7 +236,7 @@ public class Utilities {
         context.startActivity(openintent);
     }
 
-    private static void intentActionShareText(Context context, String txt) {
+    public static void intentActionShareText(Context context, String txt) {
         Intent sendintent = new Intent(Intent.ACTION_SEND);
         sendintent.setAction(Intent.ACTION_SEND);
         sendintent.putExtra(Intent.EXTRA_TEXT, txt);

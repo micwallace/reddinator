@@ -75,7 +75,7 @@ public class SimpleTabsWidget {
         setTab(viewPager.getCurrentItem());
     }
 
-    public void initTabs(){
+    private void initTabs(){
         PagerAdapter adapter = viewPager.getAdapter();
         int tabCount = adapter.getCount();
         for (int i=0; i<tabCount; i++){

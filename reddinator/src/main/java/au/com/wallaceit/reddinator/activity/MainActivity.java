@@ -268,7 +268,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             listAdapter.reloadReddits();
     }
 
-    public void openPostView(Bundle extras, boolean viewComments){
+    private void openPostView(Bundle extras, boolean viewComments){
         Intent intent = new Intent(MainActivity.this, ViewRedditActivity.class);
         intent.putExtras(extras);
         if (viewComments)

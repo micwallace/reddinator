@@ -47,8 +47,8 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
     private RedditData.RedditApiException exception;
     private int action;
     private Object[] params;
-    ProgressDialog progressDialog;
-    String loadingMessage = "";
+    private ProgressDialog progressDialog;
+    private String loadingMessage = "";
 
     public interface Callback {
         void onSubscriptionEditComplete(boolean result, RedditData.RedditApiException exception, int action, Object[] params, JSONObject data);

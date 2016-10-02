@@ -54,7 +54,8 @@ public class CommentTask extends AsyncTask<String, Integer, JSONObject> {
         try {
             switch (action){
                 case ACTION_DELETE:
-                    result = global.mRedditData.deleteComment(redditId)?new JSONObject():null;
+                    global.mRedditData.deleteComment(redditId);
+                    result = new JSONObject();
                     break;
                 case ACTION_ADD:
                     result = global.mRedditData.postComment(redditId, messageText);

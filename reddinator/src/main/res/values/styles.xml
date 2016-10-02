@@ -45,9 +45,10 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">false</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
     <style name="TransparentActivityUndimmed" parent="TransparentActivity">
         <item name="android:backgroundDimEnabled">false</item>

@@ -56,17 +56,17 @@ import au.com.wallaceit.reddinator.tasks.VoteTask;
 public class TabCommentsFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback {
     private Resources resources;
     private SharedPreferences mSharedPreferences;
-    public WebView mWebView;
+    private WebView mWebView;
     private boolean webviewInit = false;
     private boolean mFirstTime = true;
     private LinearLayout ll;
     private Reddinator global;
-    public String articleId;
-    public String permalink;
+    private String articleId;
+    private String permalink;
     private String currentSort = "best";
-    CommentsLoader commentsLoader;
-    VoteTask commentsVoteTask;
-    CommentTask commentTask;
+    private CommentsLoader commentsLoader;
+    private VoteTask commentsVoteTask;
+    private CommentTask commentTask;
 
     public static TabCommentsFragment init(String id, String permalink) {
         TabCommentsFragment commentsTab = new TabCommentsFragment();
@@ -84,7 +84,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     }
 
-    public JSONArray initialData = null;
+    private JSONArray initialData = null;
     public void loadFromData(JSONObject postInfo, JSONArray comments){
         subData = postInfo;
         if (webviewInit) {

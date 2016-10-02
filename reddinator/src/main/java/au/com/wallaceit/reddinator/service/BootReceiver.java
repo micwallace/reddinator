@@ -28,6 +28,8 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (!WidgetProvider.APPWIDGET_AUTO_UPDATE.equals(intent.getAction()))
+            return;
         // set mail check alarm
         MailCheckReceiver.setAlarm(context);
         // set widget update alarm if widgets enabled

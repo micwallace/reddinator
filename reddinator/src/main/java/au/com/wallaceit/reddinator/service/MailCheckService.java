@@ -64,7 +64,7 @@ public class MailCheckService extends Service {
         return START_NOT_STICKY;
     }
 
-    class MailCheckTask extends AsyncTask<String, Void, Boolean> {
+    private class MailCheckTask extends AsyncTask<String, Void, Boolean> {
 
         @Override
         protected Boolean doInBackground(String... params) {

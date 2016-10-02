@@ -77,7 +77,7 @@ public class TabWebFragment extends Fragment {
         //mWebView.restoreState(savedInstanceState);
     }
 
-    boolean loaded = false;
+    private boolean loaded = false;
     public void load(){
         if (!loaded) {
             mWebView.loadUrl(url);
@@ -173,7 +173,7 @@ public class TabWebFragment extends Fragment {
     }
 
     // web chrome client
-    WebChromeClient newchromeclient = new WebChromeClient() {
+    private WebChromeClient newchromeclient = new WebChromeClient() {
         ActionBar actionBar;
         private FrameLayout mVideoFrame;
         private View mTabcontainer;

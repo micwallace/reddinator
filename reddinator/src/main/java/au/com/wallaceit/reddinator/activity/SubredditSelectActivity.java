@@ -34,6 +34,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -284,8 +285,15 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         ColorMatrixColorFilter filter = Utilities.getColorFilterFromColor(headerColor, 210);
         sortBtn.getBackground().setColorFilter(filter);
         addButton.getBackground().setColorFilter(filter);
-        addButton.setTextColor(headerText);
         refreshButton.getBackground().setColorFilter(filter);
+        // TODO: For material design theme
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sortBtn.getBackground().setTint(headerColor);
+            addButton.getBackground().setTint(headerColor);
+            refreshButton.getBackground().setTint(headerColor);
+        }*/
+
+        addButton.setTextColor(headerText);
         refreshButton.setTextColor(headerText);
         tabs.setBackgroundColor(headerColor);
         tabs.setInidicatorColor(Color.parseColor(theme.getValue("tab_indicator")));
@@ -799,13 +807,14 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
     class MySubredditsAdapter extends ArrayAdapter<String> {
         private LayoutInflater inflater;
 
-        public MySubredditsAdapter(Context context, ArrayList<String> objects) {
+        MySubredditsAdapter(Context context, ArrayList<String> objects) {
             super(context, R.layout.myredditlistitem, R.id.subreddit_name, objects);
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
+        @NonNull
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             super.getView(position, convertView, parent);
             ViewHolder viewHolder;
             if (convertView == null || convertView.getTag() == null) {
@@ -846,7 +855,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                     }
                 }
             });
-            if (getItem(position).equals("all")){
+            if ("all".equals(getItem(position))){
                 viewHolder.filterIcon.setVisibility(View.VISIBLE);
                 viewHolder.filterIcon.setOnClickListener(new OnClickListener() {
                     @Override
@@ -858,7 +867,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 viewHolder.filterIcon.setVisibility(View.GONE);
             }
             // Display default front page button when logged in
-            if (getItem(position).equals("Front Page") && global.mRedditData.isLoggedIn()){
+            if ("Front Page".equals(getItem(position)) && global.mRedditData.isLoggedIn()){
                 viewHolder.defaultIcon.setVisibility(View.VISIBLE);
                 viewHolder.defaultIcon.setOnClickListener(new OnClickListener() {
                     @Override
@@ -900,12 +909,12 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         private LayoutInflater inflater;
         private ArrayList<JSONObject> multiList;
 
-        public MyMultisAdapter(Context context) {
+        MyMultisAdapter(Context context) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             refreshMultis();
         }
 
-        public void refreshMultis(){
+        void refreshMultis(){
             multiList = global.getSubredditManager().getMultiList();
             Collections.sort(multiList, new Comparator<JSONObject>() {
                 @Override
@@ -1179,7 +1188,8 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                     }
                 }).show();
         dialog.setCanceledOnTouchOutside(true);
-        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        if (dialog.getWindow()!=null)
+            dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
 
     class SubsListAdapter extends BaseAdapter {
@@ -1190,7 +1200,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         private String multiPath;
         private SubAutoCompleteAdapter autoCompleteAdapter;
 
-        public SubsListAdapter(Context context, String multiPath) {
+        SubsListAdapter(Context context, String multiPath) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             autoCompleteAdapter = new SubAutoCompleteAdapter(context, R.layout.autocomplete_list_item);
             if (multiPath!=null) {
@@ -1200,7 +1210,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             refreshList();
         }
 
-        public void refreshList(){
+        void refreshList(){
             if (mode==MODE_MULTI) {
                 subsList = global.getSubredditManager().getMultiSubreddits(multiPath);
             } else {

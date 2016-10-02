@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- TODO: Add material design theme for newer devices. As it stands, there needs to be a bit of work done to make padding and other things look right -->
+    <!--<style name="AppBaseTheme" parent="android:Theme.Material.Light.DarkActionBar">
+
+    </style>-->
+</resources>

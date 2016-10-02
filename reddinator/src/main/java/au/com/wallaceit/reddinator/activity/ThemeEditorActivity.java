@@ -78,7 +78,7 @@ public class ThemeEditorActivity extends ListActivity {
         }
     }
 
-    public void refreshList(){
+    private void refreshList(){
         ((BaseAdapter) getListView().getAdapter()).notifyDataSetChanged();
     }
 

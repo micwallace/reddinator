@@ -18,17 +18,18 @@ package au.com.wallaceit.reddinator.activity;
  *
  * Created by michael on 23/08/16.
  */
-import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,12 +42,15 @@ import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import de.cketti.library.changelog.ChangeLog;
 
-public class AboutDialog extends AlertDialog {
+public class AboutDialog extends Dialog {
 
+    private Context context;
     private boolean isUserInitiated = true;
 
-    public static AboutDialog show(Context context, boolean isUserInitiated){
-        return new AboutDialog(context, isUserInitiated);
+    public static Dialog show(Context context, boolean isUserInitiated){
+        Dialog dialog =  new AboutDialog(context, isUserInitiated);
+        dialog.show();
+        return dialog;
     }
 
     protected AboutDialog(Context context, boolean isUserInitiated) {
@@ -56,9 +60,15 @@ public class AboutDialog extends AlertDialog {
 
     protected AboutDialog(final Context context) {
         super(context);
+        this.context = context;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         Resources resources = context.getResources();
-        setView(getLayoutInflater().inflate(R.layout.dialog_info, null));
-        show();
+        setContentView(R.layout.dialog_info);
         // setup view pager
         final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setOffscreenPageLimit(3);
@@ -120,13 +130,5 @@ public class AboutDialog extends AlertDialog {
         ChangeLog cl = new ChangeLog(context);
         WebView wv = (WebView) findViewById(R.id.info_changelog);
         wv.loadData(cl.getLog(), "text/html", "UTF-8");
-
-        setButton(AlertDialog.BUTTON_POSITIVE, resources.getString(R.string.ok), new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
     }
-
 }

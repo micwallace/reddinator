@@ -41,11 +41,11 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.service.MailCheckReceiver;
 
 public class OAuthView extends Activity {
-    WebView wv;
-    WebViewClient wvclient;
-    Activity mActivity;
-    Reddinator global;
-    Resources resources;
+    private WebView wv;
+    private WebViewClient wvclient;
+    private Activity mActivity;
+    private Reddinator global;
+    private Resources resources;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -91,7 +91,7 @@ public class OAuthView extends Activity {
         wv.loadUrl("https://www.reddit.com/api/v1/authorize.compact?client_id=" + RedditData.OAUTH_CLIENTID + "&response_type=code&state=" + oauthstate + "&redirect_uri=" + RedditData.OAUTH_REDIRECT + "&duration=permanent&scope=" + RedditData.OAUTH_SCOPES);
     }
 
-    class OverrideClient extends WebViewClient {
+    private class OverrideClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             if (url != null && url.startsWith(RedditData.OAUTH_REDIRECT)) {
@@ -111,7 +111,7 @@ public class OAuthView extends Activity {
         }
     }
 
-    ProgressDialog loginDialog;
+    private ProgressDialog loginDialog;
 
     class LoginTask extends AsyncTask<Uri, String, Boolean> {
         RedditData.RedditApiException exception;

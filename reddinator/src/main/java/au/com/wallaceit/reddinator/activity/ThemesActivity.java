@@ -124,7 +124,7 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
         super.onBackPressed();
     }
 
-    public void refreshList(){
+    private void refreshList(){
         themesList = global.mThemeManager.getThemeList(ThemeManager.LISTMODE_CUSTOM);
         adapter.notifyDataSetChanged();
     }

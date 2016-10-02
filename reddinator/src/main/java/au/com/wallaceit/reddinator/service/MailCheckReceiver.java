@@ -31,7 +31,7 @@ import au.com.wallaceit.reddinator.R;
 
 public class MailCheckReceiver extends BroadcastReceiver {
 
-    public static String CHECK_ACTION = "reddinator.background.mailcheck";
+    private static String CHECK_ACTION = "reddinator.background.mailcheck";
 
     public static void setAlarm(Context context){
 

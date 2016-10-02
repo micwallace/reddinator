@@ -329,7 +329,7 @@ public class WidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
     }
 
-    public static void updateAllWidgets(Context context, int[] widgetIds) {
+    private static void updateAllWidgets(Context context, int[] widgetIds) {
         for (int widgetId : widgetIds) {
             showLoaderAndUpdate(context, widgetId, false);
         }

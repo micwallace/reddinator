@@ -46,11 +46,9 @@ import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 
 public class WebViewActivity extends ActionbarActivity {
-    WebView wv;
-    WebViewClient wvclient;
-    Activity mActivity;
-    Reddinator global;
-    SharedPreferences prefs;
+    private WebView wv;
+    private Activity mActivity;
+    private SharedPreferences prefs;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -59,8 +57,7 @@ public class WebViewActivity extends ActionbarActivity {
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
         super.onCreate(savedInstanceState);
-
-        global = ((Reddinator) WebViewActivity.this.getApplicationContext());
+        
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -73,7 +70,7 @@ public class WebViewActivity extends ActionbarActivity {
         wv.setFocusable(true);
         wv.setFocusableInTouchMode(true);
         wv.requestFocus(View.FOCUS_DOWN);
-        wvclient = new WebViewClient();
+        WebViewClient wvclient = new WebViewClient();
         wv.setWebViewClient(wvclient);
         wv.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
@@ -173,11 +170,11 @@ public class WebViewActivity extends ActionbarActivity {
                 break;
 
             case R.id.menu_open:
-                openLink(wv.getUrl());
+                Utilities.intentActionView(this, wv.getUrl());
                 break;
 
             case R.id.menu_share:
-                shareLink(wv.getUrl());
+                Utilities.intentActionShareText(this, wv.getUrl());
                 break;
 
             case R.id.menu_about:
@@ -188,19 +185,6 @@ public class WebViewActivity extends ActionbarActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
-    }
-
-    public void openLink(String url) {
-        Intent openintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(openintent);
-    }
-
-    public void shareLink(String txt) {
-        Intent sendintent = new Intent(Intent.ACTION_SEND);
-        sendintent.setAction(Intent.ACTION_SEND);
-        sendintent.putExtra(Intent.EXTRA_TEXT, txt);
-        sendintent.setType("text/plain");
-        startActivity(Intent.createChooser(sendintent, getResources().getString(R.string.share_with)));
     }
 }
 

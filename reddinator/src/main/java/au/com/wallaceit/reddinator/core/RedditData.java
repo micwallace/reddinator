@@ -542,7 +542,7 @@ public class RedditData {
         }
     }
 
-    public boolean deleteComment(String thingId) throws RedditApiException {
+    public void deleteComment(String thingId) throws RedditApiException {
         checkLogin();
 
         JSONObject resultjson;
@@ -560,8 +560,6 @@ public class RedditData {
                     throw new RedditApiException("Authentication Error, Reddit Login Required", true); // creds invalid re-authenticate.
                 }
                 throw new RedditApiException("API Error: "+firsterror.get(1), true);
-            } else {
-                return true;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -725,7 +723,7 @@ public class RedditData {
 
     // COMM FUNCTIONS
     // Create Http/s client
-    private boolean createHttpClient() {
+    private void createHttpClient() {
         httpClient = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
@@ -740,8 +738,6 @@ public class RedditData {
                     return chain.proceed(requestWithUserAgent);
                 }
             }).build();
-
-        return true;
     }
 
     private JSONArray redditApiGetArray(String url, boolean useAuth) throws RedditApiException {

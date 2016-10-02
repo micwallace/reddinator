@@ -510,7 +510,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         return true;
     }
 
-    public void showOpenDialog() {
+    private void showOpenDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
         builder.setMessage(resources.getString(R.string.open_link))
                 .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {

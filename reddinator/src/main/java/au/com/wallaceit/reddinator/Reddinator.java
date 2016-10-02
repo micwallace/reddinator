@@ -88,7 +88,7 @@ public class Reddinator extends Application {
     }
 
     // app feed update from view reddit activity; if the user voted, that data is stored here for the MainActivity to access in on resume
-    Bundle itemupdate;
+    private Bundle itemupdate;
 
     public Bundle getItemUpdate() {
         if (itemupdate == null) {

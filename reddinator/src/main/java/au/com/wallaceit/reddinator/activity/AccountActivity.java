@@ -78,7 +78,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
     public static final String ACTION_SAVED = "saved";
     public static final String ACTION_HIDDEN = "hidden";
     private String section = "overview";
-    ThemeManager.Theme theme;
+    private ThemeManager.Theme theme;
 
     /**
      * (non-Javadoc)
@@ -378,7 +378,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
     }
 
     // don't update this more than once a minute
-    public void triggerRefreshUserInfo(){
+    private void triggerRefreshUserInfo(){
         long now = System.currentTimeMillis();
         long last = global.mRedditData.getLastUserUpdateTime();
         if ((now-last)>60000){
@@ -436,7 +436,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
-        public RedditPageAdapter(FragmentManager fragmentManager){
+        RedditPageAdapter(FragmentManager fragmentManager){
             super(fragmentManager);
         }
 
@@ -496,7 +496,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
             super.destroyItem(container, position, object);
         }
 
-        public Fragment getRegisteredFragment(int position) {
+        Fragment getRegisteredFragment(int position) {
             return registeredFragments.get(position);
         }
 

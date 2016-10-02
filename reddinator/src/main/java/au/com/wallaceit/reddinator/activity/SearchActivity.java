@@ -271,8 +271,8 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         }
     }
 
-    int headerText = Color.BLACK;
-    ColorMatrixColorFilter buttonfilter;
+    private int headerText = Color.BLACK;
+    private ColorMatrixColorFilter buttonfilter;
     private void setThemeColors() {
         theme = global.mThemeManager.getActiveTheme("appthemepref");
         appView.setBackgroundColor(Color.parseColor(theme.getValue("background_color")));
@@ -397,7 +397,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         private boolean hideInf = false;
         private boolean isLoaded = false;
 
-        protected SearchListAdapter(Reddinator gobjects, SharedPreferences prefs) {
+        SearchListAdapter(Reddinator gobjects, SharedPreferences prefs) {
 
             global = gobjects;
             mSharedPreferences = prefs;

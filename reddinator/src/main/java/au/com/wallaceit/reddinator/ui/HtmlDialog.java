@@ -37,7 +37,7 @@ public class HtmlDialog extends AlertDialog {
         return dialog;
     }
 
-    public HtmlDialog(Activity context, String title, String html) {
+    private HtmlDialog(Activity context, String title, String html) {
         super(context, R.style.HtmlDialog);
         @SuppressLint("InflateParams")
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_html, null);
@@ -52,7 +52,7 @@ public class HtmlDialog extends AlertDialog {
         setCanceledOnTouchOutside(true);
     }
 
-    class NoNavClient extends WebViewClient {
+    private class NoNavClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 

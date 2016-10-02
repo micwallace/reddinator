@@ -67,16 +67,16 @@ import au.com.wallaceit.reddinator.tasks.VoteTask;
 
 public class AccountFeedFragment extends Fragment implements VoteTask.Callback, CommentTask.Callback, ComposeMessageTask.Callback {
     private Resources resources;
-    public WebView mWebView;
+    private WebView mWebView;
     private boolean mFirstTime = true;
     private LinearLayout ll;
     private Reddinator global;
     private boolean isMessages = false;
     private String type; // end part of the reddit url ie. overview, upvoted, downvoted, inbox, sent etc
     private String currentSort = "new";
-    FeedLoader feedLoader;
-    VoteTask commentsVoteTask;
-    CommentTask commentTask;
+    private FeedLoader feedLoader;
+    private VoteTask commentsVoteTask;
+    private CommentTask commentTask;
 
     public static AccountFeedFragment init(String type, boolean load) {
         AccountFeedFragment commentsTab = new AccountFeedFragment();
@@ -87,7 +87,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         return commentsTab;
     }
 
-    boolean loaded = false;
+    private boolean loaded = false;
     public void load(){
         if (!loaded) {
             loadComments("new");

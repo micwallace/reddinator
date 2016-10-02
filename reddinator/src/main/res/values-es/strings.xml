@@ -222,7 +222,7 @@
     <string name="feed_filter_duplicates_summary">Filtrar mensajes mostrados en las páginas anteriores</string>
     <string name="post_options">Opciones de Envío</string>
     <string name="clear_post_filter_title">Filtros de correos claras</string>
-    <string name="clear_post_filter_summary">Borrar %1$s filtrados / mensajes ocultos</string>
+    <string name="clear_post_filter_summary">Borrar %1$d filtrados / mensajes ocultos</string>
     <string name="clear_post_filter_message">Filtros de correos ocultos borran</string>
     <string name="logo_open_pref_title">Aplicación abierta en el logo click</string>
     <string name="logo_open_pref_summary">Abre la aplicación al hacer clic en Snoo</string>

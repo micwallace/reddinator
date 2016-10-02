@@ -278,7 +278,7 @@
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
     <string name="post_options">Post Options</string>
     <string name="clear_post_filter_title">Clear post filters</string>
-    <string name="clear_post_filter_summary">Clear %1$s filtered/hidden posts</string>
+    <string name="clear_post_filter_summary">Clear %1$d filtered/hidden posts</string>
     <string name="clear_post_filter_message">Hidden post filters cleared</string>
     <string name="logo_open_pref_title">Open app on logo click</string>
     <string name="logo_open_pref_summary">Open the app when clicking on Snoo</string>
