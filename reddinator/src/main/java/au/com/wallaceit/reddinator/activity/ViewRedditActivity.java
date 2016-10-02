@@ -29,7 +29,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -477,7 +476,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
                 break;
 
             case R.id.menu_share:
-                showShareDialog();
+                Utilities.showPostShareDialog(this, postUrl, postPermalink);
                 break;
 
             case R.id.menu_save:
@@ -511,51 +510,17 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         return true;
     }
 
-    // Open stuff
-    public void openUrlExternally(String url) {
-        Intent openintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(openintent);
-    }
-
-    public void shareText(String txt) {
-        Intent sendintent = new Intent(Intent.ACTION_SEND);
-        sendintent.setAction(Intent.ACTION_SEND);
-        sendintent.putExtra(Intent.EXTRA_TEXT, txt);
-        sendintent.setType("text/plain");
-        startActivity(Intent.createChooser(sendintent, resources.getString(R.string.share_with)));
-    }
-
     public void showOpenDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
         builder.setMessage(resources.getString(R.string.open_link))
                 .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        openUrlExternally(postUrl);
+                        Utilities.intentActionView(ViewRedditActivity.this, postUrl);
                     }
                 })
                 .setPositiveButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        openUrlExternally("https://reddit.com" + postPermalink);
-                    }
-                });
-        builder.create().show();
-    }
-
-    public void showShareDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ViewRedditActivity.this);
-        builder.setMessage(resources.getString(R.string.share_url))
-                .setNegativeButton(resources.getString(R.string.content), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        shareText(postUrl);
-                    }
-                }).setPositiveButton(resources.getString(R.string.both), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        shareText(postUrl+"\nhttps://reddit.com" + postPermalink);
-                    }
-                })
-                .setNeutralButton(resources.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        shareText("https://reddit.com" + postPermalink);
+                        Utilities.intentActionView(ViewRedditActivity.this, "https://reddit.com" + postPermalink);
                     }
                 });
         builder.create().show();
@@ -720,7 +685,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
-        public RedditPageAdapter(FragmentManager fragmentManager){
+        RedditPageAdapter(FragmentManager fragmentManager){
             super(fragmentManager);
         }
 
@@ -783,7 +748,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
             super.destroyItem(container, position, object);
         }
 
-        public Fragment getRegisteredFragment(int position) {
+        Fragment getRegisteredFragment(int position) {
             return registeredFragments.get(position);
         }
 

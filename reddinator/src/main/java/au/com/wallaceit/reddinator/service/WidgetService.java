@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 import com.joanzapata.android.iconify.Iconify;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +76,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private boolean showItemSubreddit = false;
     private Bitmap[] images;
 
-    public ListRemoteViewsFactory(Context context, Intent intent) {
+    ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         global = ((Reddinator) context.getApplicationContext());
@@ -121,7 +121,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         loadFeedPrefs();
     }
 
-    public void loadFeedPrefs(){
+    private void loadFeedPrefs(){
         themeColors = global.mThemeManager.getActiveTheme("widgettheme-"+appWidgetId).getIntColors();
         //int iconColor = Color.parseColor(themeColors[6]);
         int[] shadow = new int[]{3, 4, 4, themeColors.get("icon_shadow")};
@@ -194,7 +194,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 id = tempobj.getString("name");
                 url = tempobj.getString("url");
                 permalink = tempobj.getString("permalink");
-                thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
+                thumbnail = tempobj.getString("thumbnail");
                 score = tempobj.getInt("score");
                 numcomments = tempobj.getInt("num_comments");
                 nsfw = tempobj.getBoolean("over_18");
@@ -256,7 +256,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             Bundle extras = new Bundle();
             extras.putString(WidgetProvider.ITEM_ID, id);
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml(url)); // decode html entities in url; fixes reddituploads.com urls
+            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml4(url)); // decode html entities in url; fixes reddituploads.com urls
             extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
             extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
             extras.putString(WidgetProvider.ITEM_SUBREDDIT, subreddit);
@@ -350,6 +350,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     } else {
                         // row.setImageViewResource(R.id.thumbnail, android.R.drawable.stat_notify_error); for later
                         row.setViewVisibility(imageView, View.GONE);
+                        row.setViewVisibility(R.id.thumbnail_expand, View.GONE);
                     }
                 }
                 // check if url is image, if so, add ViewImageDialog intent and show indicator

@@ -41,7 +41,7 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,7 +144,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             }
 
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \"" + global.mRedditData.getUsername() + "\", \""+type+"\")");
+                mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\", \"" + global.mRedditData.getUsername() + "\", \""+type+"\")");
                 if (load) load();
             }
         });
@@ -163,7 +163,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
 
     public void updateTheme() {
         String themeStr = ((AccountActivity) getActivity()).getCurrentTheme().getValuesString(true);
-        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
+        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -223,10 +223,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                     mWebView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
                     break;
                 case 0:
-                    mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
                 case 1:
-                    mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
             }
         } else {
@@ -372,11 +372,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         private ArrayList<String> unreadIds = null;
         private RedditData.RedditApiException exception;
 
-        public FeedLoader(String sort){
+        FeedLoader(String sort){
             mSort = sort;
         }
 
-        public FeedLoader(String sort, String moreId) {
+        FeedLoader(String sort, String moreId) {
             mSort = sort;
             if (moreId != null && !moreId.equals("")) {
                 loadMore = true;
@@ -427,7 +427,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             switch (result) {
                 case "":
                     if (!loadMore) {
-                        executeJavascript("showLoadingView(\""+StringEscapeUtils.escapeJavaScript(resources.getString(R.string.nothing_more_here))+"\");");
+                        executeJavascript("showLoadingView(\""+StringEscapeUtils.escapeEcmaScript(resources.getString(R.string.nothing_more_here))+"\");");
                     } else {
                         executeJavascript("noMoreCallback('" + mMoreId + "');");
                     }
@@ -446,7 +446,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                     Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
                     break;
                 default:
-                    executeJavascript("populateFeed('" + StringEscapeUtils.escapeJavaScript(result) + "', "+loadMore+");");
+                    executeJavascript("populateFeed('" + StringEscapeUtils.escapeEcmaScript(result) + "', "+loadMore+");");
                     // Mark messages read; this clears cached messages and count once completed
                     if (unreadIds!=null && unreadIds.size()>0){
                         new MarkMessageTask(global, unreadIds).execute();

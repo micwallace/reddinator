@@ -39,7 +39,7 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,7 +109,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     public void updateTheme() {
         String themeStr = ((ViewRedditActivity) getActivity()).getCurrentTheme().getValuesString(true);
-        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\")");
+        Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\")");
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -143,7 +143,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                 }
 
                 public void onPageFinished(WebView view, String url) {
-                    mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
+                    mWebView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
                     if (initialData!=null) {
                         populateCommentsFromData(initialData.toString());
                     }
@@ -216,10 +216,10 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                     mWebView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
                     break;
                 case 0:
-                    mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
                 case 1:
-                    mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    mWebView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
             }
         } else {
@@ -304,11 +304,11 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         private String mMoreId;
         private String mChildren;
 
-        public CommentsLoader(String sort){
+        CommentsLoader(String sort){
             mSort = sort;
         }
 
-        public CommentsLoader(String sort, String moreId, String children) {
+        CommentsLoader(String sort, String moreId, String children) {
             mSort = sort;
             if (children != null && !children.equals("")) {
                 loadMore = true;
@@ -367,7 +367,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
                     break;
                 default:
                     if (loadMore) {
-                        Utilities.executeJavascriptInWebview(mWebView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        Utilities.executeJavascriptInWebview(mWebView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result) + "\");");
                     } else {
                         populateCommentsFromData(result);
                     }
@@ -386,7 +386,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
         if (data.equals("[]")){
             Utilities.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Utilities.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
         }
     }
 }

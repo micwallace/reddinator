@@ -47,7 +47,7 @@ import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -256,7 +256,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
 
         public void onPageFinished(WebView view, String url) {
             String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
-            webView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeJavaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
+            webView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
 
             loadComments(currentSort, contextLevels);
         }
@@ -342,10 +342,10 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                     webView.loadUrl("javascript:deleteCallback(\"" + redditId + "\")");
                     break;
                 case 0:
-                    webView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    webView.loadUrl("javascript:commentCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
                 case 1:
-                    webView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeJavaScript(result.toString()) + "\")");
+                    webView.loadUrl("javascript:editCallback(\"" + redditId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result.toString()) + "\")");
                     break;
             }
         } else {
@@ -377,12 +377,12 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         private String mMoreId;
         private String mChildren;
 
-        public CommentsContextLoader(String sort, int context){
+        CommentsContextLoader(String sort, int context){
             mSort = sort;
             mContext = context;
         }
 
-        public CommentsContextLoader(String sort, String moreId, String children) {
+        CommentsContextLoader(String sort, String moreId, String children) {
             mSort = sort;
             if (children != null && !children.equals("")) {
                 loadMore = true;
@@ -440,7 +440,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                     break;
                 default:
                     if (loadMore) {
-                        Utilities.executeJavascriptInWebview(webView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeJavaScript(result) + "\");");
+                        Utilities.executeJavascriptInWebview(webView, "populateChildComments(\"" + mMoreId + "\", \"" + StringEscapeUtils.escapeEcmaScript(result) + "\");");
                     } else {
                         populateInfoPanel();
                         populateCommentsFromData(result);
@@ -460,7 +460,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         if (data.equals("[]")){
             Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeJavaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
         }
     }
 }

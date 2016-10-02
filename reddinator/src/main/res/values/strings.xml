@@ -362,4 +362,5 @@
     <string name="clear_cookies_title">Clear Cookies</string>
     <string name="clear_cookies_summary">Clear all web view cookies</string>
     <string name="cookies_cleared">Cookies have been successfully cleared</string>
+    <string name="item_option_share_post">Share this post</string>
 </resources>

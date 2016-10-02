@@ -21,7 +21,10 @@ package au.com.wallaceit.reddinator.core;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -31,6 +34,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
@@ -76,7 +80,7 @@ public class Utilities {
         return Color.parseColor("#DBDBDB");
     }
 
-    public static int convertDiptoPix(Context context, float dip) {
+    private static int convertDiptoPix(Context context, float dip) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.getResources().getDisplayMetrics());
     }
 
@@ -202,5 +206,41 @@ public class Utilities {
             default:
                 return "null";
         }
+    }
+
+    public static AlertDialog showPostShareDialog(final Context context, final String postUrl, final String postPermalink) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.share_url))
+            .setNegativeButton(context.getString(R.string.content), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    intentActionShareText(context, postUrl);
+                }
+            }).setPositiveButton(context.getString(R.string.both), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    intentActionShareText(context, postUrl+"\nhttps://reddit.com" + postPermalink);
+                }
+            })
+            .setNeutralButton(context.getString(R.string.reddit_page), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    intentActionShareText(context, "https://reddit.com" + postPermalink);
+                }
+            });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+
+    public static void intentActionView(Context context, String url) {
+        Intent openintent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        openintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(openintent);
+    }
+
+    private static void intentActionShareText(Context context, String txt) {
+        Intent sendintent = new Intent(Intent.ACTION_SEND);
+        sendintent.setAction(Intent.ACTION_SEND);
+        sendintent.putExtra(Intent.EXTRA_TEXT, txt);
+        sendintent.setType("text/plain");
+        context.startActivity(Intent.createChooser(sendintent, context.getString(R.string.share_with)));
     }
 }

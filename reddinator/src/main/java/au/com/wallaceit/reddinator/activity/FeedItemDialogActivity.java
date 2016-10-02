@@ -17,14 +17,13 @@
  */
 package au.com.wallaceit.reddinator.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +35,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
@@ -96,19 +97,26 @@ public class FeedItemDialogActivity extends Activity {
                         redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
                         (new SavePostTask(FeedItemDialogActivity.this, widgetId>0, null)).execute("link", redditId);
                         break;
+                    case "share_post":
+                        Utilities.showPostShareDialog(
+                                FeedItemDialogActivity.this,
+                                getIntent().getStringExtra(WidgetProvider.ITEM_URL),
+                                getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK))
+                                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        close(0);
+                                    }
+                                });
+                        dialog.dismiss();
+                        return;
                     case "open_post":
                         // open link in browser
-                        String url = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-                        Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        FeedItemDialogActivity.this.startActivity(clickIntent2);
+                        Utilities.intentActionView(FeedItemDialogActivity.this, getIntent().getStringExtra(WidgetProvider.ITEM_URL));
                         break;
                     case "open_comments":
                         // open reddit comments page in browser
-                        String permalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-                        Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com" + permalink));
-                        clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        FeedItemDialogActivity.this.startActivity(clickIntent3);
+                        Utilities.intentActionView(FeedItemDialogActivity.this, "https://www.reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
                         break;
                     case "view_subreddit":
                         // view subreddit of this item
@@ -189,12 +197,13 @@ public class FeedItemDialogActivity extends Activity {
         LayoutInflater inflater;
         ArrayList<String[]> options;
 
-        public ItemOptionsAdapter(){
+        ItemOptionsAdapter(){
             inflater = LayoutInflater.from(FeedItemDialogActivity.this);
 
             options = new ArrayList<>();
             options.add(new String[]{"hide_post", getString(R.string.item_option_hide_post)});
             options.add(new String[]{"save_post", getString(R.string.item_option_save_post)});
+            options.add(new String[]{"share_post", getString(R.string.item_option_share_post)});
             options.add(new String[]{"open_post", getString(R.string.item_option_open_post)});
             options.add(new String[]{"open_comments", getString(R.string.item_option_open_comments)});
 
@@ -216,7 +225,7 @@ public class FeedItemDialogActivity extends Activity {
             return options.get(position)[1];
         }
 
-        public String getItemKey(int position) {
+        String getItemKey(int position) {
             return options.get(position)[0];
         }
 

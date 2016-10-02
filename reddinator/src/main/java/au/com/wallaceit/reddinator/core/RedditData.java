@@ -27,13 +27,13 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Base64;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import okhttp3.FormBody;
+import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -146,7 +146,7 @@ public class RedditData {
         return subreddits;
     }
 
-    public JSONArray getDefaultSubreddits() throws RedditApiException {
+    JSONArray getDefaultSubreddits() throws RedditApiException {
         JSONArray subreddits;
         String url = OAUTH_ENDPOINT + "/subreddits/default.json";
         try {
@@ -726,20 +726,20 @@ public class RedditData {
     // COMM FUNCTIONS
     // Create Http/s client
     private boolean createHttpClient() {
-        httpClient = new OkHttpClient();
-        httpClient.setConnectTimeout(10, TimeUnit.SECONDS);
-        httpClient.setReadTimeout(10, TimeUnit.SECONDS);
-        httpClient.networkInterceptors().add(new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request originalRequest = chain.request();
-                Request requestWithUserAgent = originalRequest.newBuilder()
-                        .removeHeader("User-Agent")
-                        .addHeader("User-Agent", userAgent)
-                        .build();
-                return chain.proceed(requestWithUserAgent);
-            }
-        });
+        httpClient = new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .addInterceptor(new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request originalRequest = chain.request();
+                    Request requestWithUserAgent = originalRequest.newBuilder()
+                            .removeHeader("User-Agent")
+                            .addHeader("User-Agent", userAgent)
+                            .build();
+                    return chain.proceed(requestWithUserAgent);
+                }
+            }).build();
 
         return true;
     }
@@ -824,7 +824,7 @@ public class RedditData {
             RequestBody httpRequestBody;
             String requestStr = "";
             if (formData!=null) {
-                FormEncodingBuilder formBuilder = new FormEncodingBuilder();
+                FormBody.Builder formBuilder = new FormBody.Builder();
                 Iterator iterator = formData.keySet().iterator();
                 String key;
                 while (iterator.hasNext()){
@@ -1102,7 +1102,7 @@ public class RedditData {
         sharedPrefs.edit().putString("oauthAppToken", oauthAppToken == null ? "" : oauthAppToken.toString()).apply();
     }
 
-    public void saveUserData() {
+    private void saveUserData() {
         SharedPreferences.Editor edit = sharedPrefs.edit();
         edit.putString("oauthtoken", oauthToken == null ? "" : oauthToken.toString());
         edit.putString("user_info", userInfo.toString());

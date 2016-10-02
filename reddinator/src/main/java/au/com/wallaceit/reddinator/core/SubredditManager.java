@@ -24,7 +24,7 @@ package au.com.wallaceit.reddinator.core;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -203,7 +203,7 @@ public class SubredditManager {
         }
     }
 
-    public JSONObject getPostFilters(String feedPath){
+    private JSONObject getPostFilters(String feedPath){
         // return all for front page and all otherwise just return the path specific filters
         JSONObject finalarr = new JSONObject();
         if (feedPath.equals("") || feedPath.equals("/r/all")){

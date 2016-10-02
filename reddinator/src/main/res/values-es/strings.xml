@@ -304,4 +304,5 @@
     <string name="tl_header_text_2">Texto de Cabecera 2</string>
     <string name="tl_header_color_2">Color de Cabecera 2</string>
     <string name="cookies_cleared">Las cookies se han limpiado con éxito</string>
+    <string name="item_option_share_post">Compartir esta publicacion</string>
 </resources>

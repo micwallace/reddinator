@@ -52,7 +52,7 @@ import android.widget.Toast;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -581,7 +581,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, feedId);
             extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
             extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml(item.getString("url")));
+            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml4(item.getString("url")));
             extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
             extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
             extras.putString(WidgetProvider.ITEM_SUBREDDIT, item.getString("subreddit"));
@@ -662,7 +662,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         private boolean hideInf = false;
         private boolean showItemSubreddit = false;
 
-        protected ReddinatorListAdapter(Reddinator gobjects, SharedPreferences prefs) {
+        ReddinatorListAdapter(Reddinator gobjects, SharedPreferences prefs) {
 
             global = gobjects;
             mSharedPreferences = prefs;
@@ -777,7 +777,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     id = tempobj.getString("name");
                     url = tempobj.getString("url");
                     domain = tempobj.getString("domain");
-                    thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
+                    thumbnail = tempobj.getString("thumbnail");
                     score = tempobj.getInt("score");
                     numcomments = tempobj.getInt("num_comments");
                     userLikes = tempobj.getString("likes");
@@ -857,12 +857,12 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 // check for preview images & thumbnails
                 String imageUrl = null;
                 int imageLoadFlag = 0; // 1 for thumbnail, 2 for preview, 3 for default thumbnail
-                if (loadPreviews  && !nsfw && previewUrl!=null){
+                if (loadPreviews && !nsfw && previewUrl!=null){
                     imageUrl = previewUrl;
                     imageLoadFlag = 2;
                     thumbView.setVisibility(View.GONE);
                     viewHolder.thumbview_expand.setVisibility(View.GONE);
-                } else if (loadThumbnails && !thumbnail.equals("")) {
+                } else if (loadThumbnails && thumbnail!=null && !thumbnail.equals("")) {
                     // hide preview view
                     viewHolder.preview.setVisibility(View.GONE);
                     // check for default thumbnails
@@ -908,7 +908,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                             }
                         } else {
                             // start the image load
-                            loadImage(imageView, imageUrl, id + (imageLoadFlag == 2 ? "-preview" : ""));
+                            loadImage(imageView, viewHolder.thumbview_expand, imageUrl, id + (imageLoadFlag == 2 ? "-preview" : ""));
                             imageView.setVisibility(View.VISIBLE);
                             // set image source as default to prevent an image from a previous view being used
                             imageView.setImageResource(android.R.drawable.screen_background_dark_transparent);
@@ -955,7 +955,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             }
         }
 
-        public void updateUiVote(int position, String id, String val, int netVote) {
+        void updateUiVote(int position, String id, String val, int netVote) {
             try {
                 // Incase the feed updated after opening reddinator view, check that the id's match to update the correct view.
                 boolean recordexists = data.getJSONObject(position).getJSONObject("data").getString("name").equals(id);
@@ -972,7 +972,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             }
         }
 
-        private void loadImage(final ImageView view, final String urlstr, final String redditid) {
+        private void loadImage(final ImageView view, final ImageView expandView, final String urlstr, final String redditid) {
             new LoadImageBitmapTask(urlstr, new LoadImageBitmapTask.ImageCallback(){
                 @Override
                 public void run() {
@@ -986,6 +986,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     }
                     if (view!=null)
                         view.setVisibility(View.GONE);
+                    if (expandView!=null)
+                        expandView.setVisibility(View.GONE);
                 }
             }).execute();
         }
@@ -1023,15 +1025,15 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         private String lastItemId = "0";
         private boolean endOfFeed = false;
 
-        public void loadMoreReddits() {
+        void loadMoreReddits() {
             loadReddits(true);
         }
 
-        public void reloadFeedData() {
+        void reloadFeedData() {
             data = global.getFeed(mSharedPreferences, feedId);
         }
 
-        public void reloadReddits() {
+        void reloadReddits() {
             global.triggerThunbnailCacheClean();
             loadReddits(false);
         }
@@ -1046,7 +1048,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             private Boolean loadMore;
             private RedditData.RedditApiException exception;
 
-            public FeedLoader(Boolean loadmore) {
+            FeedLoader(Boolean loadmore) {
                 loadMore = loadmore;
             }
 
