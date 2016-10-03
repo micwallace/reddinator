@@ -39,6 +39,7 @@ import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +49,11 @@ import android.widget.ImageView;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import au.com.wallaceit.reddinator.R;
+import au.com.wallaceit.reddinator.Reddinator;
 
 public class Utilities {
 
@@ -93,6 +96,37 @@ public class Utilities {
             e.printStackTrace();
         }
         return pInfo;
+    }
+
+    public static String getImageCacheSize(Context context){
+        File cacheDir = new File(context.getCacheDir().getPath() + Reddinator.IMAGE_CACHE_DIR);
+        return Formatter.formatShortFileSize(context, dirSize(cacheDir));
+    }
+
+    public static String getFeedDataSize(Context context){
+        File cacheDir = new File(context.getApplicationInfo().dataDir + Reddinator.FEED_DATA_DIR);
+        return Formatter.formatShortFileSize(context, dirSize(cacheDir));
+    }
+
+    /**
+     * Return the size of a directory in bytes
+     */
+    private static long dirSize(File dir) {
+        if (dir.exists()) {
+            long result = 0;
+            File[] fileList = dir.listFiles();
+            for (File aFileList : fileList) {
+                // Recursive call if it's a directory
+                if (aFileList.isDirectory()) {
+                    result += dirSize(aFileList);
+                } else {
+                    // Sum the file size in bytes
+                    result += aFileList.length();
+                }
+            }
+            return result; // return the file size
+        }
+        return 0;
     }
 
     public static boolean isImageUrl(String url) {

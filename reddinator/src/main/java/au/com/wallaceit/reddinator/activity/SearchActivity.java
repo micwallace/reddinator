@@ -20,17 +20,13 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,30 +36,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.IconTextView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.joanzapata.android.iconify.Iconify;
-
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
@@ -71,19 +54,18 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
-import au.com.wallaceit.reddinator.tasks.VoteTask;
+import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
-public class SearchActivity extends Activity implements VoteTask.Callback {
+public class SearchActivity extends Activity implements SubredditFeedAdapter.ActivityInterface {
 
     private Context context;
     private Reddinator global;
-    private SearchListAdapter listAdapter;
+    private SubredditFeedAdapter listAdapter;
     private AbsListView listView;
     private EditText searchbox;
     private IconTextView searchbtn;
     private View appView;
     private ThemeManager.Theme theme;
-    private Bitmap[] images;
 
     private String query = "";
     private String feedPath = "";
@@ -91,13 +73,15 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
     private String time = "week";
     private boolean restrictSub = false;
 
+    private String lastItemId = "0";
+    private boolean endOfFeed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         context = SearchActivity.this;
         global = ((Reddinator) context.getApplicationContext());
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         setContentView(R.layout.activity_search);
         // Setup actionbar
         appView = findViewById(R.id.appview);
@@ -113,7 +97,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     query = v.getText().toString();
                     if (!query.equals("")) {
-                        listAdapter.search();
+                        search();
                     } else {
                         Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
                     }
@@ -129,7 +113,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             public void onClick(View v) {
                 query = searchbox.getText().toString();
                 if (!query.equals("")) {
-                    listAdapter.search();
+                    search();
                 } else {
                     Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
                 }
@@ -150,7 +134,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     restrictSub = isChecked;
-                    if (!query.equals("")) listAdapter.search();
+                    if (!query.equals("")) search();
                 }
             });
         }
@@ -180,7 +164,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
                         sort = "top";
                         break;
                 }
-                if (!query.equals("")) listAdapter.search();
+                if (!query.equals("")) search();
             }
 
             @Override
@@ -218,7 +202,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
                     default:
                         time = "all";
                 }
-                if (!query.equals("")) listAdapter.search();
+                if (!query.equals("")) search();
             }
 
             @Override
@@ -229,7 +213,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
 
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
-        listAdapter = new SearchListAdapter(global, prefs);
+        listAdapter = new SubredditFeedAdapter(this, this, global, theme, -1, null, true, true);
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -237,7 +221,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // open in the reddinator view
                 Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                clickIntent1.putExtras(getItemExtras(position));
+                clickIntent1.putExtras(listAdapter.getItemExtras(position));
                 context.startActivity(clickIntent1);
             }
         });
@@ -246,7 +230,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent ointent = new Intent(SearchActivity.this, FeedItemDialogActivity.class);
-                ointent.putExtras(getItemExtras(position));
+                ointent.putExtras(listAdapter.getItemExtras(position));
                 SearchActivity.this.startActivityForResult(ointent, 1);
                 return true;
             }
@@ -258,7 +242,7 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             time = getIntent().getStringExtra("time");
             restrictSub = getIntent().getBooleanExtra("restrict_sub", true);
 
-            listAdapter.search();
+            search();
         }
     }
 
@@ -268,6 +252,8 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         Bundle update = global.getItemUpdate();
         if (update != null) {
             listAdapter.updateUiVote(update.getInt("position", 0), update.getString("id"), update.getString("val"), update.getInt("netvote"));
+            // refresh view; unfortunately we have to refresh them all :( invalidateViewAtPosition(); please android?
+            //listView.invalidateViews();
         }
     }
 
@@ -289,11 +275,12 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
 
     private class SearchSpinnerAdapter extends ArrayAdapter<String>{
 
-        public SearchSpinnerAdapter(Context context, int resource, int textViewResourceId, String[] objects) {
+        SearchSpinnerAdapter(Context context, int resource, int textViewResourceId, String[] objects) {
             super(context, resource, textViewResourceId, objects);
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        @NonNull
+        public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             View v = super.getView(position, convertView, parent);
             ((TextView) v).setTextColor(headerText);
             return v;
@@ -312,19 +299,20 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
             case 3:
             case 4:
                 int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
-                initialiseVote(position, (resultcode==3?1:-1));
+                listAdapter.initialiseVote(position, (resultcode==3?1:-1));
                 break;
             // reload feed data from cache
             case 5:
                 listAdapter.removePostAtPosition(data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
-                listView.invalidateViews();
+                //listView.invalidateViews();
                 break;
         }
         if (data!=null && data.getBooleanExtra("themeupdate", true)){
             setThemeColors();
-            listAdapter.loadTheme();
-            listView.invalidateViews();
+            listAdapter.setTheme(theme);
+            //listView.invalidateViews();
         }
+
     }
 
     @Override
@@ -337,514 +325,115 @@ public class SearchActivity extends Activity implements VoteTask.Callback {
         return false;
     }
 
-    private Bundle getItemExtras(int position){
-        JSONObject item = listAdapter.getItem(position);
-        Bundle extras = new Bundle();
-        try {
-            extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
-            extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, item.getString("url"));
-            extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
-            extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
-            extras.putString(WidgetProvider.ITEM_SUBREDDIT, item.getString("subreddit"));
-            extras.putString(WidgetProvider.ITEM_USERLIKES, item.getString("likes"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return extras;
+    private JSONArray data;
+
+    public void search() {
+        global.triggerThunbnailCacheClean();
+        showLoader();
+        new SearchFeedLoader(false).execute();
     }
 
-    private void initialiseVote(int listposition, int direction){
-        listAdapter.showAppLoader();
-        // Get data by position in list
-        JSONObject item = listAdapter.getItem(listposition);
-        String redditid;
-        int curVote = 0;
-        try {
-            redditid = item.getString("name");
-            if (item.has("likes"))
-                curVote = Utilities.voteDirectionToInt(item.getString("likes"));
-            new VoteTask(global, this, redditid, listposition, direction, curVote).execute();
-        } catch (JSONException e) {
-            Toast.makeText(this, "Error initializing vote: "+e.getMessage(), Toast.LENGTH_LONG).show();
+    public void hideLoader(boolean goToTopOfList) {
+        hideLoader();
+        // go to the top of the list view
+        if (goToTopOfList) {
+            listView.smoothScrollToPosition(0);
         }
     }
 
-    @Override
-    public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listposition) {
-        if (result) {
-            String voteVal = Utilities.voteDirectionToString(direction);
-            listAdapter.updateUiVote(listposition, redditId, voteVal, netVote);
-        } else {
-            // check login required
-            if (exception.isAuthError()) global.mRedditData.initiateLogin(SearchActivity.this, false);
-            // show error
-            Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        listAdapter.hideAppLoader(false);
+    public void hideLoader() {
+        setProgressBarIndeterminateVisibility(false);
     }
 
-    public class SearchListAdapter extends BaseAdapter {
+    public void showLoader() {
+        setProgressBarIndeterminateVisibility(true);
+    }
 
-        private JSONArray data;
-        private Reddinator global;
-        private SharedPreferences mSharedPreferences;
-        private String titleFontSize = "16";
-        private HashMap<String, Integer> themeColors;
-        private boolean loadThumbnails = false;
-        //private boolean bigThumbs = false;
-        private boolean hideInf = false;
-        private boolean isLoaded = false;
+    public void loadMore(){
+        showLoader();
+        new SearchFeedLoader(true).execute();
+    }
 
-        SearchListAdapter(Reddinator gobjects, SharedPreferences prefs) {
+    class SearchFeedLoader extends AsyncTask<Void, Integer, Long> {
 
-            global = gobjects;
-            mSharedPreferences = prefs;
-            // load the caches items
-            data = new JSONArray();
+        private Boolean loadMore;
+        private RedditData.RedditApiException exception;
 
-            // load preferences
-            loadTheme();
-            loadFeedPrefs();
-        }
-
-        private void loadTheme() {
-            themeColors = theme.getIntColors();
-
-            int[] shadow = new int[]{3, 3, 3, themeColors.get("icon_shadow")};
-            // load images
-            images = new Bitmap[]{
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_star.character()), themeColors.get("votes_icon"), 12, shadow),
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_comment.character()), themeColors.get("comments_icon"), 12, shadow),
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_up.character()), Color.parseColor(Reddinator.COLOR_UPVOTE_ACTIVE), 28, shadow),
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_VOTE), 28, shadow),
-                    Utilities.getFontBitmap(context, String.valueOf(Iconify.IconValue.fa_arrow_down.character()), Color.parseColor(Reddinator.COLOR_DOWNVOTE_ACTIVE), 28, shadow)
-            };
-
-            // get font size preference
-            titleFontSize = mSharedPreferences.getString("titlefontpref", "16");
-        }
-
-        private void loadFeedPrefs() {
-            // get thumbnail load preference for the widget
-            loadThumbnails = mSharedPreferences.getBoolean("thumbnails-app", true);
-            //bigThumbs = mSharedPreferences.getBoolean("bigthumbs-app", false);
-            hideInf = mSharedPreferences.getBoolean("hideinf-app", false);
+        SearchFeedLoader(Boolean loadmore) {
+            loadMore = loadmore;
         }
 
         @Override
-        public int getCount() {
-            if (isLoaded)
-                return (data.length() + 1); // plus 1 advertises the "load more" item to the listview without having to add it to the data source
-
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View row, ViewGroup parent) {
-            if (position > data.length()) {
-                return null; //  prevent errornous views
-            }
-            // check if its the last view and return loading view instead of normal row
-            if (position == data.length()) {
-                // build load more item
-                View loadmorerow = getLayoutInflater().inflate(R.layout.listrowloadmore, parent, false);
-                TextView loadtxtview = (TextView) loadmorerow.findViewById(R.id.loadmoretxt);
-                if (endOfFeed) {
-                    loadtxtview.setText(R.string.nothing_more_here);
-                } else {
-                    loadtxtview.setText(R.string.load_more);
-                }
-                loadtxtview.setTextColor(themeColors.get("load_text"));
-                loadmorerow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ((TextView) view.findViewById(R.id.loadmoretxt)).setText(R.string.loading);
-                        loadMoreReddits();
-                    }
-                });
-                return loadmorerow;
-            } else {
-                // inflate new view or load view holder if existing
-                ViewHolder viewHolder = new ViewHolder();
-                if (row == null || row.getTag() == null) {
-                    // create remote view from specified layout
-                    row = getLayoutInflater().inflate(R.layout.applistrow, parent, false);
-                    ((ImageView) row.findViewById(R.id.votesicon)).setImageBitmap(images[0]);
-                    ((ImageView) row.findViewById(R.id.commentsicon)).setImageBitmap(images[1]);
-                    viewHolder.listheading = (TextView) row.findViewById(R.id.listheading);
-                    viewHolder.sourcetxt = (TextView) row.findViewById(R.id.sourcetxt);
-                    viewHolder.votestxt = (TextView) row.findViewById(R.id.votestxt);
-                    viewHolder.commentstxt = (TextView) row.findViewById(R.id.commentstxt);
-                    viewHolder.thumbview = (ImageView) row.findViewById(R.id.thumbnail);
-                    viewHolder.infview = row.findViewById(R.id.infbox);
-                    viewHolder.upvotebtn = (ImageButton) row.findViewById(R.id.app_upvote);
-                    viewHolder.downvotebtn = (ImageButton) row.findViewById(R.id.app_downvote);
-                    viewHolder.nsfw = (TextView) row.findViewById(R.id.nsfwflag);
-                } else {
-                    viewHolder = (ViewHolder) row.getTag();
-                }
-                // collect data
-                String name;
-                String thumbnail;
-                String domain;
-                String id;
-                String userLikes;
-                String subreddit;
-                int score;
-                int numcomments;
-                boolean nsfw;
+        protected Long doInBackground(Void... none) {
+            JSONArray tempArray;
+            endOfFeed = false;
+            if (loadMore) {
+                // fetch 25 more after current last item and append to the list
                 try {
-                    JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
-                    name = tempobj.getString("title");
-                    id = tempobj.getString("name");
-                    domain = tempobj.getString("domain");
-                    thumbnail = (String) tempobj.get("thumbnail"); // we have to call get and cast cause its not in quotes
-                    score = tempobj.getInt("score");
-                    numcomments = tempobj.getInt("num_comments");
-                    userLikes = tempobj.getString("likes");
-                    nsfw = tempobj.getBoolean("over_18");
-                    subreddit = tempobj.getString("subreddit");
-                } catch (JSONException e) {
+                    tempArray = global.mRedditData.searchRedditPosts(query, feedPath, restrictSub, sort, time, 25, lastItemId);
+                } catch (RedditData.RedditApiException e) {
                     e.printStackTrace();
-                    return row; // The view is invalid;
+                    exception = e;
+                    return (long) 0;
                 }
-                // Update view
-                viewHolder.listheading.setText(Utilities.fromHtml(name).toString());
-                viewHolder.listheading.setTextSize(Integer.valueOf(titleFontSize)); // use for compatibility setTextViewTextSize only introduced in API 16
-                viewHolder.listheading.setTextColor(themeColors.get("headline_text"));
-                String sourceText = (restrictSub?subreddit+" - ":"")+domain;
-                viewHolder.sourcetxt.setText(sourceText);
-                viewHolder.sourcetxt.setTextColor(themeColors.get("source_text"));
-                viewHolder.votestxt.setText(String.valueOf(score));
-                viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));
-                viewHolder.commentstxt.setText(String.valueOf(numcomments));
-                viewHolder.commentstxt.setTextColor(themeColors.get("comments_count"));
-                viewHolder.nsfw.setVisibility((nsfw ? TextView.VISIBLE : TextView.GONE));
-                row.findViewById(R.id.listdivider).setBackgroundColor(themeColors.get("divider"));
-                // set vote button
-                if (!userLikes.equals("null")) {
-                    if (userLikes.equals("true")) {
-                        viewHolder.upvotebtn.setImageBitmap(images[3]);
-                        viewHolder.downvotebtn.setImageBitmap(images[4]);
-                    } else {
-                        viewHolder.upvotebtn.setImageBitmap(images[2]);
-                        viewHolder.downvotebtn.setImageBitmap(images[5]);
-                    }
+                if (tempArray.length() == 0) {
+                    endOfFeed = true;
                 } else {
-                    viewHolder.upvotebtn.setImageBitmap(images[2]);
-                    viewHolder.downvotebtn.setImageBitmap(images[4]);
-                }
-                // Set vote onclick listeners
-                viewHolder.upvotebtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        initialiseVote(position, 1);
-                    }
-                });
-                viewHolder.downvotebtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        initialiseVote(position, -1);
-                    }
-                });
-
-                // load thumbnail if they are enabled for this widget
-                if (loadThumbnails) {
-                    // load big image if preference is set
-                    if (!thumbnail.equals("")) { // check for thumbnail; self is used to display the thinking logo on the reddit site, we'll just show nothing for now
-                        if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
-                            int resource = 0;
-                            switch (thumbnail) {
-                                case "nsfw":
-                                    resource = R.drawable.nsfw;
-                                    break;
-                                case "default":
-                                case "self":
-                                    resource = R.drawable.self_default;
-                                    break;
-                            }
-                            viewHolder.thumbview.setImageResource(resource);
-                            viewHolder.thumbview.setVisibility(View.VISIBLE);
-                            //System.out.println("Loading default image: "+thumbnail);
-                        } else {
-                            // check if the image is in cache
-                            String fileurl = getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + ".png";
-                            if (new File(fileurl).exists()) {
-                                Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
-                                if (bitmap == null) {
-                                    viewHolder.thumbview.setVisibility(View.GONE);
-                                } else {
-                                    viewHolder.thumbview.setImageBitmap(bitmap);
-                                    viewHolder.thumbview.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                // start the image load
-                                loadImage(position, thumbnail, id);
-                                viewHolder.thumbview.setVisibility(View.VISIBLE);
-                                // set image source as default to prevent an image from a previous view being used
-                                viewHolder.thumbview.setImageResource(android.R.drawable.screen_background_dark_transparent);
-                            }
-                        }
-                    } else {
-                        viewHolder.thumbview.setVisibility(View.GONE);
-                    }
-                } else {
-                    viewHolder.thumbview.setVisibility(View.GONE);
-                }
-                // hide info bar if options set
-                if (hideInf) {
-                    viewHolder.infview.setVisibility(View.GONE);
-                } else {
-                    viewHolder.infview.setVisibility(View.VISIBLE);
-                }
-
-                row.setTag(viewHolder);
-            }
-            //System.out.println("getViewAt("+position+");");
-            return row;
-        }
-
-        @Override
-        public JSONObject getItem(int position) {
-            try {
-                return data.getJSONObject(position).getJSONObject("data");
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        public void updateUiVote(int position, String id, String val, int netVote) {
-            try {
-                // Incase the feed updated after opening reddinator view, check that the id's match to update the correct view.
-                boolean recordexists = data.getJSONObject(position).getJSONObject("data").getString("name").equals(id);
-                if (recordexists) {
-                    // update in current data (already updated in saved feed)
-                    JSONObject post = data.getJSONObject(position).getJSONObject("data");
-                    post.put("likes", val);
-                    post.put("score", post.getInt("score")+netVote);
-                    // refresh view; unfortunately we have to refresh them all :( invalidateViewAtPosition(); please android?
-                    listView.invalidateViews();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void loadImage(final int itempos, final String urlstr, final String redditid) {
-            new ImageLoader(itempos, urlstr, redditid).execute();
-        }
-
-        class ViewHolder {
-            TextView listheading;
-            TextView sourcetxt;
-            TextView votestxt;
-            TextView commentstxt;
-            ImageView thumbview;
-            ImageButton upvotebtn;
-            ImageButton downvotebtn;
-            View infview;
-            TextView nsfw;
-        }
-
-        class ImageLoader extends AsyncTask<Void, Integer, Bitmap> {
-            int itempos;
-            String urlstr;
-            String redditid;
-
-            ImageLoader(int position, String url, String id) {
-                itempos = position;
-                urlstr = url;
-                redditid = id;
-            }
-
-            @Override
-            protected Bitmap doInBackground(Void... voids) {
-                URL url;
-                try {
-                    url = new URL(urlstr);
-                    URLConnection con = url.openConnection();
-                    con.setConnectTimeout(8000);
-                    con.setReadTimeout(8000);
-                    return BitmapFactory.decodeStream(con.getInputStream());
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    return null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap result) {
-                View v = listView.getChildAt(itempos - listView.getFirstVisiblePosition());
-                if (v == null) {
-                    return;
-                }
-                // save bitmap to cache, the item name will be the reddit id
-                global.saveThumbnailToCache(result, redditid);
-                // update view if it's being shown
-                ImageView img = ((ImageView) v.findViewById(R.id.thumbnail));
-                if (img != null) {
-                    if (result != null) {
-                        img.setImageBitmap(result);
-                    } else {
-                        img.setVisibility(View.GONE);
-                    }
-                }
-            }
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            return (3);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return (position);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return (false);
-        }
-
-        private String lastItemId = "0";
-        private boolean endOfFeed = false;
-
-        public void loadMoreReddits() {
-            loadReddits(true);
-        }
-
-        public void removePostAtPosition(int position) {
-            if (position>-1) {
-                JSONArray tempArr = new JSONArray();
-                for (int i = 0; i<data.length(); i++){
-                    if (i!=position)
+                    int i = 0;
+                    while (i < tempArray.length()) {
                         try {
-                            tempArr.put(data.get(i));
+                            data.put(tempArray.get(i));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        i++;
+                    }
                 }
-                data = tempArr;
+            } else {
+                // reloading
+                //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
+                try {
+                    tempArray = global.mRedditData.searchRedditPosts(query, feedPath, restrictSub, sort, time, 25, "0");
+                } catch (RedditData.RedditApiException e) {
+                    e.printStackTrace();
+                    exception = e;
+                    return (long) 0;
+                }
+                // check if end of feed, if not process & set feed data
+                if (tempArray.length() == 0) {
+                    endOfFeed = true;
+                }
+                data = tempArray;
             }
-        }
-
-        public void search() {
-            global.triggerThunbnailCacheClean();
-            loadReddits(false);
-        }
-
-        private void loadReddits(boolean loadMore) {
-            showAppLoader();
-            new SearchFeedLoader(loadMore).execute();
-        }
-
-        class SearchFeedLoader extends AsyncTask<Void, Integer, Long> {
-
-            private Boolean loadMore;
-            private RedditData.RedditApiException exception;
-
-            public SearchFeedLoader(Boolean loadmore) {
-                loadMore = loadmore;
+            // save feed
+            if (endOfFeed){
+                lastItemId = "0";
+            } else {
+                try {
+                    lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
+                } catch (JSONException e) {
+                    lastItemId = "0"; // Could not get last item ID; perform a reload next time
+                    e.printStackTrace();
+                }
             }
+            return (long) 1;
+        }
 
-            @Override
-            protected Long doInBackground(Void... none) {
-                JSONArray tempArray;
-                endOfFeed = false;
+        @Override
+        protected void onPostExecute(Long result) {
+            if (result > 0) {
+                // hide loader
                 if (loadMore) {
-                    // fetch 25 more after current last item and append to the list
-                    try {
-                        tempArray = global.mRedditData.searchRedditPosts(query, feedPath, restrictSub, sort, time, 25, lastItemId);
-                    } catch (RedditData.RedditApiException e) {
-                        e.printStackTrace();
-                        exception = e;
-                        return (long) 0;
-                    }
-                    if (tempArray.length() == 0) {
-                        endOfFeed = true;
-                    } else {
-
-                        int i = 0;
-                        while (i < tempArray.length()) {
-                            try {
-                                data.put(tempArray.get(i));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            i++;
-                        }
-                    }
+                    hideLoader(false); // don't go to top of list
                 } else {
-                    // reloading
-                    //int limit = Integer.valueOf(mSharedPreferences.getString("numitemloadpref", "25"));
-                    try {
-                        tempArray = global.mRedditData.searchRedditPosts(query, feedPath, restrictSub, sort, time, 25, "0");
-                    } catch (RedditData.RedditApiException e) {
-                        e.printStackTrace();
-                        exception = e;
-                        return (long) 0;
-                    }
-                    // check if end of feed, if not process & set feed data
-                    if (tempArray.length() == 0) {
-                        endOfFeed = true;
-                    }
-                    data = tempArray;
+                    hideLoader(true); // go to top
                 }
-                // save feed
-                if (endOfFeed){
-                    lastItemId = "0";
-                } else {
-                    try {
-                        lastItemId = data.getJSONObject(data.length() - 1).getJSONObject("data").getString("name"); // name is actually the unique id we want
-                    } catch (JSONException e) {
-                        lastItemId = "0"; // Could not get last item ID; perform a reload next time
-                        endOfFeed = true;
-                        e.printStackTrace();
-                    }
-                }
-                return (long) 1;
+                listAdapter.setFeed(data, !endOfFeed, true);
+                //listAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+                hideLoader(false); // don't go to top of list and show error icon
             }
-
-            @Override
-            protected void onPostExecute(Long result) {
-                if (result > 0) {
-                    isLoaded = true;
-                    // hide loader
-                    if (loadMore) {
-                        hideAppLoader(false); // don't go to top of list
-                    } else {
-                        hideAppLoader(true); // go to top
-                    }
-                    listAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
-                    hideAppLoader(false); // don't go to top of list and show error icon
-                }
-            }
-        }
-
-        // hide loader
-        private void hideAppLoader(boolean goToTopOfList) {
-            // get theme layout id
-            //loader.setVisibility(View.GONE);
-            setProgressBarIndeterminateVisibility(false);
-            // go to the top of the list view
-            if (goToTopOfList) {
-                listView.smoothScrollToPosition(0);
-            }
-        }
-
-        private void showAppLoader() {
-            //loader.setVisibility(View.VISIBLE);
-            setProgressBarIndeterminateVisibility(true);
         }
     }
 

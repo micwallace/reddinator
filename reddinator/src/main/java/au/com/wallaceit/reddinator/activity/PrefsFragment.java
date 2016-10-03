@@ -20,6 +20,7 @@ import java.util.LinkedHashMap;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.MailCheckReceiver;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
 
@@ -69,6 +70,8 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
                 }
             });
         }
+
+        addPreferencesFromResource(R.xml.utility_preferences);
 
         appearanceCat = (PreferenceCategory) findPreference("appearance");
 
@@ -124,6 +127,32 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             public boolean onPreferenceClick(Preference preference) {
                 clearWebviewCookies();
                 Toast.makeText(getActivity(), getResources().getString(R.string.cookies_cleared), Toast.LENGTH_LONG).show();
+                return true;
+            }
+        });
+
+        final Preference clearImageCacheBtn = findPreference("clear_image_cache");
+        clearImageCacheBtn.setSummary(getString(R.string.clear_image_cache_summary, Utilities.getImageCacheSize(getActivity())));
+        clearImageCacheBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                global.clearImageCache(0);
+                clearImageCacheBtn.setSummary(getString(R.string.clear_image_cache_summary, Utilities.getImageCacheSize(getActivity())));
+                Toast.makeText(getActivity(), getResources().getString(R.string.image_cache_cleared), Toast.LENGTH_LONG).show();
+                clearImageCacheBtn.setEnabled(false);
+                return true;
+            }
+        });
+
+        final Preference clearFeedDataBtn = findPreference("clear_feed_data");
+        clearFeedDataBtn.setSummary(getString(R.string.clear_feed_data_summary, Utilities.getFeedDataSize(getActivity())));
+        clearFeedDataBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                global.clearFeedData();
+                clearFeedDataBtn.setSummary(getString(R.string.clear_feed_data_summary, Utilities.getFeedDataSize(getActivity())));
+                Toast.makeText(getActivity(), getResources().getString(R.string.feed_data_cleared), Toast.LENGTH_LONG).show();
+                clearFeedDataBtn.setEnabled(false);
                 return true;
             }
         });

@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -55,6 +56,8 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
+
+import static android.content.Intent.ACTION_VIEW;
 
 public class ViewAllSubredditsActivity extends ListActivity {
     public static final int RESULT_ADD_TO_MULTI = 3;
@@ -272,7 +275,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
     class SubredditsAdapter extends BaseAdapter {
         private LayoutInflater inflater;
 
-        public SubredditsAdapter(Context context) {
+        SubredditsAdapter(Context context) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -300,15 +303,19 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 viewHolder.name = (TextView) row.findViewById(R.id.subreddit_name);
                 viewHolder.description = (TextView) row.findViewById(R.id.subreddit_description);
                 viewHolder.addIcon = (IconTextView) row.findViewById(R.id.subreddit_add_btn);
+                viewHolder.viewIcon = (IconTextView) row.findViewById(R.id.subreddit_view_btn);
             } else {
                 viewHolder = (ViewHolder) row.getTag();
             }
             // setup the row
-            final String name;
+            String name;
             String description;
+            final String url;
             try {
-                name = sreddits.get(position).getString("display_name");
-                description = sreddits.get(position).getString("public_description");
+                JSONObject subreddit = sreddits.get(position);
+                name = subreddit.getString("display_name");
+                description = subreddit.getString("public_description");
+                url = subreddit.getString("url");
             } catch (JSONException e) {
                 e.printStackTrace();
                 return row;
@@ -321,6 +328,15 @@ public class ViewAllSubredditsActivity extends ListActivity {
                     returnResult(sreddits.get(position), true);
                 }
             });
+            viewHolder.viewIcon.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ViewAllSubredditsActivity.this, MainActivity.class);
+                    intent.setAction(ACTION_VIEW);
+                    intent.setData(Uri.parse(Reddinator.REDDIT_BASE_URL + url));
+                    ViewAllSubredditsActivity.this.startActivity(intent);
+                }
+            });
             row.setTag(viewHolder);
 
             return row;
@@ -330,6 +346,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             TextView name;
             TextView description;
             IconTextView addIcon;
+            IconTextView viewIcon;
         }
     }
 

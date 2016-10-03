@@ -17,34 +17,48 @@
         android:icon="@drawable/reddit_icon_small"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <!-- Supress changelog for minor versions -->
-        <meta-data android:name="suppressChangelog" android:value="false" />
+        <meta-data
+            android:name="suppressChangelog"
+            android:value="false" />
+
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="*reddit.com" android:pathPattern="/r/.*/*" />
+
+                <data
+                    android:host="*reddit.com"
+                    android:pathPattern="/r/.*/*"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.PrefsActivity"
-            android:label="@string/preferences"/>
+            android:label="@string/preferences" />
+
         <activity
             android:name=".activity.ThemesActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_themes" />
+
         <activity
             android:name=".activity.ThemeEditorActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_theme_editor" />
+
         <activity
             android:name=".activity.SubredditSelectActivity"
             android:configChanges="orientation|screenSize"
@@ -53,44 +67,55 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.ViewAllSubredditsActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/subreddits" />
+
         <activity
             android:name=".activity.ViewRedditActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name">
-            <!--<intent-filter android:label="@string/app_name">
+
+            <!--
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="*reddit.com" android:pathPattern="/r/.*/comments/.*/.*/*" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
+
         <activity
             android:name=".activity.WebViewActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activity.AccountActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activity.MessagesActivity"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/messages" />
+            android:label="@string/messages"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activity.ComposeMessageActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/send_message" />
+
         <activity
             android:name=".activity.SearchActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/search" />
+
         <activity
             android:name=".activity.SubmitActivity"
             android:configChanges="orientation|screenSize"
@@ -98,15 +123,18 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter android:label="@string/share_with_reddit">
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.OAuthView"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/login" />
+            android:label="@string/login"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".service.WidgetService"
@@ -127,18 +155,18 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" />
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
-                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info" />
         </receiver>
+
         <receiver
             android:name=".service.MailCheckReceiver"
-            android:enabled="true">
-        </receiver>
+            android:enabled="true" />
+
         <receiver
             android:name=".service.BootReceiver"
             android:enabled="true">
@@ -152,47 +180,62 @@
 
         <activity
             android:name=".activity.FeedItemDialogActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/TransparentActivity"
-            android:noHistory="true" />
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:taskAffinity=".FeedItemDialogActivity"
+            android:theme="@style/TransparentActivity" />
 
         <activity
             android:name=".activity.ViewImageDialogActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
             android:theme="@style/TransparentActivity" />
 
         <activity
             android:name=".activity.CommentsContextDialogActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/TransparentActivity">
-            <!--<intent-filter android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/TransparentActivity"
+            android:windowSoftInputMode="adjustResize">
+
+            <!--
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="*reddit.com" android:pathPattern="/r/.*/comments/.*/.*/.*" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
 
         <activity
             android:name=".activity.WidgetMenuDialogActivity"
-            android:label="@string/app_name"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/TransparentActivityUndimmed"
-            android:noHistory="true" />
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:taskAffinity=".WidgetMenuDialogActivity"
+            android:theme="@style/TransparentActivityUndimmed" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="au.com.wallaceit.reddinator.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
+
+        <receiver
+            android:name=".service.UpgradeReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

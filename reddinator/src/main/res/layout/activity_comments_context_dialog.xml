@@ -5,11 +5,10 @@
     android:id="@+id/contentview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@android:color/transparent"
     android:padding="0dp"
     android:layout_margin="10dp"
-    android:layout_marginTop="24dp"
-    android:layout_marginBottom="24dp"
     android:orientation="vertical"
     tools:context=".activity.ViewImageDialogActivity">
 
@@ -52,7 +51,7 @@
                     android:layout_alignParentStart="true"
                     android:text="@string/reddit_domain"
                     android:textColor="#336699"
-                    android:singleLine="true"
+                    android:maxLines="1"
                     android:ellipsize="marquee"
                     android:paddingTop="3dp"/>
             </RelativeLayout>

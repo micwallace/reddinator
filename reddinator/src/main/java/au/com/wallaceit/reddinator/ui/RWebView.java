@@ -174,7 +174,7 @@ public class RWebView extends android.webkit.WebView {
                 if (image!=null){
                     // save file
                     String filename = "share-"+appendImageExtensionIfNeeded(Uri.parse(url).getLastPathSegment());
-                    File file = new File(getContext().getCacheDir().getPath() + Reddinator.THUMB_CACHE_DIR + filename);
+                    File file = new File(getContext().getCacheDir().getPath() + Reddinator.IMAGE_CACHE_DIR + filename);
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(file);

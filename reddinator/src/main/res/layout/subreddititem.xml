@@ -11,8 +11,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/subreddit_add_btn"
-        android:layout_toStartOf="@+id/subreddit_add_btn"
+        android:layout_toLeftOf="@+id/buttons"
+        android:layout_toStartOf="@+id/buttons"
         android:gravity="center_vertical"
         android:textSize="20sp" />
 
@@ -23,27 +23,48 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@id/subreddit_name"
-        android:layout_toLeftOf="@+id/subreddit_add_btn"
-        android:layout_toStartOf="@+id/subreddit_add_btn"
+        android:layout_toLeftOf="@+id/buttons"
+        android:layout_toStartOf="@+id/buttons"
         android:gravity="center_vertical"
         android:textSize="12sp" />
 
-    <IconTextView
-        android:id="@+id/subreddit_add_btn"
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/delete"
-        android:text="@string/fa_plus_square"
-        android:shadowColor="#22000000"
-        android:shadowDx="4"
-        android:shadowDy="4"
-        android:shadowRadius="3"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:textSize="32sp"
-        android:textColor="#5F99CF" />
+        android:gravity="center_horizontal">
+        <IconTextView
+            android:id="@+id/subreddit_add_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/subscribe"
+            android:text="@string/fa_plus_square"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:layout_marginBottom="4dp"
+            android:textSize="32sp"
+            android:textColor="#25C48F" />
+
+        <IconTextView
+            android:id="@+id/subreddit_view_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/view"
+            android:text="@string/fa_eye"
+            android:shadowColor="#22000000"
+            android:shadowDx="4"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:textSize="32sp"
+            android:textColor="#5F99CF" />
+    </LinearLayout>
 
 </RelativeLayout>

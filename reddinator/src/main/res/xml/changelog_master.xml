@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.19" versioncode="54">
+        <change>Added option to preview subreddits during subreddit search/browsing.</change>
+        <change>Main list adapter is now used by search activity to consolidate functionality.</change>
+
+        <!--<change>Added option to view subreddit and domain in search activity.</change>-->
+
+        <change>Added missing "image" default thumbnail</change>
+        <change>Added utilities section to preferences.</change>
+        <change>Changed feed data to file based storage.</change>
+        <change>Fixed issue with comments context dialog height...for good now please (Android bug 5497).</change>
+        <change>Fixed issue causing default thumbnail images to have old click listener.</change>
+        <change>Fix for thumbnails flickering in application feed during download.</change>
+        <change>See git commit log for more details.</change>
+    </release>
     <release version="3.18" versioncode="53">
         <change>Added image sharing and download (long click on image views).</change>
         <change>Added share option to post options dialog.</change>

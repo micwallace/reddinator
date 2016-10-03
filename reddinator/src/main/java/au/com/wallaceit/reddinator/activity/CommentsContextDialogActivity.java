@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,12 +35,14 @@ import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.IconButton;
 import android.widget.IconTextView;
 import android.widget.TextView;
@@ -69,7 +72,6 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     private Resources resources;
     private WebView webView;
     private CommentsContextLoader commentsLoader;
-    private VoteTask commentsVoteTask;
     private CommentTask commentTask;
 
     private SlidingUpPanelLayout panelLayout;
@@ -179,6 +181,53 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
                 panelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             }
         });
+
+        new AndroidBug5497Workaround(this);
+    }
+
+    private class AndroidBug5497Workaround {
+
+        // For more information, see https://code.google.com/p/android/issues/detail?id=5497
+        // To use this class, simply invoke assistActivity() on an Activity that already has its content view set.
+
+        private View mChildOfContent;
+        private int usableHeightPrevious;
+        private FrameLayout.LayoutParams frameLayoutParams;
+
+        private AndroidBug5497Workaround(Activity activity) {
+            FrameLayout content = (FrameLayout) activity.findViewById(android.R.id.content);
+            mChildOfContent = content.getChildAt(0);
+            mChildOfContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                public void onGlobalLayout() {
+                    possiblyResizeChildOfContent();
+                }
+            });
+            frameLayoutParams = (FrameLayout.LayoutParams) mChildOfContent.getLayoutParams();
+        }
+
+        private void possiblyResizeChildOfContent() {
+            int usableHeightNow = computeUsableHeight();
+            if (usableHeightNow != usableHeightPrevious) {
+                int usableHeightSansKeyboard = mChildOfContent.getRootView().getHeight();
+                int heightDifference = usableHeightSansKeyboard - usableHeightNow;
+                if (heightDifference > (usableHeightSansKeyboard/4)) {
+                    // keyboard probably just became visible
+                    frameLayoutParams.height = usableHeightSansKeyboard - heightDifference - 60;
+                } else {
+                    // keyboard probably just became hidden
+                    frameLayoutParams.height = usableHeightSansKeyboard - 60;
+                }
+                mChildOfContent.requestLayout();
+                usableHeightPrevious = usableHeightNow;
+            }
+        }
+
+        private int computeUsableHeight() {
+            Rect r = new Rect();
+            mChildOfContent.getWindowVisibleDisplayFrame(r);
+            return (r.bottom - r.top);
+        }
+
     }
 
     private void setTheme(){
@@ -286,7 +335,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         @JavascriptInterface
         public void vote(String thingId, int direction, int currentVote) {
             //setTitleText(resources.getString(R.string.voting));
-            commentsVoteTask = new VoteTask(global, CommentsContextDialogActivity.this, thingId, direction, currentVote);
+            VoteTask commentsVoteTask = new VoteTask(global, CommentsContextDialogActivity.this, thingId, direction, currentVote);
             commentsVoteTask.execute();
         }
 

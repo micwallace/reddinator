@@ -20,9 +20,7 @@
 package au.com.wallaceit.reddinator.tasks;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -35,7 +33,6 @@ import au.com.wallaceit.reddinator.service.WidgetProvider;
 public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     private Context context;
     private Reddinator global;
-    private SharedPreferences prefs;
     private int widgetId;
     private String redditid;
     private int direction;
@@ -47,13 +44,12 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     public WidgetVoteTask(Context context, int widgetId, int dir, int position, String redditId) {
         this.context = context;
         global = (Reddinator) context.getApplicationContext();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
         direction = dir;
         netvote = dir;
         this.widgetId = widgetId;
         // Get data by position in list
         listposition = position;
-        JSONObject item = global.getFeedObject(prefs, widgetId, position, redditId);
+        JSONObject item = global.getFeedObject(widgetId, position, redditId);
         try {
             redditid = item.getString("name");
             curVote = item.getString("likes");
@@ -109,7 +105,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
                     break;
             }
 
-            global.setItemVote(prefs, widgetId, listposition, redditid, value, netvote);
+            global.setItemVote(widgetId, listposition, redditid, value, netvote);
         } else {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, true);

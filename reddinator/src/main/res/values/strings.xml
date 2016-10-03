@@ -45,6 +45,7 @@
     <string name="fa_share" translatable="false">{fa-share}</string>
     <string name="fa_globe" translatable="false">{fa-globe}</string>
     <string name="fa_random" translatable="false">{fa-random}</string>
+    <string name="fa_eye" translatable="false">{fa-eye}</string>
     <string name="nsfw_flag" translatable="false">[NSFW]</string>
     <string name="reddit_domain" translatable="false">reddit.com</string>
     <!-- end internal resources -->
@@ -277,7 +278,7 @@
     <string name="feed_filter_duplicates_title">Filter Duplicate Posts</string>
     <string name="feed_filter_duplicates_summary">Filter posts shown on previous pages</string>
     <string name="post_options">Post Options</string>
-    <string name="clear_post_filter_title">Clear post filters</string>
+    <string name="clear_post_filter_title">Clear Post Filters</string>
     <string name="clear_post_filter_summary">Clear %1$d filtered/hidden posts</string>
     <string name="clear_post_filter_message">Hidden post filters cleared</string>
     <string name="logo_open_pref_title">Open app on logo click</string>
@@ -363,4 +364,12 @@
     <string name="clear_cookies_summary">Clear all web view cookies</string>
     <string name="cookies_cleared">Cookies have been successfully cleared</string>
     <string name="item_option_share_post">Share this post</string>
+    <string name="clear_image_cache_title">Clear Image Cache</string>
+    <string name="clear_image_cache_summary"><![CDATA[Clear thumbnail & image cache (%1$s)]]></string>
+    <string name="image_cache_cleared">Image cache has been successfully cleared</string>
+    <string name="clear_feed_data_title">Clear Feed Data</string>
+    <string name="clear_feed_data_summary"><![CDATA[Clear feed data (%1$s)]]></string>
+    <string name="feed_data_cleared">Feed data has been successfully cleared</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="view">View</string>
 </resources>

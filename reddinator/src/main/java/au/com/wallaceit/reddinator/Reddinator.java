@@ -38,8 +38,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,7 +61,11 @@ import au.com.wallaceit.reddinator.core.Utilities;
 public class Reddinator extends Application {
 
     private ArrayList<JSONObject> mSubredditList; // cached popular subreddits
-    public final static String THUMB_CACHE_DIR = "/thumbnail_cache/";
+    public final static String REDDIT_BASE_URL = "https://www.reddit.com";
+    public final static String REDDIT_MOBILE_BETA_URL = "https://m.reddit.com";
+    public final static String REDDIT_MOBILE_URL = "https://i.reddit.com";
+    public final static String IMAGE_CACHE_DIR = "/images/";
+    public final static String FEED_DATA_DIR = "/feeds/";
     public final static int LOADTYPE_LOAD = 0;
     public final static int LOADTYPE_LOADMORE = 1;
     public final static int LOADTYPE_REFRESH_VIEW = 3;
@@ -108,18 +116,16 @@ public class Reddinator extends Application {
     }
 
     // methods for setting/getting vote statuses, this keeps vote status persistent accross apps and widgets
-    public void setItemVote(SharedPreferences prefs, int widgetId, int position, String id, String val, int netVote) {
+    public void setItemVote(int feedId, int position, String id, String val, int netVote) {
         try {
-            JSONArray data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
+            JSONArray data = getFeed(feedId);
             JSONObject record = data.getJSONObject(position).getJSONObject("data");
             if (record.getString("name").equals(id)) {
                 JSONObject postData = data.getJSONObject(position).getJSONObject("data");
                 postData.put("likes", val);
                 postData.put("score", postData.getInt("score")+netVote);
-                // commit to shared prefs
-                SharedPreferences.Editor mEditor = prefs.edit();
-                mEditor.putString("feeddata-" + (widgetId == 0 ? "app" : widgetId), data.toString());
-                mEditor.apply();
+                // save feed
+                setFeed(feedId, data);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -127,25 +133,50 @@ public class Reddinator extends Application {
     }
 
     // set get current feeds from cache
-    public void setFeed(SharedPreferences prefs, int widgetId, JSONArray feeddata) {
-        SharedPreferences.Editor mEditor = prefs.edit();
-        mEditor.putString("feeddata-" + (widgetId == 0 ? "app" : widgetId), feeddata.toString());
-        mEditor.apply();
-    }
-
-    public JSONArray getFeed(SharedPreferences prefs, int widgetId) {
-        JSONArray data;
+    public void setFeed(int feedId, JSONArray feedData) {
+        File feedFile = new File(getApplicationInfo().dataDir + FEED_DATA_DIR, "feed_" + feedId + ".json");
+        if (!feedFile.exists() && !feedFile.getParentFile().exists()){
+            //noinspection ResultOfMethodCallIgnored
+            feedFile.getParentFile().mkdirs();
+        }
         try {
-            data = new JSONArray(prefs.getString("feeddata-" + (widgetId == 0 ? "app" : widgetId), "[]"));
-        } catch (JSONException e) {
-            data = new JSONArray();
+            FileWriter writer = new FileWriter(feedFile);
+            writer.write(feedData.toString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return data;
     }
 
-    public JSONObject getFeedObject(SharedPreferences prefs, int widgetId, int position, String redditId) {
-        JSONArray data = getFeed(prefs, widgetId);
+    public JSONArray getFeed(int feedId) {
+        File feedFile = new File(getApplicationInfo().dataDir + FEED_DATA_DIR, "feed_" + feedId + ".json");
+        if (feedFile.exists()) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(feedFile));
+                String line, result = "";
+                while ((line = reader.readLine()) != null) {
+                    result += line;
+                }
+                reader.close();
+
+                return new JSONArray(result);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return new JSONArray();
+    }
+
+    public void deleteFeed(int feedId){
+        File feedFile = new File(getApplicationInfo().dataDir + FEED_DATA_DIR, "feed_" + feedId + ".json");
+        if (feedFile.exists())
+            //noinspection ResultOfMethodCallIgnored
+            feedFile.delete();
+    }
+
+    public JSONObject getFeedObject(int widgetId, int position, String redditId) {
+        JSONArray data = getFeed(widgetId);
         try {
             JSONObject item = data.getJSONObject(position).getJSONObject("data");
             if (item.getString("name").equals(redditId)) {
@@ -158,7 +189,7 @@ public class Reddinator extends Application {
     }
 
     public void removePostFromFeed(int widgetId, int position, String redditId){
-        JSONArray data = getFeed(mSharedPreferences, widgetId);
+        JSONArray data = getFeed(widgetId);
         try {
             JSONObject item = data.getJSONObject(position).getJSONObject("data");
             if (item.getString("name").equals(redditId)) {
@@ -169,19 +200,20 @@ public class Reddinator extends Application {
                         finalData.put(data.get(i));
                 }
                 // save new feed
-                setFeed(mSharedPreferences, widgetId, finalData);
+                setFeed(widgetId, finalData);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
     // used when appwidgets are destroyed
-    public void clearFeedData(int widgetId){
+    public void clearFeedDataAndPreferences(int feedId){
+        deleteFeed(feedId);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.remove("currentfeed-" + widgetId);
-        editor.remove("widgettheme-"+ widgetId);
-        String widgetIdStr = (widgetId == 0 ? "app" : String.valueOf(widgetId));
-        editor.remove("feeddata-" + widgetIdStr);
+        editor.remove("currentfeed-" + feedId);
+        editor.remove("widgettheme-"+ feedId);
+        String widgetIdStr = (feedId == 0 ? "app" : String.valueOf(feedId));
         editor.remove("sort-" + widgetIdStr);
         editor.remove("thumbnails-" + widgetIdStr);
         editor.remove("bigthumbs-" + widgetIdStr);
@@ -287,9 +319,9 @@ public class Reddinator extends Application {
 
     public String getRedditMobileSite(boolean beta){
         if (beta){
-            return "https://m.reddit.com";
+            return REDDIT_MOBILE_BETA_URL;
         } else {
-            return "https://i.reddit.com";
+            return REDDIT_MOBILE_URL;
         }
     }
 
@@ -302,7 +334,7 @@ public class Reddinator extends Application {
     }
 
     public void handleLink(Context context, String url){
-        if (url.indexOf("https://www.reddit.com/")==0){
+        if (url.indexOf(REDDIT_BASE_URL)==0){
             // open in native view if supported
             handleRedditLink(context, url);
         } else {
@@ -334,7 +366,7 @@ public class Reddinator extends Application {
         } else {
             // link is unsupported in native views; open in activity_webview
             i = new Intent(context, WebViewActivity.class);
-            url = url.replace("https://www.reddit.com", getDefaultMobileSite());
+            url = url.replace(REDDIT_BASE_URL, getDefaultMobileSite());
             i.putExtra("url", url);
         }
         context.startActivity(i);
@@ -357,9 +389,9 @@ public class Reddinator extends Application {
         return false;
     }
 
-    public boolean saveThumbnailToCache(Bitmap image, String redditId){
+    public boolean saveThumbnailToCache(Bitmap image, String imageId){
         try {
-            File file = new File(getCacheDir().getPath() + Reddinator.THUMB_CACHE_DIR, redditId + ".png");
+            File file = new File(getCacheDir().getPath() + Reddinator.IMAGE_CACHE_DIR, imageId + ".png");
             if (!file.getParentFile().exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 file.getParentFile().mkdirs();
@@ -375,13 +407,30 @@ public class Reddinator extends Application {
     }
 
     public void triggerThunbnailCacheClean(){
-        File cacheDir = new File(getCacheDir().getPath() + THUMB_CACHE_DIR);
-        if (cacheDir.exists() && cacheDir.isDirectory())
-            for (File file : cacheDir.listFiles()) {
-                long diff = System.currentTimeMillis() - file.lastModified();
-                if (diff > 86400000) // delete cached images older than 24 hours
-                    //noinspection ResultOfMethodCallIgnored
-                    file.delete();
+        clearImageCache(86400000); // clear images older than 24h
+    }
+
+    // clears cache files older than the specified time, or all if time == 0
+    public void clearImageCache(int time){
+        File cacheDir = new File(getCacheDir().getPath() + IMAGE_CACHE_DIR);
+        clearDir(cacheDir, time);
+    }
+
+    public void clearFeedData(){
+        File feedDir = new File(getApplicationInfo().dataDir + FEED_DATA_DIR);
+        clearDir(feedDir, 0);
+    }
+
+    public void clearDir(File dir, int time){
+        if (dir.exists() && dir.isDirectory())
+            for (File file : dir.listFiles()) {
+                if (time>0) {
+                    long diff = System.currentTimeMillis() - file.lastModified();
+                    if (diff < time) // don't delete the image if age is less than specified
+                        continue;
+                }
+                //noinspection ResultOfMethodCallIgnored
+                file.delete();
             }
     }
 }

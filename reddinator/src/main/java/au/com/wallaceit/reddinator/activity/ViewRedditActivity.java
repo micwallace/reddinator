@@ -595,7 +595,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         if (feedposition>=0) {
             global.setItemUpdate(feedposition, redditId, val, netVote);
             // save in feed data
-            global.setItemVote(prefs, widgetId, feedposition, redditId, val, netVote);
+            global.setItemVote(widgetId, feedposition, redditId, val, netVote);
         }
     }
 
@@ -710,10 +710,10 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
                 default:
                 case 0: // content
                     // use reddit mobile view
-                    System.out.println(postUrl);
+                    //System.out.println(postUrl);
                     if (postUrl !=null && postUrl.contains("//www.reddit.com/")){
                         postUrl = postUrl.replace("//www.reddit.com", global.getDefaultCommentsMobileSite().substring(6));
-                        System.out.println(postUrl);
+                        //System.out.println(postUrl);
                     }
                     fontsize = Integer.parseInt(prefs.getString("contentfontpref", "18"));
                     return TabWebFragment.init(postUrl, fontsize, (postUrl!=null && (!commentsPref || (preloadPref==3 || preloadPref==1))));

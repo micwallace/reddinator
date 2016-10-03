@@ -90,7 +90,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         int loadType = global.getLoadType();
         if (!global.getBypassCache() || loadType == Reddinator.LOADTYPE_LOADMORE) {
             // load cached data
-            data = global.getFeed(mSharedPreferences, appWidgetId);
+            data = global.getFeed(appWidgetId);
             if (data.length() != 0) {
                 titleFontSize = mSharedPreferences.getString(context.getString(R.string.title_font_pref), "16");
                 try {
@@ -304,11 +304,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 // hide preview view
                 row.setViewVisibility(R.id.preview, View.GONE);
                 // check for default thumbnails
-                if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default")) {
+                if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default") || thumbnail.equals("image")) {
                     int resource = 0;
                     switch (thumbnail) {
                         case "nsfw":
                             resource = R.drawable.nsfw;
+                            break;
+                        case "image":
+                            resource = R.drawable.noimage;
                             break;
                         case "default":
                         case "self":
@@ -333,10 +336,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (imageLoadFlag>0){
                 int imageView = imageLoadFlag == 2 ? R.id.preview : thumbView;
                 // skip if default thumbnail, just check for image
+                Bitmap bitmap = null;
                 if (imageLoadFlag!=3) {
                     // check if the image is in cache
-                    Bitmap bitmap;
-                    String fileurl = mContext.getCacheDir() + Reddinator.THUMB_CACHE_DIR + id + (imageLoadFlag == 2 ? "-preview" : "") + ".png";
+                    String fileurl = mContext.getCacheDir() + Reddinator.IMAGE_CACHE_DIR + id + (imageLoadFlag == 2 ? "-preview" : "") + ".png";
                     // check if the image is in cache
                     if (new File(fileurl).exists()) {
                         bitmap = BitmapFactory.decodeFile(fileurl);
@@ -354,7 +357,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                     }
                 }
                 // check if url is image, if so, add ViewImageDialog intent and show indicator
-                if (Utilities.isImageUrl(url)){
+                // don't show if the image failed to load
+                if ((imageLoadFlag==3 || bitmap!=null) && Utilities.isImageUrl(url)){
                     Intent imageintent =  new Intent();
                     Bundle imageextras = (Bundle) extras.clone();
                     imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
@@ -389,6 +393,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             bmp = BitmapFactory.decodeStream(con.getInputStream());
             global.saveThumbnailToCache(bmp, redditId);
         } catch (MalformedURLException e) {
+            //System.out.println("Malformed Image URL: "+urlstr);
             e.printStackTrace();
             return null;
         } catch (IOException e) {
@@ -443,7 +448,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         } else {
             loadCached = false;
             global.setLoad();
-            data = global.getFeed(mSharedPreferences, appWidgetId);
+            data = global.getFeed(appWidgetId);
             // hide loader
             hideWidgetLoader(false, false, null); // don't go to top as the user is probably interacting with the list
         }
@@ -510,7 +515,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             data = tempArray;
         }
         // Save feed data
-        global.setFeed(mSharedPreferences, appWidgetId, data);
+        global.setFeed(appWidgetId, data);
         // set last item id for "loadmore use"
         // Damn reddit doesn't allow you to specify a start index for the data, instead you have to reference the last item id from the prev page :(
         if (endOfFeed){

@@ -90,6 +90,7 @@ public class WidgetProvider extends AppWidgetProvider {
             intent.putExtra("firsttimeconfig", 0); // not first time config
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent pendIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -181,7 +182,7 @@ public class WidgetProvider extends AppWidgetProvider {
         // Cleaup widget data
         Reddinator global = (Reddinator) context.getApplicationContext();
         for (int widgetId : appWidgetIds){
-            global.clearFeedData(widgetId);
+            global.clearFeedDataAndPreferences(widgetId);
         }
         super.onDeleted(context, appWidgetIds);
     }
@@ -319,7 +320,7 @@ public class WidgetProvider extends AppWidgetProvider {
             updateAllWidgets(context, appWidgetIds);
         }
 
-        if (action.equals("android.intent.action.PACKAGE_RESTARTED") || action.equals("android.intent.action.PACKAGE_REPLACED") || action.equals("android.intent.action.PACKAGE_CHANGED")) {
+        if (action.equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
             // perform full widget update
