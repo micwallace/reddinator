@@ -19,6 +19,7 @@
 package au.com.wallaceit.reddinator.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -287,6 +288,21 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
             startActivity(intent);
         }
+
+        @JavascriptInterface
+        public void archiveToast() {
+            Toast.makeText(getActivity(), R.string.archived_post_error, Toast.LENGTH_LONG).show();
+        }
+
+        // TODO: replace javascript alerts and confirms with native ones
+        /*@JavascriptInterface
+        public void alert(String title, String message) {
+            new AlertDialog.Builder(getActivity())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.ok, null)
+                .show();
+        }*/
     }
 
     private void loadComments(String sort) {

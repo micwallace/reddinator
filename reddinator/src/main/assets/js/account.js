@@ -157,6 +157,7 @@ function appendPost(postData, prepend){
         postElem.find(".post_domain").text(postData.subreddit+" - "+postData.domain);
         postElem.find(".post_score").text(postData.hide_score?'hidden':postData.score);
         postElem.find(".comment_count").text(postData.num_comments);
+        postElem.data("archived", postData.archived);
         // check if likes
         if (postData.hasOwnProperty('likes')){
             if (postData.likes==true){
@@ -237,6 +238,7 @@ function appendComment(commentData, prepend, parentId){
     var commentElem = $("#comment_template").clone().show();
     commentElem.attr("id", commentData.name);
     commentElem.data("comment_md", commentData.body);
+    commentElem.data("archived", commentData.archived);
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);

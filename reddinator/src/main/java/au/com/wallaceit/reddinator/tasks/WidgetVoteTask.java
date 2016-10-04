@@ -26,6 +26,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
@@ -40,6 +41,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     private int netvote;
     private int listposition;
     private RedditData.RedditApiException exception;
+    private boolean archived = false;
 
     public WidgetVoteTask(Context context, int widgetId, int dir, int position, String redditId) {
         this.context = context;
@@ -53,6 +55,9 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
         try {
             redditid = item.getString("name");
             curVote = item.getString("likes");
+            archived = item.getBoolean("archived");
+            if (archived)
+                return;
         } catch (JSONException e) {
             redditid = "null";
             curVote = "null";
@@ -62,6 +67,8 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... strings) {
+        if (archived)
+            return false;
         // enumerate current vote, score change & clicked direction
         if (direction == 1) {
             if (curVote.equals("true")) { // if already upvoted, neutralize.
@@ -107,6 +114,10 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
 
             global.setItemVote(widgetId, listposition, redditid, value, netvote);
         } else {
+            if (archived) {
+                Toast.makeText(context, R.string.archived_post_error, Toast.LENGTH_LONG).show();
+                return;
+            }
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, true);
             // show error

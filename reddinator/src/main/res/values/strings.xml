@@ -363,7 +363,7 @@
     <string name="clear_cookies_title">Clear Cookies</string>
     <string name="clear_cookies_summary">Clear all web view cookies</string>
     <string name="cookies_cleared">Cookies have been successfully cleared</string>
-    <string name="item_option_share_post">Share this post</string>
+    <string name="item_option_share_post">Share link or comments</string>
     <string name="clear_image_cache_title">Clear Image Cache</string>
     <string name="clear_image_cache_summary"><![CDATA[Clear thumbnail & image cache (%1$s)]]></string>
     <string name="image_cache_cleared">Image cache has been successfully cleared</string>
@@ -372,4 +372,5 @@
     <string name="feed_data_cleared">Feed data has been successfully cleared</string>
     <string name="subscribe">Subscribe</string>
     <string name="view">View</string>
+    <string name="archived_post_error">This post is archived and\ncannot be voted or commented on</string>
 </resources>

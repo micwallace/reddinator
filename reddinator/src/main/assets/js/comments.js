@@ -143,6 +143,7 @@ function appendComment(parentId, commentData, prepend){
     commentElem.attr("id", commentData.name);
     commentElem.find(".comment_replies").attr("id", commentData.name+"-replies");
     commentElem.data("comment_md", commentData.body);
+    commentElem.data("archived", commentData.archived);
     var text = htmlDecode(commentData.body_html.replace(/\n\n/g, "\n").replace("\n&lt;/div&gt;", "&lt;/div&gt;")); // clean up extra line breaks
     commentElem.find(".comment_text").html(text);
     commentElem.find(".comment_user").text('/u/'+commentData.author).attr('href', 'https://www.reddit.com/u/'+commentData.author);

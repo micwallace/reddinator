@@ -132,18 +132,23 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
     }
 
     public void initialiseVote(int listposition, int direction){
-        feedInterface.showLoader();
         // Get data by position in list
         JSONObject item = getItem(listposition);
         String redditid;
         int curVote = 0;
         try {
+            if (item.getBoolean("archived")){
+                Toast.makeText(context, R.string.archived_post_error, Toast.LENGTH_LONG).show();
+                return;
+            }
+            feedInterface.showLoader();
             redditid = item.getString("name");
             if (item.has("likes"))
                 curVote = Utilities.voteDirectionToInt(item.getString("likes"));
             new VoteTask(global, this, redditid, listposition, direction, curVote).execute();
         } catch (JSONException e) {
             Toast.makeText(context, "Error initializing vote: "+e.getMessage(), Toast.LENGTH_LONG).show();
+            feedInterface.hideLoader();
         }
     }
 

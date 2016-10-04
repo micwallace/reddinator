@@ -94,6 +94,9 @@ function htmlDecode(input){
 }
 
 function vote(thingId, direction){
+    // check if archived and show message
+    if ($("#"+thingId).data("archived")===true)
+        return Reddinator.archiveToast();
     // determine if neutral vote
     var currentVote = 0;
     var likes = $("#"+thingId).data("likes");

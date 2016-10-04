@@ -546,6 +546,8 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
     }
 
     private void upVote() {
+        if (archivedPostCheck()) return;
+
         VoteTask task = new VoteTask(global, ViewRedditActivity.this, redditItemId, 1, curvote);
         voteinprogress = true;
         ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
@@ -553,10 +555,24 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
     }
 
     private void downVote() {
+        if (archivedPostCheck()) return;
+
         VoteTask task = new VoteTask(global, ViewRedditActivity.this, redditItemId, -1, curvote);
         voteinprogress = true;
         ViewRedditActivity.this.setTitleText(resources.getString(R.string.voting));
         task.execute();
+    }
+
+    private boolean archivedPostCheck(){
+        try {
+            if (postInfo.getBoolean("archived")){
+                Toast.makeText(this, R.string.archived_post_error, Toast.LENGTH_LONG).show();
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
