@@ -22,11 +22,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +38,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -54,13 +57,15 @@ import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
 public class SearchActivity extends Activity implements SubredditFeedAdapter.ActivityInterface {
 
-    private Context context;
     private Reddinator global;
     private SubredditFeedAdapter listAdapter;
+    private CheckBox subredditLimitCb;
+    private AutoCompleteTextView subredditLimitText;
     private AbsListView listView;
     private EditText searchbox;
     private IconTextView searchbtn;
@@ -80,8 +85,7 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        context = SearchActivity.this;
-        global = ((Reddinator) context.getApplicationContext());
+        global = (Reddinator) getApplicationContext();
         setContentView(R.layout.activity_search);
         // Setup actionbar
         appView = findViewById(R.id.appview);
@@ -95,12 +99,7 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    query = v.getText().toString();
-                    if (!query.equals("")) {
-                        search();
-                    } else {
-                        Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
-                    }
+                    onSearchQueryEnter();
                 }
                 return true;
             }
@@ -111,32 +110,51 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                query = searchbox.getText().toString();
-                if (!query.equals("")) {
-                    search();
-                } else {
-                    Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
-                }
+                onSearchQueryEnter();
             }
         });
 
         feedPath = getIntent().getStringExtra("feed_path");
         if (feedPath==null) feedPath = ""; // default to front page
 
-        CheckBox subcheckbox = (CheckBox) findViewById(R.id.limit_sr);
-        if (feedPath.equals("")){
-            subcheckbox.setVisibility(View.GONE);
-        } else {
-            restrictSub = true;
-            subcheckbox.setChecked(true);
-            subcheckbox.setText(getString(R.string.limit_sr, feedPath.equals("") ? "Front Page" : feedPath));
-            subcheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    restrictSub = isChecked;
-                    if (!query.equals("")) search();
+        subredditLimitCb = (CheckBox) findViewById(R.id.limit_sr);
+        final SubAutoCompleteAdapter subredditAdapter = new SubAutoCompleteAdapter(this, R.layout.autocomplete_list_item);
+        subredditLimitText = (AutoCompleteTextView) findViewById(R.id.limit_sr_subreddit);
+
+        subredditLimitText.setAdapter(subredditAdapter);
+        subredditLimitText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                restrictSub = true;
+                subredditLimitCb.setChecked(true);
+                feedPath = "/r/" + subredditAdapter.getItem(position);
+            }
+        });
+        subredditLimitText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    subredditLimitCb.setChecked(true);
+                    onSearchQueryEnter();
                 }
-            });
+                return true;
+            }
+        });
+
+        subredditLimitCb.setText(getString(R.string.limit_to));
+        subredditLimitCb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                restrictSub = isChecked;
+                if (!query.equals("") && !subredditLimitText.getText().toString().equals(""))
+                    onSearchQueryEnter();
+            }
+        });
+
+        if (!feedPath.equals("")){
+            restrictSub = true;
+            subredditLimitCb.setChecked(true);
+            subredditLimitText.setText(feedPath.replace("/r/", ""));
         }
 
         // set theme colors
@@ -213,16 +231,16 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
 
         // Setup list adapter
         listView = (ListView) findViewById(R.id.applistview);
-        listAdapter = new SubredditFeedAdapter(this, this, global, theme, -1, null, true, true);
+        listAdapter = new SubredditFeedAdapter(this, this, global, theme, -2, null, true, true);
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // open in the reddinator view
-                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
+                Intent clickIntent1 = new Intent(SearchActivity.this, ViewRedditActivity.class);
                 clickIntent1.putExtras(listAdapter.getItemExtras(position));
-                context.startActivity(clickIntent1);
+                SearchActivity.this.startActivity(clickIntent1);
             }
         });
 
@@ -246,6 +264,22 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
         }
     }
 
+    private void onSearchQueryEnter(){
+        restrictSub = subredditLimitCb.isChecked();
+        feedPath = (restrictSub  ? "/r/" + subredditLimitText.getText().toString() : "");
+        if (restrictSub && feedPath.equals("/r/")){
+            subredditLimitCb.setChecked(false);
+            feedPath = "";
+            restrictSub = false;
+        }
+        query = searchbox.getText().toString();
+        if (!query.equals("")) {
+            search();
+        } else {
+            Toast.makeText(SearchActivity.this, getString(R.string.no_query_message), Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -266,10 +300,18 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
         int headerColor = Color.parseColor(theme.getValue("header_color"));
         int iconColor = Color.parseColor(theme.getValue("default_icon"));
         findViewById(R.id.searchbar).setBackgroundColor(headerColor);
+        ColorMatrixColorFilter searchFilter = Utilities.getColorFilterFromColor(iconColor, -50);
         searchbox.setHintTextColor(headerText);
         searchbox.setTextColor(headerText);
-        searchbox.getBackground().setColorFilter(Utilities.getColorFilterFromColor(iconColor, -50));
+        searchbox.getBackground().setColorFilter(searchFilter);
         searchbtn.setTextColor(iconColor);
+        subredditLimitText.setHintTextColor(headerText);
+        subredditLimitText.setTextColor(headerText);
+        subredditLimitCb.setTextColor(headerText);
+        int states[][] = {{android.R.attr.state_checked}, {}};
+        int colors[] = {headerText, headerText};
+        CompoundButtonCompat.setButtonTintList(subredditLimitCb, new ColorStateList(states, colors));
+        subredditLimitText.getBackground().setColorFilter(searchFilter);
         buttonfilter = Utilities.getColorFilterFromColor(iconColor, 250);
     }
 
@@ -431,7 +473,7 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
                 listAdapter.setFeed(data, !endOfFeed, true);
                 //listAdapter.notifyDataSetChanged();
             } else {
-                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                 hideLoader(false); // don't go to top of list and show error icon
             }
         }

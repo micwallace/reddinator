@@ -64,6 +64,8 @@ import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
 public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback, SubredditFeedAdapter.ActivityInterface {
+    public static final String EXTRA_FEED_PATH = "feedPath";
+    public static final String EXTRA_FEED_NAME = "feedName";
 
     private Reddinator global;
     private SubredditFeedAdapter listAdapter;
@@ -122,13 +124,13 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         View.OnClickListener srclick;
         // check intent and set needed feed params accordingly
         if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
-            // open reddit feed via url, extract path
-            Pattern pattern = Pattern.compile(".*reddit.com(/r/([^/]*))");
+            // open reddit feed via url, extract path and name. Feed can be a subreddit, domain or multi
+            Pattern pattern = Pattern.compile(".*reddit.com(/(r|domain|user/.*/m)/([^/]*))");
             Matcher matcher = pattern.matcher(getIntent().getDataString());
             if (matcher.find()){
                 //System.out.println(matcher.group(2)+" "+matcher.group(1));
                 subredditPath = matcher.group(1);
-                subredditName = matcher.group(2);
+                subredditName = matcher.group(3);
                 subredditSort = "hot";
             } else {
                 Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
@@ -258,6 +260,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     return true;
                 }
                 Intent ointent = new Intent(MainActivity.this, FeedItemDialogActivity.class);
+                // if this is a temp feed, pass the feed path to the dialog so it knows whether to show, subreddit and domain buttons
+                if (feedId<0) {
+                    extras.putString(FeedItemDialogActivity.EXTRA_CURRENT_FEED_PATH, subredditPath);
+                }
                 ointent.putExtras(extras);
                 MainActivity.this.startActivityForResult(ointent, 1);
                 return true;
@@ -548,10 +554,15 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 break;
             // reload feed prefs and update feed, subreddit has changed
             case 2:
-                feedId = 0;
-                subredditName = global.getSubredditManager().getCurrentFeedName(0);
-                subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
-                subredditSort = global.mSharedPreferences.getString("sort-app", "hot");
+                if (feedId < 0){
+                    subredditPath = data.getStringExtra(EXTRA_FEED_PATH);
+                    subredditName = data.getStringExtra(EXTRA_FEED_NAME);
+                    subredditSort = "hot";
+                } else {
+                    subredditName = global.getSubredditManager().getCurrentFeedName(0);
+                    subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
+                    subredditSort = global.mSharedPreferences.getString("sort-app", "hot");
+                }
                 sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
                 srtext.setText(subredditName);
                 listAdapter.loadFeedPrefs();

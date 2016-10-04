@@ -23,6 +23,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +46,11 @@ import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
+import static android.content.Intent.ACTION_VIEW;
+
 public class FeedItemDialogActivity extends Activity {
+    public static final String EXTRA_CURRENT_FEED_PATH = "feedPath";
+
     private Reddinator global;
     private Dialog dialog;
     private int widgetId;
@@ -121,23 +126,51 @@ public class FeedItemDialogActivity extends Activity {
                     case "view_subreddit":
                         // view subreddit of this item
                         String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
-                        global.getSubredditManager().setFeedSubreddit(widgetId, subreddit, null);
-                        if (widgetId>0) {
-                            WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                        if (widgetId < 0) {
+                            String feedPath = "/r/" + subreddit;
+                            if (widgetId == -2) {
+                                // If currently in search activity, open a temp feed on the main activity
+                                openRedditFeed(Reddinator.REDDIT_BASE_URL + feedPath);
+                                close(0);
+                            } else {
+                                // replace current temporary feed in main activity
+                                Intent intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
+                                intent.putExtra(MainActivity.EXTRA_FEED_PATH, feedPath);
+                                intent.putExtra(MainActivity.EXTRA_FEED_NAME, subreddit);
+                                close(2, intent);
+                            }
                         } else {
-                            close(2); // tell main activity to update
-                            return;
+                            global.getSubredditManager().setFeedSubreddit(widgetId, subreddit, null);
+                            if (widgetId > 0) {
+                                WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                            } else {
+                                close(2); // tell main activity to update
+                                return;
+                            }
                         }
                         break;
                     case "view_domain":
                         // view listings for the domain of this item
                         String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
-                        global.getSubredditManager().setFeedDomain(widgetId, domain);
-                        if (widgetId>0) {
-                            WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                        if (widgetId < 0) {
+                            String feedPath = "/domain/" + domain;
+                            if (widgetId == -2) {
+                                openRedditFeed(Reddinator.REDDIT_BASE_URL + feedPath);
+                                close(0);
+                            } else {
+                                Intent intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
+                                intent.putExtra(MainActivity.EXTRA_FEED_PATH, feedPath);
+                                intent.putExtra(MainActivity.EXTRA_FEED_NAME, domain);
+                                close(2, intent);
+                            }
                         } else {
-                            close(2);
-                            return;
+                            global.getSubredditManager().setFeedDomain(widgetId, domain);
+                            if (widgetId > 0) {
+                                WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                            } else {
+                                close(2);
+                                return;
+                            }
                         }
                         break;
                 }
@@ -193,6 +226,13 @@ public class FeedItemDialogActivity extends Activity {
         dialog.show();
     }
 
+    private void openRedditFeed(String url){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
+
     private class ItemOptionsAdapter extends BaseAdapter {
         LayoutInflater inflater;
         ArrayList<String[]> options;
@@ -207,11 +247,30 @@ public class FeedItemDialogActivity extends Activity {
             options.add(new String[]{"open_post", getString(R.string.item_option_open_post)});
             options.add(new String[]{"open_comments", getString(R.string.item_option_open_comments)});
 
-            if (widgetId>-1 && global.getSubredditManager().isFeedMulti(widgetId))
+            boolean canViewSubreddit = true;
+            boolean canViewDomain = true;
+            String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
+            // determine whether subreddit and domain options are shown
+            // (ie. subreddit domain option shouldn't be shown if the user is currently viewing the feed)
+            if (widgetId<0){
+                // for temp feeds and searches this needs to be calculated
+                String feedPath = getIntent().getStringExtra(EXTRA_CURRENT_FEED_PATH);
+                if (feedPath!=null && !feedPath.equals("") && !feedPath.equals("/r/all") && feedPath.contains("/r/")) {
+                        canViewSubreddit = false;
+                }
+                if (domain.indexOf("self.")==0 || (feedPath!=null && feedPath.contains("/domain/"))){
+                    canViewDomain = false;
+                }
+            } else {
+                // for the widget and app feeds this data is available readily
+                canViewSubreddit = global.getSubredditManager().isFeedMulti(widgetId);
+                canViewDomain = (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain));
+            }
+
+            if (canViewSubreddit)
                 options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT))});
 
-            String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
-            if (widgetId>-1 && (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain)))
+            if (canViewDomain)
                 options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});
         }
 
@@ -253,12 +312,20 @@ public class FeedItemDialogActivity extends Activity {
     }
 
     private void close(int result){
+        close(result, null);
+    }
+
+    private void close(int result, Intent sintent){
         if (result==3 || result==4 || (widgetId<0 && result==5)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(WidgetProvider.ITEM_FEED_POSITION, getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
             setResult(result, intent);
         } else {
-            setResult(result);
+            if (sintent!=null) {
+                setResult(result, sintent);
+            } else {
+                setResult(result);
+            }
         }
         dialog.dismiss();
         finish();

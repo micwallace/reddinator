@@ -310,7 +310,7 @@
     <string name="send_message">Send Message</string>
     <string name="messages">Messages</string>
     <string name="password">Password</string>
-    <string name="limit_sr">Limit to %1$s</string>
+    <string name="limit_to">Limit to</string>
     <string name="clear_post_filter_summary_disabled">You\'re logged in, use your account to unhide</string>
     <string name="data_error">Error opening post data, please reload feed</string>
     <string name="view_comments">View Comments {fa-comments}</string>
