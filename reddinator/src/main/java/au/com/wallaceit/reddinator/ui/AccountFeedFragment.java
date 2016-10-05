@@ -350,6 +350,11 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
             intent.putExtra(WidgetProvider.ITEM_USERLIKES, userLikes);
             startActivity(intent);
         }
+
+        @JavascriptInterface
+        public void archiveToast() {
+            Toast.makeText(getActivity(), R.string.archived_post_error, Toast.LENGTH_LONG).show();
+        }
     }
 
     public interface ActivityInterface {

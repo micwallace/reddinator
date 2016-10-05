@@ -3,6 +3,7 @@ var articleId = document.location.hash.substring(1);
 var baseId;
 var username;
 var subAuthor;
+var isArchived = false;
 var color_vote = "#A5A5A5";
 var color_upvote_active = "#FF8B60";
 var color_downvote_active = "#9494FF";
@@ -12,8 +13,9 @@ function init(themeColors, user){
     setTheme(themeColors);
 }
 
-function populateComments(author, json){
+function populateComments(author, archived, json){
     subAuthor = author;
+    isArchived = archived;
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
@@ -225,6 +227,9 @@ function toggleReplies(element){
 
 var postCommentMde;
 function showPostCommentBox(){
+    if (isArchived===true)
+        return Reddinator.archiveToast();
+
     $("#post_comment_button").css('display', 'none');
     $('#post_comment_box').css('display', 'block');
     if (useMdEditor){
@@ -259,6 +264,9 @@ $(function(){
     });
     var cMdEditor = null;
     $(document).on('click', ".post_toggle", function(){
+        if ($(this).parent().parent().parent().data("archived")===true)
+                return Reddinator.archiveToast();
+
         var elem = $(this).parent().parent().parent().children(".post_reply");
         if (cMdEditor!=null){
             cMdEditor.toTextArea();

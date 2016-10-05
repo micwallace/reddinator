@@ -394,15 +394,17 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     private void populateCommentsFromData(String data){
         String author = "";
+        boolean archived = false;
         try {
             author = subData.getString("author");
+            archived = subData.getBoolean("archived");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if (data.equals("[]")){
             Utilities.executeJavascriptInWebview(mWebView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Utilities.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(mWebView, "populateComments(\"" + author + "\", " + archived + ", \"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
         }
     }
 }

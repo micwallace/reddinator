@@ -373,6 +373,9 @@ $(function(){
     });
     var cMdeEditor = null;
     $(document).on('click', ".post_toggle", function(){
+        if ($(this).parent().parent().parent().data("archived")===true)
+                return Reddinator.archiveToast();
+
         var elem = $(this).parent().parent().parent().children(".post_reply");
         if (cMdeEditor!=null){
             cMdeEditor.toTextArea();
