@@ -49,6 +49,7 @@
     <string name="save">Salvar</string>
     <string name="login">Iniciar Sesion</string>
     <string name="create_a_multi">Crear un Multi</string>
+    <string name="create">Crear</string>
     <string name="name">Nombre</string>
     <string name="about_open_source">Reddinator es orgullosamente software de codigo abierto. Ven y contribuye en Github</string>
     <string name="about_donate">Programar me da sed, comprame una servesa para ayudar a que pueda mantener esta aplicacion.</string>

@@ -200,7 +200,7 @@ public class RedditData {
     }
 
     public JSONArray getRedditFeed(String feedPath, String sort, int limit, String afterid) throws RedditApiException {
-
+        // allows a logged in user to retrieve the default front page
         boolean authedFeed = true;
         if (feedPath.equals("/default")){
             authedFeed = false;
@@ -273,12 +273,12 @@ public class RedditData {
 
     public JSONArray getChildComments(String moreId, String articleId, String children, String sort) throws RedditApiException {
 
-        String url = OAUTH_ENDPOINT + "/api/morechildren.json?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
+        String url = OAUTH_ENDPOINT + "/api/morechildren?api_type=json&sort=" + sort + "&id=" + moreId + "&link_id=" + articleId + "&children=" + children;
 
         JSONArray feed = new JSONArray();
 
         try {
-            JSONObject result = redditApiGet(url, true); // use oauth if logged in
+            JSONObject result = redditApiPost(url);
             if (result != null) {
                 feed = result.getJSONObject("json").getJSONObject("data").getJSONArray("things");
             }
@@ -831,9 +831,9 @@ public class RedditData {
             } else {
                 if (!method.equals("GET")) {
                     int queryIndex = urlStr.indexOf("?");
-                    if (queryIndex!=-1)
-                        urlStr = urlStr.substring(queryIndex);
-                    requestStr = URLEncoder.encode(urlStr, "UTF-8");
+                    if (queryIndex!=-1) {
+                        requestStr = URLEncoder.encode(urlStr.substring(queryIndex), "UTF-8");
+                    }
                 }
                 httpRequestBody = RequestBody.create(POST_ENCODED, requestStr);
             }

@@ -23,7 +23,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -130,7 +129,7 @@ public class FeedItemDialogActivity extends Activity {
                             String feedPath = "/r/" + subreddit;
                             if (widgetId == -2) {
                                 // If currently in search activity, open a temp feed on the main activity
-                                openRedditFeed(Reddinator.REDDIT_BASE_URL + feedPath);
+                                global.openSubredditFeed(FeedItemDialogActivity.this, Reddinator.REDDIT_BASE_URL + feedPath);
                                 close(0);
                             } else {
                                 // replace current temporary feed in main activity
@@ -155,7 +154,7 @@ public class FeedItemDialogActivity extends Activity {
                         if (widgetId < 0) {
                             String feedPath = "/domain/" + domain;
                             if (widgetId == -2) {
-                                openRedditFeed(Reddinator.REDDIT_BASE_URL + feedPath);
+                                global.openSubredditFeed(FeedItemDialogActivity.this, Reddinator.REDDIT_BASE_URL + feedPath);
                                 close(0);
                             } else {
                                 Intent intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
@@ -224,13 +223,6 @@ public class FeedItemDialogActivity extends Activity {
         ((TextView) dialog.findViewById(R.id.title)).setTextColor(Color.parseColor(theme.getValue("header_text")));
         // show the dialog
         dialog.show();
-    }
-
-    private void openRedditFeed(String url){
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.setAction(ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
     }
 
     private class ItemOptionsAdapter extends BaseAdapter {

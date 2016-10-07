@@ -11,9 +11,7 @@
         android:layout_height="35dp"
         android:layout_alignParentTop="true"
         android:background="#CEE3F8"
-        android:clickable="false"
-        android:paddingRight="2dp"
-        android:paddingLeft="2dp">
+        android:clickable="false">
 
         <ImageButton
             android:id="@+id/prefsbutton"
@@ -23,12 +21,10 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/configure"
-            android:layout_marginLeft="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginRight="1dp"
-            android:layout_marginEnd="1dp"
+            android:paddingRight="3dp"
+            android:paddingLeft="3dp"
             android:scaleType="centerInside"
-            android:background="@android:color/transparent" />
+            android:background="?android:attr/selectableItemBackground" />
 
         <ImageButton
             android:id="@+id/refreshbutton"
@@ -38,11 +34,11 @@
             android:layout_toLeftOf="@+id/prefsbutton"
             android:layout_toStartOf="@+id/prefsbutton"
             android:contentDescription="@string/refresh"
-            android:paddingLeft="2dp"
-            android:paddingRight="2dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:visibility="visible"
             android:scaleType="centerInside"
-            android:background="@android:color/transparent" />
+            android:background="?android:attr/selectableItemBackground" />
 
         <ProgressBar
             android:id="@+id/srloader"
@@ -60,7 +56,7 @@
             android:layout_marginEnd="4dp"
             android:layout_toLeftOf="@+id/refreshbutton"
             android:layout_toStartOf="@+id/refreshbutton"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/erroricon"
@@ -77,49 +73,60 @@
             android:background="@android:color/transparent" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/widget_logo"
-            android:layout_toEndOf="@+id/widget_logo"
-            android:layout_toStartOf="@+id/refreshbutton"
-            android:layout_toLeftOf="@+id/refreshbutton">
-            <TextView
-                android:id="@+id/subreddittxt"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical"
-                android:text="@string/app_name"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#000"
-                android:singleLine="true"
-                android:ellipsize="marquee" />
-
-            <ImageView
-                android:id="@+id/srcaret"
-                android:layout_width="18dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="2dp"
-                android:paddingRight="2dp"
-                android:scaleType="centerInside"
-                android:paddingTop="2dp"
-                android:contentDescription="@string/subreddit" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/widget_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:contentDescription="@string/logo"
-            android:src="@drawable/reddit_icon_small" />
+            android:layout_toStartOf="@+id/refreshbutton"
+            android:layout_toLeftOf="@+id/refreshbutton"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/widget_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:contentDescription="@string/logo"
+                android:src="@drawable/reddit_icon_small"
+                android:background="?android:attr/selectableItemBackground" />
+
+            <LinearLayout
+                android:id="@+id/sub_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?android:attr/selectableItemBackground">
+
+                <TextView
+                    android:id="@+id/subreddittxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/app_name"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#000"
+                    android:maxLines="1"
+                    android:ellipsize="marquee" />
+
+                <ImageView
+                    android:id="@+id/srcaret"
+                    android:layout_width="18dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:scaleType="centerInside"
+                    android:paddingTop="2dp"
+                    android:contentDescription="@string/subreddit" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -4,28 +4,26 @@
     android:layout_width="match_parent"
     android:layout_gravity="fill_horizontal"
     android:layout_height="fill_parent"
-    android:layout_alignParentTop="true"
-    android:clickable="false">
-
-
+    android:layout_alignParentTop="true">
 
     <IconTextView
         android:id="@+id/apprefreshbutton"
-        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        android:layout_marginStart="2dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="6dp"
+        android:paddingStart="6dp"
+        android:paddingRight="6dp"
+        android:paddingEnd="6dp"
         android:text="@string/fa_refresh"
         android:shadowColor="#22000000"
         android:shadowDx="4"
         android:shadowDy="4"
         android:shadowRadius="3"
-        android:padding="2dp"
         android:textSize="28sp"
         android:textColor="#DBDBDB" />
 
@@ -71,56 +69,62 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/app_logo"
-        android:layout_toEndOf="@+id/app_logo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/apprefreshbutton"
         android:layout_toStartOf="@+id/apprefreshbutton">
 
-        <TextView
-            android:id="@+id/appsubreddittxt"
+        <LinearLayout
+            android:id="@+id/sub_container"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:gravity="center_vertical|start"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/app_name"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#000000"
-            android:singleLine="true"
-            android:ellipsize="marquee" />
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackground">
+            <ImageView
+                android:id="@+id/app_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/logo"
+                android:src="@drawable/reddit_icon_small" />
 
-        <IconTextView
-            android:id="@+id/appcaret"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|start"
-            android:layout_gravity="center_vertical|start"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="@string/fa_caret"
-            android:shadowColor="#33000000"
-            android:shadowDx="0"
-            android:shadowDy="4"
-            android:shadowRadius="3"
-            android:paddingTop="2dp"
-            android:textSize="20sp"
-            android:textColor="#DBDBDB" />
+            <TextView
+                android:id="@+id/appsubreddittxt"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical|start"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/app_name"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#000000"
+                android:maxLines="1"
+                android:ellipsize="marquee" />
+
+            <IconTextView
+                android:id="@+id/appcaret"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/fa_caret"
+                android:shadowColor="#33000000"
+                android:shadowDx="0"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:paddingTop="2dp"
+                android:textSize="20sp"
+                android:textColor="#DBDBDB" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/app_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/logo"
-        android:src="@drawable/reddit_icon_small" />
 
 </RelativeLayout>

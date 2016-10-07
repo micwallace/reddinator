@@ -98,6 +98,7 @@
     <string name="save">Save</string>
     <string name="login">Login</string>
     <string name="create_a_multi">Create A Multi</string>
+    <string name="create">Create</string>
     <string name="name">Name</string>
     <string name="about_open_source">Reddinator is proudly open-source software. Come and contribute on Github</string>
     <string name="about_donate">Programing is thirsty work, buy me a beer to help maintain the app.</string>
@@ -373,4 +374,5 @@
     <string name="subscribe">Subscribe</string>
     <string name="view">View</string>
     <string name="archived_post_error">This post is archived and\ncannot be voted or commented on</string>
+    <string name="browse">Browse</string>
 </resources>

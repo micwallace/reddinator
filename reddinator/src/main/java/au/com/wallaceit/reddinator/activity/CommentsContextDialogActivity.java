@@ -509,7 +509,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         if (data.equals("[]")){
             Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\",\"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\", false, \"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
         }
     }
 }

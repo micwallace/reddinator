@@ -58,12 +58,16 @@ import au.com.wallaceit.reddinator.core.SubredditManager;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 
+import static android.content.Intent.ACTION_VIEW;
+
 public class Reddinator extends Application {
 
     private ArrayList<JSONObject> mSubredditList; // cached popular subreddits
     public final static String REDDIT_BASE_URL = "https://www.reddit.com";
     public final static String REDDIT_MOBILE_BETA_URL = "https://m.reddit.com";
     public final static String REDDIT_MOBILE_URL = "https://i.reddit.com";
+    public static final String SUBREDDIT_REDDINATOR = "reddinator";
+    public static final String SUBREDDIT_MULTIHUB = "multihub";
     public final static String IMAGE_CACHE_DIR = "/images/";
     public final static String FEED_DATA_DIR = "/feeds/";
     public final static int LOADTYPE_LOAD = 0;
@@ -360,9 +364,8 @@ public class Reddinator extends Application {
             i.setData(Uri.parse(url));
         } else if (match && matcher.group(1)!=null) {
             // subreddit feed
-            i = new Intent(context, MainActivity.class);
-            i.setAction(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
+            openSubredditFeed(context, url);
+            return;
         } else {
             // link is unsupported in native views; open in activity_webview
             i = new Intent(context, WebViewActivity.class);
@@ -370,6 +373,13 @@ public class Reddinator extends Application {
             i.putExtra("url", url);
         }
         context.startActivity(i);
+    }
+
+    public void openSubredditFeed(Context context, String url){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setAction(ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        context.startActivity(intent);
     }
 
     public static boolean doShowWelcomeDialog(final Activity context){

@@ -349,3 +349,7 @@ pre {
 .ProseMirror-menuitem:last-child {
     margin-right: 0;
 }
+
+.ProseMirror-tooltip, .ProseMirror-tooltip-pointer {
+    margin-top: 30px;
+}

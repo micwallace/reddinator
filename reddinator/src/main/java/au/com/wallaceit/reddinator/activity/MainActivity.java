@@ -37,6 +37,7 @@ import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.IconTextView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -76,6 +77,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private MenuItem sortItem;
     private MenuItem sidebarIcon;
     private ProgressBar loader;
+    private LinearLayout srbutton;
     private TextView srtext;
     private IconTextView errorIcon;
     private IconTextView refreshbutton;
@@ -84,6 +86,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private String subredditName;
     private String subredditPath;
     private String subredditSort;
+    private boolean hasMultipleSubs = false;
     private boolean viewThemes = false;
 
     private String lastItemId = "0";
@@ -108,7 +111,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         loader = (ProgressBar) findViewById(R.id.appsrloader);
         errorIcon = (IconTextView) findViewById(R.id.apperroricon);
         refreshbutton = (IconTextView) findViewById(R.id.apprefreshbutton);
-
+        srbutton = (LinearLayout) findViewById(R.id.sub_container);
         srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
         // set theme colors
@@ -125,13 +128,19 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         // check intent and set needed feed params accordingly
         if (getIntent().getAction()!=null && getIntent().getAction().equals(Intent.ACTION_VIEW)){
             // open reddit feed via url, extract path and name. Feed can be a subreddit, domain or multi
-            Pattern pattern = Pattern.compile(".*reddit.com(/(r|domain|user/.*/m)/([^/]*))");
+            Pattern pattern = Pattern.compile(".*reddit.com((/(r|domain|user/.*/m)/([^/]*))?(/([^/,a-z]*))?)?");
             Matcher matcher = pattern.matcher(getIntent().getDataString());
             if (matcher.find()){
-                //System.out.println(matcher.group(2)+" "+matcher.group(1));
-                subredditPath = matcher.group(1);
-                subredditName = matcher.group(3);
-                subredditSort = "hot";
+                if (matcher.group(2)!=null) {
+                    subredditPath = matcher.group(2);
+                    subredditName = matcher.group(4);
+                    hasMultipleSubs = (matcher.group(3).contains("user/") || matcher.group(3).contains("domain/"));
+                } else {
+                    subredditPath = "";
+                    subredditName = "Front Page";
+                    hasMultipleSubs = true;
+                }
+                subredditSort = matcher.group(6)!=null ? matcher.group(6) : "hot";
             } else {
                 Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
                 this.finish();
@@ -153,6 +162,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
             subredditName = global.getSubredditManager().getCurrentFeedName(0);
             subredditSort = global.mSharedPreferences.getString("sort-app", "hot");
+            hasMultipleSubs = global.getSubredditManager().isFeedMulti(0);
             srclick = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -163,8 +173,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             findViewById(R.id.appcaret).setOnClickListener(srclick);
         }
         // don't add subreddit select click for temp feeds, feed prefs and sort are changable from the menu only in temp feeds
-        srtext.setOnClickListener(srclick);
-        findViewById(R.id.app_logo).setOnClickListener(srclick);
+        srbutton.setOnClickListener(srclick);
         // Load current data if available & setup list adapter'
         if (feedId==0) {
             data = global.getFeed(0);
@@ -182,7 +191,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             data = new JSONArray();
         }
         listView = (ListView) findViewById(R.id.applistview);
-        listAdapter = new SubredditFeedAdapter(this, this, global, theme, feedId, data, !endOfFeed, (feedId==0 && global.getSubredditManager().isFeedMulti(0)));
+        listAdapter = new SubredditFeedAdapter(this, this, global, theme, feedId, data, !endOfFeed, hasMultipleSubs);
         listView.setAdapter(listAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -193,7 +202,20 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
                     return;
                 }
-                if ("reddinator".equals(extras.getString(WidgetProvider.ITEM_SUBREDDIT))){
+                String subreddit = extras.getString(WidgetProvider.ITEM_SUBREDDIT);
+                if (Reddinator.SUBREDDIT_MULTIHUB.equals(subreddit)){
+                    // Extract name from multi path
+                    String url = extras.getString(WidgetProvider.ITEM_URL);
+                    if (url!=null) {
+                        Pattern pattern = Pattern.compile(".*reddit.com(/user/.*/m/([^/]*))");
+                        Matcher matcher = pattern.matcher(url);
+                        if (matcher.find()) {
+                            // open in a new temporary activity
+                            global.openSubredditFeed(MainActivity.this, Reddinator.REDDIT_BASE_URL + url);
+                            return;
+                        }
+                    }
+                } else if (Reddinator.SUBREDDIT_REDDINATOR.equals(subreddit)){
                     try {
                         JSONObject postData = listAdapter.getItem(position);
                         if (viewThemes || postData.getString("title").indexOf("[Theme]")==0) {
@@ -558,15 +580,14 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     subredditPath = data.getStringExtra(EXTRA_FEED_PATH);
                     subredditName = data.getStringExtra(EXTRA_FEED_NAME);
                     subredditSort = "hot";
+                    hasMultipleSubs = (subredditPath.contains("/user/") || subredditPath.contains("/domain/"));
                 } else {
                     subredditName = global.getSubredditManager().getCurrentFeedName(0);
                     subredditPath = global.getSubredditManager().getCurrentFeedPath(0);
                     subredditSort = global.mSharedPreferences.getString("sort-app", "hot");
+                    hasMultipleSubs = global.getSubredditManager().isFeedMulti(0);
                 }
-                sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
-                srtext.setText(subredditName);
-                listAdapter.loadFeedPrefs();
-                reloadReddits();
+                updateFeed();
                 break;
             // initiate vote
             case 3:
@@ -585,6 +606,13 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         if (resultcode==6 || (data!=null && data.getBooleanExtra("themeupdate", false))){
             refreshTheme();
         }
+    }
+
+    private void updateFeed(){
+        sortItem.setTitle(getString(R.string.sort_label)+" "+subredditSort);
+        srtext.setText(subredditName);
+        listAdapter.loadFeedPrefs();
+        reloadReddits();
     }
 
     private ProgressDialog sidebarProg;
@@ -753,7 +781,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     hideAppLoader(true, false); // go to top
                     data = result;
                 }
-                listAdapter.setFeed(data, !endOfFeed, (feedId==0 && global.getSubredditManager().isFeedMulti(0)));
+                listAdapter.setFeed(data, !endOfFeed, hasMultipleSubs);
                 //listView.invalidateViews();
                 // save feed
                 if (feedId>-1)

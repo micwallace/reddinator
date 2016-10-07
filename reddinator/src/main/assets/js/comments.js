@@ -90,14 +90,47 @@ function commentCallback(parentId, commentData){
 function populateChildComments(moreId, json){
     //console.log(json)
     var data = JSON.parse(json);
-    $("#"+moreId).remove();
+    //console.log(json);
+    var more = $("#"+moreId);
+    var currentLength = more.data('rlength');
+    var currentChildren = more.data('rchildren'); // child comments are only fetched 20 at a time, so we need to keep track of the current ids
+    if (currentChildren!=null){
+        currentChildren = currentChildren.split(",");
+        if (currentChildren && currentChildren.length > 800){
+            currentChildren = currentChildren.splice(800);
+        } else {
+            currentChildren = [];
+        }
+    } else {
+        currentChildren = [];
+    }
+    more.remove();
+
     for (var i in data){
         if (data[i].kind!="more"){
             appendComment(data[i].data.parent_id, data[i].data, false);
         } else {
+            // append newly returned child ids to the current ones (if any)
+            if (data[i].data.parent_id.indexOf("t3_")!==-1){
+                //console.log(JSON.stringify(data[i]));
+                data[i].data.children = arrayUnique(data[i].data.children.concat(currentChildren));
+                data[i].data.count = currentLength - data.length;
+            }
             appendMoreButton(data[i].data.parent_id, data[i].data);
         }
     }
+}
+
+function arrayUnique(array) {
+    var a = array.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
 }
 
 function noChildrenCallback(moreId){
@@ -108,7 +141,8 @@ function resetMoreClickEvent(moreId){
     var moreElem = $("#"+moreId);
     moreElem.children("h5").text('Load '+moreElem.data('rlength')+' More');
     moreElem.one('click',
-        {id: moreElem.data('rname'), children: moreElem.data('rchildren')},
+        //{id: moreElem.data('rname'), children: moreElem.data('rchildren')},
+        {id: moreElem.data('rname'), children: moreElem.data('rchildren').split(",").slice(0,801).join(",")},
         function(event){
             $(this).children("h5").text("Loading...");
             loadChildComments(event.data.id, event.data.children);
@@ -124,7 +158,8 @@ function appendMoreButton(parentId, moreData){
     moreElem.data('rname', moreData.name);
     moreElem.data('rchildren', moreData.children.join(","));
     moreElem.one('click',
-        {id: moreData.name, children: moreData.children.join(",")},
+        //{id: moreData.name, children: moreData.children.join(",")},
+        {id: moreData.name, children: moreData.children.slice(0,801).join(",")},
         function(event){
             $(this).children("h5").text("Loading...");
             loadChildComments(event.data.id, event.data.children);

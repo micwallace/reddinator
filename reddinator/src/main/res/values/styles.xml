@@ -10,12 +10,12 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+        <item name="android:selectableItemBackground">@android:color/transparent</item>
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:selectableItemBackground">@android:color/transparent</item>
         <item name="android:button">@android:color/transparent</item>
         <item name="android:actionButtonStyle">@style/ActionButtonStyle</item>
         <item name="android:actionOverflowButtonStyle">@style/ActionOverflowButtonStyle</item>
@@ -45,6 +45,7 @@
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:buttonStyle">@style/ButtonStyle</item>
         <item name="windowActionBar">false</item>
+        <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds" tools:targetApi="lollipop">true</item>
         <item name="android:statusBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
@@ -52,6 +53,7 @@
     </style>
     <style name="TransparentActivityUndimmed" parent="TransparentActivity">
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:fitsSystemWindows">false</item>
     </style>
     <style name="PopupMenuStyle" parent="@android:style/Widget.Holo.Light.PopupMenu">
         <item name="android:layout_margin">0dp</item>

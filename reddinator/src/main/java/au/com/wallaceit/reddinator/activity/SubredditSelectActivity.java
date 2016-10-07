@@ -145,28 +145,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         multiListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                if (position==mMultiAdapter.getCount()-1){
-                    LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, parent, false);
-                    final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
-                    builder.setTitle(resources.getString(R.string.create_a_multi)).setView(layout)
-                    .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (name.getText().toString().equals("")) {
-                                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                            new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
-                            dialogInterface.dismiss();
-                        }
-                    }).show().setCanceledOnTouchOutside(true);
-                } else {
+                if (position < mMultiAdapter.getCount()) {
                     JSONObject multiObj = mMultiAdapter.getItem(position);
                     try {
                         String name = multiObj.getString("display_name");
@@ -939,6 +918,39 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 viewHolder = new ViewHolder();
                 if (position==multiList.size()) {
                     convertView = inflater.inflate(R.layout.mymultilistitem_add, parent, false);
+                    convertView.findViewById(R.id.multi_browse_btn)
+                        .setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                global.openSubredditFeed(SubredditSelectActivity.this, Reddinator.REDDIT_BASE_URL+"/r/"+Reddinator.SUBREDDIT_MULTIHUB);
+                            }
+                        });
+                    convertView.findViewById(R.id.multi_add_btn)
+                        .setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, parent, false);
+                                final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
+                                AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
+                                builder.setTitle(resources.getString(R.string.create_a_multi)).setView(layout)
+                                        .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        if (name.getText().toString().equals("")) {
+                                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
+                                            return;
+                                        }
+                                        new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show().setCanceledOnTouchOutside(true);
+                            }
+                        });
                 } else {
                     convertView = inflater.inflate(R.layout.mymultilistitem, parent, false);
                     viewHolder.name = (TextView) convertView.findViewById(R.id.multireddit_name);
