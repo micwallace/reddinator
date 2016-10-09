@@ -104,13 +104,14 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         // get context url, extract permalink, id and comment id
         url = getIntent().getDataString();
         if (url!=null) {
-            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)([^/]*)?");
+            Pattern pattern = Pattern.compile(".*reddit.com(/r/[^/]*/comments/([^/]*)/[^/]*/)([^/?]*)?(\\?context=([0-9]))?");
             Matcher matcher = pattern.matcher(url);
             if (matcher.find()){
                 //System.out.println(url + " " + matcher.group(1)+" "+matcher.group(2) + " " + matcher.group(3));
                 permalink = matcher.group(1);
                 articleId = "t3_"+matcher.group(2);
                 commentId = matcher.group(3);
+                contextLevels = matcher.group(5)!=null ? Integer.parseInt(matcher.group(5)) : 3;
             } else {
                 Toast.makeText(this, "Could not decode post URL", Toast.LENGTH_LONG).show();
                 this.finish();
@@ -307,7 +308,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             String themeStr = global.mThemeManager.getActiveTheme("appthemepref").getValuesString(true);
             webView.loadUrl("javascript:init(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\", \""+global.mRedditData.getUsername()+"\")");
 
-            loadComments(currentSort, contextLevels);
+            loadComments();
         }
     }
 
@@ -323,12 +324,19 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
 
         @JavascriptInterface
         public void reloadComments(String sort, int context) {
-            loadComments(sort, context);
+            if (sort != null)
+                currentSort = sort;
+
+            System.out.println(context);
+            if (context > -1)
+                contextLevels = context;
+
+            loadComments();
         }
 
         @JavascriptInterface
         public void loadChildren(String moreId, String children) {
-            commentsLoader = new CommentsContextLoader(currentSort, moreId, children);
+            commentsLoader = new CommentsContextLoader(moreId, children);
             commentsLoader.execute();
         }
 
@@ -406,14 +414,8 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         }
     }
 
-    private void loadComments(String sort, int context) {
-        if (sort != null)
-            currentSort = sort;
-
-        if (context != 0)
-            contextLevels = context;
-
-        commentsLoader = new CommentsContextLoader(currentSort, contextLevels);
+    private void loadComments() {
+        commentsLoader = new CommentsContextLoader();
         commentsLoader.execute();
     }
 
@@ -421,18 +423,13 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     class CommentsContextLoader extends AsyncTask<Void, Integer, String> {
 
         private boolean loadMore = false;
-        private String mSort = "best";
-        private int mContext = 3;
         private String mMoreId;
         private String mChildren;
 
-        CommentsContextLoader(String sort, int context){
-            mSort = sort;
-            mContext = context;
+        CommentsContextLoader(){
         }
 
-        CommentsContextLoader(String sort, String moreId, String children) {
-            mSort = sort;
+        CommentsContextLoader(String moreId, String children) {
             if (children != null && !children.equals("")) {
                 loadMore = true;
                 mMoreId = moreId;
@@ -447,10 +444,10 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
 
             try {
                 if (loadMore) {
-                    data = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, mSort);
+                    data = global.mRedditData.getChildComments(mMoreId, articleId, mChildren, currentSort);
                 } else {
                     // reloading
-                    JSONArray commentObj = global.mRedditData.getCommentsContextFeed(permalink, commentId, mSort, mContext);
+                    JSONArray commentObj = global.mRedditData.getCommentsContextFeed(permalink, commentId, currentSort, contextLevels);
                     postInfo = commentObj.getJSONObject(0).getJSONObject("data").getJSONArray("children").getJSONObject(0).getJSONObject("data");
                     data = commentObj.getJSONObject(1).getJSONObject("data").getJSONArray("children");
                 }
@@ -509,7 +506,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
         if (data.equals("[]")){
             Utilities.executeJavascriptInWebview(webView, "showLoadingView('" + resources.getString(R.string.no_comments_here) + "');");
         } else {
-            Utilities.executeJavascriptInWebview(webView, "populateComments(\"" + author + "\", false, \"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
+            Utilities.executeJavascriptInWebview(webView, "setContextLevel("+contextLevels+"); populateComments(\"" + author + "\", false, \"" + StringEscapeUtils.escapeEcmaScript(data) + "\");");
         }
     }
 }

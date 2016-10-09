@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.activity.CommentsContextDialogActivity;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.activity.WebViewActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -286,6 +288,13 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             Intent intent = new Intent(mContext, WebViewActivity.class);
             intent.putExtra("url", global.getDefaultMobileSite() + permalink + thingId.substring(3));
             //System.out.println("http://www.reddit.com"+permalink+thingId+".compact");
+            startActivity(intent);
+        }
+
+        @JavascriptInterface
+        public void openCommentsContext(String thingId) {
+            Intent intent = new Intent(mContext, CommentsContextDialogActivity.class);
+            intent.setData(Uri.parse(Reddinator.REDDIT_BASE_URL + permalink + thingId + "?context=0"));
             startActivity(intent);
         }
 

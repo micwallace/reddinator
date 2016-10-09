@@ -387,11 +387,13 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
                 if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default") || thumbnail.equals("image")) {
                     int resource = 0;
                     switch (thumbnail) {
+                        case "image":
+                            if (!nsfw) {
+                                resource = R.drawable.noimage;
+                                break;
+                            }
                         case "nsfw":
                             resource = R.drawable.nsfw;
-                            break;
-                        case "image":
-                            resource = R.drawable.noimage;
                             break;
                         case "default":
                         case "self":

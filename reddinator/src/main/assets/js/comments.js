@@ -55,7 +55,7 @@ function reloadComments(){
 function reloadCommentsContext(){
     showLoadingView("Loading...");
     $("#base").html('');
-    Reddinator.reloadComments($("#context_sort_select").val(), $("#context_select").val());
+    Reddinator.reloadComments($("#context_sort_select").val(), parseInt($("#context_select").val()));
 }
 
 function loadChildComments(moreId, children){
@@ -153,18 +153,30 @@ function resetMoreClickEvent(moreId){
 function appendMoreButton(parentId, moreData){
     var moreElem = $("#more_template").clone().show();
     moreElem.attr("id", moreData.name);
-    moreElem.children("h5").text("Load "+moreData.count+" more");
+    // If the comment count is 0, it indicates a "continue this thread" more object
+    // We need to open in comments context dialog as api/morechildren call will return nothing.
+    var buttonText = moreData.count==0 ? 'Continue this thread' : 'Load '+moreData.count+' More';
+    moreElem.children("h5").text(buttonText);
     moreElem.data('rlength', moreData.count)
     moreElem.data('rname', moreData.name);
     moreElem.data('rchildren', moreData.children.join(","));
-    moreElem.one('click',
-        //{id: moreData.name, children: moreData.children.join(",")},
-        {id: moreData.name, children: moreData.children.slice(0,801).join(",")},
-        function(event){
-            $(this).children("h5").text("Loading...");
-            loadChildComments(event.data.id, event.data.children);
-        }
-    );
+    if (moreData.count > 0){
+        moreElem.one('click',
+            //{id: moreData.name, children: moreData.children.join(",")},
+            {id: moreData.name, children: moreData.children.slice(0,801).join(",")},
+            function(event){
+                $(this).children("h5").text("Loading...");
+                loadChildComments(event.data.id, event.data.children);
+            }
+        );
+    } else {
+        moreElem.on('click',
+            {parent_id: moreData.parent_id.split("_")[1]},
+            function(event){
+                Reddinator.openCommentsContext(event.data.parent_id);
+            }
+        );
+    }
     if (parentId.indexOf("t3_")!==-1){
         moreElem.css("margin-right", "0").appendTo("#base");
     } else {
@@ -272,6 +284,10 @@ function showPostCommentBox(){
     } else {
         $('#post_comment_textarea').focus();
     }
+}
+
+function setContextLevel(level){
+    $("#context_select").val(level);
 }
 
 $(function(){

@@ -52,7 +52,7 @@
 
     </div>
 </div>
-<div id="more_template" class="more_box" style="display:none;">
+<div id="more_template" class="more_box border" style="display:none;">
     <h5>Load More</h5>
 </div>
 <div id="edit_template" class="post_box" style="display:none;">
@@ -73,9 +73,11 @@
     </select>
     <label style="display:inline-block;">Context:</label>
     <select id="context_select" onchange="reloadCommentsContext();">
+            <option value="0">0</option>
+            <option value="1">1</option>
             <option value="3">3</option>
             <option value="10">10</option>
-            <option value="10000">All</option>
+            <option value="100">All</option>
     </select>
 </div>
 <div id="container">
