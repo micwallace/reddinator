@@ -72,6 +72,7 @@ import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.MailCheckService;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadPostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
@@ -82,7 +83,6 @@ import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.TabCommentsFragment;
 import au.com.wallaceit.reddinator.ui.TabWebFragment;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class ViewRedditActivity extends ActionbarFragmentActivity implements LoadPostTask.Callback, VoteTask.Callback {
 
@@ -163,12 +163,12 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         } else {
             // from widget, app or account feed post click
             widgetId = getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            feedposition = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+            feedposition = getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, -1);
 
-            redditItemId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-            postUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
-            postPermalink = getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK);
-            userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
+            redditItemId = getIntent().getStringExtra(Reddinator.ITEM_ID);
+            postUrl = getIntent().getStringExtra(Reddinator.ITEM_URL);
+            postPermalink = getIntent().getStringExtra(Reddinator.ITEM_PERMALINK);
+            userLikes = getIntent().getStringExtra(Reddinator.ITEM_USERLIKES);
             // Get selected item from feed and user vote preference
             if (getIntent().getBooleanExtra("submitted", false)){
                 userLikes = "true";
@@ -325,7 +325,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         // update widget voting icons if a vote has been placed
         if (widgetId>0){
             if (global.getItemUpdate()!=null){
-                WidgetProvider.hideLoaderAndRefreshViews(this, widgetId, false);
+                WidgetCommon.hideLoaderAndRefreshViews(this, widgetId, false);
             }
         }
         if (loadPostTask!=null)

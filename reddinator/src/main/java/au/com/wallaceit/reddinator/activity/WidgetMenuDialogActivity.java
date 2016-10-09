@@ -50,7 +50,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 
@@ -250,7 +250,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
                 prefsedit.putString("sort-" + widgetId, sort);
                 prefsedit.apply();
                 // set new text in button
-                WidgetProvider.showLoaderAndUpdate(WidgetMenuDialogActivity.this, widgetId, false);
+                WidgetCommon.showLoaderAndUpdate(WidgetMenuDialogActivity.this, widgetId, false);
                 dialog.dismiss();
                 WidgetMenuDialogActivity.this.finish();
             }
@@ -299,7 +299,7 @@ public class WidgetMenuDialogActivity extends Activity implements PopupMenu.OnMe
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
                 if (needsUpdate)
-                    WidgetProvider.showLoaderAndUpdate(WidgetMenuDialogActivity.this, widgetId, false);
+                    WidgetCommon.showLoaderAndUpdate(WidgetMenuDialogActivity.this, widgetId, false);
                 WidgetMenuDialogActivity.this.finish();
             }
         });

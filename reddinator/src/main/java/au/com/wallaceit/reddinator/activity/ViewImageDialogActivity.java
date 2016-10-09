@@ -34,7 +34,6 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class ViewImageDialogActivity extends Activity {
 
@@ -46,7 +45,7 @@ public class ViewImageDialogActivity extends Activity {
         Reddinator global = (Reddinator) getApplicationContext();
         setContentView(R.layout.activity_view_image_dialog);
         // get content url (which will be an image)
-        String imageUrl = getIntent().getStringExtra(WidgetProvider.ITEM_URL);
+        String imageUrl = getIntent().getStringExtra(Reddinator.ITEM_URL);
         // fix imgur links so it's not redirected to full webpage
         if (Utilities.isImgurUrl(imageUrl)) {
             imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");

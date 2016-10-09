@@ -22,7 +22,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.MailCheckReceiver;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 
 public class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     public int mAppWidgetId;
@@ -251,7 +251,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         // check if refresh rate has changed and update if needed
         if (!mRefreshrate.equals(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"))) {
             //System.out.println("Refresh preference changed, updating alarm");
-            WidgetProvider.setUpdateSchedule(getActivity(), false);
+            WidgetCommon.setUpdateSchedule(getActivity(), false);
         }
         // check if background mail check interval has changed
         if (!mMailRefresh.equals(mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000"))) {
@@ -267,7 +267,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             if (getActivity().getIntent().getIntExtra("requestCode", 0)!=ThemesActivity.REQUEST_CODE_NO_WIDGET_UPDATES) {
                 Reddinator global = ((Reddinator) getActivity().getApplicationContext());
                 if (global != null) {
-                    WidgetProvider.refreshAllWidgetViews(global);
+                    WidgetCommon.refreshAllWidgetViews(global);
                 }
             }
         }

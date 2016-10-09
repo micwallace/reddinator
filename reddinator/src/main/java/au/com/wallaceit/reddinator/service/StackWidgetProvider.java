@@ -41,7 +41,7 @@ import au.com.wallaceit.reddinator.activity.WidgetMenuDialogActivity;
 import au.com.wallaceit.reddinator.core.Utilities;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class WidgetProvider extends WidgetProviderBase {
+public class StackWidgetProvider extends WidgetProviderBase {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -78,7 +78,7 @@ public class WidgetProvider extends WidgetProviderBase {
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             // REFRESH BUTTON
-            Intent refreshIntent = new Intent(context, WidgetProvider.class);
+            Intent refreshIntent = new Intent(context, StackWidgetProvider.class);
             refreshIntent.setAction(WidgetCommon.APPWIDGET_UPDATE_FEED);
             refreshIntent.setPackage(context.getPackageName());
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
@@ -86,14 +86,14 @@ public class WidgetProvider extends WidgetProviderBase {
             PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // ITEM CLICK
-            Intent clickIntent = new Intent(context, WidgetProvider.class);
+            Intent clickIntent = new Intent(context, StackWidgetProvider.class);
             clickIntent.setAction(WidgetCommon.ITEM_CLICK);
             clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             clickIntent.setData(Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // ADD ALL TO REMOTE VIEWS
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_stack);
             views.setPendingIntentTemplate(R.id.adapterview, clickPendingIntent);
             views.setOnClickPendingIntent(R.id.sub_container, subredditPendingIntent);
             views.setOnClickPendingIntent(R.id.refreshbutton, refreshPendingIntent);
@@ -146,14 +146,15 @@ public class WidgetProvider extends WidgetProviderBase {
         String action = intent.getAction();
 
         if (action.equals(WidgetCommon.APPWIDGET_UPDATE_FEED)) {
+            // get widget id
+            int widgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
             // show loader and update data
-            int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            WidgetCommon.showLoaderAndUpdate(context, widgetid, false);
+            WidgetCommon.showLoaderAndUpdate(context, widgetId, false);
         }
 
         if (action.equals(WidgetCommon.APPWIDGET_AUTO_UPDATE)) {
             AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-            int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+            int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, StackWidgetProvider.class));
             // perform full update, just to refresh views
             onUpdate(context, mgr, appWidgetIds);
             // show loader and update data
@@ -162,7 +163,7 @@ public class WidgetProvider extends WidgetProviderBase {
 
         if (action.equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
-            int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+            int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, StackWidgetProvider.class));
             // perform full widget update
             onUpdate(context, mgr2, appWidgetIds);
         }

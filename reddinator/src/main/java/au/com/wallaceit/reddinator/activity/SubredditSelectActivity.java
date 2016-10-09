@@ -79,6 +79,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.Utilities;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadRandomTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
@@ -337,7 +338,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             return;
         }
         if (mAppWidgetId != 0) {
-            WidgetProvider.showLoaderAndUpdate(this, mAppWidgetId, false);
+            WidgetCommon.showLoaderAndUpdate(this, mAppWidgetId, false);
         } else {
             Intent intent = new Intent();
             intent.putExtra("themeupdate", needsThemeUpdate);
@@ -389,7 +390,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                     setResult(1, intent); // tells main activity to update feed prefs
                 }
                 if (needsThemeUpdate){
-                    WidgetProvider.refreshAllWidgetViews(global);
+                    WidgetCommon.refreshAllWidgetViews(global);
                 }
             }
         } else {

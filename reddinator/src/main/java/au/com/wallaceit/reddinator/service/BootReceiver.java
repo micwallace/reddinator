@@ -18,9 +18,7 @@
 
 package au.com.wallaceit.reddinator.service;
 
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -28,13 +26,13 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!WidgetProvider.APPWIDGET_AUTO_UPDATE.equals(intent.getAction()))
+        if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction()) &&
+            !Intent.ACTION_PACKAGE_FIRST_LAUNCH.equals(intent.getAction()) &&
+            !Intent.ACTION_MY_PACKAGE_REPLACED.equals(intent.getAction()))
             return;
         // set mail check alarm
         MailCheckReceiver.setAlarm(context);
         // set widget update alarm if widgets enabled
-        int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
-        if (ids.length>0)
-            WidgetProvider.setUpdateSchedule(context, false);
+        WidgetCommon.setUpdateSchedule(context, false);
     }
 }

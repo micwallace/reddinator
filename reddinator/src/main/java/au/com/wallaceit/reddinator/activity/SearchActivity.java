@@ -56,7 +56,6 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
@@ -340,12 +339,12 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
             // initiate vote
             case 3:
             case 4:
-                int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+                int position = data.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1);
                 listAdapter.initialiseVote(position, (resultcode==3?1:-1));
                 break;
             // reload feed data from cache
             case 5:
-                listAdapter.removePostAtPosition(data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
+                listAdapter.removePostAtPosition(data.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1));
                 //listView.invalidateViews();
                 break;
         }

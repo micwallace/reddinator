@@ -148,9 +148,9 @@
             android:name=".service.WidgetProvider"
             android:enabled="true">
             <intent-filter>
-                <action android:name="au.com.wallaceit.redinator.WidgetProvider.ITEM_CLICK" />
-                <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_AUTO_UPDATE" />
-                <action android:name="au.com.wallaceit.redinator.WidgetProvider.APPWIDGET_UPDATE_FEED" />
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.ITEM_CLICK" />
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.APPWIDGET_AUTO_UPDATE" />
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.APPWIDGET_UPDATE_FEED" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" />
                 <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
@@ -164,6 +164,26 @@
         </receiver>
 
         <receiver
+            android:name=".service.StackWidgetProvider"
+            android:label="Reddinator Stack Widget"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.ITEM_CLICK" />
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.APPWIDGET_AUTO_UPDATE" />
+                <action android:name="au.com.wallaceit.redinator.WidgetCommon.APPWIDGET_UPDATE_FEED" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE_OPTIONS" />
+                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
+                <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget_stack_provider_info" />
+        </receiver>
+
+        <receiver
             android:name=".service.MailCheckReceiver"
             android:enabled="true" />
 
@@ -173,8 +193,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.PACKAGE_FIRST_LAUNCH" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 

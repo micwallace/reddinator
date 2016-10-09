@@ -344,10 +344,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
         @JavascriptInterface
         public void openRedditPost(String redditId, String postUrl, String permaLink, String userLikes) {
             Intent intent = new Intent(mContext, ViewRedditActivity.class);
-            intent.putExtra(WidgetProvider.ITEM_ID, redditId);
-            intent.putExtra(WidgetProvider.ITEM_URL, postUrl);
-            intent.putExtra(WidgetProvider.ITEM_PERMALINK, permaLink);
-            intent.putExtra(WidgetProvider.ITEM_USERLIKES, userLikes);
+            intent.putExtra(Reddinator.ITEM_ID, redditId);
+            intent.putExtra(Reddinator.ITEM_URL, postUrl);
+            intent.putExtra(Reddinator.ITEM_PERMALINK, permaLink);
+            intent.putExtra(Reddinator.ITEM_USERLIKES, userLikes);
             startActivity(intent);
         }
 

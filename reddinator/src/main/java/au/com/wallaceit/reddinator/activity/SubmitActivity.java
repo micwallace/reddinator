@@ -43,7 +43,6 @@ import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
 import au.com.wallaceit.reddinator.ui.SubAutoCompleteAdapter;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 
 public class SubmitActivity extends Activity implements SubmitTask.Callback {
@@ -181,9 +180,9 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
                     permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
 
                 Intent intent = new Intent(SubmitActivity.this, ViewRedditActivity.class);
-                intent.putExtra(WidgetProvider.ITEM_ID, id);
-                intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
-                intent.putExtra(WidgetProvider.ITEM_URL, url);
+                intent.putExtra(Reddinator.ITEM_ID, id);
+                intent.putExtra(Reddinator.ITEM_PERMALINK, permalink);
+                intent.putExtra(Reddinator.ITEM_URL, url);
                 intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

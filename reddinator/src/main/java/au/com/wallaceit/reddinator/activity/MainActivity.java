@@ -59,7 +59,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
@@ -77,7 +77,6 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     private MenuItem sortItem;
     private MenuItem sidebarIcon;
     private ProgressBar loader;
-    private LinearLayout srbutton;
     private TextView srtext;
     private IconTextView errorIcon;
     private IconTextView refreshbutton;
@@ -111,7 +110,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         loader = (ProgressBar) findViewById(R.id.appsrloader);
         errorIcon = (IconTextView) findViewById(R.id.apperroricon);
         refreshbutton = (IconTextView) findViewById(R.id.apprefreshbutton);
-        srbutton = (LinearLayout) findViewById(R.id.sub_container);
+        LinearLayout srbutton = (LinearLayout) findViewById(R.id.sub_container);
         srtext = (TextView) findViewById(R.id.appsubreddittxt);
 
         // set theme colors
@@ -202,10 +201,10 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     Toast.makeText(MainActivity.this, R.string.data_error, Toast.LENGTH_LONG).show();
                     return;
                 }
-                String subreddit = extras.getString(WidgetProvider.ITEM_SUBREDDIT);
+                String subreddit = extras.getString(Reddinator.ITEM_SUBREDDIT);
                 if (Reddinator.SUBREDDIT_MULTIHUB.equals(subreddit)){
                     // Extract name from multi path
-                    String url = extras.getString(WidgetProvider.ITEM_URL);
+                    String url = extras.getString(Reddinator.ITEM_URL);
                     if (url!=null) {
                         Pattern pattern = Pattern.compile(".*reddit.com(/user/.*/m/([^/]*))");
                         Matcher matcher = pattern.matcher(url);
@@ -244,7 +243,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                                         public void onClick(DialogInterface dialog, int which) {
                                             if (global.mThemeManager.setPreviewTheme(themeJson)){
                                                 refreshTheme();
-                                                WidgetProvider.refreshAllWidgetViews(global);
+                                                WidgetCommon.refreshAllWidgetViews(global);
                                                 new AlertDialog.Builder(MainActivity.this)
                                                         .setTitle(R.string.theme_preview)
                                                         .setMessage(R.string.theme_preview_applied_message)
@@ -593,7 +592,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
             case 3:
             case 4:
                 if (data!=null) {
-                    int position = data.getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1);
+                    int position = data.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1);
                     listAdapter.initialiseVote(position, (resultcode == 3 ? 1 : -1));
                 }
                 break;

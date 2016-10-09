@@ -160,12 +160,12 @@
             android:textColor="#FFF" />
     </LinearLayout>
 
-    <ListView
+    <StackView
         android:id="@+id/adapterview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/widgetheader"
         android:background="@android:color/white">
-    </ListView>
+    </StackView>
 
 </RelativeLayout>

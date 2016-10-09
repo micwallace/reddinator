@@ -63,6 +63,7 @@ public class WidgetService extends RemoteViewsService {
 class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext = null;
     private int appWidgetId;
+    private Class providerClass;
     private JSONArray data;
     private Reddinator global;
     private SharedPreferences mSharedPreferences;
@@ -79,6 +80,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
         appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        providerClass = WidgetCommon.getWidgetProviderClass(mContext, appWidgetId);
         global = ((Reddinator) context.getApplicationContext());
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         //System.out.println("New view factory created for widget ID:"+appWidgetId);
@@ -172,15 +174,22 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 loadmorerow.setTextViewText(R.id.loadmoretxt, mContext.getResources().getString(R.string.load_more));
             }
             loadmorerow.setTextColor(R.id.loadmoretxt, themeColors.get("load_text"));
+            if (providerClass==WidgetCommon.WIDGET_CLASS_STACK)
+                loadmorerow.setInt(R.id.load_row, "setBackgroundColor", themeColors.get("background_color"));
             Intent i = new Intent();
             Bundle extras = new Bundle();
-            extras.putString(WidgetProvider.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
+            extras.putString(Reddinator.ITEM_ID, "0"); // zero will be an indicator in the onreceive function of widget provider if its not present it forces a reload
             i.putExtras(extras);
-            loadmorerow.setOnClickFillInIntent(R.id.listrowloadmore, i);
+            loadmorerow.setOnClickFillInIntent(R.id.load_row, i);
             return loadmorerow;
         } else {
             // create remote view from specified layout
-            row = new RemoteViews(mContext.getPackageName(), R.layout.listrow);
+            if (providerClass==WidgetCommon.WIDGET_CLASS_LIST){
+                row = new RemoteViews(mContext.getPackageName(), R.layout.widget_list_row);
+            } else {
+                row = new RemoteViews(mContext.getPackageName(), R.layout.widget_stack_row);
+                row.setInt(R.id.item_row, "setBackgroundColor", themeColors.get("background_color"));
+            }
             // build normal item
             String title, url, permalink, thumbnail, domain, id, subreddit, userLikes, previewUrl = null;
             int score;
@@ -254,32 +263,32 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // add extras and set click intent
             Intent i = new Intent();
             Bundle extras = new Bundle();
-            extras.putString(WidgetProvider.ITEM_ID, id);
-            extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml4(url)); // decode html entities in url; fixes reddituploads.com urls
-            extras.putString(WidgetProvider.ITEM_PERMALINK, permalink);
-            extras.putString(WidgetProvider.ITEM_DOMAIN, domain);
-            extras.putString(WidgetProvider.ITEM_SUBREDDIT, subreddit);
-            extras.putString(WidgetProvider.ITEM_USERLIKES, userLikes);
-            extras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_OPEN);
+            extras.putString(Reddinator.ITEM_ID, id);
+            extras.putInt(Reddinator.ITEM_FEED_POSITION, position);
+            extras.putString(Reddinator.ITEM_URL, StringEscapeUtils.unescapeHtml4(url)); // decode html entities in url; fixes reddituploads.com urls
+            extras.putString(Reddinator.ITEM_PERMALINK, permalink);
+            extras.putString(Reddinator.ITEM_DOMAIN, domain);
+            extras.putString(Reddinator.ITEM_SUBREDDIT, subreddit);
+            extras.putString(Reddinator.ITEM_USERLIKES, userLikes);
+            extras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_OPEN);
             i.putExtras(extras);
-            row.setOnClickFillInIntent(R.id.listrow, i);
+            row.setOnClickFillInIntent(R.id.item_row, i);
             // add intent for upvote
             Intent uvintent =  new Intent();
             Bundle uvextras = (Bundle) extras.clone();
-            uvextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_UPVOTE);
+            uvextras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_UPVOTE);
             uvintent.putExtras(uvextras);
             row.setOnClickFillInIntent(R.id.widget_upvote, uvintent);
             // add intent for downvote
             Intent dvintent =  new Intent();
             Bundle dvextras = (Bundle) extras.clone();
-            dvextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_DOWNVOTE);
+            dvextras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_DOWNVOTE);
             dvintent.putExtras(dvextras);
             row.setOnClickFillInIntent(R.id.widget_downvote, dvintent);
             // add intent for post options
             Intent ointent =  new Intent();
             Bundle oextras = (Bundle) extras.clone();
-            oextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_OPTIONS);
+            oextras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_OPTIONS);
             ointent.putExtras(oextras);
             row.setOnClickFillInIntent(R.id.widget_item_options, ointent);
 
@@ -363,7 +372,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 if ((imageLoadFlag==3 || bitmap!=null) && Utilities.isImageUrl(url)){
                     Intent imageintent =  new Intent();
                     Bundle imageextras = (Bundle) extras.clone();
-                    imageextras.putInt(WidgetProvider.ITEM_CLICK_MODE, WidgetProvider.ITEM_CLICK_IMAGE);
+                    imageextras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_IMAGE);
                     imageintent.putExtras(imageextras);
                     row.setOnClickFillInIntent(imageView, imageintent);
                     row.setImageViewBitmap(R.id.thumbnail_expand, images[7]);
@@ -544,11 +553,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private void hideWidgetLoader(boolean goToTopOfList, boolean showError, final String errorTxt) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(mContext);
         // hide loader
-        RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget);
+        RemoteViews views = new RemoteViews(mContext.getPackageName(), WidgetCommon.getWidgetLayoutId(providerClass));
         views.setViewVisibility(R.id.srloader, View.INVISIBLE);
         // go to the top of the list view
-        if (goToTopOfList) {
-            views.setScrollPosition(R.id.listview, 0);
+        if (providerClass==WidgetCommon.WIDGET_CLASS_LIST && goToTopOfList) {
+            views.setScrollPosition(R.id.adapterview, 0);
         }
         if (showError) {
             views.setViewVisibility(R.id.erroricon, View.VISIBLE);

@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 
 public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
     private Context context;
@@ -62,7 +62,9 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
             redditid = "null";
             curVote = "null";
         }
-        WidgetProvider.showLoaderAndRefreshViews(context, widgetId);
+        //AppWidgetManager mgr = AppWidgetManager.getInstance(context).get.getAppWidgetInfo(widgetId).provider;
+
+        WidgetCommon.showLoaderAndRefreshViews(context, widgetId);
     }
 
     @Override
@@ -123,6 +125,6 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
             // show error
             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
         }
-        WidgetProvider.hideLoaderAndRefreshViews(context, widgetId, (!result && !exception.isAuthError()));
+        WidgetCommon.hideLoaderAndRefreshViews(context, widgetId, (!result && !exception.isAuthError()));
     }
 }

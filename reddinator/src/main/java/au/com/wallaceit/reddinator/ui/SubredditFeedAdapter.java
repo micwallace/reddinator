@@ -175,13 +175,13 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
         }
         try {
             extras.putInt(AppWidgetManager.EXTRA_APPWIDGET_ID, feedId);
-            extras.putString(WidgetProvider.ITEM_ID, item.getString("name"));
-            extras.putInt(WidgetProvider.ITEM_FEED_POSITION, position);
-            extras.putString(WidgetProvider.ITEM_URL, StringEscapeUtils.unescapeHtml4(item.getString("url")));
-            extras.putString(WidgetProvider.ITEM_PERMALINK, item.getString("permalink"));
-            extras.putString(WidgetProvider.ITEM_DOMAIN, item.getString("domain"));
-            extras.putString(WidgetProvider.ITEM_SUBREDDIT, item.getString("subreddit"));
-            extras.putString(WidgetProvider.ITEM_USERLIKES, item.getString("likes"));
+            extras.putString(Reddinator.ITEM_ID, item.getString("name"));
+            extras.putInt(Reddinator.ITEM_FEED_POSITION, position);
+            extras.putString(Reddinator.ITEM_URL, StringEscapeUtils.unescapeHtml4(item.getString("url")));
+            extras.putString(Reddinator.ITEM_PERMALINK, item.getString("permalink"));
+            extras.putString(Reddinator.ITEM_DOMAIN, item.getString("domain"));
+            extras.putString(Reddinator.ITEM_SUBREDDIT, item.getString("subreddit"));
+            extras.putString(Reddinator.ITEM_USERLIKES, item.getString("likes"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

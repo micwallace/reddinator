@@ -35,7 +35,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.SubmitTask;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 
@@ -85,7 +85,7 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
                     public void onClick(DialogInterface dialog, int which) {
                         global.mThemeManager.clearPreviewTheme();
                         setResult(6); // indicate theme edit
-                        WidgetProvider.refreshAllWidgetViews(global);
+                        WidgetCommon.refreshAllWidgetViews(global);
                     }
                 })
                 .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
@@ -94,7 +94,7 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
                         global.mThemeManager.savePreviewTheme();
                         refreshList();
                         setResult(6); // indicate theme edit
-                        WidgetProvider.refreshAllWidgetViews(global);
+                        WidgetCommon.refreshAllWidgetViews(global);
                     }
                 });
             builder.show().setCanceledOnTouchOutside(true);
@@ -119,7 +119,7 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
     public void onBackPressed(){
         if (themesEdited && (getIntent().hasExtra("requestCode") && getIntent().getExtras().getInt("requestCode")!=REQUEST_CODE_NO_WIDGET_UPDATES)){
             // update widgets straight away if the requesting activity does not process the result
-            WidgetProvider.refreshAllWidgetViews(global);
+            WidgetCommon.refreshAllWidgetViews(global);
         }
         super.onBackPressed();
     }
@@ -209,9 +209,9 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
                     permalink = permalink.substring(permalink.indexOf("/r/")); // trim domain to get real permalink
 
                 Intent intent = new Intent(ThemesActivity.this, ViewRedditActivity.class);
-                intent.putExtra(WidgetProvider.ITEM_ID, id);
-                intent.putExtra(WidgetProvider.ITEM_PERMALINK, permalink);
-                intent.putExtra(WidgetProvider.ITEM_URL, url);
+                intent.putExtra(Reddinator.ITEM_ID, id);
+                intent.putExtra(Reddinator.ITEM_PERMALINK, permalink);
+                intent.putExtra(Reddinator.ITEM_URL, url);
                 intent.putExtra("submitted", true); // tells the view reddit activity that this is liked & that no stored feed update is needed.
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

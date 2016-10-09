@@ -76,6 +76,15 @@ public class Reddinator extends Application {
     public final static String COLOR_VOTE = "#A5A5A5";
     public final static String COLOR_UPVOTE_ACTIVE = "#FF8B60";
     public final static String COLOR_DOWNVOTE_ACTIVE = "#9494FF";
+
+    public static final String ITEM_FEED_POSITION = "ITEM_FEED_POSITION";
+    public static final String ITEM_URL = "ITEM_URL";
+    public static final String ITEM_PERMALINK = "ITEM_PERMALINK";
+    public static final String ITEM_ID = "ITEM_ID";
+    public static final String ITEM_DOMAIN = "ITEM_DOMAIN";
+    public static final String ITEM_SUBREDDIT = "ITEM_SUBREDDIT";
+    public static final String ITEM_USERLIKES = "ITEM_USERLIKES";
+
     private int loadtype = 0; // tells the service what to do when notifyAppDataChanged is fired
     private boolean bypassCache = false; // tells the factory to bypass the cache when creating a new remoteviewsfacotry
     public RedditData mRedditData;

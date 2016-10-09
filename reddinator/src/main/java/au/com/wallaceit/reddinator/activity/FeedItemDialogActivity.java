@@ -40,12 +40,10 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
+import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
-
-import static android.content.Intent.ACTION_VIEW;
 
 public class FeedItemDialogActivity extends Activity {
     public static final String EXTRA_CURRENT_FEED_PATH = "feedPath";
@@ -82,8 +80,8 @@ public class FeedItemDialogActivity extends Activity {
                 String redditId;
                 switch (key){
                     case "hide_post":
-                        redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
-                        int feedPos = getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, 0);
+                        redditId = getIntent().getStringExtra(Reddinator.ITEM_ID);
+                        int feedPos = getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, 0);
                         if (global.mRedditData.isLoggedIn()){
                             new HidePostTask(FeedItemDialogActivity.this, false, null).execute(redditId);
                         } else {
@@ -91,21 +89,21 @@ public class FeedItemDialogActivity extends Activity {
                         }
                         global.removePostFromFeed(widgetId, feedPos, redditId);
                         if (widgetId>0) {
-                            WidgetProvider.hideLoaderAndRefreshViews(FeedItemDialogActivity.this, widgetId, false);
+                            WidgetCommon.hideLoaderAndRefreshViews(FeedItemDialogActivity.this, widgetId, false);
                         } else {
                             close(5); // tell main activity to refresh views
                             return;
                         }
                         break;
                     case "save_post":
-                        redditId = getIntent().getStringExtra(WidgetProvider.ITEM_ID);
+                        redditId = getIntent().getStringExtra(Reddinator.ITEM_ID);
                         (new SavePostTask(FeedItemDialogActivity.this, widgetId>0, null)).execute("link", redditId);
                         break;
                     case "share_post":
                         Utilities.showPostShareDialog(
                                 FeedItemDialogActivity.this,
-                                getIntent().getStringExtra(WidgetProvider.ITEM_URL),
-                                getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK))
+                                getIntent().getStringExtra(Reddinator.ITEM_URL),
+                                getIntent().getStringExtra(Reddinator.ITEM_PERMALINK))
                                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                                     @Override
                                     public void onDismiss(DialogInterface dialog) {
@@ -116,15 +114,15 @@ public class FeedItemDialogActivity extends Activity {
                         return;
                     case "open_post":
                         // open link in browser
-                        Utilities.intentActionView(FeedItemDialogActivity.this, getIntent().getStringExtra(WidgetProvider.ITEM_URL));
+                        Utilities.intentActionView(FeedItemDialogActivity.this, getIntent().getStringExtra(Reddinator.ITEM_URL));
                         break;
                     case "open_comments":
                         // open reddit comments page in browser
-                        Utilities.intentActionView(FeedItemDialogActivity.this, "https://www.reddit.com" + getIntent().getStringExtra(WidgetProvider.ITEM_PERMALINK));
+                        Utilities.intentActionView(FeedItemDialogActivity.this, "https://www.reddit.com" + getIntent().getStringExtra(Reddinator.ITEM_PERMALINK));
                         break;
                     case "view_subreddit":
                         // view subreddit of this item
-                        String subreddit = getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT);
+                        String subreddit = getIntent().getStringExtra(Reddinator.ITEM_SUBREDDIT);
                         if (widgetId < 0) {
                             String feedPath = "/r/" + subreddit;
                             if (widgetId == -2) {
@@ -141,7 +139,7 @@ public class FeedItemDialogActivity extends Activity {
                         } else {
                             global.getSubredditManager().setFeedSubreddit(widgetId, subreddit, null);
                             if (widgetId > 0) {
-                                WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                                WidgetCommon.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                             } else {
                                 close(2); // tell main activity to update
                                 return;
@@ -150,7 +148,7 @@ public class FeedItemDialogActivity extends Activity {
                         break;
                     case "view_domain":
                         // view listings for the domain of this item
-                        String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
+                        String domain = getIntent().getStringExtra(Reddinator.ITEM_DOMAIN);
                         if (widgetId < 0) {
                             String feedPath = "/domain/" + domain;
                             if (widgetId == -2) {
@@ -165,7 +163,7 @@ public class FeedItemDialogActivity extends Activity {
                         } else {
                             global.getSubredditManager().setFeedDomain(widgetId, domain);
                             if (widgetId > 0) {
-                                WidgetProvider.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
+                                WidgetCommon.showLoaderAndUpdate(FeedItemDialogActivity.this, widgetId, false);
                             } else {
                                 close(2);
                                 return;
@@ -177,7 +175,7 @@ public class FeedItemDialogActivity extends Activity {
             }
         });
         // setup voting buttons
-        String userLikes = getIntent().getStringExtra(WidgetProvider.ITEM_USERLIKES);
+        String userLikes = getIntent().getStringExtra(Reddinator.ITEM_USERLIKES);
         IconTextView upvote = (IconTextView) dialog.findViewById(R.id.opt_upvote);
         IconTextView downvote = (IconTextView) dialog.findViewById(R.id.opt_downvote);
         if (!userLikes.equals("null")) {
@@ -195,8 +193,8 @@ public class FeedItemDialogActivity extends Activity {
                             FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
                             1,
-                            getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
-                            getIntent().getStringExtra(WidgetProvider.ITEM_ID)
+                            getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
+                            getIntent().getStringExtra(Reddinator.ITEM_ID)
                     ).execute();
                 }
                 close(3);
@@ -210,8 +208,8 @@ public class FeedItemDialogActivity extends Activity {
                             FeedItemDialogActivity.this,
                             getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0),
                             -1,
-                            getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1),
-                            getIntent().getStringExtra(WidgetProvider.ITEM_ID)
+                            getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
+                            getIntent().getStringExtra(Reddinator.ITEM_ID)
                     ).execute();
                 }
                 close(4);
@@ -241,7 +239,7 @@ public class FeedItemDialogActivity extends Activity {
 
             boolean canViewSubreddit = true;
             boolean canViewDomain = true;
-            String domain = getIntent().getStringExtra(WidgetProvider.ITEM_DOMAIN);
+            String domain = getIntent().getStringExtra(Reddinator.ITEM_DOMAIN);
             // determine whether subreddit and domain options are shown
             // (ie. subreddit domain option shouldn't be shown if the user is currently viewing the feed)
             if (widgetId<0){
@@ -260,7 +258,7 @@ public class FeedItemDialogActivity extends Activity {
             }
 
             if (canViewSubreddit)
-                options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(WidgetProvider.ITEM_SUBREDDIT))});
+                options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(Reddinator.ITEM_SUBREDDIT))});
 
             if (canViewDomain)
                 options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});
@@ -310,7 +308,7 @@ public class FeedItemDialogActivity extends Activity {
     private void close(int result, Intent sintent){
         if (result==3 || result==4 || (widgetId<0 && result==5)) {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(WidgetProvider.ITEM_FEED_POSITION, getIntent().getIntExtra(WidgetProvider.ITEM_FEED_POSITION, -1));
+            intent.putExtra(Reddinator.ITEM_FEED_POSITION, getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, -1));
             setResult(result, intent);
         } else {
             if (sintent!=null) {
