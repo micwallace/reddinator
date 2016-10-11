@@ -58,6 +58,10 @@
     <style name="PopupMenuStyle" parent="@android:style/Widget.Holo.Light.PopupMenu">
         <item name="android:layout_margin">0dp</item>
     </style>
+    <style name="AlertDialogStyle" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
     <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button">
         <item name="android:minHeight">0dp</item>
     </style>

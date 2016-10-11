@@ -18,6 +18,7 @@
 package au.com.wallaceit.reddinator.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
@@ -30,22 +31,30 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.IconTextView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
+import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
-public class FeedItemDialogActivity extends Activity {
+public class FeedItemDialogActivity extends Activity implements SubscriptionEditTask.Callback {
     public static final String EXTRA_CURRENT_FEED_PATH = "feedPath";
 
     private Reddinator global;
@@ -170,6 +179,41 @@ public class FeedItemDialogActivity extends Activity {
                             }
                         }
                         break;
+                    case "copy_multi":
+                        dialog.dismiss();
+                        LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, null, false);
+                        final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
+                        final String multiPath = getIntent().getStringExtra(Reddinator.ITEM_URL);
+                        name.setText(multiPath.substring(multiPath.lastIndexOf("/")+1));
+                        name.selectAll();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FeedItemDialogActivity.this, R.style.AlertDialogStyle);
+                        builder.setView(layout).setTitle(getString(R.string.copy_multi))
+                                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        if (name.getText().toString().equals("")) {
+                                            Toast.makeText(FeedItemDialogActivity.this, getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
+                                            return;
+                                        }
+                                        new SubscriptionEditTask(global, FeedItemDialogActivity.this, FeedItemDialogActivity.this, SubscriptionEditTask.ACTION_MULTI_COPY)
+                                                .execute(name.getText().toString(), multiPath.replaceFirst(".*reddit.com", ""));
+                                                dialogInterface.dismiss();
+                                            }
+                                })
+                                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        close(0);
+                                    }
+                                })
+                                .show().setCanceledOnTouchOutside(true);
+                        return;
                 }
                 close(0);
             }
@@ -223,6 +267,33 @@ public class FeedItemDialogActivity extends Activity {
         dialog.show();
     }
 
+    @Override
+    public void onSubscriptionEditComplete(boolean result, RedditData.RedditApiException exception, int action, Object[] params, JSONObject data) {
+        if (result) {
+            //if (this.data!=null)
+            //System.out.println("resultData: "+this.data.toString());
+            switch (action) {
+                case SubscriptionEditTask.ACTION_MULTI_COPY:
+                    try {
+                        if (data ==null) return;
+                        JSONObject multiObj = data.getJSONObject("data");
+                        String path = multiObj.getString("path");
+                        global.getSubredditManager().setMultiData(path, multiObj);
+                        Toast.makeText(FeedItemDialogActivity.this, R.string.copy_multi_success, Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        } else {
+            // check login required
+            if (exception.isAuthError()) global.mRedditData.initiateLogin(FeedItemDialogActivity.this, false);
+            // show error
+            Toast.makeText(FeedItemDialogActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        close(0);
+    }
+
     private class ItemOptionsAdapter extends BaseAdapter {
         LayoutInflater inflater;
         ArrayList<String[]> options;
@@ -248,7 +319,7 @@ public class FeedItemDialogActivity extends Activity {
                 if (feedPath!=null && !feedPath.equals("") && !feedPath.equals("/r/all") && feedPath.contains("/r/")) {
                         canViewSubreddit = false;
                 }
-                if (domain.indexOf("self.")==0 || (feedPath!=null && feedPath.contains("/domain/"))){
+                if (domain.indexOf("self.")==0 || domain.indexOf("reddit.com")==0 || (feedPath!=null && Utilities.isFeedPathDomain(feedPath))){
                     canViewDomain = false;
                 }
             } else {
@@ -262,6 +333,9 @@ public class FeedItemDialogActivity extends Activity {
 
             if (canViewDomain)
                 options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});
+
+            if (Utilities.isFeedPathMulti(getIntent().getStringExtra(Reddinator.ITEM_URL)))
+                options.add(new String[]{"copy_multi", getString(R.string.copy_multi)});
         }
 
         @Override

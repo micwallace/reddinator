@@ -162,7 +162,7 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
     }
 
     public void updateTheme() {
-        String themeStr = ((AccountActivity) getActivity()).getCurrentTheme().getValuesString(true);
+        String themeStr = ((ActivityInterface) getActivity()).getCurrentTheme().getValuesString(true);
         Utilities.executeJavascriptInWebview(mWebView, "setTheme(\"" + StringEscapeUtils.escapeEcmaScript(themeStr) + "\")");
     }
 

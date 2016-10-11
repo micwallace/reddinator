@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
-import au.com.wallaceit.reddinator.Reddinator;
-
 public class ThemeManager {
     private Context context;
     private SharedPreferences prefs;
@@ -47,7 +45,7 @@ public class ThemeManager {
     private JSONObject previewTheme = null;
     public static final int LISTMODE_ALL= 0;
     public static final int LISTMODE_CUSTOM= 1;
-    public static final int LISTMODE_DEFAULT= 2;
+    private static final int LISTMODE_DEFAULT= 2;
     private Theme defaultValues;
 
     public ThemeManager(Context context, SharedPreferences preferences){
@@ -300,7 +298,7 @@ public class ThemeManager {
             return mTheme;
         }
 
-        public JSONObject cloneJsonValues(){
+        JSONObject cloneJsonValues(){
             if (values==null)
                 loadValues();
             try {

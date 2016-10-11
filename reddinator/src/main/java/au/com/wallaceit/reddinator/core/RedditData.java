@@ -601,8 +601,10 @@ public class RedditData {
         checkLogin();
 
         String url;
+        String toPath = "user/"+username+"/m/"+name.toLowerCase().replaceAll("\\s+", "");
+        System.out.println(toPath);
         try {
-            url = OAUTH_ENDPOINT + "/api/multi/copy?display_name="+ URLEncoder.encode(name, "UTF-8")+"&from="+fromPath+"&to=/user/"+username+"/m/"+URLEncoder.encode(name.toLowerCase().replaceAll("\\s+", ""), "UTF-8");
+            url = OAUTH_ENDPOINT + "/api/multi/copy?display_name="+ URLEncoder.encode(name, "UTF-8")+"&from="+URLEncoder.encode(fromPath, "UTF-8")+"&to="+URLEncoder.encode(toPath, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new RedditApiException("Encoding error: "+e.getMessage());
@@ -810,7 +812,7 @@ public class RedditData {
     private static final int REQUEST_MODE_OAUTHREQ = 2;
     private static final MediaType POST_ENCODED = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
     private String redditApiRequest(String urlStr, String method, int oauthMode, HashMap<String, String> formData) throws RedditApiException {
-        String json;
+        String responseText;
         // create client if null
         if (httpClient == null) {
             createHttpClient();
@@ -872,42 +874,76 @@ public class RedditData {
             }
 
             Response response = httpClient.newCall(httpRequest.build()).execute();
-            json = response.body().string();
+            responseText = response.body().string();
             int errorCode = response.code();
             if (errorCode<200 || errorCode>202) {
-                String errorMsg = getErrorText(json);
-                throw new RedditApiException("Error "+String.valueOf(errorCode)+": "+(errorMsg.equals("")?response.message():errorMsg)+(errorCode==403?" (Authorization with Reddit required)":""), errorCode==403, errorCode);
+                JSONObject errorJson = getErrorJson(responseText);
+                String errorMsg = errorJson!=null ? getJsonErrorText(errorJson) : getHtmlErrorText(responseText);
+                boolean isAuthError = errorCode==403 && isAuthenticationError(errorJson);
+                if (isAuthError)
+                    errorMsg += "(Permission with Reddit required)";
+                throw new RedditApiException("Error "+String.valueOf(errorCode)+" "+(errorMsg.equals("")?response.message():errorMsg), isAuthError, errorCode);
             }
         } catch (IOException e) {
             e.printStackTrace();
             throw new RedditApiException("Error: "+e.getMessage());
         }
 
-        return json;
+        return responseText;
     }
 
-    private String getErrorText(String response){
-        String errorMsg = "";
+    private JSONObject getErrorJson(String response){
         if (response!=null) {
             if (response.indexOf("{")==0)
+                try {
+                    return new JSONObject(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        }
+        return null;
+    }
+
+    private boolean isAuthenticationError(JSONObject errorJson){
+        if (errorJson!=null && errorJson.has("reason")) {
             try {
-                JSONObject errorJson = new JSONObject(response);
+                String reason = errorJson.getString("reason");
+                return reason.indexOf("OAUTH2_")==0;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private String getJsonErrorText(JSONObject errorJson){
+        String errorMsg = "";
+        if (errorJson!=null) {
+            try {
                 if (errorJson.has("errors")) {
                     JSONArray errorArr = errorJson.getJSONArray("errors");
-                    if (errorArr.length()>0)
-                        errorArr.getJSONArray(0).getString(1);
+                    if (errorArr.length() > 0)
+                        errorMsg = errorArr.getJSONArray(0).getString(1);
+                } else if (errorJson.has("message")) {
+                    errorMsg = errorJson.getString("message");
+                    if (errorJson.has("explanation"))
+                        errorMsg += ": " + errorJson.getString("explanation");
                 }
                 return errorMsg;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            // attempt to get html error message (often returned by 403/500)
-            //System.err.println(response);
-            final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
-            Matcher matcher = patternh2.matcher(response);
-            if (matcher.matches()) {
-                errorMsg = matcher.group(1);
-            }
+        }
+        return errorMsg;
+    }
+
+    private String getHtmlErrorText(String html){
+        String errorMsg = "";
+        // attempt to get html error message (often returned by 403/500)
+        final Pattern patternh2 = Pattern.compile("<h2>(.+?)</h2>");
+        Matcher matcher = patternh2.matcher(html);
+        if (matcher.matches()) {
+            errorMsg = matcher.group(1);
         }
         return errorMsg;
     }

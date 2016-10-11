@@ -77,7 +77,7 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         super.onCreate(savedInstanceState);
 
-        global = ((Reddinator) MessagesActivity.this.getApplicationContext());
+        global = (Reddinator) getApplication();
         resources = getResources();
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
@@ -144,6 +144,8 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
     }
 
     public ThemeManager.Theme getCurrentTheme(){
+        if (global==null) // TODO: Bug report in google play suggests this becomes null at some point, check back
+            global = (Reddinator) getApplication();
         return global.mThemeManager.getActiveTheme("appthemepref");
     }
 
@@ -275,7 +277,7 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
 
         SparseArray<Fragment> registeredFragments = new SparseArray<>();
 
-        public RedditPageAdapter(FragmentManager fragmentManager){
+        RedditPageAdapter(FragmentManager fragmentManager){
             super(fragmentManager);
         }
 
@@ -320,7 +322,7 @@ public class MessagesActivity extends ActionbarFragmentActivity implements Accou
             super.destroyItem(container, position, object);
         }
 
-        public Fragment getRegisteredFragment(int position) {
+        Fragment getRegisteredFragment(int position) {
             return registeredFragments.get(position);
         }
 

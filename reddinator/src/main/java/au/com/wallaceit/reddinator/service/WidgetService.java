@@ -167,7 +167,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         if (position == data.length()) {
             // build load more item
             //System.out.println("load more getViewAt("+position+") firing");
-            RemoteViews loadmorerow = new RemoteViews(mContext.getPackageName(), R.layout.listrowloadmore);
+            RemoteViews loadmorerow = new RemoteViews(mContext.getPackageName(), providerClass==WidgetCommon.WIDGET_CLASS_LIST ? R.layout.listrowloadmore : R.layout.widget_stack_more_row);
             if (endOfFeed) {
                 loadmorerow.setTextViewText(R.id.loadmoretxt, mContext.getResources().getString(R.string.nothing_more_here));
             } else {
@@ -416,7 +416,13 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getLoadingView() {
-        RemoteViews rowload = new RemoteViews(mContext.getPackageName(), R.layout.listrowload);
+        RemoteViews rowload;
+        if (providerClass==WidgetCommon.WIDGET_CLASS_LIST){
+            rowload = new RemoteViews(mContext.getPackageName(), R.layout.listrowload);
+        } else {
+            rowload = new RemoteViews(mContext.getPackageName(), R.layout.widget_stack_load_row);
+            rowload.setInt(R.id.load_row, "setBackgroundColor", themeColors.get("background_color"));
+        }
         rowload.setTextColor(R.id.listloadtxt, themeColors.get("load_text"));
         return rowload;
     }

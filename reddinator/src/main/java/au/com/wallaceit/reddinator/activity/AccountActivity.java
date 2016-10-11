@@ -92,7 +92,7 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
         getWindow().requestFeature(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
         super.onCreate(savedInstanceState);
 
-        global = ((Reddinator) AccountActivity.this.getApplicationContext());
+        global = (Reddinator) getApplication();
         resources = getResources();
         // get actionbar and set home button, pad the icon
         actionBar = getActionBar();
@@ -175,6 +175,8 @@ public class AccountActivity extends ActionbarFragmentActivity implements Accoun
     }
 
     public ThemeManager.Theme getCurrentTheme(){
+        if (global==null) // TODO: Bug report in google play suggests this becomes null at some point, check back
+            global = (Reddinator) getApplication();
         return global.mThemeManager.getActiveTheme("appthemepref");
     }
 

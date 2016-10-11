@@ -255,6 +255,10 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Utilities.getActionbarIconColor();
             messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
         }
+        if (mMultiAdapter!=null)
+            mMultiAdapter.refreshMultis();
+        if (multiSubsAdapter!=null)
+            multiSubsAdapter.refreshList();
     }
 
     private void setThemeColors(){
@@ -1387,9 +1391,6 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                     global.getSubredditManager().removeSubreddit(params[0].toString());
                     subredditList.remove(params[0].toString());
                     refreshSubredditsList();
-                    break;
-                case SubscriptionEditTask.ACTION_MULTI_COPY:
-
                     break;
                 case SubscriptionEditTask.ACTION_MULTI_CREATE:
                     try {

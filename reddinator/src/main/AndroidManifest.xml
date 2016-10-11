@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="au.com.wallaceit.reddinator"
-    android:versionCode="53"
-    android:versionName="3.18">
+    android:versionCode="54"
+    android:versionName="3.19">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed by some activity_webview HTML5 video implementations (Bug report received for Android 4.1) -->
@@ -146,6 +146,7 @@
 
         <receiver
             android:name=".service.WidgetProvider"
+            android:label="@string/list_widget"
             android:enabled="true">
             <intent-filter>
                 <action android:name="au.com.wallaceit.redinator.WidgetCommon.ITEM_CLICK" />
@@ -157,7 +158,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_provider_info" />
@@ -165,7 +165,7 @@
 
         <receiver
             android:name=".service.StackWidgetProvider"
-            android:label="Reddinator Stack Widget"
+            android:label="@string/stack_widget"
             android:enabled="true">
             <intent-filter>
                 <action android:name="au.com.wallaceit.redinator.WidgetCommon.ITEM_CLICK" />
@@ -177,7 +177,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_DELETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widget_stack_provider_info" />

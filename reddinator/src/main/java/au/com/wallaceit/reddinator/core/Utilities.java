@@ -129,6 +129,14 @@ public class Utilities {
         return 0;
     }
 
+    public static boolean isFeedPathMulti(String feedUrl){
+        return feedUrl.matches("(.*reddit.com)?/user/[^/]*/m/[^/]*");
+    }
+
+    public static boolean isFeedPathDomain(String feedUrl){
+        return feedUrl.matches("(.*reddit.com)?/domain/[^/]*");
+    }
+
     public static boolean isImageUrl(String url) {
         if (url == null)
             return false;

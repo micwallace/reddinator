@@ -244,15 +244,4 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/listdivider"
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/infbox"
-        android:background="#D7D7D7">
-
-    </RelativeLayout>
-
 </RelativeLayout>

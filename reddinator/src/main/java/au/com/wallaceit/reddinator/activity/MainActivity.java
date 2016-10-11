@@ -579,7 +579,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     subredditPath = data.getStringExtra(EXTRA_FEED_PATH);
                     subredditName = data.getStringExtra(EXTRA_FEED_NAME);
                     subredditSort = "hot";
-                    hasMultipleSubs = (subredditPath.contains("/user/") || subredditPath.contains("/domain/"));
+                    hasMultipleSubs = (Utilities.isFeedPathDomain(subredditPath) || Utilities.isFeedPathMulti(subredditPath));
                 } else {
                     subredditName = global.getSubredditManager().getCurrentFeedName(0);
                     subredditPath = global.getSubredditManager().getCurrentFeedPath(0);

@@ -7,5 +7,7 @@
         android:id="@+id/new_multi_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
         android:hint="@string/name"/>
 </LinearLayout>
