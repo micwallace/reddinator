@@ -386,7 +386,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(this, false);
             // show error
-            Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(this, exception);
         }
     }
 
@@ -409,7 +409,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(this, false);
             // show error
-            Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(this, exception);
             webView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
         }
     }

@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
     <release version="3.19" versioncode="54">
-        <change>Added the option to preview subreddits during subreddit search/browsing.</change>
-        <change>Added options to view subreddit and domain in search activity and temporary feeds.</change>
-        <change>Added missing "image" default thumbnail</change>
-        <change>Added utilities section to preferences.</change>
+        <change>Added preview subreddit feature to subreddit search.</change>
+        <change>Added open subreddit or domain option to search and temporary feeds.</change>
+        <change>Added missing "image" default thumbnail.</change>
+        <change>Added utilities section to preferences with cache management.</change>
+        <change>Added subreddit selector to search.</change>
+        <change>Added archived post checks for voting and comments.</change>
+        <change>Added the ability to open temporary multi feeds and browse multihub.</change>
+        <change>Added the option to copy a multi to the users account.</change>
+        <change>Added experimental stackview widget.</change>
         <change>Changed feed data to file based storage.</change>
+        <change>Improved handling of Reddit API errors.</change>
         <change>Fixed issue with comments context dialog height...for good now please (Android bug 5497).</change>
+        <change>Fixed handling of "continue this thread" &amp; large comment stubs.</change>
         <change>Fixed issue causing default thumbnail images to have old click listener.</change>
-        <change>Fix for thumbnails flickering in application feed during download.</change>
+        <change>Fixed NSFW posts displaying default thumbnail.</change>
+        <change>Fixed thumbnails flickering in application feed during download.</change>
         <change>See git commit log for more details.</change>
     </release>
     <release version="3.18" versioncode="53">

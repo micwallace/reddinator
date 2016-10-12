@@ -22,6 +22,7 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.ComposeMessageTask;
 
 
@@ -136,7 +137,7 @@ public class ComposeMessageActivity extends Activity implements ComposeMessageTa
             finish();
             Toast.makeText(this, resources.getString(R.string.message_sent), Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(this, exception);
         }
     }
 }

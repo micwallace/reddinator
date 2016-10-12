@@ -26,6 +26,7 @@ import android.widget.Toast;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class SavePostTask extends AsyncTask<String, Long, Boolean> {
     private Reddinator global;
@@ -65,7 +66,7 @@ public class SavePostTask extends AsyncTask<String, Long, Boolean> {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, fromWidget);
             // show error
-            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(context, exception);
         } else {
             if (!unsave)
                 Toast.makeText(context, context.getString(R.string.post_saved), Toast.LENGTH_SHORT).show();

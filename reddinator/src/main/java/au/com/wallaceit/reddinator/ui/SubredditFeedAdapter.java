@@ -161,7 +161,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, false);
             // show error
-            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(context, exception);
         }
         feedInterface.hideLoader();
     }

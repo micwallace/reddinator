@@ -603,7 +603,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(ViewRedditActivity.this, false);
             // show error
-            Toast.makeText(ViewRedditActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(ViewRedditActivity.this, exception);
         }
     }
 

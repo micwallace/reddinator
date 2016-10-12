@@ -764,7 +764,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 if (feedId>-1)
                     global.setFeed(feedId, data);
             } else {
-                Toast.makeText(MainActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                Utilities.showApiErrorToastOrDialog(MainActivity.this, exception);
                 hideAppLoader(false, true); // don't go to top of list and show error icon
             }
         }

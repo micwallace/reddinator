@@ -206,7 +206,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
             // show error
-            Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(getActivity(), exception);
         }
     }
 
@@ -229,7 +229,7 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
             // show error
-            Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(getActivity(), exception);
             mWebView.loadUrl("javascript:commentCallback(\"" + redditId + "\", false)");
         }
     }

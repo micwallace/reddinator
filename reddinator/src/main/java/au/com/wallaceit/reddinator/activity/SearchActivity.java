@@ -472,7 +472,7 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
                 listAdapter.setFeed(data, !endOfFeed, true);
                 //listAdapter.notifyDataSetChanged();
             } else {
-                Toast.makeText(SearchActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                Utilities.showApiErrorToastOrDialog(SearchActivity.this, exception);
                 hideLoader(false); // don't go to top of list and show error icon
             }
         }

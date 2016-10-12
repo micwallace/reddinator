@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 
 public class HidePostTask extends AsyncTask<String, Long, Boolean> {
     private Reddinator global;
@@ -62,7 +63,7 @@ public class HidePostTask extends AsyncTask<String, Long, Boolean> {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, fromWidget);
             // show error
-            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(context, exception);
         }
         if (callback!=null)
             callback.run();

@@ -1449,7 +1449,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
             // show error
-            Toast.makeText(SubredditSelectActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(SubredditSelectActivity.this, exception);
         }
     }
 }

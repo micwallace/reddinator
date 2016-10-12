@@ -194,7 +194,7 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
             }
         } else {
             // show api error
-            Toast.makeText(SubmitActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(SubmitActivity.this, exception);
         }
     }
 

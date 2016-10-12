@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -284,5 +285,24 @@ public class Utilities {
         sendintent.putExtra(Intent.EXTRA_TEXT, txt);
         sendintent.setType("text/plain");
         context.startActivity(Intent.createChooser(sendintent, context.getString(R.string.share_with)));
+    }
+
+    public static void showApiErrorToastOrDialog(final Context context, RedditData.RedditApiException ex){
+        int errorCode = ex.getHttpErrorCode();
+        if (errorCode >= 500 && errorCode < 600){
+            new AlertDialog.Builder(context)
+                .setMessage(ex.getMessage()+context.getString(R.string.reddit_server_error_message))
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse("http://www.redditstatus.com/"));
+                        context.startActivity(intent);
+                    }
+                }).show().setCanceledOnTouchOutside(true);
+            return;
+        }
+        Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

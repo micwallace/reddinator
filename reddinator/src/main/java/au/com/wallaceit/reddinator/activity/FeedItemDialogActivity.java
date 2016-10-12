@@ -186,6 +186,7 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                         dialog.dismiss();
                         LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, null, false);
                         final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
+                        name.setTextSize(18);
                         final String multiPath = getIntent().getStringExtra(Reddinator.ITEM_URL);
                         name.setText(multiPath.substring(multiPath.lastIndexOf("/")+1));
                         name.selectAll();
@@ -300,7 +301,7 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(FeedItemDialogActivity.this, false);
             // show error
-            Toast.makeText(FeedItemDialogActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(FeedItemDialogActivity.this, exception);
         }
         close(0);
     }

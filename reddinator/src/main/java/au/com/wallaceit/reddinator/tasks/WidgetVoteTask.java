@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
 
 public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
@@ -123,7 +124,7 @@ public class WidgetVoteTask extends AsyncTask<String, Integer, Boolean> {
             // check login required
             if (exception.isAuthError()) global.mRedditData.initiateLogin(context, true);
             // show error
-            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(context, exception);
         }
         WidgetCommon.hideLoaderAndRefreshViews(context, widgetId, (!result && !exception.isAuthError()));
     }

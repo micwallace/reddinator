@@ -35,6 +35,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
+import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.SubmitTask;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
@@ -223,7 +224,7 @@ public class ThemesActivity extends ActionbarActivity implements SubmitTask.Call
             }
         } else {
             // show api error
-            Toast.makeText(ThemesActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+            Utilities.showApiErrorToastOrDialog(ThemesActivity.this, exception);
         }
     }
 
