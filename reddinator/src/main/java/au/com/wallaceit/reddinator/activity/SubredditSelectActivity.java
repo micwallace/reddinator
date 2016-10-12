@@ -106,6 +106,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
     private Button addButton;
     private Resources resources;
     private MenuItem messageIcon;
+    private boolean isCreated = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,28 +139,8 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             }
         });
         subsAdapter.sort(subComparator);
-        // get multi list and set adapter
-        mMultiAdapter = new MyMultisAdapter(this);
-        ListView multiListView = (ListView) findViewById(R.id.multilist);
-        multiListView.setAdapter(mMultiAdapter);
-        multiListView.setTextFilterEnabled(true);
-        multiListView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                if (position < mMultiAdapter.getCount()) {
-                    JSONObject multiObj = mMultiAdapter.getItem(position);
-                    try {
-                        String name = multiObj.getString("display_name");
-                        String path = multiObj.getString("path");
-                        global.getSubredditManager().setFeed(mAppWidgetId, name, path, true);
-                        updateFeedAndFinish();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.multi_open_error), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        });
+
+        initializeMultis();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -249,16 +230,51 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         }
     }
 
+    public void initializeMultis(){
+        // get multi list and set adapter
+        final ListView multiListView = (ListView) findViewById(R.id.multilist);
+        multiListView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMultiAdapter = new MyMultisAdapter(SubredditSelectActivity.this);
+                multiListView.setAdapter(mMultiAdapter);
+                multiListView.setTextFilterEnabled(true);
+                multiListView.setOnItemClickListener(new OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                        if (position < mMultiAdapter.getCount()) {
+                            JSONObject multiObj = mMultiAdapter.getItem(position);
+                            try {
+                                String name = multiObj.getString("display_name");
+                                String path = multiObj.getString("path");
+                                global.getSubredditManager().setFeed(mAppWidgetId, name, path, true);
+                                updateFeedAndFinish();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.multi_open_error), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+            }
+        }, 20);
+    }
+
     public void onResume(){
         super.onResume();
-        if (messageIcon!=null){
-            int inboxColor = global.mRedditData.getInboxCount()>0?Color.parseColor("#E06B6C"): Utilities.getActionbarIconColor();
-            messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+        if (isCreated) {
+            if (messageIcon != null) {
+                int inboxColor = global.mRedditData.getInboxCount() > 0 ? Color.parseColor("#E06B6C") : Utilities.getActionbarIconColor();
+                messageIcon.setIcon(new IconDrawable(this, Iconify.IconValue.fa_envelope).color(inboxColor).actionBarSize());
+            }
+            if (mMultiAdapter != null)
+                mMultiAdapter.refreshMultis();
+            if (multiSubsAdapter != null)
+                multiSubsAdapter.refreshList();
+        } else {
+            isCreated = true;
+            System.out.print("IS CREATED!!");
         }
-        if (mMultiAdapter!=null)
-            mMultiAdapter.refreshMultis();
-        if (multiSubsAdapter!=null)
-            multiSubsAdapter.refreshList();
     }
 
     private void setThemeColors(){

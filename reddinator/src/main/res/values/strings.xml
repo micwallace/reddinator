@@ -376,7 +376,7 @@
     <string name="archived_post_error">This post is archived and\ncannot be voted or commented on</string>
     <string name="browse">Browse</string>
     <string name="list_widget">List Widget</string>
-    <string name="stack_widget">(beta!) Stack Widget</string>
+    <string name="stack_widget">Stack Widget (BETA!)</string>
     <string name="copy_multi">Copy multireddit</string>
     <string name="copy_multi_success">Successfully copied multi to your account</string>
     <string name="open_theme">Preview or install theme</string>

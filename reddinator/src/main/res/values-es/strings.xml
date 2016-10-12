@@ -306,4 +306,18 @@
     <string name="cookies_cleared">Las cookies se han limpiado con éxito</string>
     <string name="item_option_share_post">Compartir enlace o comentarios</string>
     <string name="limit_to">"Limitar a "</string>
+    <string name="archived_post_error">Este post está archivada y no puede ser votado o comentado</string>
+    <string name="browse">Vistazo</string>
+    <string name="clear_feed_data_summary"><![CDATA[Borrar datos post (%1$s)]]></string>
+    <string name="clear_feed_data_title">Borrar datos post</string>
+    <string name="clear_image_cache_title">Caché de imagen clara</string>
+    <string name="clear_image_cache_summary"><![CDATA[Claro miniatura y caché de imágenes (%1$s)]]></string>
+    <string name="copy_multi">Copia multireddit</string>
+    <string name="copy_multi_success">Copiado con éxito multi a su cuenta</string>
+    <string name="image_cache_cleared">Caché de imágenes se ha borrado con éxito</string>
+    <string name="list_widget">Lista Widget</string>
+    <string name="open_theme">Vista previa o instalar el tema</string>
+    <string name="stack_widget">Pila Widget (BETA!)</string>
+    <string name="subscribe">Suscribir</string>
+    <string name="view">Ver</string>
 </resources>

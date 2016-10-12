@@ -79,8 +79,10 @@ public class WidgetProviderBase extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String action = intent.getAction();
-        int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+
         if (action.equals(WidgetCommon.ITEM_CLICK)) {
+
+            int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
             // check if its the load more button being clicked
             String redditId = intent.getExtras().getString(Reddinator.ITEM_ID);
             if (redditId!=null && redditId.equals("0")) {
