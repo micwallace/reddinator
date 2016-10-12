@@ -348,7 +348,7 @@ public class SearchActivity extends Activity implements SubredditFeedAdapter.Act
                 //listView.invalidateViews();
                 break;
         }
-        if (data!=null && data.getBooleanExtra("themeupdate", true)){
+        if (resultcode==6 || data!=null && data.getBooleanExtra("themeupdate", true)){
             setThemeColors();
             listAdapter.setTheme(theme);
             //listView.invalidateViews();

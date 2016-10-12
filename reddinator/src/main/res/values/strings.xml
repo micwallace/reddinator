@@ -379,4 +379,5 @@
     <string name="stack_widget">(beta!) Stack Widget</string>
     <string name="copy_multi">Copy multireddit</string>
     <string name="copy_multi_success">Successfully copied multi to your account</string>
+    <string name="open_theme">Preview or install theme</string>
 </resources>

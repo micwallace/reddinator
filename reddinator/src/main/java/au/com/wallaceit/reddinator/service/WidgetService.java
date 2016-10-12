@@ -50,6 +50,7 @@ import java.util.HashMap;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.activity.FeedItemDialogActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.Utilities;
 
@@ -191,27 +192,28 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 row.setInt(R.id.item_row, "setBackgroundColor", themeColors.get("background_color"));
             }
             // build normal item
+            JSONObject postData;
             String title, url, permalink, thumbnail, domain, id, subreddit, userLikes, previewUrl = null;
             int score;
             int numcomments;
             boolean nsfw;
             try {
-                JSONObject tempobj = data.getJSONObject(position).getJSONObject("data");
-                title = tempobj.getString("title");
-                userLikes = tempobj.getString("likes");
-                domain = tempobj.getString("domain");
-                id = tempobj.getString("name");
-                url = tempobj.getString("url");
-                permalink = tempobj.getString("permalink");
-                thumbnail = tempobj.getString("thumbnail");
-                score = tempobj.getInt("score");
-                numcomments = tempobj.getInt("num_comments");
-                nsfw = tempobj.getBoolean("over_18");
-                subreddit = tempobj.getString("subreddit");
+                postData = data.getJSONObject(position).getJSONObject("data");
+                title = postData.getString("title");
+                userLikes = postData.getString("likes");
+                domain = postData.getString("domain");
+                id = postData.getString("name");
+                url = postData.getString("url");
+                permalink = postData.getString("permalink");
+                thumbnail = postData.getString("thumbnail");
+                score = postData.getInt("score");
+                numcomments = postData.getInt("num_comments");
+                nsfw = postData.getBoolean("over_18");
+                subreddit = postData.getString("subreddit");
 
                 // check and select preview url
-                if (tempobj.has("preview")) {
-                    JSONObject prevObj = tempobj.getJSONObject("preview");
+                if (postData.has("preview")) {
+                    JSONObject prevObj = postData.getJSONObject("preview");
                     if (prevObj.has("images")) {
                         JSONArray arr = prevObj.getJSONArray("images");
                         if (arr.length()>0) {
@@ -288,6 +290,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             // add intent for post options
             Intent ointent =  new Intent();
             Bundle oextras = (Bundle) extras.clone();
+            if (Reddinator.SUBREDDIT_REDDINATOR.equals(subreddit) && title.indexOf("[Theme]")==0) {
+                oextras.putBoolean(FeedItemDialogActivity.EXTRA_IS_THEME, true);
+                oextras.putString(FeedItemDialogActivity.EXTRA_POST_DATA, postData.toString());
+            }
             oextras.putInt(WidgetCommon.ITEM_CLICK_MODE, WidgetCommon.ITEM_CLICK_OPTIONS);
             ointent.putExtras(oextras);
             row.setOnClickFillInIntent(R.id.widget_item_options, ointent);

@@ -57,14 +57,14 @@ import java.util.regex.Pattern;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.ThemeHelper;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
-public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback, SubredditFeedAdapter.ActivityInterface {
+public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback, SubredditFeedAdapter.ActivityInterface, ThemeHelper.ThemeInstallInterface {
     public static final String EXTRA_FEED_PATH = "feedPath";
     public static final String EXTRA_FEED_NAME = "feedName";
 
@@ -218,50 +218,13 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     try {
                         JSONObject postData = listAdapter.getItem(position);
                         if (viewThemes || postData.getString("title").indexOf("[Theme]")==0) {
-                            // extract and parse json from theme
-                            String postText = postData.getString("selftext");
-                            Pattern pattern = Pattern.compile("reddinator_theme=(.*\\}\\})");
-                            Matcher matcher = pattern.matcher(postText);
-                            if (matcher.find()){
-                                final JSONObject themeJson = new JSONObject(matcher.group(1));
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                builder.setTitle(R.string.install_theme_title)
-                                    .setMessage(R.string.install_theme_message)
-                                    .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (global.mThemeManager.importTheme(themeJson)){
-                                                Toast.makeText(MainActivity.this, R.string.theme_install_success, Toast.LENGTH_LONG).show();
-                                            } else {
-                                                Toast.makeText(MainActivity.this, R.string.theme_load_error, Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    })
-                                    .setNeutralButton(R.string.preview, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (global.mThemeManager.setPreviewTheme(themeJson)){
-                                                refreshTheme();
-                                                WidgetCommon.refreshAllWidgetViews(global);
-                                                new AlertDialog.Builder(MainActivity.this)
-                                                        .setTitle(R.string.theme_preview)
-                                                        .setMessage(R.string.theme_preview_applied_message)
-                                                        .show().setCanceledOnTouchOutside(true);
-                                            } else {
-                                                Toast.makeText(MainActivity.this, R.string.theme_load_error, Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    })
-                                    .setNegativeButton(R.string.view_comments_noicon, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            openPostView(extras, true);
-                                        }
-                                    });
-                                builder.show();
-                                return;
-                            }
+                            ThemeHelper.handleThemeInstall(MainActivity.this, global, MainActivity.this, postData, new Runnable() {
+                                @Override
+                                public void run() {
+                                    openPostView(extras, true);
+                                }
+                            });
+                            return;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -284,6 +247,16 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 // if this is a temp feed, pass the feed path to the dialog so it knows whether to show, subreddit and domain buttons
                 if (feedId<0) {
                     extras.putString(FeedItemDialogActivity.EXTRA_CURRENT_FEED_PATH, subredditPath);
+                }
+                try {
+                    String subreddit = extras.getString(Reddinator.ITEM_SUBREDDIT);
+                    JSONObject postData = listAdapter.getItem(position);
+                    if ((Reddinator.SUBREDDIT_REDDINATOR.equals(subreddit) && (viewThemes || postData.getString("title").indexOf("[Theme]")==0))) {
+                        extras.putBoolean(FeedItemDialogActivity.EXTRA_IS_THEME, true);
+                        extras.putString(FeedItemDialogActivity.EXTRA_POST_DATA, postData.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 ointent.putExtras(extras);
                 MainActivity.this.startActivityForResult(ointent, 1);
@@ -682,6 +655,11 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     public void showLoader() {
         errorIcon.setVisibility(View.GONE);
         loader.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onThemeResult(boolean updateTheme) {
+        if (updateTheme) refreshTheme();
     }
 
     private class FeedLoader extends AsyncTask<Void, Integer, JSONArray> {

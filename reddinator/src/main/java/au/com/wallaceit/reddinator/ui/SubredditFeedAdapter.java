@@ -52,7 +52,6 @@ import au.com.wallaceit.reddinator.activity.ViewImageDialogActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
-import au.com.wallaceit.reddinator.service.WidgetProvider;
 import au.com.wallaceit.reddinator.tasks.LoadImageBitmapTask;
 import au.com.wallaceit.reddinator.tasks.VoteTask;
 

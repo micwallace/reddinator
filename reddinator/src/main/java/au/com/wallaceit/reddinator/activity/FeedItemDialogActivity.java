@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
+import au.com.wallaceit.reddinator.core.ThemeHelper;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
@@ -54,8 +55,10 @@ import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
 
-public class FeedItemDialogActivity extends Activity implements SubscriptionEditTask.Callback {
+public class FeedItemDialogActivity extends Activity implements SubscriptionEditTask.Callback, ThemeHelper.ThemeInstallInterface {
     public static final String EXTRA_CURRENT_FEED_PATH = "feedPath";
+    public static final String EXTRA_IS_THEME = "isTheme";
+    public static final String EXTRA_POST_DATA = "postData";
 
     private Reddinator global;
     private Dialog dialog;
@@ -214,6 +217,14 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                                 })
                                 .show().setCanceledOnTouchOutside(true);
                         return;
+                    case "open_theme":
+                        try {
+                            dialog.dismiss();
+                            ThemeHelper.handleThemeInstall(FeedItemDialogActivity.this, global, FeedItemDialogActivity.this, new JSONObject(getIntent().getStringExtra(EXTRA_POST_DATA)), null);
+                            return;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                 }
                 close(0);
             }
@@ -294,6 +305,11 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
         close(0);
     }
 
+    @Override
+    public void onThemeResult(boolean updateTheme) {
+        close(updateTheme?6:0);
+    }
+
     private class ItemOptionsAdapter extends BaseAdapter {
         LayoutInflater inflater;
         ArrayList<String[]> options;
@@ -336,6 +352,9 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
 
             if (Utilities.isFeedPathMulti(getIntent().getStringExtra(Reddinator.ITEM_URL)))
                 options.add(new String[]{"copy_multi", getString(R.string.copy_multi)});
+
+            if (getIntent().getBooleanExtra(EXTRA_IS_THEME, false))
+                options.add(new String[]{"open_theme", getString(R.string.open_theme)});
         }
 
         @Override
@@ -380,6 +399,9 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
     }
 
     private void close(int result, Intent sintent){
+        if (dialog.isShowing())
+            dialog.dismiss();
+
         if (result==3 || result==4 || (widgetId<0 && result==5)) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra(Reddinator.ITEM_FEED_POSITION, getIntent().getIntExtra(Reddinator.ITEM_FEED_POSITION, -1));
@@ -391,7 +413,6 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                 setResult(result);
             }
         }
-        dialog.dismiss();
         finish();
     }
 }
