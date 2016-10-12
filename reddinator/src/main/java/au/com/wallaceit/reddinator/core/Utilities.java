@@ -252,7 +252,7 @@ public class Utilities {
     }
 
     public static AlertDialog showPostShareDialog(final Context context, final String postUrl, final String postPermalink) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogStyle);
         builder.setTitle(context.getString(R.string.share_url))
             .setNegativeButton(context.getString(R.string.content), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {

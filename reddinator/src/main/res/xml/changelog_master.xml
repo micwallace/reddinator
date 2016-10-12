@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="3.19" versioncode="54">
+    <release version="3.20" versioncode="55">
         <change>Added preview subreddit feature to subreddit search.</change>
         <change>Added open subreddit or domain option to search and temporary feeds.</change>
         <change>Added missing "image" default thumbnail.</change>
