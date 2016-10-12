@@ -320,4 +320,6 @@
     <string name="stack_widget">Pila Widget (BETA!)</string>
     <string name="subscribe">Suscribir</string>
     <string name="view">Ver</string>
+    <string name="feed_data_cleared">los datos de alimentación se ha borrado con éxito</string>
+    <string name="reddit_server_error_message">\nEsto puede ser un problema del servidor Reddit, le gustaría ver la página de estado Reddit para averiguar?</string>
 </resources>
