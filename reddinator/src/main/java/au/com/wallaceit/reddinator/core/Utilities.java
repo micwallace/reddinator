@@ -291,6 +291,7 @@ public class Utilities {
         int errorCode = ex.getHttpErrorCode();
         if (errorCode >= 500 && errorCode < 600){
             new AlertDialog.Builder(context)
+                .setTitle(R.string.error)
                 .setMessage(ex.getMessage()+context.getString(R.string.reddit_server_error_message))
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
