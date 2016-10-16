@@ -322,4 +322,7 @@
     <string name="view">Ver</string>
     <string name="feed_data_cleared">los datos de alimentación se ha borrado con éxito</string>
     <string name="reddit_server_error_message">\nEsto puede ser un problema del servidor Reddit, le gustaría ver la página de estado Reddit para averiguar?</string>
+    <string name="download_ask_pref_summary">Pedir una ubicación de descarga cada vez</string>
+    <string name="download_ask_pref_title">Pedir la ubicación de descarga</string>
+    <string name="download_location_title">Ubicación de descarga</string>
 </resources>

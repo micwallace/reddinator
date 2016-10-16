@@ -27,16 +27,22 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import net.rdrei.android.dirchooser.DirectoryChooserConfig;
+import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,9 +50,10 @@ import java.io.FileOutputStream;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
+import au.com.wallaceit.reddinator.activity.PrefsFragment;
 import au.com.wallaceit.reddinator.tasks.LoadImageBitmapTask;
 
-public class RWebView extends android.webkit.WebView {
+public class RWebView extends android.webkit.WebView implements DirectoryChooserFragment.OnFragmentInteractionListener {
 
     private static final int ID_SHARELINK = 1;
     private static final int ID_COPYLINK = 2;
@@ -133,6 +140,7 @@ public class RWebView extends android.webkit.WebView {
     }
 
     private String callbackUrl = null;
+    private DirectoryChooserFragment mDialog;
 
     private void downloadFile(String url) {
         // Check permissions for android M
@@ -144,17 +152,54 @@ public class RWebView extends android.webkit.WebView {
                 return;
             }
         }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String downloadLocation = prefs.getString("download_location", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
 
+        if (prefs.getBoolean("download_ask_pref", false)){
+            try {
+                callbackUrl = url;
+                final Activity activity = (Activity) getContext();
+                DirectoryChooserConfig config = DirectoryChooserConfig.builder()
+                        .allowNewDirectoryNameModification(true)
+                        .newDirectoryName("")
+                        .initialDirectory(downloadLocation).build();
+                mDialog = DirectoryChooserFragment.newInstance(config);
+                mDialog.setDirectoryChooserListener(this);
+                mDialog.show(activity.getFragmentManager(), null);
+                return;
+            } catch (ClassCastException ex){
+                ex.printStackTrace();
+            }
+        }
+
+        doFileDownload(url, downloadLocation);
+    }
+
+    @Override
+    public void onSelectDirectory(@NonNull String path) {
+        mDialog.dismiss();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        prefs.edit().putString("download_location", path).apply();
+        doFileDownload(callbackUrl, path);
+    }
+
+    @Override
+    public void onCancelChooser() {
+        mDialog.dismiss();
+    }
+
+    private void doFileDownload(String url, String downloadLocation){
         DownloadManager mgr = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
         Uri downloadUri = Uri.parse(url);
+        String filename = appendImageExtensionIfNeeded(downloadUri.getLastPathSegment());
         DownloadManager.Request request = new DownloadManager.Request(downloadUri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false)
-                .setTitle(appendImageExtensionIfNeeded(downloadUri.getLastPathSegment()))
+                .setTitle(filename)
                 .setDescription("Reddinator image download")
                 .setVisibleInDownloadsUi(true)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(), downloadUri.getLastPathSegment());
+                .setDestinationInExternalPublicDir(downloadLocation, filename);
         mgr.enqueue(request);
     }
 
@@ -198,7 +243,7 @@ public class RWebView extends android.webkit.WebView {
     }
 
     private String appendImageExtensionIfNeeded(String filename){
-        if (filename.indexOf(".")>filename.length()-5){
+        if (!filename.contains(".")){
             return filename+".jpg";
         }
         return filename;

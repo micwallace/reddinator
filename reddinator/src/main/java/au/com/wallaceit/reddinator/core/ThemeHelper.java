@@ -23,7 +23,6 @@ package au.com.wallaceit.reddinator.core;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -52,7 +51,7 @@ public class ThemeHelper {
             if (matcher.find()){
                 final JSONObject themeJson = new JSONObject(matcher.group(1));
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogStyle);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle(R.string.install_theme_title)
                         .setMessage(R.string.install_theme_message)
                         .setPositiveButton(R.string.install, new DialogInterface.OnClickListener() {
@@ -73,7 +72,7 @@ public class ThemeHelper {
                                 if (global.mThemeManager.setPreviewTheme(themeJson)){
                                     //refreshTheme();
                                     WidgetCommon.refreshAllWidgetViews(global);
-                                    new AlertDialog.Builder(context, R.style.AlertDialogStyle)
+                                    new AlertDialog.Builder(context)
                                             .setTitle(R.string.theme_preview)
                                             .setMessage(R.string.theme_preview_applied_message)
                                             .setOnCancelListener(new DialogInterface.OnCancelListener() {

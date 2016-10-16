@@ -11,6 +11,7 @@ apply plugin: 'com.android.application'
 
 repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
+    maven { url 'http://guardian.github.com/maven/repo-releases' }
     mavenCentral()
     jcenter({url "http://jcenter.bintray.com/"})
 }
@@ -55,4 +56,5 @@ dependencies {
     compile 'com.kobakei:ratethisapp:0.0.4'
     compile 'de.cketti.library.changelog:ckchangelog:1.2.2'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
+    compile ('net.rdrei.android.dirchooser:library:3.2@aar') { transitive = true; }
 }

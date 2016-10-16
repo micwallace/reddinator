@@ -177,4 +177,14 @@
             android:dialogTitle="@string/reddit_content_font_pref_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Miscellaneous">
+        <CheckBoxPreference
+            android:key="download_ask_pref"
+            android:title="@string/download_ask_pref_title"
+            android:defaultValue="false"
+            android:summary="@string/download_ask_pref_summary" />
+        <Preference android:title="@string/download_location_title"
+            android:key="download_location"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

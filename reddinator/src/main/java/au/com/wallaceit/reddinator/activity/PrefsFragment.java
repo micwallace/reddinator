@@ -6,14 +6,19 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.webkit.CookieManager;
 import android.widget.Toast;
+
+import net.rdrei.android.dirchooser.DirectoryChooserConfig;
+import net.rdrei.android.dirchooser.DirectoryChooserFragment;
 
 import java.util.LinkedHashMap;
 
@@ -24,7 +29,7 @@ import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.MailCheckReceiver;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
 
-public class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, DirectoryChooserFragment.OnFragmentInteractionListener {
     public int mAppWidgetId;
     private SharedPreferences mSharedPreferences;
     private String mRefreshrate = "";
@@ -38,6 +43,9 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
     private ListPreference themePref;
     private Preference themeEditorButton;
     private Preference clearCookiesBtn;
+    private String curDownloadPath;
+    private Preference downloadLocationBtn;
+    private DirectoryChooserFragment mDialog;
     @Override
     public void onCreate(final Bundle savedInstanceState)
     {
@@ -157,6 +165,23 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
             }
         });
 
+        curDownloadPath = mSharedPreferences.getString("download_location", Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath());
+        downloadLocationBtn = findPreference("download_location");
+        downloadLocationBtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                DirectoryChooserConfig config = DirectoryChooserConfig.builder()
+                        .allowNewDirectoryNameModification(true)
+                        .newDirectoryName("")
+                        .initialDirectory(curDownloadPath).build();
+                mDialog = DirectoryChooserFragment.newInstance(config);
+                mDialog.setDirectoryChooserListener(PrefsFragment.this);
+                mDialog.show(getFragmentManager(), null);
+                return false;
+            }
+        });
+        downloadLocationBtn.setSummary(curDownloadPath);
+
         themePref = (ListPreference) findPreference("appthemepref");
 
         mSharedPreferences.registerOnSharedPreferenceChangeListener(PrefsFragment.this);
@@ -273,5 +298,18 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         }
 
         getActivity().finish();
+    }
+
+    @Override
+    public void onSelectDirectory(@NonNull String path) {
+        mSharedPreferences.edit().putString("download_location", path).apply();
+        curDownloadPath = path;
+        downloadLocationBtn.setSummary(path);
+        mDialog.dismiss();
+    }
+
+    @Override
+    public void onCancelChooser() {
+        mDialog.dismiss();
     }
 }

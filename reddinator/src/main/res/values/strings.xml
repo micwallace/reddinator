@@ -381,4 +381,7 @@
     <string name="copy_multi_success">Successfully copied multi to your account</string>
     <string name="open_theme">Preview or install theme</string>
     <string name="reddit_server_error_message">\nThis may be a Reddit server issue, would you like to view the Reddit status page to find out?</string>
+    <string name="download_ask_pref_title">Ask for download location</string>
+    <string name="download_ask_pref_summary">Ask for a download location each time</string>
+    <string name="download_location_title">Download Location</string>
 </resources>

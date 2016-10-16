@@ -186,11 +186,10 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                         dialog.dismiss();
                         LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, null, false);
                         final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
-                        name.setTextSize(20);
                         final String multiPath = getIntent().getStringExtra(Reddinator.ITEM_URL);
                         name.setText(multiPath.substring(multiPath.lastIndexOf("/")+1));
                         name.selectAll();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FeedItemDialogActivity.this, R.style.AlertDialogStyle);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FeedItemDialogActivity.this);
                         builder.setView(layout).setTitle(getString(R.string.copy_multi))
                                 .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                                     @Override
