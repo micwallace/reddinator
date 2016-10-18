@@ -50,7 +50,6 @@ import java.io.FileOutputStream;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
-import au.com.wallaceit.reddinator.activity.PrefsFragment;
 import au.com.wallaceit.reddinator.tasks.LoadImageBitmapTask;
 
 public class RWebView extends android.webkit.WebView implements DirectoryChooserFragment.OnFragmentInteractionListener {
@@ -161,6 +160,7 @@ public class RWebView extends android.webkit.WebView implements DirectoryChooser
                 final Activity activity = (Activity) getContext();
                 DirectoryChooserConfig config = DirectoryChooserConfig.builder()
                         .allowNewDirectoryNameModification(true)
+                        .initialDirectory(Environment.getExternalStorageDirectory().getAbsolutePath())
                         .newDirectoryName("")
                         .initialDirectory(downloadLocation).build();
                 mDialog = DirectoryChooserFragment.newInstance(config);
@@ -199,7 +199,7 @@ public class RWebView extends android.webkit.WebView implements DirectoryChooser
                 .setDescription("Reddinator image download")
                 .setVisibleInDownloadsUi(true)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(downloadLocation, filename);
+                .setDestinationInExternalPublicDir(downloadLocation.replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""), filename);
         mgr.enqueue(request);
     }
 

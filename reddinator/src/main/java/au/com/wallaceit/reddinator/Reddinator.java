@@ -26,7 +26,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -392,16 +391,17 @@ public class Reddinator extends Application {
     }
 
     public static boolean doShowWelcomeDialog(final Activity context){
-        try {
-            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            if (appInfo.metaData.getBoolean("suppressChangelog"))
-                return false;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, false);
-        if (!aboutDismissed){
+
+        // TODO: Remove backward compatability in version 3.21.0
+        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-3.20", false);
+        if (aboutDismissed) return false;
+
+        String lastVersion = preferences.getString("changelogLastVersion", "");
+        String thisVersion = Utilities.getPackageInfo(context).versionName;
+        // Only show changelog if major or minor version has changed
+        if (!Utilities.compareVersionWithoutBuild(lastVersion, thisVersion)){
             AboutDialog.show(context, false);
             return true;
         }

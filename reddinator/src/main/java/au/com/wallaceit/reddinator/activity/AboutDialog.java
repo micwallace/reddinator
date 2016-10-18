@@ -96,7 +96,7 @@ public class AboutDialog extends Dialog {
             } else {
                 prefs.edit().putBoolean("welcomeDialogShown", true).apply(); // show details view on first run
             }
-            prefs.edit().putBoolean("changelogDialogShown-" + Utilities.getPackageInfo(context).versionName, true).apply();
+            prefs.edit().putString("changelogLastVersion", Utilities.getPackageInfo(context).versionName).apply();
         }
         // setup about view
         TextView version = ((TextView) findViewById(R.id.version));

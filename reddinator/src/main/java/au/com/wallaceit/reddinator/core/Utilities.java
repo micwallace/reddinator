@@ -99,6 +99,13 @@ public class Utilities {
         return pInfo;
     }
 
+    // compares a semantic version number without build
+    public static boolean compareVersionWithoutBuild(String version1, String version2){
+        String[] parts1 = version1.split("\\.");
+        String[] parts2 = version2.split("\\.");
+        return parts1.length > 1 && parts2.length > 1 && parts1[0].equals(parts2[0]) && parts1[1].equals(parts2[1]);
+    }
+
     public static String getImageCacheSize(Context context){
         File cacheDir = new File(context.getCacheDir().getPath() + Reddinator.IMAGE_CACHE_DIR);
         return Formatter.formatShortFileSize(context, dirSize(cacheDir));
