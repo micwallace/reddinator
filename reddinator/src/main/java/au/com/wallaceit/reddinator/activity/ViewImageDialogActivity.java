@@ -48,7 +48,7 @@ public class ViewImageDialogActivity extends Activity {
         String imageUrl = getIntent().getStringExtra(Reddinator.ITEM_URL);
         // fix imgur links so it's not redirected to full webpage
         if (Utilities.isImgurUrl(imageUrl)) {
-            imageUrl = imageUrl.replace("//imgur.com/", "//i.imgur.com/");
+            imageUrl = imageUrl.replaceFirst("//*.imgur.com/", "//i.imgur.com/");
             if (!Utilities.hasImageExtension(imageUrl))
                 imageUrl += ".jpg"; // any extension will work
         }
@@ -67,7 +67,7 @@ public class ViewImageDialogActivity extends Activity {
         boolean multi = getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
         webView.getSettings().setDisplayZoomControls(!multi);
         // Make sure we specify a proper user agent. Many sites block generic ones.
-        webView.getSettings().setUserAgentString("Android/Reddinator v3.11");
+        webView.getSettings().setUserAgentString("Android/Reddinator v3.20.2");
         webView.loadUrl(imageUrl);
         registerForContextMenu(webView);
         // setup open comments button

@@ -13,6 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignRight="@+id/buttons"
         android:layout_alignEnd="@+id/buttons"
+        android:imeOptions="actionGo"
+        android:singleLine="true"
         android:gravity="center_vertical"
         android:textSize="19sp" />
 
@@ -36,7 +38,9 @@
             android:shadowDy="4"
             android:shadowRadius="3"
             android:paddingLeft="4dp"
-            android:paddingRight="10dp"
+            android:paddingRight="4dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:textSize="32sp"
             android:textColor="#25C48F"/>
 
@@ -45,7 +49,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="4dp"
-            android:paddingRight="10dp"
+            android:paddingRight="4dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginEnd="6dp"
             android:contentDescription="@string/search"
             android:text="@string/fa_search"
             android:shadowColor="#22000000"

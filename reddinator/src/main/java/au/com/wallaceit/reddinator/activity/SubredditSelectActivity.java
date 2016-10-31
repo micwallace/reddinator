@@ -37,6 +37,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +47,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -273,7 +275,6 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 multiSubsAdapter.refreshList();
         } else {
             isCreated = true;
-            System.out.print("IS CREATED!!");
         }
     }
 
@@ -952,6 +953,15 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                             public void onClick(View v) {
                                 LinearLayout layout = (LinearLayout) getLayoutInflater().inflate(R.layout.dialog_multi_add, parent, false);
                                 final EditText name = (EditText) layout.findViewById(R.id.new_multi_name);
+                                name.setSingleLine();
+                                name.setImeOptions(EditorInfo.IME_ACTION_GO);
+                                name.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                                    @Override
+                                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                                        createMulti(name.getText().toString());
+                                        return false;
+                                    }
+                                });
                                 AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
                                 builder.setTitle(resources.getString(R.string.create_a_multi)).setView(layout)
                                         .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -962,11 +972,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                                         }).setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        if (name.getText().toString().equals("")) {
-                                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
-                                            return;
-                                        }
-                                        new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name.getText().toString());
+                                        createMulti(name.getText().toString());
                                         dialogInterface.dismiss();
                                     }
                                 }).show().setCanceledOnTouchOutside(true);
@@ -1022,6 +1028,14 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             convertView.setTag(viewHolder);
 
             return convertView;
+        }
+
+        private void createMulti(String name){
+            if (name.equals("")) {
+                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.enter_multi_name_error), Toast.LENGTH_LONG).show();
+                return;
+            }
+            new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_CREATE).execute(name);
         }
 
         @Override
@@ -1279,20 +1293,24 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 viewHolder.nameInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        String subreddit = viewHolder.nameInput.getText().toString();
-                        performAdd(subreddit);
+                        performAdd(viewHolder.nameInput.getText().toString());
                         viewHolder.nameInput.setText("");
+                    }
+                });
+                viewHolder.nameInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_GO){
+                            performAdd(viewHolder.nameInput.getText().toString());
+                            viewHolder.nameInput.setText("");
+                        }
+                        return false;
                     }
                 });
                 viewHolder.addIcon.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String subreddit = viewHolder.nameInput.getText().toString();
-                        if (subreddit.equals("")){
-                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.sub_name_error), Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        performAdd(subreddit);
+                        performAdd(viewHolder.nameInput.getText().toString());
                         viewHolder.nameInput.setText("");
                     }
                 });
@@ -1331,7 +1349,10 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         }
 
         private void performAdd(String subreddit){
-            //System.out.println("Adding Sub: " + subreddit);
+            if (subreddit.equals("")){
+                Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.sub_name_error), Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (mode==MODE_MULTI) {
                 new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
             } else {

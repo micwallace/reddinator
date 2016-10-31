@@ -138,11 +138,11 @@ public class Utilities {
     }
 
     public static boolean isFeedPathMulti(String feedUrl){
-        return feedUrl.matches("(.*reddit.com)?/user/[^/]*/m/[^/]*");
+        return feedUrl.matches("(.*reddit.com)?/user/[^/]*/m/[^/]*/?");
     }
 
     public static boolean isFeedPathDomain(String feedUrl){
-        return feedUrl.matches("(.*reddit.com)?/domain/[^/]*");
+        return feedUrl.matches("(.*reddit.com)?/domain/[^/]*/?");
     }
 
     public static boolean isImageUrl(String url) {
@@ -157,7 +157,7 @@ public class Utilities {
 
     public static boolean isImgurUrl(String url){
         // Check for imgur url without file extension (should not be album)
-        return url.toLowerCase().matches("(https?://(.*imgur.com/[^galery/][^a/].*)$)");
+        return url.toLowerCase().matches("(https?://.*(imgur.com/(?!galery/|a/).*)$)");
     }
 
     public static boolean hasImageExtension(String url){

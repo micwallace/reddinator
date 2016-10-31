@@ -143,6 +143,9 @@ public class SubredditManager {
     // this sets the current feed using the supplied name, reddit url path and isMulti value.
     // isMulti is used to determine whether the items are from a different subreddit, in order to show that value to the user
     public void setFeed(int feedId, String name, String path, boolean isMulti){
+        if (path.length()>1 && '/' == (path.charAt(path.length()-1)))
+            path = path.substring(0, path.length()-1);
+
         JSONObject data = new JSONObject();
         try {
             data.put("name", name);

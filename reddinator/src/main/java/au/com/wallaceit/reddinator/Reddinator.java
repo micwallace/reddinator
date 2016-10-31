@@ -394,10 +394,6 @@ public class Reddinator extends Application {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        // TODO: Remove backward compatability in version 3.21.0
-        boolean aboutDismissed = preferences.getBoolean("changelogDialogShown-3.20", false);
-        if (aboutDismissed) return false;
-
         String lastVersion = preferences.getString("changelogLastVersion", "");
         String thisVersion = Utilities.getPackageInfo(context).versionName;
         // Only show changelog if major or minor version has changed
