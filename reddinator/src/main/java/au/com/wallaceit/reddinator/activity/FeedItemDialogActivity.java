@@ -24,6 +24,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,8 @@ import au.com.wallaceit.reddinator.tasks.HidePostTask;
 import au.com.wallaceit.reddinator.tasks.SavePostTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.tasks.WidgetVoteTask;
+
+import static android.content.Intent.ACTION_VIEW;
 
 public class FeedItemDialogActivity extends Activity implements SubscriptionEditTask.Callback, ThemeHelper.ThemeInstallInterface {
     public static final String EXTRA_CURRENT_FEED_PATH = "feedPath";
@@ -158,6 +161,13 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                             }
                         }
                         break;
+                    case "open_subreddit":
+                        Intent intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
+                        intent.setAction(ACTION_VIEW);
+                        intent.setData(Uri.parse(Reddinator.REDDIT_BASE_URL + "/r/" + getIntent().getStringExtra(Reddinator.ITEM_SUBREDDIT)));
+                        startActivity(intent);
+                        close(0);
+                        break;
                     case "view_domain":
                         // view listings for the domain of this item
                         String domain = getIntent().getStringExtra(Reddinator.ITEM_DOMAIN);
@@ -167,7 +177,7 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                                 global.openSubredditFeed(FeedItemDialogActivity.this, Reddinator.REDDIT_BASE_URL + feedPath);
                                 close(0);
                             } else {
-                                Intent intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
+                                intent = new Intent(FeedItemDialogActivity.this, MainActivity.class);
                                 intent.putExtra(MainActivity.EXTRA_FEED_PATH, feedPath);
                                 intent.putExtra(MainActivity.EXTRA_FEED_NAME, domain);
                                 close(2, intent);
@@ -344,8 +354,10 @@ public class FeedItemDialogActivity extends Activity implements SubscriptionEdit
                 canViewDomain = (domain.indexOf("self.")!=0 && !global.getSubredditManager().getCurrentFeedName(widgetId).equals(domain));
             }
 
-            if (canViewSubreddit)
+            if (canViewSubreddit) {
+                options.add(new String[]{"open_subreddit", getString(R.string.item_option_open_subreddit, getIntent().getStringExtra(Reddinator.ITEM_SUBREDDIT))});
                 options.add(new String[]{"view_subreddit", getString(R.string.item_option_view_subreddit, getIntent().getStringExtra(Reddinator.ITEM_SUBREDDIT))});
+            }
 
             if (canViewDomain)
                 options.add(new String[]{"view_domain", getString(R.string.item_option_view_domain, domain)});

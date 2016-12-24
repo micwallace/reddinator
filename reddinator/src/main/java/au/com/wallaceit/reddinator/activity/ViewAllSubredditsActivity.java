@@ -304,18 +304,22 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 viewHolder.description = (TextView) row.findViewById(R.id.subreddit_description);
                 viewHolder.addIcon = (IconTextView) row.findViewById(R.id.subreddit_add_btn);
                 viewHolder.viewIcon = (IconTextView) row.findViewById(R.id.subreddit_view_btn);
+                viewHolder.subscribedIcon = (TextView) row.findViewById(R.id.subreddit_subscribed);
             } else {
                 viewHolder = (ViewHolder) row.getTag();
             }
             // setup the row
             String name;
             String description;
+            String subscribed = "false";
             final String url;
             try {
                 JSONObject subreddit = sreddits.get(position);
                 name = subreddit.getString("display_name");
                 description = subreddit.getString("public_description");
                 url = subreddit.getString("url");
+                if (subreddit.has("user_is_subscriber"))
+                    subscribed = subreddit.getString("user_is_subscriber");
             } catch (JSONException e) {
                 e.printStackTrace();
                 return row;
@@ -337,6 +341,11 @@ public class ViewAllSubredditsActivity extends ListActivity {
                     ViewAllSubredditsActivity.this.startActivity(intent);
                 }
             });
+            if ("true".equals(subscribed)){
+                viewHolder.subscribedIcon.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.subscribedIcon.setVisibility(View.GONE);
+            }
             row.setTag(viewHolder);
 
             return row;
@@ -347,6 +356,7 @@ public class ViewAllSubredditsActivity extends ListActivity {
             TextView description;
             IconTextView addIcon;
             IconTextView viewIcon;
+            TextView subscribedIcon;
         }
     }
 

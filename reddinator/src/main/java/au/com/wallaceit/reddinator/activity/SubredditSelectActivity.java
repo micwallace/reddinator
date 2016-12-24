@@ -32,7 +32,6 @@ import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -84,6 +83,7 @@ import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
 import au.com.wallaceit.reddinator.tasks.LoadRandomTask;
 import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
+import au.com.wallaceit.reddinator.tasks.SyncUserDataTask;
 import au.com.wallaceit.reddinator.ui.ActionbarActivity;
 import au.com.wallaceit.reddinator.ui.SimpleTabsAdapter;
 import au.com.wallaceit.reddinator.ui.SimpleTabsWidget;
@@ -142,7 +142,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         });
         subsAdapter.sort(subComparator);
 
-        initializeMultis();
+        startupTasks();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -179,9 +179,19 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             public void onClick(View arg0) {
                 if (global.mRedditData.isLoggedIn()) {
                     if (pager.getCurrentItem()==1) {
-                        refreshMultireddits();
+                        new SyncUserDataTask(SubredditSelectActivity.this, new Runnable() {
+                            @Override
+                            public void run() {
+                                mMultiAdapter.refreshMultis();
+                            }
+                        }, true, SyncUserDataTask.MODE_MULTIS).execute();
                     } else {
-                        refreshSubreddits();
+                        new SyncUserDataTask(SubredditSelectActivity.this, new Runnable() {
+                            @Override
+                            public void run() {
+                                refreshSubredditsList();
+                            }
+                        }, true, SyncUserDataTask.MODE_SUBREDDITS).execute();
                     }
                 } else {
                     global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
@@ -232,7 +242,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         }
     }
 
-    public void initializeMultis(){
+    public void startupTasks(){
         // get multi list and set adapter
         final ListView multiListView = (ListView) findViewById(R.id.multilist);
         multiListView.postDelayed(new Runnable() {
@@ -258,6 +268,17 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                         }
                     }
                 });
+                if (global.mRedditData.isLoggedIn()) {
+                    if (System.currentTimeMillis() > global.mSharedPreferences.getLong("last_sync_time", 0)+86400000)
+                        new SyncUserDataTask(SubredditSelectActivity.this, new Runnable() {
+                            @Override
+                            public void run() {
+                                refreshSubredditsList();
+                                if (multiSubsAdapter!=null)
+                                    multiSubsAdapter.refreshList();
+                            }
+                        }, false, 0).execute();
+                }
             }
         }, 20);
     }
@@ -401,7 +422,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 } else {
                     appWidgetManager.partiallyUpdateAppWidget(mAppWidgetId, views);
                 }
-                appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.listview);
+                appWidgetManager.notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.adapterview);
             } else {
                 Intent intent = new Intent();
                 intent.putExtra("themeupdate", needsThemeUpdate);
@@ -688,85 +709,6 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 dialog.cancel();
             }
         }).show().setCanceledOnTouchOutside(true);
-    }
-
-    // import personal subreddits
-    private void refreshSubreddits() {
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, resources.getString(R.string.refreshing_subreddits), resources.getString(R.string.one_moment), true);
-        Thread t = new Thread() {
-            public void run() {
-
-                final int listLength;
-                try {
-                    listLength = global.loadAccountSubreddits();
-                } catch (final RedditData.RedditApiException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            sdialog.dismiss();
-                            // check login required
-                            if (e.isAuthError())
-                                global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
-                            // show error
-                            Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    return;
-                }
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        sdialog.dismiss();
-                        if (listLength==0) {
-                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.no_subreddits_message), Toast.LENGTH_LONG).show();
-                        }
-                        refreshSubredditsList();
-                    }
-                });
-            }
-        };
-        t.start();
-    }
-
-    private void refreshMultireddits() {
-
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        final ProgressDialog sdialog = ProgressDialog.show(SubredditSelectActivity.this, resources.getString(R.string.refreshing_multis), resources.getString(R.string.one_moment), true);
-        Thread t = new Thread() {
-            public void run() {
-
-                final int listLength;
-                try {
-                    listLength = global.loadAccountMultis();
-                } catch (final RedditData.RedditApiException e) {
-                    e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            sdialog.dismiss();
-                            // check login required
-                            if (e.isAuthError())
-                                global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
-                            // show error
-                            Toast.makeText(SubredditSelectActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    return;
-                }
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        sdialog.dismiss();
-                        if (listLength == 0) {
-                            Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.no_multis_message), Toast.LENGTH_LONG).show();
-                        }
-                        mMultiAdapter.refreshMultis();
-                    }
-                });
-            }
-        };
-        t.start();
     }
 
     private void refreshSubredditsList(){
@@ -1220,17 +1162,10 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SubredditSelectActivity.this);
         AlertDialog dialog = builder.setView(dialogView)
-                .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
                 .setPositiveButton(resources.getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                        global.getSubredditManager().setAllFilter(filterSubsAdapter.getSubsList());
                         needsFeedUpdate = true; // mark feed for updating
                     }
                 }).show();
@@ -1344,10 +1279,6 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             return convertView;
         }
 
-        private ArrayList<String> getSubsList(){
-            return subsList;
-        }
-
         private void performAdd(String subreddit){
             if (subreddit.equals("")){
                 Toast.makeText(SubredditSelectActivity.this, resources.getString(R.string.sub_name_error), Toast.LENGTH_SHORT).show();
@@ -1356,17 +1287,27 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             if (mode==MODE_MULTI) {
                 new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_SUB_ADD).execute(multiPath, subreddit);
             } else {
+                if (global.mRedditData.isLoggedIn())
+                    new SubscriptionEditTask(global, SubredditSelectActivity.this, null, SubscriptionEditTask.ACTION_FILTER_SUB_ADD).execute("all", subreddit);
                 subsList.add(subreddit);
+                global.getSubredditManager().setAllFilter(subsList);
+                System.out.println(global.getSubredditManager().getCurrentFeedName(mAppWidgetId));
+                if ("all".equals(global.getSubredditManager().getCurrentFeedName(mAppWidgetId)))
+                    needsFeedUpdate = true;
                 notifyDataSetChanged();
             }
         }
 
         private void performRemove(String subreddit){
-            //System.out.println("Removing Sub: "+subreddit);
             if (mode==MODE_MULTI) {
                 new SubscriptionEditTask(global, SubredditSelectActivity.this, SubredditSelectActivity.this, SubscriptionEditTask.ACTION_MULTI_SUB_REMOVE).execute(multiPath, subreddit);
             } else {
+                if (global.mRedditData.isLoggedIn())
+                    new SubscriptionEditTask(global, SubredditSelectActivity.this, null, SubscriptionEditTask.ACTION_FILTER_SUB_REMOVE).execute("all", subreddit);
                 subsList.remove(subreddit);
+                global.getSubredditManager().setAllFilter(subsList);
+                if ("all".equals(global.getSubredditManager().getCurrentFeedName(mAppWidgetId)))
+                    needsFeedUpdate = true;
                 notifyDataSetChanged();
             }
         }

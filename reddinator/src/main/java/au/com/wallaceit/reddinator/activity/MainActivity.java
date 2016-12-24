@@ -706,7 +706,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 if (viewThemes) {
                     tempArray = filterThemes(tempArray);
                 } else {
-                    tempArray = global.getSubredditManager().filterFeed(0, tempArray, loadMore?data:null, isAll, !global.mRedditData.isLoggedIn());
+                    tempArray = global.getSubredditManager().filterFeed(0, tempArray, loadMore?data:null, (isAll && !global.mRedditData.isLoggedIn()), !global.mRedditData.isLoggedIn());
                 }
                 if (tempArray.length() == 0)
                     endOfFeed = true;

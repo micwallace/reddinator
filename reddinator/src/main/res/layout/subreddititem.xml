@@ -4,17 +4,39 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <TextView
-        android:id="@+id/subreddit_name"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/title_box"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/buttons"
         android:layout_toStartOf="@+id/buttons"
-        android:gravity="center_vertical"
-        android:textSize="20sp" />
+        android:gravity="start|center_vertical">
+        <TextView
+            android:id="@+id/subreddit_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/subreddit_subscribed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corners"
+            android:layout_gravity="center_vertical"
+            android:padding="3dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="#d10023"
+            android:text="@string/subscribed"
+            android:gravity="center_vertical"
+            android:textSize="12sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/subreddit_description"
@@ -22,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/subreddit_name"
+        android:layout_below="@id/title_box"
         android:layout_toLeftOf="@+id/buttons"
         android:layout_toStartOf="@+id/buttons"
         android:gravity="center_vertical"

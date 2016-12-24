@@ -51,6 +51,7 @@ import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import au.com.wallaceit.reddinator.R;
@@ -82,6 +83,13 @@ public class Utilities {
             return Color.parseColor("#A5A5A5");
         }
         return Color.parseColor("#DBDBDB");
+    }
+
+    public static String getScoreText(int score){
+        // Since reddit changes their scoring system, we need to abbreviate high scores. eg. 17.3k
+        if (score>10000)
+            return new BigDecimal((score/1000)).setScale(1, BigDecimal.ROUND_HALF_UP).toString()+"k";
+        return String.valueOf(score);
     }
 
     private static int convertDiptoPix(Context context, float dip) {

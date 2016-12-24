@@ -162,7 +162,7 @@ public class RedditData {
         JSONArray subreddits;
         String url = OAUTH_ENDPOINT + "/subreddits/search.json?q=" + Uri.encode(query);
         try {
-            subreddits = redditApiGet(url, false).getJSONObject("data").getJSONArray("children");
+            subreddits = redditApiGet(url, true).getJSONObject("data").getJSONArray("children");
         } catch (JSONException e) {
             e.printStackTrace();
             throw new RedditApiException("Parsing error: "+e.getMessage());
@@ -721,6 +721,30 @@ public class RedditData {
         checkLogin();
         String url = OAUTH_ENDPOINT + "/api/unhide?id="+name;
         redditApiPost(url);
+    }
+
+    public JSONObject getFilter(String filter) throws RedditApiException {
+        checkLogin();
+        String url = OAUTH_ENDPOINT + "/api/filter/user/"+getUsername()+"/f/"+filter;
+        return redditApiGet(url, true);
+    }
+
+    public JSONObject addFilterSubreddit(String filter, String subreddit) throws RedditApiException {
+        checkLogin();
+        try {
+            String url = OAUTH_ENDPOINT + "/api/filter/user/"+getUsername()+"/f/"+filter+"/r/"+subreddit+"?model="+ URLEncoder.encode("{\"name\":\""+subreddit+"\"}", "UTF-8");
+
+            return redditApiPut(url);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RedditApiException("Encoding error: "+e.getMessage());
+        }
+    }
+
+    public void removeFilterSubreddit(String filter, String subreddit) throws RedditApiException {
+        checkLogin();
+        String url = OAUTH_ENDPOINT + "/api/filter/user/"+getUsername()+"/f/"+filter+"/r/"+subreddit;
+        redditApiDelete(url);
     }
 
     // COMM FUNCTIONS

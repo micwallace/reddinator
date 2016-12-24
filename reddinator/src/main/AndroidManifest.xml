@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="au.com.wallaceit.reddinator"
-    android:versionCode="59"
-    android:versionName="3.20.2">
+    android:versionCode="60"
+    android:versionName="3.21.0">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Needed by some activity_webview HTML5 video implementations (Bug report received for Android 4.1) -->

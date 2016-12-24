@@ -110,8 +110,6 @@
     <string name="refreshing_subreddits">Actualizando Subreddits</string>
     <string name="one_moment">un momento…</string>
     <string name="refreshing_multis">Actualizando Multis</string>
-    <string name="no_subreddits_message">No tienes ninguna suscripcion en tu cuenta, \nSuscribete a algun subreddits</string>
-    <string name="no_multis_message">No hay multis en tu cuenta \\nHaga clic en el boton de añadir múlti para crear algunos</string>
     <string name="confirm_unsubscribe">estas seguro que quieres darte de baja de %s?</string>
     <string name="unsubscribe">Darse de baja</string>
     <string name="delete_multi">borrar Multi</string>
@@ -325,4 +323,10 @@
     <string name="download_ask_pref_summary">Pedir una ubicación de descarga cada vez</string>
     <string name="download_ask_pref_title">Pedir la ubicación de descarga</string>
     <string name="download_location_title">Ubicación de descarga</string>
+    <string name="item_option_open_subreddit">Abierto /r/%1$s</string>
+    <string name="loading_filters">Cargando filtros…</string>
+    <string name="subscribed">Suscrito</string>
+    <string name="sync_data">Sincronizar datos</string>
+    <string name="sync_data_summary">Refrescar subreddits, multis y filtros</string>
+    <string name="updating_filter">Actualización del filtro</string>
 </resources>

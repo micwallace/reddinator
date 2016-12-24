@@ -44,7 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
@@ -330,7 +332,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
             String sourceText = (showItemSubreddit?subreddit+" - ":"")+domain;
             viewHolder.sourcetxt.setText(sourceText);
             viewHolder.sourcetxt.setTextColor(themeColors.get("source_text"));
-            viewHolder.votestxt.setText(String.valueOf(score));
+            viewHolder.votestxt.setText(Utilities.getScoreText(score));
             viewHolder.votestxt.setTextColor(themeColors.get("votes_text"));
             viewHolder.commentstxt.setText(String.valueOf(numcomments));
             viewHolder.commentstxt.setTextColor(themeColors.get("comments_count"));
@@ -383,7 +385,8 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
                 // hide preview view
                 viewHolder.preview.setVisibility(View.GONE);
                 // check for default thumbnails
-                if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default") || thumbnail.equals("image")) {
+                List special_thumbs = Arrays.asList("nsfw", "self", "default", "image", "spoiler");
+                if (special_thumbs.contains(thumbnail)) {
                     int resource = 0;
                     switch (thumbnail) {
                         case "image":
@@ -396,6 +399,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
                             break;
                         case "default":
                         case "self":
+                        case "spoiler":
                             resource = R.drawable.self_default;
                             break;
                     }

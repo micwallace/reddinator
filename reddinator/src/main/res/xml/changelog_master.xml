@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.21.0" versioncode="60">
+        <change>Added integration with reddits new /r/all filter.</change>
+        <change>Added background sync of subs, multis &amp; filters. Triggered daily when subreddit selection activity is opened.</change>
+        <change>Added option to open a subreddit in a new activity via post options dialog.</change>
+        <change>Added subscription status icon to view all subreddits activity.</change>
+        <change>Added score abbreviations to align with reddit scoring change (full score still visible in info panel).</change>
+        <change>Various bug fixes.</change>
+    </release>
     <release version="3.20.2" versioncode="59">
         <change>Fixed issue loading and copying multi paths with proceeding slash.</change>
         <change>Fixed imgur regex detection to include sub domains.</change>

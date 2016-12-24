@@ -28,6 +28,7 @@ import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.service.MailCheckReceiver;
 import au.com.wallaceit.reddinator.service.WidgetCommon;
+import au.com.wallaceit.reddinator.tasks.SyncUserDataTask;
 
 public class PrefsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, DirectoryChooserFragment.OnFragmentInteractionListener {
     public int mAppWidgetId;
@@ -75,6 +76,14 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
                     getPreferenceScreen().removePreference(accountSettings);
                     Toast.makeText(getActivity(), getResources().getString(R.string.account_disconnected), Toast.LENGTH_LONG).show();
                     return true;
+                }
+            });
+            Preference refreshbtn = findPreference("refresh_data");
+            refreshbtn.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new SyncUserDataTask(getActivity(), null, true, 0).execute();
+                    return false;
                 }
             });
         }

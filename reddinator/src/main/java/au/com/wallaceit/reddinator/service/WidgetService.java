@@ -46,7 +46,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
@@ -117,8 +119,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
+        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //StrictMode.setThreadPolicy(policy);
         endOfFeed = false;
 
         loadFeedPrefs();
@@ -245,7 +247,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             row.setTextColor(R.id.sourcetxt, themeColors.get("source_text"));
             row.setTextColor(R.id.votestxt, themeColors.get("votes_text"));
             row.setTextColor(R.id.commentstxt, themeColors.get("comments_count"));
-            row.setTextViewText(R.id.votestxt, String.valueOf(score));
+            row.setTextViewText(R.id.votestxt, Utilities.getScoreText(score));
             row.setTextViewText(R.id.commentstxt, String.valueOf(numcomments));
             row.setInt(R.id.listdivider, "setBackgroundColor", themeColors.get("divider"));
             row.setViewVisibility(R.id.nsfwflag, nsfw ? TextView.VISIBLE : TextView.GONE);
@@ -319,7 +321,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                 // hide preview view
                 row.setViewVisibility(R.id.preview, View.GONE);
                 // check for default thumbnails
-                if (thumbnail.equals("nsfw") || thumbnail.equals("self") || thumbnail.equals("default") || thumbnail.equals("image")) {
+                List special_thumbs = Arrays.asList("nsfw", "self", "default", "image", "spoiler");
+                if (special_thumbs.contains(thumbnail)) {
                     int resource = 0;
                     switch (thumbnail) {
                         case "image":
@@ -332,6 +335,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
                             break;
                         case "default":
                         case "self":
+                        case "spoiler":
                             resource = R.drawable.self_default;
                             break;
                     }
@@ -505,7 +509,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (tempArray.length() == 0) {
                 endOfFeed = true;
             } else {
-                tempArray = global.getSubredditManager().filterFeed(appWidgetId, tempArray, data, isAll, !global.mRedditData.isLoggedIn());
+                tempArray = global.getSubredditManager().filterFeed(appWidgetId, tempArray, data, (isAll && !global.mRedditData.isLoggedIn()), !global.mRedditData.isLoggedIn());
 
                 int i = 0;
                 while (i < tempArray.length()) {
@@ -533,7 +537,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             if (tempArray.length() == 0) {
                 endOfFeed = true;
             } else {
-                tempArray = global.getSubredditManager().filterFeed(appWidgetId, tempArray, null, isAll, !global.mRedditData.isLoggedIn());
+                tempArray = global.getSubredditManager().filterFeed(appWidgetId, tempArray, null, (isAll && !global.mRedditData.isLoggedIn()), !global.mRedditData.isLoggedIn());
             }
             data = tempArray;
         }

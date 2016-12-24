@@ -23,6 +23,7 @@ package au.com.wallaceit.reddinator.service;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -51,14 +52,17 @@ public class WidgetCommon {
     static final Class WIDGET_CLASS_STACK = StackWidgetProvider.class;
 
     static Class getWidgetProviderClass(Context context, int appWidgetId){
-        String className = AppWidgetManager.getInstance(context).getAppWidgetInfo(appWidgetId).provider.getShortClassName();
-        className = className.substring(className.lastIndexOf(".")+1);
-        if (className.equals(WIDGET_CLASS_LIST.getSimpleName())) {
-            return WIDGET_CLASS_LIST;
-        } else if (className.equals(WIDGET_CLASS_STACK.getSimpleName())) {
-            return WIDGET_CLASS_STACK;
+        AppWidgetProviderInfo widgetInfo = AppWidgetManager.getInstance(context).getAppWidgetInfo(appWidgetId);
+        if (widgetInfo!=null) {
+            String className = widgetInfo.provider.getShortClassName();
+            className = className.substring(className.lastIndexOf(".") + 1);
+            if (className.equals(WIDGET_CLASS_LIST.getSimpleName())) {
+                return WIDGET_CLASS_LIST;
+            } else if (className.equals(WIDGET_CLASS_STACK.getSimpleName())) {
+                return WIDGET_CLASS_STACK;
+            }
         }
-        return null;
+        return WidgetCommon.class;
     }
 
     static int getWidgetLayoutId(Class providerClass){

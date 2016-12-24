@@ -565,7 +565,7 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
 
     private boolean archivedPostCheck(){
         try {
-            if (postInfo.getBoolean("archived")){
+            if (postInfo!=null && postInfo.getBoolean("archived")){
                 Toast.makeText(this, R.string.archived_post_error, Toast.LENGTH_LONG).show();
                 return true;
             }
@@ -677,6 +677,13 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
             int comments = postInfo.getInt("num_comments");
             commentsText.setText(getResources().getQuantityString(R.plurals.num_comments, comments, comments));
 
+            SlidingUpPanelLayout.PanelState state = infoPanel.getPanelState();
+            if (state == SlidingUpPanelLayout.PanelState.DRAGGING) {
+                infoPanel.addPanelSlideListener(slideListener);
+            } else if (state == SlidingUpPanelLayout.PanelState.EXPANDED){
+                infoPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            }
+
             final String selftext = postInfo.getString("selftext_html");
             if (!selftext.equals("null")){
                 selfTextButton.setOnClickListener(new View.OnClickListener() {
@@ -696,6 +703,17 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
             e.printStackTrace();
         }
     }
+
+    SlidingUpPanelLayout.PanelSlideListener slideListener = new SlidingUpPanelLayout.PanelSlideListener() {
+        @Override
+        public void onPanelSlide(View panel, float slideOffset) {}
+
+        @Override
+        public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+            infoPanel.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+            infoPanel.removePanelSlideListener(slideListener);
+        }
+    };
 
     class RedditPageAdapter extends FragmentPagerAdapter {
 

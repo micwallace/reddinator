@@ -40,6 +40,8 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
     public static final int ACTION_MULTI_RENAME = 6;
     public static final int ACTION_SUBSCRIBE = 7;
     public static final int ACTION_UNSUBSCRIBE = 8;
+    public static final int ACTION_FILTER_SUB_ADD = 9;
+    public static final int ACTION_FILTER_SUB_REMOVE = 10;
     private Reddinator global;
     private Context context;
     private Callback callback;
@@ -73,6 +75,10 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
             case ACTION_MULTI_SUB_ADD:
             case ACTION_MULTI_SUB_REMOVE:
                 loadingMessage = global.getResources().getString(R.string.updating_multi);
+                break;
+            case ACTION_FILTER_SUB_ADD:
+            case ACTION_FILTER_SUB_REMOVE:
+                loadingMessage = global.getResources().getString(R.string.updating_filter);
                 break;
             case ACTION_MULTI_DELETE:
                 loadingMessage = global.getResources().getString(R.string.deleting_multi);
@@ -143,6 +149,14 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
 
                 case ACTION_MULTI_RENAME:
                     data = global.mRedditData.renameMulti(strParams[0].toString(), strParams[1].toString());
+                    break;
+
+                case ACTION_FILTER_SUB_ADD:
+                    global.mRedditData.addFilterSubreddit(strParams[0].toString(), strParams[1].toString());
+                    break;
+
+                case ACTION_FILTER_SUB_REMOVE:
+                    global.mRedditData.removeFilterSubreddit(strParams[0].toString(), strParams[1].toString());
                     break;
             }
             return true;

@@ -164,8 +164,6 @@
     <string name="refreshing_subreddits">Refreshing Subreddits</string>
     <string name="one_moment">One moment…</string>
     <string name="refreshing_multis">Refreshing Multis</string>
-    <string name="no_subreddits_message">No subscriptions in your account, \nSubscribe to some subreddits</string>
-    <string name="no_multis_message">No multis in your account \\nClick the add multi button to create some</string>
     <string name="confirm_unsubscribe">Are you sure you want to unsubscribe from %s?</string>
     <string name="unsubscribe">Unsubscribe</string>
     <string name="delete_multi">Delete Multi</string>
@@ -289,6 +287,7 @@
     <string name="item_option_open_post">Open content in browser</string>
     <string name="item_option_open_comments">Open comments in browser</string>
     <string name="item_option_view_subreddit">View /r/%1$s</string>
+    <string name="item_option_open_subreddit">Open /r/%1$s</string>
     <string name="item_option_view_domain">View all from %1$s</string>
     <string name="view_domain_posts">View Domain Posts</string>
     <string name="enter_valid_domain">Please enter a valid domain name</string>
@@ -384,4 +383,9 @@
     <string name="download_ask_pref_title">Ask for download location</string>
     <string name="download_ask_pref_summary">Ask for a download location each time</string>
     <string name="download_location_title">Download Location</string>
+    <string name="updating_filter">Updating Filter</string>
+    <string name="loading_filters">Loading filters…</string>
+    <string name="sync_data">Sync Data</string>
+    <string name="sync_data_summary"><![CDATA[Refresh subreddits, multis & filters]]></string>
+    <string name="subscribed">Subscribed</string>
 </resources>
