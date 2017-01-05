@@ -63,7 +63,7 @@ public class WidgetProviderBase extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // cancel the alarm for automatic updates
-        WidgetCommon.setUpdateSchedule(context, WidgetProviderBase.class, true);
+        WidgetCommon.setUpdateSchedule(context);
         //System.out.println("onDisabled();");
         super.onDisabled(context);
     }
@@ -71,7 +71,7 @@ public class WidgetProviderBase extends AppWidgetProvider {
     @Override
     public void onEnabled(Context context) {
         // set the pending intent for automatic update
-        WidgetCommon.setUpdateSchedule(context, WidgetProviderBase.class, false);
+        WidgetCommon.setUpdateSchedule(context);
         // System.out.println("onEnabled();");
         super.onEnabled(context);
     }
@@ -80,84 +80,102 @@ public class WidgetProviderBase extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals(WidgetCommon.ITEM_CLICK)) {
+        switch (action) {
+            case WidgetCommon.ACTION_UPDATE_FEED:
+                // get widget id
+                int widgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+                // show loader and update data
+                WidgetCommon.showLoaderAndUpdate(context, widgetId, false);
+                break;
+            case WidgetCommon.ACTION_ITEM_CLICK:
 
-            int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-            // check if its the load more button being clicked
-            String redditId = intent.getExtras().getString(Reddinator.ITEM_ID);
-            if (redditId!=null && redditId.equals("0")) {
-                // LOAD MORE FEED ITEM CLICKED
-                //System.out.println("loading more feed items...");
-                WidgetCommon.showLoaderAndUpdate(context, widgetid, true);
-            } else {
-                int clickMode = intent.getExtras().getInt(WidgetCommon.ITEM_CLICK_MODE);
-                switch (clickMode) {
-                    // NORMAL FEED ITEM CLICK
-                    case WidgetCommon.ITEM_CLICK_OPEN:
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                        String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
-                        int clickPref = Integer.valueOf(clickPrefString);
-                        switch (clickPref) {
-                            case 1:
-                                // open in the reddinator view
-                                Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
-                                clickIntent1.putExtras(intent.getExtras());
-                                clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                context.startActivity(clickIntent1);
-                                break;
-                            case 2:
-                                // open link in browser
-                                String url = intent.getStringExtra(Reddinator.ITEM_URL);
-                                Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                                clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(clickIntent2);
-                                break;
-                            case 3:
-                                // open reddit comments page in browser
-                                String permalink = intent.getStringExtra(Reddinator.ITEM_PERMALINK);
-                                Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse(Reddinator.REDDIT_BASE_URL + permalink));
-                                clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                context.startActivity(clickIntent3);
-                                break;
-                        }
-                        break;
-                    // upvote
-                    case WidgetCommon.ITEM_CLICK_UPVOTE:
-                        new WidgetVoteTask(
-                                context,
-                                widgetid,
-                                1,
-                                intent.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
-                                intent.getStringExtra(Reddinator.ITEM_ID)
-                        ).execute();
-                        break;
-                    // downvote
-                    case WidgetCommon.ITEM_CLICK_DOWNVOTE:
-                        new WidgetVoteTask(
-                                context,
-                                widgetid,
-                                -1,
-                                intent.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
-                                intent.getStringExtra(Reddinator.ITEM_ID)
-                        ).execute();
-                        break;
-                    // post options
-                    case WidgetCommon.ITEM_CLICK_OPTIONS:
-                        Intent ointent = new Intent(context, FeedItemDialogActivity.class);
-                        ointent.putExtras(intent.getExtras());
-                        ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        context.startActivity(ointent);
-                        break;
-                    // open image view
-                    case WidgetCommon.ITEM_CLICK_IMAGE:
-                        Intent imageintent = new Intent(context, ViewImageDialogActivity.class);
-                        imageintent.putExtras(intent.getExtras());
-                        imageintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        context.startActivity(imageintent);
-                        break;
+                int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+                // check if its the load more button being clicked
+                String redditId = intent.getExtras().getString(Reddinator.ITEM_ID);
+                if (redditId != null && redditId.equals("0")) {
+                    // LOAD MORE FEED ITEM CLICKED
+                    //System.out.println("loading more feed items...");
+                    WidgetCommon.showLoaderAndUpdate(context, widgetid, true);
+                } else {
+                    int clickMode = intent.getExtras().getInt(WidgetCommon.ITEM_CLICK_MODE);
+                    switch (clickMode) {
+                        // NORMAL FEED ITEM CLICK
+                        case WidgetCommon.ITEM_CLICK_OPEN:
+                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+                            String clickPrefString = prefs.getString(context.getString(R.string.on_click_pref), "1");
+                            int clickPref = Integer.valueOf(clickPrefString);
+                            switch (clickPref) {
+                                case 1:
+                                    // open in the reddinator view
+                                    Intent clickIntent1 = new Intent(context, ViewRedditActivity.class);
+                                    clickIntent1.putExtras(intent.getExtras());
+                                    clickIntent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    clickIntent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    context.startActivity(clickIntent1);
+                                    break;
+                                case 2:
+                                    // open link in browser
+                                    String url = intent.getStringExtra(Reddinator.ITEM_URL);
+                                    Intent clickIntent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                    clickIntent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(clickIntent2);
+                                    break;
+                                case 3:
+                                    // open reddit comments page in browser
+                                    String permalink = intent.getStringExtra(Reddinator.ITEM_PERMALINK);
+                                    Intent clickIntent3 = new Intent(Intent.ACTION_VIEW, Uri.parse(Reddinator.REDDIT_BASE_URL + permalink));
+                                    clickIntent3.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(clickIntent3);
+                                    break;
+                            }
+                            break;
+                        // upvote
+                        case WidgetCommon.ITEM_CLICK_UPVOTE:
+                            new WidgetVoteTask(
+                                    context,
+                                    widgetid,
+                                    1,
+                                    intent.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
+                                    intent.getStringExtra(Reddinator.ITEM_ID)
+                            ).execute();
+                            break;
+                        // downvote
+                        case WidgetCommon.ITEM_CLICK_DOWNVOTE:
+                            new WidgetVoteTask(
+                                    context,
+                                    widgetid,
+                                    -1,
+                                    intent.getIntExtra(Reddinator.ITEM_FEED_POSITION, -1),
+                                    intent.getStringExtra(Reddinator.ITEM_ID)
+                            ).execute();
+                            break;
+                        // post options
+                        case WidgetCommon.ITEM_CLICK_OPTIONS:
+                            Intent ointent = new Intent(context, FeedItemDialogActivity.class);
+                            ointent.putExtras(intent.getExtras());
+                            ointent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            context.startActivity(ointent);
+                            break;
+                        // open image view
+                        case WidgetCommon.ITEM_CLICK_IMAGE:
+                            Intent imageintent = new Intent(context, ViewImageDialogActivity.class);
+                            imageintent.putExtras(intent.getExtras());
+                            imageintent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            context.startActivity(imageintent);
+                            break;
+                    }
                 }
-            }
+                break;
+            case WidgetCommon.ACTION_AUTO_UPDATE:
+                //AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+                //int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+                System.out.println("WIDGET AUTO UPDATE!!!");
+                // perform full update, just to refresh views
+                //onUpdate(context, mgr, appWidgetIds);
+                // show loader and update data
+                WidgetCommon.updateAllWidgets(context);
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putLong("last_auto_refresh", System.currentTimeMillis()).apply();
+                break;
         }
 
         //System.out.println("broadcast received: " + action);

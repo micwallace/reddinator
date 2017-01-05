@@ -1,6 +1,5 @@
 // set article from document hash
 var articleId = document.location.hash.substring(1);
-var baseId;
 var username;
 var subAuthor;
 var isArchived = false;
@@ -19,7 +18,6 @@ function populateComments(author, archived, json){
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
-    baseId = data[0].data.parent_id;
     recursivePopulate(data);
 }
 
@@ -234,7 +232,7 @@ function appendComment(parentId, commentData, prepend){
         }
         flag.show();
     }
-    if (parentId.indexOf(baseId)!==-1){
+    if (parentId.indexOf("t3_")!==-1){
         if (prepend){
             commentElem.prependTo("#base");
         } else {

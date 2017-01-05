@@ -21,7 +21,12 @@ import android.app.ActionBar;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import java.util.Date;
 
 public class PrefsActivity extends PreferenceActivity {
     private PrefsFragment fragment;
@@ -51,5 +56,14 @@ public class PrefsActivity extends PreferenceActivity {
                 return super.onOptionsItemSelected(item);
         }
         return true;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)){
+            Toast.makeText(this, "Last widget refresh: " + new Date(PreferenceManager.getDefaultSharedPreferences(this).getLong("last_auto_refresh", 0)).toString(), Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

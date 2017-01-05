@@ -79,7 +79,7 @@ public class WidgetProvider extends WidgetProviderBase {
 
             // REFRESH BUTTON
             Intent refreshIntent = new Intent(context, WidgetProvider.class);
-            refreshIntent.setAction(WidgetCommon.APPWIDGET_UPDATE_FEED);
+            refreshIntent.setAction(WidgetCommon.ACTION_UPDATE_FEED);
             refreshIntent.setPackage(context.getPackageName());
             refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             refreshIntent.setData(Uri.parse(refreshIntent.toUri(Intent.URI_INTENT_SCHEME)));
@@ -87,7 +87,7 @@ public class WidgetProvider extends WidgetProviderBase {
 
             // ITEM CLICK
             Intent clickIntent = new Intent(context, WidgetProvider.class);
-            clickIntent.setAction(WidgetCommon.ITEM_CLICK);
+            clickIntent.setAction(WidgetCommon.ACTION_ITEM_CLICK);
             clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             clickIntent.setData(Uri.parse(clickIntent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context, 0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -144,21 +144,6 @@ public class WidgetProvider extends WidgetProviderBase {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String action = intent.getAction();
-
-        if (action.equals(WidgetCommon.APPWIDGET_UPDATE_FEED)) {
-            // show loader and update data
-            int widgetid = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-            WidgetCommon.showLoaderAndUpdate(context, widgetid, false);
-        }
-
-        if (action.equals(WidgetCommon.APPWIDGET_AUTO_UPDATE)) {
-            AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-            int[] appWidgetIds = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
-            // perform full update, just to refresh views
-            onUpdate(context, mgr, appWidgetIds);
-            // show loader and update data
-            WidgetCommon.updateAllWidgets(context, appWidgetIds);
-        }
 
         if (action.equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
             AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);

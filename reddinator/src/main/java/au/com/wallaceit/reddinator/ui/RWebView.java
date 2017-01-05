@@ -192,14 +192,19 @@ public class RWebView extends android.webkit.WebView implements DirectoryChooser
         DownloadManager mgr = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
         Uri downloadUri = Uri.parse(url);
         String filename = appendImageExtensionIfNeeded(downloadUri.getLastPathSegment());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         DownloadManager.Request request = new DownloadManager.Request(downloadUri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle(filename)
-                .setDescription("Reddinator image download")
-                .setVisibleInDownloadsUi(true)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationInExternalPublicDir(downloadLocation.replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""), filename);
+            .setAllowedOverRoaming(false)
+            .setTitle(filename)
+            .setDescription("Reddinator download")
+            .setVisibleInDownloadsUi(prefs.getBoolean("download_nativeui", true))
+            .setDestinationInExternalPublicDir(downloadLocation.replace(Environment.getExternalStorageDirectory().getAbsolutePath(), ""), filename);
+
+        if (prefs.getBoolean("download_notify_complete", true))
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
         mgr.enqueue(request);
     }
 

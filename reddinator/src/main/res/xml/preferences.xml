@@ -177,7 +177,17 @@
             android:dialogTitle="@string/reddit_content_font_pref_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Miscellaneous">
+    <PreferenceCategory android:title="Downloads">
+        <CheckBoxPreference
+            android:key="download_nativeui"
+            android:title="@string/download_nativeui_title"
+            android:defaultValue="true"
+            android:summary="@string/download_nativeui_summary" />
+        <CheckBoxPreference
+            android:key="download_notify_complete"
+            android:title="@string/download_notify_complete_title"
+            android:defaultValue="true"
+            android:summary="@string/download_notify_complete_summary" />
         <CheckBoxPreference
             android:key="download_ask_pref"
             android:title="@string/download_ask_pref_title"

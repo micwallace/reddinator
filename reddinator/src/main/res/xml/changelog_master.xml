@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.21.1" versioncode="61">
+        <change>Added additional download preferences.</change>
+        <change>Fixed issue with auto refresh alarm manager cancelling.</change>
+        <change>Utility; volume down on preference screen shows last widget auto-refresh time.</change>
+        <change>Fixed bug causing first comment posted in an empty thread not to show.</change>
+    </release>
     <release version="3.21.0" versioncode="60">
         <change>Added integration with reddits new /r/all filter.</change>
         <change>Added background sync of subs, multis &amp; filters. Triggered daily when subreddit selection activity is opened.</change>

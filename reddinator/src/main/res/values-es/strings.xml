@@ -329,4 +329,8 @@
     <string name="sync_data">Sincronizar datos</string>
     <string name="sync_data_summary">Refrescar subreddits, multis y filtros</string>
     <string name="updating_filter">Actualización del filtro</string>
+    <string name="download_nativeui_summary">Mostrar completado en la aplicación \"descargas\"</string>
+    <string name="download_nativeui_title">Mostrar Descargas</string>
+    <string name="download_notify_complete_summary">Mostrar notificación para las descargas completadas</string>
+    <string name="download_notify_complete_title">Notificación completada</string>
 </resources>

@@ -33,20 +33,23 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 
 public class WidgetCommon {
 
-    static final String ITEM_CLICK = "ITEM_CLICK";
+    static final String ACTION_UPDATE_FEED = "wallaceit.redinator.action.APPWIDGET_UPDATE_FEED";
+    static final String ACTION_AUTO_UPDATE = "wallaceit.redinator.action.APPWIDGET_AUTO_UPDATE";
+    static final String ACTION_ITEM_CLICK = "wallaceit.redinator.action.APPWIDGET_ITEM_CLICK";
+
     static final String ITEM_CLICK_MODE = "ITEM_CLICK_MODE";
     static final int ITEM_CLICK_OPEN = 0;
     static final int ITEM_CLICK_UPVOTE = 1;
     static final int ITEM_CLICK_DOWNVOTE = 2;
     static final int ITEM_CLICK_OPTIONS = 3;
     static final int ITEM_CLICK_IMAGE = 4;
-    static final String APPWIDGET_UPDATE_FEED = "APPWIDGET_UPDATE_FEED";
-    static final String APPWIDGET_AUTO_UPDATE = "APPWIDGET_AUTO_UPDATE_FEED";
 
     static final Class WIDGET_CLASS_LIST = WidgetProvider.class;
     static final Class WIDGET_CLASS_STACK = StackWidgetProvider.class;
@@ -54,7 +57,7 @@ public class WidgetCommon {
     static Class getWidgetProviderClass(Context context, int appWidgetId){
         AppWidgetProviderInfo widgetInfo = AppWidgetManager.getInstance(context).getAppWidgetInfo(appWidgetId);
         if (widgetInfo!=null) {
-            String className = widgetInfo.provider.getShortClassName();
+            String className = widgetInfo.provider.getClassName();
             className = className.substring(className.lastIndexOf(".") + 1);
             if (className.equals(WIDGET_CLASS_LIST.getSimpleName())) {
                 return WIDGET_CLASS_LIST;
@@ -72,7 +75,8 @@ public class WidgetCommon {
         return R.layout.widget;
     }
 
-    static void updateAllWidgets(Context context, int[] widgetIds) {
+    static void updateAllWidgets(Context context) {
+        int[] widgetIds = getAllAppWidgetIds(context);
         for (int widgetId : widgetIds) {
             WidgetCommon.showLoaderAndUpdate(context, widgetId, false);
         }
@@ -139,31 +143,34 @@ public class WidgetCommon {
         mgr.partiallyUpdateAppWidget(widgetId, views);
     }
 
-    public static void setUpdateSchedule(Context context, boolean widgetsDisabled){
-        WidgetCommon.setUpdateSchedule(context, WidgetProvider.class, widgetsDisabled);
-        WidgetCommon.setUpdateSchedule(context, StackWidgetProvider.class, widgetsDisabled);
+    private static int[] getAllAppWidgetIds(Context context){
+        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+        int listIds[] = mgr.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
+        int stackIds[] = mgr.getAppWidgetIds(new ComponentName(context, StackWidgetProvider.class));
+        return ArrayUtils.addAll(listIds, stackIds);
     }
 
-    static void setUpdateSchedule(Context context, Class providerClass, boolean widgetsDisabled){
+    public static void setUpdateSchedule(Context context){
 
-        Intent intent = new Intent(context.getApplicationContext(), providerClass);
-        intent.setAction(WidgetCommon.APPWIDGET_AUTO_UPDATE);
+        Intent intent = new Intent(context, WidgetProvider.class);
+        intent.setAction(WidgetCommon.ACTION_AUTO_UPDATE);
         intent.setPackage(context.getPackageName());
         intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-        PendingIntent updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, 0);
+        PendingIntent updateIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         final AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        // If there are no widgets for the provider class, disable the alarm
-        int ids[] = AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, providerClass));
-        if (ids.length==0) {
+        int ids[] = getAllAppWidgetIds(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        long refreshRate = Long.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            int refreshRate = Integer.valueOf(prefs.getString(context.getString(R.string.refresh_rate_pref), "43200000"));
-            if (!widgetsDisabled && refreshRate > 0) {
-                alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + refreshRate, refreshRate, updateIntent);
-                return;
-            }
+        // If there are no widgets for the provider class, or refresh is disabled, cancel the alarm
+        if (ids.length > 0 && refreshRate > 0) {
+            long next = prefs.getLong("last_auto_refresh", 0) + refreshRate;
+            next = (next < System.currentTimeMillis() ? (System.currentTimeMillis()) : next);
+            alarmManager.setRepeating(AlarmManager.RTC, next, refreshRate, updateIntent);
+            return;
         }
+
         alarmManager.cancel(updateIntent); // auto update disabled or all widgets removed
     }
 

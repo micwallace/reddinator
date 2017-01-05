@@ -388,4 +388,8 @@
     <string name="sync_data">Sync Data</string>
     <string name="sync_data_summary"><![CDATA[Refresh subreddits, multis & filters]]></string>
     <string name="subscribed">Subscribed</string>
+    <string name="download_nativeui_title">Show In Downloads</string>
+    <string name="download_nativeui_summary">Show completed in the \"downloads\" app</string>
+    <string name="download_notify_complete_title">Completed Notification</string>
+    <string name="download_notify_complete_summary">Show notification for completed downloads</string>
 </resources>

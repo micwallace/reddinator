@@ -285,7 +285,7 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
         // check if refresh rate has changed and update if needed
         if (!mRefreshrate.equals(mSharedPreferences.getString(getString(R.string.refresh_rate_pref), "43200000"))) {
             //System.out.println("Refresh preference changed, updating alarm");
-            WidgetCommon.setUpdateSchedule(getActivity(), false);
+            WidgetCommon.setUpdateSchedule(getActivity());
         }
         // check if background mail check interval has changed
         if (!mMailRefresh.equals(mSharedPreferences.getString(getString(R.string.background_mail_pref), "43200000"))) {
