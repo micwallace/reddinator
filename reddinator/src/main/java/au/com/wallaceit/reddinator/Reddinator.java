@@ -268,6 +268,39 @@ public class Reddinator extends Application {
         getSubredditManager().addMultis(list, true);
         return list.length();
     }
+
+    public boolean syncAllFilters(){
+        try {
+            JSONObject filter = mRedditData.getFilter("all");
+            JSONArray subreddits = filter.getJSONObject("data").getJSONArray("subreddits");
+            ArrayList<String> current = getSubredditManager().getAllFilter();
+            ArrayList<String> remote = new ArrayList<>();
+
+            for (int i=0; i<subreddits.length(); i++){
+                String name = subreddits.getJSONObject(i).getString("name");
+                if (!current.contains(name)){
+                    current.add(name);
+                }
+                remote.add(name);
+            }
+
+            for (int i=0; i<current.size(); i++){
+                if (!remote.contains(current.get(i))){
+                    if (mSharedPreferences.getLong("last_sync_time", 0)==0) {
+                        mRedditData.addFilterSubreddit("all", current.get(i));
+                    } else {
+                        current.remove(current.get(i));
+                    }
+                }
+            }
+            getSubredditManager().setAllFilter(current);
+
+            return true;
+        } catch (RedditData.RedditApiException | JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     // unread message storage
     public void setUnreadMessages(JSONArray messages){
         mSharedPreferences.edit().putString("unreadMail", messages.toString()).apply();

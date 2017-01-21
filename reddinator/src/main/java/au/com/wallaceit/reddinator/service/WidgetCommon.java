@@ -41,7 +41,7 @@ import au.com.wallaceit.reddinator.Reddinator;
 public class WidgetCommon {
 
     static final String ACTION_UPDATE_FEED = "wallaceit.redinator.action.APPWIDGET_UPDATE_FEED";
-    static final String ACTION_AUTO_UPDATE = "wallaceit.redinator.action.APPWIDGET_AUTO_UPDATE";
+    public static final String ACTION_AUTO_UPDATE = "wallaceit.redinator.action.APPWIDGET_AUTO_UPDATE";
     static final String ACTION_ITEM_CLICK = "wallaceit.redinator.action.APPWIDGET_ITEM_CLICK";
 
     static final String ITEM_CLICK_MODE = "ITEM_CLICK_MODE";

@@ -42,7 +42,6 @@ import au.com.wallaceit.reddinator.service.MailCheckReceiver;
 
 public class OAuthView extends Activity {
     private WebView wv;
-    private WebViewClient wvclient;
     private Activity mActivity;
     private Reddinator global;
     private Resources resources;
@@ -70,7 +69,7 @@ public class OAuthView extends Activity {
         wv.setFocusable(true);
         wv.setFocusableInTouchMode(true);
         wv.requestFocus(View.FOCUS_DOWN);
-        wvclient = new OverrideClient();
+        WebViewClient wvclient = new OverrideClient();
 
         wv.setWebViewClient(wvclient);
         wv.setWebChromeClient(new WebChromeClient() {
@@ -134,6 +133,8 @@ public class OAuthView extends Activity {
                 global.loadAccountSubreddits();
                 publishProgress(resources.getString(R.string.loading_multis));
                 global.loadAccountMultis();
+                publishProgress(resources.getString(R.string.loading_filters));
+                global.syncAllFilters();
                 return true;
             } catch (RedditData.RedditApiException e) {
                 e.printStackTrace();
@@ -160,6 +161,7 @@ public class OAuthView extends Activity {
             }
             // add mail check alarm
             MailCheckReceiver.setAlarm(OAuthView.this);
+            OAuthView.this.setResult(7);
             OAuthView.this.finish();
         }
     }

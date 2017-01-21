@@ -6,6 +6,7 @@ var isArchived = false;
 var color_vote = "#A5A5A5";
 var color_upvote_active = "#FF8B60";
 var color_downvote_active = "#9494FF";
+var baseId = "t3_";
 
 function init(themeColors, user){
     username = user;
@@ -18,6 +19,8 @@ function populateComments(author, archived, json){
     var data = JSON.parse(json);
     $("#loading_view").hide();
     $("#base").show();
+    if (data.length > 0)
+        baseId = data[0].data.parent_id;
     recursivePopulate(data);
 }
 
@@ -232,7 +235,7 @@ function appendComment(parentId, commentData, prepend){
         }
         flag.show();
     }
-    if (parentId.indexOf("t3_")!==-1){
+    if (parentId.indexOf(baseId)!==-1){
         if (prepend){
             commentElem.prependTo("#base");
         } else {

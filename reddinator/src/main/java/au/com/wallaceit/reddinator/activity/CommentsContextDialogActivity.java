@@ -89,7 +89,7 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
     private String permalink;
 
     private String currentSort = "best";
-    private int contextLevels = 3;
+    private int contextLevels = 2;
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
@@ -366,6 +366,13 @@ public class CommentsContextDialogActivity extends Activity implements VoteTask.
             //setTitleText(resources.getString(R.string.deleting));
             commentTask = new CommentTask(global, thingId, null, -1, CommentsContextDialogActivity.this);
             commentTask.execute();
+        }
+
+        @JavascriptInterface
+        public void openCommentsContext(String thingId) {
+            Intent intent = new Intent(mContext, CommentsContextDialogActivity.class);
+            intent.setData(Uri.parse(Reddinator.REDDIT_BASE_URL + permalink + thingId + "?context=0"));
+            startActivity(intent);
         }
 
         @JavascriptInterface

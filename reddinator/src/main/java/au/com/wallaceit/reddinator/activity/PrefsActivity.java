@@ -19,6 +19,8 @@ package au.com.wallaceit.reddinator.activity;
 
 import android.app.ActionBar;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -27,6 +29,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.Date;
+
+import au.com.wallaceit.reddinator.service.WidgetCommon;
+import au.com.wallaceit.reddinator.service.WidgetProvider;
 
 public class PrefsActivity extends PreferenceActivity {
     private PrefsFragment fragment;
@@ -60,8 +65,17 @@ public class PrefsActivity extends PreferenceActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)){
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN){
             Toast.makeText(this, "Last widget refresh: " + new Date(PreferenceManager.getDefaultSharedPreferences(this).getLong("last_auto_refresh", 0)).toString(), Toast.LENGTH_LONG).show();
+            return true;
+        } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP){
+            Intent intent = new Intent(this, WidgetProvider.class);
+            intent.setAction(WidgetCommon.ACTION_AUTO_UPDATE);
+            intent.setPackage(this.getPackageName());
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            sendBroadcast(intent);
+            Toast.makeText(this, "Testing widget auto update", Toast.LENGTH_LONG).show();
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);

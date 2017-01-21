@@ -187,6 +187,9 @@ public class SubredditManager {
     public void setAllFilter(ArrayList<String> filter){
         prefs.edit().putString("allFilter", StringUtils.join(filter.toArray(new String[filter.size()]), ",")).apply();
     }
+    public void clearAllFilter(){
+        prefs.edit().putString("allFilter", "").apply();
+    }
     // TODO: per subreddit domain filtering
     // hidden post filters
     public void addPostFilter(int feedId, String redditId){

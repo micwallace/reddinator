@@ -69,12 +69,14 @@ public class PrefsFragment extends PreferenceFragment implements SharedPreferenc
                     global.mRedditData.purgeAccountData();
                     global.getSubredditManager().clearMultis();
                     global.getSubredditManager().loadDefaultSubreddits();
+                    global.getSubredditManager().clearAllFilter();
                     clearWebviewCookies();
                     // remove mail check alarm
                     MailCheckReceiver.setAlarm(getActivity());
                     // remove account prefs screen
                     getPreferenceScreen().removePreference(accountSettings);
                     Toast.makeText(getActivity(), getResources().getString(R.string.account_disconnected), Toast.LENGTH_LONG).show();
+                    getActivity().setResult(7);
                     return true;
                 }
             });

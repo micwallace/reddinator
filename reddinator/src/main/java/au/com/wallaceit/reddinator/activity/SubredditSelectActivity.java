@@ -109,6 +109,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
     private Resources resources;
     private MenuItem messageIcon;
     private boolean isCreated = false;
+    private int headerText;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +195,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                         }, true, SyncUserDataTask.MODE_SUBREDDITS).execute();
                     }
                 } else {
-                    global.mRedditData.initiateLogin(SubredditSelectActivity.this, false);
+                    global.mRedditData.initiateLoginForResult(SubredditSelectActivity.this, false);
                 }
             }
         });
@@ -302,7 +303,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
     private void setThemeColors(){
         ThemeManager.Theme theme = global.mThemeManager.getActiveTheme("appthemepref");
         int headerColor = Color.parseColor(theme.getValue("header_color"));
-        int headerText = Color.parseColor(theme.getValue("header_text"));
+        headerText = Color.parseColor(theme.getValue("header_text"));
         findViewById(R.id.srtoolbar).setBackgroundColor(headerColor);
         ColorMatrixColorFilter filter = Utilities.getColorFilterFromColor(headerColor, 210);
         sortBtn.getBackground().setColorFilter(filter);
@@ -322,6 +323,11 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         tabs.setTextColor(headerText);
         sortBtn.setPadding(18, sortBtn.getPaddingTop(), sortBtn.getPaddingRight(), sortBtn.getPaddingBottom());
         sortBtn.setCompoundDrawables(new IconDrawable(this, Iconify.IconValue.fa_sort).color(headerText).sizeDp(24), null, null, null);
+        setLoginButton();
+        refreshButton.setCompoundDrawablePadding(6);
+    }
+
+    private void setLoginButton(){
         if (global.mRedditData.isLoggedIn()) {
             refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_refresh).color(headerText).sizeDp(24), null, null, null);
             refreshButton.setText(R.string.refresh);
@@ -329,7 +335,6 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
             refreshButton.setCompoundDrawables(new IconDrawable(SubredditSelectActivity.this, Iconify.IconValue.fa_key).color(headerText).sizeDp(24), null, null, null);
             refreshButton.setText(R.string.login);
         }
-        refreshButton.setCompoundDrawablePadding(6);
     }
 
     @Override
@@ -371,6 +376,9 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
         if (requestCode==2 && resultCode==6){
             needsThemeUpdate = true;
             setThemeColors();
+        } else if (requestCode==2 && resultCode==7){
+            refreshSubredditsList();
+            setLoginButton();
         }
     }
 

@@ -23,12 +23,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -75,7 +69,7 @@ public class SyncUserDataTask extends AsyncTask<String, String, Boolean> {
             if (mode == MODE_MULTIS) return true;
 
             publishProgress(context.getString(R.string.loading_filters));
-            syncAllFilters();
+            global.syncAllFilters();
         } catch (RedditData.RedditApiException e) {
             e.printStackTrace();
             exception = e;
@@ -88,39 +82,6 @@ public class SyncUserDataTask extends AsyncTask<String, String, Boolean> {
     protected void onProgressUpdate(String... statusText){
         if (!showUI) return;
         progressDialog.setMessage(statusText[0]);
-    }
-
-    private Boolean syncAllFilters(){
-        try {
-            JSONObject filter = global.mRedditData.getFilter("all");
-            JSONArray subreddits = filter.getJSONObject("data").getJSONArray("subreddits");
-            ArrayList<String> current = global.getSubredditManager().getAllFilter();
-            ArrayList<String> remote = new ArrayList<>();
-
-            for (int i=0; i<subreddits.length(); i++){
-                String name = subreddits.getJSONObject(i).getString("name");
-                if (!current.contains(name)){
-                    current.add(name);
-                }
-                remote.add(name);
-            }
-
-            for (int i=0; i<current.size(); i++){
-                if (!remote.contains(current.get(i))){
-                    if (global.mSharedPreferences.getLong("last_sync_time", 0)==0) {
-                        global.mRedditData.addFilterSubreddit("all", current.get(i));
-                    } else {
-                        current.remove(current.get(i));
-                    }
-                }
-            }
-            global.getSubredditManager().setAllFilter(current);
-
-            return true;
-        } catch (RedditData.RedditApiException | JSONException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     @Override
