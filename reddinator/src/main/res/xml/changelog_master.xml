@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="3.21.1" versioncode="61">
+    <release version="3.21.3" versioncode="63">
+        <change>Enabled gfycat links in image preview.</change>
+        <change>Hid Reddit app promo banner.</change>
+    </release>
+    <release version="3.21.2" versioncode="62">
         <change>Fixed issue with comments not populating in context view.</change>
         <change>Improved login &amp; logout functions. /r/all filters now cleared/synced on login/logout.</change>
         <change>Subreddits list and login/refresh button now updated without restarting activity, when user returns from logging in or out.</change>

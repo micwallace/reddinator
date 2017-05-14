@@ -51,6 +51,9 @@ public class ViewImageDialogActivity extends Activity {
             imageUrl = imageUrl.replaceFirst("//*.imgur.com/", "//i.imgur.com/");
             if (!Utilities.hasImageExtension(imageUrl))
                 imageUrl += ".jpg"; // any extension will work
+        } else if (Utilities.isGfycatUrl(imageUrl)) {
+            imageUrl = imageUrl.replace("gfycat.com", "thumbs.gfycat.com");
+            imageUrl += "-size_restricted.gif";
         }
         // setup image view
         WebView webView = (WebView) findViewById(R.id.imagewebview);
@@ -67,7 +70,7 @@ public class ViewImageDialogActivity extends Activity {
         boolean multi = getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
         webView.getSettings().setDisplayZoomControls(!multi);
         // Make sure we specify a proper user agent. Many sites block generic ones.
-        webView.getSettings().setUserAgentString("Android/Reddinator v3.20.2");
+        webView.getSettings().setUserAgentString("Android/Reddinator v3.21.3");
         webView.loadUrl(imageUrl);
         registerForContextMenu(webView);
         // setup open comments button

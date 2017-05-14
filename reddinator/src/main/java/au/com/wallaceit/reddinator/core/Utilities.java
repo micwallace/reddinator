@@ -160,12 +160,17 @@ public class Utilities {
         if (hasImageExtension(url))
             return true;
         // Check for i.reddituploads.com images
-        return url.toLowerCase().matches("(https?://(i.reddituploads.com/.*)$)") || isImgurUrl(url);
+        return url.toLowerCase().matches("(https?://(i.reddituploads.com/.*)$)") || isImgurUrl(url) || isGfycatUrl(url);
     }
 
     public static boolean isImgurUrl(String url){
         // Check for imgur url without file extension (should not be album)
-        return url.toLowerCase().matches("(https?://.*(imgur.com/(?!galery/|a/).*)$)");
+        return url.toLowerCase().matches("(https?://.*(imgur.com/(?!gallery/|a/).*)$)");
+    }
+
+    public static boolean isGfycatUrl(String url){
+        // Check for imgur url without file extension (should not be album)
+        return url.toLowerCase().matches("(https?://.*(gfycat.com/[^/]*)$)");
     }
 
     public static boolean hasImageExtension(String url){

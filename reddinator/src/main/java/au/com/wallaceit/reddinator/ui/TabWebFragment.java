@@ -134,8 +134,8 @@ public class TabWebFragment extends Fragment {
                         clearhistory = false;
                         mWebView.clearHistory();
                     }
-                    if (url.contains("https://m.reddit.com"))
-                        Utilities.executeJavascriptInWebview(mWebView, "document.getElementsByClassName('SmartBannerContainer')[0].remove();");
+                    if (url.contains(".reddit.com/"))
+                        Utilities.executeJavascriptInWebview(mWebView, "document.querySelector('head').innerHTML += '<style> .xpromoMinimal { display: none !important; } </style>';");
 
                     super.onPageFinished(view, url);
                 }
