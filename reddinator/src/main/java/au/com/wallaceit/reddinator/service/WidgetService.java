@@ -573,7 +573,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         views.setViewVisibility(R.id.srloader, View.INVISIBLE);
         // go to the top of the list view
         if (providerClass==WidgetCommon.WIDGET_CLASS_LIST && goToTopOfList) {
-            views.setScrollPosition(R.id.adapterview, 0);
+            // API >= 25: Relative scroll position must be used since this value is persisted for the next update & only a relative value can be reset to keep the current position.
+            views.setRelativeScrollPosition(R.id.adapterview, -1000000);
         }
         if (showError) {
             views.setViewVisibility(R.id.erroricon, View.VISIBLE);

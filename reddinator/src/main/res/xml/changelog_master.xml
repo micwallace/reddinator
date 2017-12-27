@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.21.4" versioncode="64">
+        <change>Fixed Android API >= 25 widget listview scrolling bug.</change>
+    </release>
     <release version="3.21.3" versioncode="63">
         <change>Enabled gfycat links in image preview.</change>
         <change>Hid Reddit app promo banner.</change>

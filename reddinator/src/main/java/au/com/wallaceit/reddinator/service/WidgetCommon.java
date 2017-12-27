@@ -91,6 +91,8 @@ public class WidgetCommon {
         views.setViewVisibility(R.id.srloader, View.VISIBLE);
         views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
         views.setTextViewText(R.id.subreddittxt, global.getSubredditManager().getCurrentFeedName(widgetId));
+        // In Android platform >= v25, the last relative scroll position is used, so it must be reset before each call.
+        views.setRelativeScrollPosition(R.id.adapterview, 0);
         // load more text
         if (loadmore) {
             views.setTextViewText(R.id.loadmoretxt, context.getResources().getString(R.string.loading));
@@ -125,6 +127,7 @@ public class WidgetCommon {
         RemoteViews views = new RemoteViews(context.getPackageName(), getWidgetLayoutId(providerClass));
         views.setViewVisibility(R.id.srloader, View.VISIBLE);
         views.setViewVisibility(R.id.erroricon, View.INVISIBLE); // make sure we hide the error icon
+        views.setRelativeScrollPosition(R.id.adapterview, 0); // Reset scroll offset for API >= 25
         // update view
         mgr.partiallyUpdateAppWidget(widgetId, views);
     }
@@ -137,6 +140,7 @@ public class WidgetCommon {
         RemoteViews views = new RemoteViews(context.getPackageName(), getWidgetLayoutId(providerClass));
         views.setViewVisibility(R.id.srloader, View.GONE);
         views.setViewVisibility(R.id.erroricon, (showerror ? View.VISIBLE : View.GONE)); // make sure we hide the error icon
+        views.setRelativeScrollPosition(R.id.adapterview, 0); // Reset scroll offset for API >= 25
         // update view
         global.setRefreshView();
         mgr.notifyAppWidgetViewDataChanged(widgetId, R.id.adapterview);

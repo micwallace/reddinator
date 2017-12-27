@@ -419,6 +419,7 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                 RemoteViews views = new RemoteViews(getPackageName(), R.layout.widget);
                 views.setViewVisibility(R.id.srloader, View.VISIBLE);
                 views.setViewVisibility(R.id.erroricon, View.INVISIBLE);
+                views.setRelativeScrollPosition(R.id.adapterview, 0); // Reset scroll offset for API >= 25
                 // bypass the cached entrys only if the sorting preference has changed
                 if (needsFeedUpdate) {
                     global.setBypassCache(true);
