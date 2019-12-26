@@ -51,6 +51,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,10 +63,11 @@ import au.com.wallaceit.reddinator.core.ThemeHelper;
 import au.com.wallaceit.reddinator.core.ThemeManager;
 import au.com.wallaceit.reddinator.core.Utilities;
 import au.com.wallaceit.reddinator.tasks.LoadSubredditInfoTask;
+import au.com.wallaceit.reddinator.tasks.SubscriptionEditTask;
 import au.com.wallaceit.reddinator.ui.HtmlDialog;
 import au.com.wallaceit.reddinator.ui.SubredditFeedAdapter;
 
-public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback, SubredditFeedAdapter.ActivityInterface, ThemeHelper.ThemeInstallInterface {
+public class MainActivity extends Activity implements LoadSubredditInfoTask.Callback, SubredditFeedAdapter.ActivityInterface, ThemeHelper.ThemeInstallInterface, SubscriptionEditTask.Callback {
     public static final String EXTRA_FEED_PATH = "feedPath";
     public static final String EXTRA_FEED_NAME = "feedName";
 
@@ -329,6 +332,21 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
         (menu.findItem(R.id.menu_prefs)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_wrench).color(iconColor).actionBarSize());
         (menu.findItem(R.id.menu_about)).setIcon(new IconDrawable(this, Iconify.IconValue.fa_info_circle).color(iconColor).actionBarSize());
 
+        int subCap = global.getSubredditManager().getSubredditSubscribeCapability(subredditName);
+
+        if (subCap > 0){
+
+            if (subCap == 1){
+                (menu.findItem(R.id.menu_subscribe))
+                    .setIcon(new IconDrawable(this, Iconify.IconValue.fa_plus_circle).color(iconColor).actionBarSize())
+                    .setVisible(true);
+            } else {
+                (menu.findItem(R.id.menu_unsubscribe))
+                    .setIcon(new IconDrawable(this, Iconify.IconValue.fa_minus_circle).color(iconColor).actionBarSize())
+                    .setVisible(true);
+            }
+        }
+
         return true;
     }
 
@@ -369,6 +387,19 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                 openSidebar();
                 break;
 
+            case R.id.menu_subscribe:
+                new SubscriptionEditTask(global, this, this, SubscriptionEditTask.ACTION_SUBSCRIBE_BY_PATH).execute(subredditName);
+                break;
+
+            case R.id.menu_unsubscribe:
+                if (global.mRedditData.isLoggedIn()) {
+                    new SubscriptionEditTask(global, this, this, SubscriptionEditTask.ACTION_UNSUBSCRIBE).execute(subredditName);
+                } else {
+                    global.getSubredditManager().removeSubreddit(subredditName);
+                    this.invalidateOptionsMenu();
+                }
+                break;
+
             case R.id.menu_inbox:
                 if (!global.mRedditData.isLoggedIn()){
                     global.mRedditData.initiateLogin(this, false);
@@ -401,6 +432,8 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
             case R.id.menu_submit:
                 Intent submitIntent = new Intent(this, SubmitActivity.class);
+                if (!hasMultipleSubs)
+                    submitIntent.putExtra("subreddit", subredditName);
                 startActivity(submitIntent);
                 break;
 
@@ -475,9 +508,17 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
 
     // show sort select dialog
     private void showSortDialog() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.select_sort));
-        builder.setItems(R.array.reddit_sorts, new DialogInterface.OnClickListener() {
+
+        ArrayList<String> sorts = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.reddit_sorts)));
+
+        if (subredditPath.equals("") || subredditPath.equals("/default")){
+            sorts.add(5, "best");
+        }
+
+        builder.setItems(sorts.toArray(new String[]{}), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences.Editor prefsedit = global.mSharedPreferences.edit();
                 String sort = "hot"; // default if fails
@@ -497,6 +538,9 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                         break;
                     case 4:
                         sort = "top";
+                        break;
+                    case 5:
+                        sort = "best";
                         break;
                 }
                 if (feedId==0) { // don't update persitent setting if it's a temp feed.
@@ -559,6 +603,7 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
                     subredditSort = global.mSharedPreferences.getString("sort-app", "hot");
                     hasMultipleSubs = global.getSubredditManager().isFeedMulti(0);
                 }
+                invalidateOptionsMenu();
                 updateFeed();
                 break;
             // initiate vote
@@ -660,6 +705,32 @@ public class MainActivity extends Activity implements LoadSubredditInfoTask.Call
     @Override
     public void onThemeResult(boolean updateTheme) {
         if (updateTheme) refreshTheme();
+    }
+
+    @Override
+    public void onSubscriptionEditComplete(boolean result, RedditData.RedditApiException exception, int action, Object[] params, JSONObject data) {
+
+        if (result) {
+
+            if (action == SubscriptionEditTask.ACTION_SUBSCRIBE ||
+                    action == SubscriptionEditTask.ACTION_SUBSCRIBE_BY_PATH ||
+                    action == SubscriptionEditTask.ACTION_UNSUBSCRIBE) {
+
+                boolean subscribed = action != SubscriptionEditTask.ACTION_UNSUBSCRIBE;
+
+                if (!subscribed) {
+                    global.getSubredditManager().removeSubreddit((String) params[0]);
+                }
+
+                Toast.makeText(this, "Successfully " + (subscribed ? "subscribed." : "unsubscribed."), Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            Toast.makeText(this, "Error: "+(exception!=null ? exception.getMessage() : "Unknown error"), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        this.invalidateOptionsMenu();
     }
 
     private class FeedLoader extends AsyncTask<Void, Integer, JSONArray> {

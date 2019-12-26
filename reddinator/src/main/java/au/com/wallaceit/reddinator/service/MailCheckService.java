@@ -112,7 +112,7 @@ public class MailCheckService extends Service {
         Notification notification = new NotificationCompat.Builder(this)
                 .setContentTitle(getResources().getQuantityString(R.plurals.new_messages, nummessages, nummessages))
                 .setContentText(getResources().getString(R.string.new_messages_text))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.reddit_icon_small))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.reddinator_logo))
                 .setSmallIcon(R.drawable.ic_notify)
                 .setContentIntent(PendingIntent.getActivity(this, 0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();

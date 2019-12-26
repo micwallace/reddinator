@@ -445,6 +445,10 @@ public class AccountFeedFragment extends Fragment implements VoteTask.Callback, 
                         // reset load more button
                         executeJavascript("resetMoreClickEvent('" + mMoreId + "');");
                     }
+
+                    if (getActivity() == null)
+                        return;
+
                     // check login required
                     if (exception.isAuthError()) global.mRedditData.initiateLogin(getActivity(), false);
 

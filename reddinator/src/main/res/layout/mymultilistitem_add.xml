@@ -31,12 +31,12 @@
 			android:shadowRadius="3"
 			android:layout_marginRight="8dp"
 			android:layout_marginEnd="8dp"
-			android:textSize="32sp"
+			android:textSize="28sp"
 			android:textColor="#25C48F"/>
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="@android:style/TextAppearance.Large"
+			android:textSize="22sp"
 			android:text="@string/create"/>
 	</LinearLayout>
 	<LinearLayout
@@ -60,12 +60,12 @@
 			android:shadowRadius="3"
 			android:layout_marginRight="8dp"
 			android:layout_marginEnd="8dp"
-			android:textSize="32sp"
+			android:textSize="28sp"
 			android:textColor="#5F99CF"/>
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textAppearance="@android:style/TextAppearance.Large"
+			android:textSize="22sp"
 			android:text="@string/browse"/>
 	</LinearLayout>
 </LinearLayout>

@@ -39,7 +39,7 @@ public class SubredditManager {
     private JSONObject subreddits;
     private JSONObject multis;
     private JSONObject postFilters;
-    public final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\",\"url\"=\"\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\",\"url\"=\"/r/all\"}}";
+    public final static String defaultSubreddits = "{\"Front Page\":{\"display_name\"=\"Front Page\", \"public_description\"=\"Your reddit front page\",\"url\"=\"\"}, \"Popular\":{\"display_name\"=\"Popular\", \"public_description\"=\"Popular Post\",\"url\"=\"/r/popular\"}, \"all\":{\"display_name\"=\"all\", \"public_description\"=\"The best of reddit\",\"url\"=\"/r/all\"}}";
     private final static String defaultFeed = "{\"name\":\"Front Page\",\"path\":\"\",\"is_multi\":\"true\"}"; // default subs are also "multi"
 
     public SubredditManager(RedditData redditData, SharedPreferences prefs){
@@ -129,6 +129,16 @@ public class SubredditManager {
         } catch (JSONException e) {
             e.printStackTrace();
             return "";
+        }
+    }
+
+    public boolean isFeedSystemSubreddit(int feedId){
+        try {
+            String name = getCurrentFeed(feedId).getString("name");
+            return ("Front Page".equals(name) || "all".equals(name) || "Popular".equals(name));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -389,6 +399,17 @@ public class SubredditManager {
     public void removeSubreddit(String subredditName){
         subreddits.remove(subredditName);
         saveSubs();
+    }
+
+    public int getSubredditSubscribeCapability(String key){
+
+        if ("Front Page".equals(key) || "all".equals(key) || "Popular".equals(key))
+            return 0;
+
+        if (subreddits.has(key))
+            return 2; // can unsubscribe
+
+        return 1; // can subscribe
     }
 
     // MULTI STORAGE

@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
+
 import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.core.RedditData;
@@ -40,10 +42,11 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
     public static final int ACTION_MULTI_RENAME = 6;
     public static final int ACTION_SUBSCRIBE = 7;
     public static final int ACTION_UNSUBSCRIBE = 8;
+    public static final int ACTION_SUBSCRIBE_BY_PATH = 11;
     public static final int ACTION_FILTER_SUB_ADD = 9;
     public static final int ACTION_FILTER_SUB_REMOVE = 10;
     private Reddinator global;
-    private Context context;
+    private WeakReference<Context> contextRef;
     private Callback callback;
     private JSONObject data;
     private RedditData.RedditApiException exception;
@@ -59,6 +62,7 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
     public SubscriptionEditTask(Reddinator global, Context context, Callback callback, int action){
         switch (action) {
             case ACTION_SUBSCRIBE:
+            case ACTION_SUBSCRIBE_BY_PATH:
                 loadingMessage = global.getResources().getString(R.string.subscribing);
                 break;
             case ACTION_UNSUBSCRIBE:
@@ -85,13 +89,14 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
                 break;
         }
         this.global = global;
-        this.context = context;
+        this.contextRef = new WeakReference<>(context);
         this.callback = callback;
         this.action = action;
     }
 
     protected void onPreExecute(){
-        progressDialog = ProgressDialog.show(context, loadingMessage, loadingMessage, true);
+        if (contextRef.get() != null)
+            progressDialog = ProgressDialog.show(contextRef.get(), loadingMessage, loadingMessage, true);
     }
 
     @Override
@@ -103,6 +108,19 @@ public class SubscriptionEditTask extends AsyncTask<Object, Long, Boolean> {
                 case ACTION_SUBSCRIBE:
                     id = ((JSONObject) strParams[0]).getString("name");
                     data = global.mRedditData.subscribe(id, true);
+                    break;
+
+                case ACTION_SUBSCRIBE_BY_PATH:
+                    String path = (String) strParams[0];
+                    // Get subreddit data
+                    JSONObject subredditData = global.mRedditData.getSubredditInfo(path);
+
+                    if (global.mRedditData.isLoggedIn()) {
+                        data = global.mRedditData.subscribe(subredditData.getString("name"), true);
+                    }
+
+                    global.getSubredditManager().addSubreddit(subredditData);
+
                     break;
 
                 case ACTION_UNSUBSCRIBE:

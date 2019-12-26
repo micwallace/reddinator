@@ -27,7 +27,7 @@
     <string name="menu_theme_manager">Administrador de los Widget </string>
     <string name="entries_not_empty">Las entradas no pueden estar vacias!</string>
     <string name="action_settings">Preferencias</string>
-    <string name="view_all">Ver todo</string>
+    <string name="view_all">Agregar / Ver Subreddits</string>
     <string name="preferences">Preferencias</string>
     <string name="load_more_replies">Cargar mas respuestas</string>
     <string name="open_link">Abrir Link</string>

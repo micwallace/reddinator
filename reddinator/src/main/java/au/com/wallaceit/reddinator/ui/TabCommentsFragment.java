@@ -19,7 +19,6 @@
 package au.com.wallaceit.reddinator.ui;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -199,6 +198,9 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     @Override
     public void onVoteComplete(boolean result, RedditData.RedditApiException exception, String redditId, int direction, int netVote, int listPosition) {
+        if (getActivity() == null)
+            return;
+
         ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result) {
             mWebView.loadUrl("javascript:voteCallback(\"" + redditId + "\", \"" + direction + "\", "+netVote+")");
@@ -212,6 +214,9 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
     @Override
     public void onCommentComplete(JSONObject result, RedditData.RedditApiException exception, int action, String redditId) {
+        if (getActivity() == null)
+            return;
+
         ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.app_name)); // reset title
         if (result!=null){
             switch (action){
@@ -257,6 +262,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void vote(String thingId, int direction, int currentVote) {
+            if (getActivity() == null)
+                return;
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.voting));
             commentsVoteTask = new VoteTask(global, TabCommentsFragment.this, thingId, direction, currentVote);
             commentsVoteTask.execute();
@@ -264,6 +271,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void comment(String parentId, String text) {
+            if (getActivity() == null)
+                return;
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(global, parentId, text, 0, TabCommentsFragment.this);
             commentTask.execute();
@@ -271,6 +280,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void edit(String thingId, String text) {
+            if (getActivity() == null)
+                return;
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.submitting));
             commentTask = new CommentTask(global, thingId, text, 1, TabCommentsFragment.this);
             commentTask.execute();
@@ -278,6 +289,8 @@ public class TabCommentsFragment extends Fragment implements VoteTask.Callback, 
 
         @JavascriptInterface
         public void delete(String thingId) {
+            if (getActivity() == null)
+                return;
             ((ViewRedditActivity) getActivity()).setTitleText(resources.getString(R.string.deleting));
             commentTask = new CommentTask(global, thingId, null, -1, TabCommentsFragment.this);
             commentTask.execute();

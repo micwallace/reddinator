@@ -76,7 +76,7 @@
     <string name="menu_theme_manager">Theme Manager</string>
     <string name="entries_not_empty">Entries cannot be empty!</string>
     <string name="action_settings">Settings</string>
-    <string name="view_all">View All</string>
+    <string name="view_all">Add/View</string>
     <string name="preferences">Preferences</string>
     <string name="load_more_replies">Load more replies</string>
     <string name="open_link">Open Link</string>
@@ -287,7 +287,7 @@
     <string name="item_option_open_post">Open content in browser</string>
     <string name="item_option_open_comments">Open comments in browser</string>
     <string name="item_option_view_subreddit">View /r/%1$s</string>
-    <string name="item_option_open_subreddit">Open /r/%1$s</string>
+    <string name="item_option_open_subreddit">Open /r/%1$s (new window)</string>
     <string name="item_option_view_domain">View all from %1$s</string>
     <string name="view_domain_posts">View Domain Posts</string>
     <string name="enter_valid_domain">Please enter a valid domain name</string>

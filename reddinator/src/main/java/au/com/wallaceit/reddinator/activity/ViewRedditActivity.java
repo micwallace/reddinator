@@ -40,6 +40,7 @@ import android.support.v4.view.ViewPager;
 import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.SparseArray;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -244,13 +245,10 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
         RateThisApp.Config config = new RateThisApp.Config();
         config.setTitle(R.string.rate_reddinator);
         RateThisApp.init(config);
-    }
-
-    public void onStart(){
-        super.onStart();
         // Monitor launch times and interval from installation
-        RateThisApp.onStart(this);
-        RateThisApp.showRateDialogIfNeeded(this);
+        RateThisApp.onCreate(this);
+        // If the condition is satisfied, "Rate this app" dialog will be shown
+        RateThisApp.showRateDialogIfNeeded(new ContextThemeWrapper(this, R.style.RateThisAppDialog));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -491,6 +489,8 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
 
             case R.id.menu_submit:
                 Intent submitIntent = new Intent(ViewRedditActivity.this, SubmitActivity.class);
+                if (!global.getSubredditManager().isFeedMulti(widgetId) && !global.getSubredditManager().isFeedSystemSubreddit(widgetId))
+                    submitIntent.putExtra("subreddit", global.getSubredditManager().getCurrentFeedName(widgetId));
                 startActivity(submitIntent);
                 break;
 
@@ -652,11 +652,12 @@ public class ViewRedditActivity extends ActionbarFragmentActivity implements Loa
                 }
                 populateInfoPanel();
                 //System.out.println(postInfo.toString());
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Could not load post info" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "Could not load post info: "+exception.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not load post info", Toast.LENGTH_LONG).show();
         }
         setTitle(R.string.app_name);
     }

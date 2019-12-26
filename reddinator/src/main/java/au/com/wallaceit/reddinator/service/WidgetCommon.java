@@ -83,6 +83,11 @@ public class WidgetCommon {
     }
 
     public static void showLoaderAndUpdate(Context context, int widgetId, boolean loadmore) {
+
+        if (!(context.getApplicationContext() instanceof Reddinator)) {
+            return;
+        }
+
         Reddinator global = ((Reddinator) context.getApplicationContext());
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         Class providerClass = getWidgetProviderClass(context, widgetId);

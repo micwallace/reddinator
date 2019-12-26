@@ -164,16 +164,22 @@ public class Utilities {
     }
 
     public static boolean isImgurUrl(String url){
+        if (url == null)
+            return false;
         // Check for imgur url without file extension (should not be album)
         return url.toLowerCase().matches("(https?://.*(imgur.com/(?!gallery/|a/).*)$)");
     }
 
     public static boolean isGfycatUrl(String url){
+        if (url == null)
+            return false;
         // Check for imgur url without file extension (should not be album)
         return url.toLowerCase().matches("(https?://.*(gfycat.com/[^/]*)$)");
     }
 
     public static boolean hasImageExtension(String url){
+        if (url == null)
+            return false;
         return url.toLowerCase().matches("([^\\s]+(\\.(?i)(jpe?g|png|gif?v|bmp))$)");
     }
 
@@ -307,8 +313,8 @@ public class Utilities {
         context.startActivity(Intent.createChooser(sendintent, context.getString(R.string.share_with)));
     }
 
-    public static void showApiErrorToastOrDialog(final Context context, RedditData.RedditApiException ex){
-        int errorCode = ex.getHttpErrorCode();
+    public static void showApiErrorToastOrDialog(final Context context, Exception ex){
+        int errorCode = (ex instanceof RedditData.RedditApiException) ? ((RedditData.RedditApiException) ex).getHttpErrorCode() : 0;
         if (errorCode >= 500 && errorCode < 600){
             new AlertDialog.Builder(context)
                 .setTitle(R.string.error)

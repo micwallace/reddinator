@@ -24,8 +24,13 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.IconButton;
@@ -46,32 +51,42 @@ public class ViewImageDialogActivity extends Activity {
         setContentView(R.layout.activity_view_image_dialog);
         // get content url (which will be an image)
         String imageUrl = getIntent().getStringExtra(Reddinator.ITEM_URL);
+        String iframeContent = null;
         // fix imgur links so it's not redirected to full webpage
         if (Utilities.isImgurUrl(imageUrl)) {
             imageUrl = imageUrl.replaceFirst("//*.imgur.com/", "//i.imgur.com/");
             if (!Utilities.hasImageExtension(imageUrl))
                 imageUrl += ".jpg"; // any extension will work
         } else if (Utilities.isGfycatUrl(imageUrl)) {
-            imageUrl = imageUrl.replace("gfycat.com", "thumbs.gfycat.com");
-            imageUrl += "-size_restricted.gif";
+            imageUrl = imageUrl.replace("gfycat.com", "gfycat.com/ifr");
+            iframeContent = "<div style='position:relative; padding-bottom:calc(70.80% + 44px)'>" +
+                    "<iframe src='"+imageUrl+"' frameborder='0' frameborder='0' scrolling='no' width='100%' height='100%' style='position:absolute;top:0;left:0;' allowfullscreen></iframe></div>";
         }
         // setup image view
         WebView webView = (WebView) findViewById(R.id.imagewebview);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.setWebViewClient(new ImageWebViewClient());
+        webView.setWebChromeClient(new WebChromeClient());
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setAppCacheEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
             webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         boolean multi = getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH);
         webView.getSettings().setDisplayZoomControls(!multi);
         // Make sure we specify a proper user agent. Many sites block generic ones.
-        webView.getSettings().setUserAgentString("Android/Reddinator v3.21.3");
-        webView.loadUrl(imageUrl);
+        webView.getSettings().setUserAgentString("Android/Reddinator v3.22.1");
+
+        if (iframeContent == null) {
+            webView.loadUrl(imageUrl);
+        } else {
+            webView.loadData(iframeContent, "text/html", "utf-8");
+        }
+
         registerForContextMenu(webView);
         // setup open comments button
         IconButton button = (IconButton) findViewById(R.id.commentsbutton);

@@ -145,7 +145,7 @@ public class WidgetProvider extends WidgetProviderBase {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals(Intent.ACTION_MY_PACKAGE_REPLACED)) {
+        if (Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
             AppWidgetManager mgr2 = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = mgr2.getAppWidgetIds(new ComponentName(context, WidgetProvider.class));
             // perform full widget update

@@ -82,6 +82,11 @@ public class SubmitActivity extends Activity implements SubmitTask.Callback {
                     new SubmitTextTask().execute(subreddit.getText().toString());
             }
         });
+
+        String sub = getIntent().getStringExtra("subreddit");
+        if (sub != null)
+            subreddit.setText(sub);
+
         submitText = (TextView) findViewById(R.id.submission_text);
         submitText.setMovementMethod(new SafeLinkMethod());
         charsLeft= (TextView) findViewById(R.id.title_chars_left);

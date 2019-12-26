@@ -67,7 +67,6 @@ public class ViewAllSubredditsActivity extends ListActivity {
     private String action;
     private Reddinator global;
     private ArrayList<JSONObject> sreddits = new ArrayList<>();
-    private ArrayList<JSONObject> defaultsreddits;
     private JSONArray srjson;
     private SubredditsAdapter listadapter;
     private EditText searchbox;
@@ -116,13 +115,9 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 search(query);
             }
         });
-        loadDefaults();
         // get list data
         listadapter = new SubredditsAdapter(this);
         if (global.isSrlistCached()) {
-            if (action==null || !action.equals(ACTION_ADD_MULTI_SUB)) {
-                sreddits.addAll(defaultsreddits);
-            }
             sreddits.addAll(global.getSrList());
         } else {
             loadPopularSubreddits();
@@ -152,9 +147,6 @@ public class ViewAllSubredditsActivity extends ListActivity {
         } else {
             if (global.isSrlistCached()) {
                 sreddits.clear();
-                if (action==null || !action.equals(ACTION_ADD_MULTI_SUB)) {
-                    sreddits.addAll(defaultsreddits);
-                }
                 sreddits.addAll(global.getSrList());
                 listadapter.notifyDataSetChanged();
             } else {
@@ -184,17 +176,6 @@ public class ViewAllSubredditsActivity extends ListActivity {
     protected void onResume() {
         //System.out.println("onResume()");
         super.onResume();
-    }
-
-    private void loadDefaults(){
-        defaultsreddits = new ArrayList<>();
-        try {
-            JSONObject defaults = new JSONObject(SubredditManager.defaultSubreddits);
-            defaultsreddits.add(defaults.getJSONObject("Front Page")); // slap the front page on there
-            defaultsreddits.add(defaults.getJSONObject("all")); // and an all
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void loadPopularSubreddits() {
@@ -398,9 +379,6 @@ public class ViewAllSubredditsActivity extends ListActivity {
                 return;
             }
             if (!this.isCancelled() || cancelrevert) {
-                if (action==null || !action.equals(ACTION_ADD_MULTI_SUB)) {
-                    sreddits.addAll(defaultsreddits);
-                }
                 sreddits.addAll(resultlist);
                 listadapter.notifyDataSetChanged();
             }

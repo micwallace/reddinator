@@ -22,8 +22,8 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <au.com.wallaceit.reddinator.ui.RWebView
                 android:id="@+id/commentswebview"
                 android:layout_height="match_parent"

@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -42,8 +43,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
@@ -413,12 +412,8 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             con.setReadTimeout(8000);
             bmp = BitmapFactory.decodeStream(con.getInputStream());
             global.saveThumbnailToCache(bmp, redditId);
-        } catch (MalformedURLException e) {
-            //System.out.println("Malformed Image URL: "+urlstr);
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.d("Reddinator", "Count not load image with URL: "+urlstr, e);
             return null;
         }
         return bmp;

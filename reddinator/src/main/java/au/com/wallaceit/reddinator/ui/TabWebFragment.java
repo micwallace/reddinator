@@ -22,7 +22,9 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,7 +41,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import au.com.wallaceit.reddinator.R;
-import au.com.wallaceit.reddinator.Reddinator;
 import au.com.wallaceit.reddinator.activity.ViewRedditActivity;
 import au.com.wallaceit.reddinator.core.Utilities;
 
@@ -135,9 +136,28 @@ public class TabWebFragment extends Fragment {
                         mWebView.clearHistory();
                     }
                     if (url.contains(".reddit.com/"))
-                        Utilities.executeJavascriptInWebview(mWebView, "document.querySelector('head').innerHTML += '<style> .xpromoMinimal { display: none !important; } </style>';");
+                        Utilities.executeJavascriptInWebview(mWebView,
+                                "var css = '.XPromoPill { display: none !important; }',\n" +
+                                        "    head = document.head || document.getElementsByTagName('head')[0],\n" +
+                                        "    style = document.createElement('style');" +
+                                        "head.appendChild(style);\n" +
+                                        "style.type = 'text/css';\n" +
+                                        "style.appendChild(document.createTextNode(css));");
 
                     super.onPageFinished(view, url);
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                    if (url.contains("file://") || url.contains("https://") || url.contains("http://")){
+                        return false;
+                    }
+
+                    // handle app urls; prevents 404 page displaying for unknown schemas
+                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+
+                    return true;
                 }
             });
             getActivity().registerForContextMenu(mWebView);

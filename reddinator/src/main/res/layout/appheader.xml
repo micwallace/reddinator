@@ -83,14 +83,13 @@
             android:background="?android:attr/selectableItemBackground">
             <ImageView
                 android:id="@+id/app_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
-                android:layout_marginStart="6dp"
-                android:gravity="center_vertical"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@string/logo"
-                android:src="@drawable/reddit_icon_small" />
+                android:src="@drawable/reddinator_logo" />
 
             <TextView
                 android:id="@+id/appsubreddittxt"
@@ -98,8 +97,8 @@
                 android:layout_height="fill_parent"
                 android:gravity="center_vertical|start"
                 android:layout_gravity="center_vertical|start"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
                 android:text="@string/app_name"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#000000"

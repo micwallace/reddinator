@@ -22,6 +22,7 @@ package au.com.wallaceit.reddinator.tasks;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -53,11 +54,8 @@ public class LoadImageBitmapTask extends AsyncTask<Void, Integer, Bitmap> {
             con.setConnectTimeout(8000);
             con.setReadTimeout(8000);
             return BitmapFactory.decodeStream(con.getInputStream());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.d("Reddinator", "Count not load image with URL: "+this.url, e);
             return null;
         }
     }

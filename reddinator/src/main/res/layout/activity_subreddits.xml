@@ -66,12 +66,12 @@
         android:gravity="center" >
 
 	    <ImageView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+			android:layout_width="36dp"
+			android:layout_height="36dp"
 	        android:layout_gravity="center"
 	        android:contentDescription="@string/loading_pop_desc"
 	        android:scaleType="center"
-	        android:src="@drawable/reddit_icon_small" />
+	        android:src="@drawable/reddinator_logo" />
 
 	    <TextView
 	        android:id="@+id/poploadtxt"

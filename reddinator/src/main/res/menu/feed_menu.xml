@@ -15,6 +15,20 @@
         reddinator:showAsAction="never"/>
 
     <item
+        android:id="@+id/menu_subscribe"
+        android:title="@string/subscribe"
+        android:visible="false"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_unsubscribe"
+        android:title="@string/unsubscribe"
+        android:visible="false"
+        android:showAsAction="never"
+        reddinator:showAsAction="never"/>
+
+    <item
         android:id="@+id/menu_submit"
         android:title="@string/submit"
         android:showAsAction="never"
