@@ -56,7 +56,8 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
     <style name="PopupMenuStyle" parent="@android:style/Widget.Holo.Light.PopupMenu">
-        <item name="android:layout_marginLeft">3dp</item>
+        <!-- Causes issues with some devices. Can't seem to reliably set icon padding accross all devices!
+        <item name="android:layout_marginLeft">3dp</item>-->
     </style>
     <style name="ButtonStyle" parent="Base.Widget.AppCompat.Button">
         <item name="android:minHeight">0dp</item>
