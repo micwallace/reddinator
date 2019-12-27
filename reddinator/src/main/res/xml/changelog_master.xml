@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.22.2" versioncode="66">
+        <change>Updated logo (snoo was removed because it is now a reddit trademark).</change>
+        <change>Added subscribe/unsubscribe functionality to subreddit feed menus.</change>
+        <change>Added contextual selection of subreddit on submit screen.</change>
+        <change>Added best sorting preference to front page.</change>
+        <change>Added popular to default subreddits.</change>
+        <change>Moved view all/search subreddits button to list view.</change>
+        <change>Fixed gfycat preview url.</change>
+    </release>
     <release version="3.21.4" versioncode="64">
         <change>Fixed Android API >= 25 widget listview scrolling bug.</change>
     </release>

@@ -102,63 +102,7 @@
                 </TableRow>
                 <TableRow
                     android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/about_donate"
-                        android:textSize="16sp"
-                        android:id="@+id/textView6"/>
-                    <ImageView
-                        android:id="@+id/donate"
-                        android:layout_width="0dp"
-                        android:layout_height="90dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginStart="2dp"
-                        android:layout_weight="1"
-                        android:scaleType="fitCenter"
-                        android:contentDescription="@string/donate_paypal"
-                        android:src="@drawable/paypal_donate"/>
-                </TableRow>
-                <TableRow
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/about_give_gold"
-                        android:textSize="16sp"
-                        android:id="@+id/textView7"/>
-                    <ImageView
-                        android:id="@+id/gold"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginStart="2dp"
-                        android:layout_weight="1"
-                        android:maxWidth="284dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/reddit_gold_logo"
-                        android:contentDescription="@string/give_gold" />
-                </TableRow>
-                <TableRow
-                    android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="@string/about_beta_program"
-                        android:textSize="16sp"
-                        android:autoLink="web"
-                        android:id="@+id/textView9" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

@@ -109,20 +109,6 @@ public class AboutDialog extends Dialog {
                 context.startActivity(intent);
             }
         });
-        findViewById(R.id.donate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RFUQJ6EP5FLD2"));
-                context.startActivity(intent);
-            }
-        });
-        findViewById(R.id.gold).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.reddit.com/gold?goldtype=gift&months=1&thing=t3_4e10jl"));
-                context.startActivity(intent);
-            }
-        });
         // setup credits
         WebView cwv = (WebView) findViewById(R.id.info_credits);
         cwv.loadUrl("file:///android_asset/credits.html");
