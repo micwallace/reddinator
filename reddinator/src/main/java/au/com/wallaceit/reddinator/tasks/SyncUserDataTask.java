@@ -37,7 +37,7 @@ public class SyncUserDataTask extends AsyncTask<String, String, Boolean> {
     private Context context;
     private Runnable callback;
     private boolean showUI;
-    private ProgressDialog progressDialog;
+    private ProgressDialog progressDialog = null;
     private int mode;
 
     public SyncUserDataTask(Context context, Runnable callback, boolean showUI, int mode){
@@ -87,7 +87,8 @@ public class SyncUserDataTask extends AsyncTask<String, String, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         if (showUI) {
-            progressDialog.dismiss();
+            if (progressDialog != null)
+                progressDialog.dismiss();
             if (!result){
                 // check login required
                 if (exception.isAuthError()) global.mRedditData.initiateLogin(context, false);

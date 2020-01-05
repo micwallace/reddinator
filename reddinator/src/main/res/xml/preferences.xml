@@ -45,6 +45,12 @@
                 android:dialogTitle="@string/num_item_load_pref_summary" />
 
             <CheckBoxPreference
+                android:key="@string/reset_sort_pref"
+                android:title="@string/reset_sort_title"
+                android:defaultValue="false"
+                android:summary="@string/reset_sort_summary" />
+
+            <CheckBoxPreference
                 android:key="@string/filter_duplicates_pref"
                 android:title="@string/feed_filter_duplicates_title"
                 android:defaultValue="true"

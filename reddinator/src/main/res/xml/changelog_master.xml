@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
+    <release version="3.22.3" versioncode="67">
+        <change>Update out of date jQuery library.</change>
+        <change>Added preference for resetting to default subreddit.</change>
+        <change>Changed mail check service to JobIntentService to comply with new background task restrictions in Android.</change>
+        <change>Fixed "unknown activity" exception for unknown app urls.</change>
+    </release>
     <release version="3.22.2" versioncode="66">
         <change>Updated logo (snoo was removed because it is now a reddit trademark).</change>
         <change>Added subscribe/unsubscribe functionality to subreddit feed menus.</change>

@@ -333,4 +333,6 @@
     <string name="download_nativeui_title">Mostrar Descargas</string>
     <string name="download_notify_complete_summary">Mostrar notificación para las descargas completadas</string>
     <string name="download_notify_complete_title">Notificación completada</string>
+    <string name="reset_sort_title">Restablecer ordenación</string>
+    <string name="reset_sort_summary">Restablecer la ordenación predeterminada al cambiar subreddit</string>
 </resources>

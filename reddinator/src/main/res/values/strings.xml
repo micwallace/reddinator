@@ -392,4 +392,7 @@
     <string name="download_nativeui_summary">Show completed in the \"downloads\" app</string>
     <string name="download_notify_complete_title">Completed Notification</string>
     <string name="download_notify_complete_summary">Show notification for completed downloads</string>
+    <string name="reset_sort_pref" translatable="false">resetsortpref</string>
+    <string name="reset_sort_title">Reset sorting</string>
+    <string name="reset_sort_summary">Reset to default sorting when changing subreddit</string>
 </resources>

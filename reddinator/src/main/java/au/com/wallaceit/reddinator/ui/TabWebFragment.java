@@ -106,7 +106,7 @@ public class TabWebFragment extends Fragment {
             mActivity = this.getActivity();
             mActivity.getWindow().setFeatureInt(Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);
             ll = (LinearLayout) inflater.inflate(R.layout.webtab, container, false);
-            mWebView = (WebView) ll.findViewById(R.id.webView1);
+            mWebView = ll.findViewById(R.id.webView1);
             // fixes for activity_webview not taking keyboard input on some devices
             mWebView.getSettings().setLoadWithOverviewMode(true);
             mWebView.getSettings().setUseWideViewPort(true);
@@ -154,8 +154,13 @@ public class TabWebFragment extends Fragment {
                         return false;
                     }
 
-                    // handle app urls; prevents 404 page displaying for unknown schemas
-                    view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    // handle app urls; prevents 404 page displaying for unknown schemas.
+                    // catch activity not found exceptions
+                    try {
+                        view.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    } catch (Exception ignored){
+                        // no op
+                    }
 
                     return true;
                 }
@@ -242,7 +247,7 @@ public class TabWebFragment extends Fragment {
             ((Activity) mContext).getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mVideoFrame.setVisibility(View.VISIBLE);
             // add view to root layout
-            rootLayout = (LinearLayout) ((Activity) mContext).findViewById(R.id.contentview);
+            rootLayout = ((Activity) mContext).findViewById(R.id.contentview);
             rootLayout.addView(mVideoFrame);
             // get main content view and hide
             mTabcontainer = ((Activity) mContext).findViewById(R.id.sliding_layout);

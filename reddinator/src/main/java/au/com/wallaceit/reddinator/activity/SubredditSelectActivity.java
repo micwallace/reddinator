@@ -142,8 +142,15 @@ public class SubredditSelectActivity extends ActionbarActivity implements Subscr
                     String url = subData.has("url") ? subData.getString("url") : null;
                     global.getSubredditManager().setFeedSubreddit(mAppWidgetId, subreddit, url);
 
-                    if (!userSelSort) {
-                        String path = global.getSubredditManager().getCurrentFeedPath(mAppWidgetId);
+                    // Only reset sort if:
+                    // 1. current sort is best and the subreddit isn't the front page. OR
+                    // 2. The reset sort preference is enabled and the user hasn't specified a sort.
+                    String path = global.getSubredditManager().getCurrentFeedPath(mAppWidgetId);
+                    String curSort = mSharedPreferences.getString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), "");
+
+                    if (("best".equals(curSort) && !path.equals("") && !path.equals("/default")) ||
+                            (!userSelSort && mSharedPreferences.getBoolean("resetsortpref", false))) {
+
                         String sort = (path.equals("") || path.equals("/default") ? "best" : "hot");
                         global.mSharedPreferences.edit().putString("sort-" + (mAppWidgetId == 0 ? "app" : mAppWidgetId), sort).apply();
                     }

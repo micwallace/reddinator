@@ -21,12 +21,12 @@ package au.com.wallaceit.reddinator.service;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 
 import org.json.JSONArray;
@@ -36,17 +36,18 @@ import au.com.wallaceit.reddinator.R;
 import au.com.wallaceit.reddinator.activity.MessagesActivity;
 import au.com.wallaceit.reddinator.core.RedditData;
 
-public class MailCheckService extends Service {
+public class MailCheckService extends JobIntentService {
     public static String MAIL_CHECK_COMPLETE = "reddinator.mail.check.complete";
     public static String ACTIVITY_CHECK_ACTION = "reddinator.mail.check";
     public static String NOTIFY_CHECK_ACTION = "reddinator.mail.check.notify";
     private Reddinator global;
-    private String action;
+    public static final int JOB_ID = 1;
 
     public static void checkMail(Context context, String action){
         Intent intent = new Intent(context, MailCheckService.class);
         intent.setAction(action);
-        context.startService(intent);
+
+        MailCheckService.enqueueWork(context, MailCheckService.class, JOB_ID, intent);
     }
 
     @Override
@@ -55,16 +56,25 @@ public class MailCheckService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        action = intent.getAction();
+    protected void onHandleWork(@NonNull Intent intent) {
+        String action = intent.getAction();
         if (global.mRedditData.isLoggedIn())
-            if (action.equals(ACTIVITY_CHECK_ACTION) || action.equals(NOTIFY_CHECK_ACTION)) {
-                (new MailCheckTask()).execute();
+            if (ACTIVITY_CHECK_ACTION.equals(action) || NOTIFY_CHECK_ACTION.equals(action)) {
+                (new MailCheckTask(global, action)).execute();
             }
-        return START_NOT_STICKY;
     }
 
-    private class MailCheckTask extends AsyncTask<String, Void, Boolean> {
+    private static class MailCheckTask extends AsyncTask<String, Void, Boolean> {
+
+        Reddinator global;
+        String action;
+
+        MailCheckTask(Reddinator global, String action){
+            super();
+
+            this.global = global;
+            this.action = action;
+        }
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -97,33 +107,28 @@ public class MailCheckService extends Service {
             if (action.equals(ACTIVITY_CHECK_ACTION)) {
                 // notify activity
                 Intent bIntent = new Intent(MAIL_CHECK_COMPLETE);
-                sendBroadcast(bIntent);
+                global.sendBroadcast(bIntent);
             } else {
                 // show notification
                 if (global.mRedditData.getInboxCount()>0) setNotification();
             }
         }
-    }
 
-    private void setNotification(){
-        int nummessages = global.mRedditData.getInboxCount();
-        Intent notifyIntent = new Intent(this, MessagesActivity.class);
-        notifyIntent.setAction(MessagesActivity.ACTION_UNREAD);
-        Notification notification = new NotificationCompat.Builder(this)
-                .setContentTitle(getResources().getQuantityString(R.plurals.new_messages, nummessages, nummessages))
-                .setContentText(getResources().getString(R.string.new_messages_text))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.reddinator_logo))
-                .setSmallIcon(R.drawable.ic_notify)
-                .setContentIntent(PendingIntent.getActivity(this, 0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT))
-                .build();
+        private void setNotification(){
+            int nummessages = global.mRedditData.getInboxCount();
+            Intent notifyIntent = new Intent(global, MessagesActivity.class);
+            notifyIntent.setAction(MessagesActivity.ACTION_UNREAD);
+            Notification notification = new NotificationCompat.Builder(global)
+                    .setContentTitle(global.getResources().getQuantityString(R.plurals.new_messages, nummessages, nummessages))
+                    .setContentText(global.getResources().getString(R.string.new_messages_text))
+                    .setLargeIcon(BitmapFactory.decodeResource(global.getResources(), R.drawable.reddinator_logo))
+                    .setSmallIcon(R.drawable.ic_notify)
+                    .setContentIntent(PendingIntent.getActivity(global, 0 ,notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT))
+                    .build();
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+            NotificationManager notificationManager = (NotificationManager) global.getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(1, notification);
+        }
     }
 
 }
