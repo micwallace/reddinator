@@ -26,8 +26,10 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.json.JSONArray;
 
@@ -47,7 +49,11 @@ public class MailCheckService extends JobIntentService {
         Intent intent = new Intent(context, MailCheckService.class);
         intent.setAction(action);
 
-        MailCheckService.enqueueWork(context, MailCheckService.class, JOB_ID, intent);
+        try {
+            MailCheckService.enqueueWork(context, MailCheckService.class, JOB_ID, intent);
+        } catch (Exception e){
+            Log.e("reddinator", e.getMessage());
+        }
     }
 
     @Override
@@ -62,6 +68,11 @@ public class MailCheckService extends JobIntentService {
             if (ACTIVITY_CHECK_ACTION.equals(action) || NOTIFY_CHECK_ACTION.equals(action)) {
                 (new MailCheckTask(global, action)).execute();
             }
+    }
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        return START_NOT_STICKY;
     }
 
     private static class MailCheckTask extends AsyncTask<String, Void, Boolean> {

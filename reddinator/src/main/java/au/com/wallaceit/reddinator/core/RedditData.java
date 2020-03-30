@@ -1166,7 +1166,8 @@ public class RedditData {
     }
 
     private void saveAppToken(){
-        sharedPrefs.edit().putString("oauthAppToken", oauthAppToken == null ? "" : oauthAppToken.toString()).apply();
+        String token = oauthAppToken == null ? "" : oauthAppToken.toString();
+        sharedPrefs.edit().putString("oauthAppToken", token).apply();
     }
 
     private void saveUserData() {
