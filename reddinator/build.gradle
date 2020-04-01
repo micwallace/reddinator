@@ -16,10 +16,10 @@ buildscript {
 apply plugin: 'com.android.application'
 
 repositories {
-    maven { url "http://dl.bintray.com/populov/maven" }
-    maven { url 'http://guardian.github.com/maven/repo-releases' }
+    maven { url "https://dl.bintray.com/populov/maven" }
+    maven { url 'https://guardian.github.com/maven/repo-releases' }
     mavenCentral()
-    jcenter({ url "http://jcenter.bintray.com/" })
+    jcenter({ url "https://jcenter.bintray.com/" })
     maven {
         url 'https://maven.google.com/'
         name 'Google'
