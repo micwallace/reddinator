@@ -20,13 +20,14 @@ package au.com.wallaceit.reddinator.ui;
  * Created by michael on 3/10/16.
  */
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
     private boolean bigThumbs = false;
     private boolean hideInf = false;
     private boolean showItemSubreddit = false;
+    private int maxDisplayPixels = 2048;
 
     public interface ActivityInterface {
         void loadMore();
@@ -101,6 +103,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
         // load preferences
         loadTheme();
         loadFeedPrefs();
+        setMaxDisplayPixels((Activity) context);
     }
 
     public void setFeed(JSONArray data, boolean canLoadMore, boolean hasMultipleSubs){
@@ -230,6 +233,12 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
         loadThumbnails = global.mSharedPreferences.getBoolean("thumbnails-app", true);
         bigThumbs = global.mSharedPreferences.getBoolean("bigthumbs-app", false);
         hideInf = global.mSharedPreferences.getBoolean("hideinf-app", false);
+    }
+
+    private void setMaxDisplayPixels(Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        maxDisplayPixels = displayMetrics.heightPixels;
     }
 
     @Override
@@ -428,7 +437,9 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
                     // check if the image is in cache
                     String fileurl = context.getCacheDir() + Reddinator.IMAGE_CACHE_DIR + id + (imageLoadFlag == 2 ? "-preview" : "") + ".png";
                     if (new File(fileurl).exists()) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(fileurl);
+
+                        // Load bitmap, making sure to limit dimensions to avoid images that are too large.
+                        Bitmap bitmap = Utilities.decodeSampledBitmapFromFile(fileurl, maxDisplayPixels, maxDisplayPixels);
                         if (bitmap == null) {
                             imageView.setVisibility(View.GONE);
                         } else {
