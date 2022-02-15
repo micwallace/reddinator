@@ -277,14 +277,21 @@ public class SubredditManager {
     public JSONArray filterFeed(int feedId, JSONArray feedArray, JSONArray currentFeed, boolean filterAll, boolean filterPosts){
         // determine filter requirements
         boolean filterDuplicates = prefs.getBoolean("filterduplicatespref", true) && currentFeed!=null;
+        boolean allFilterEmpty = prefs.getString("allFilter", "").equals("");
         JSONObject postFilters = null;
         if (filterPosts) {
             postFilters = getPostFilters(getCurrentFeedPath(feedId));
             filterPosts = postFilters.length() > 0;
         }
         if (filterAll) {
-            filterAll = !prefs.getString("allFilter", "").equals("");
+            filterAll = !allFilterEmpty;
         }
+
+        // As of 2022-02 reddit doesn't allow over 100 subreddits to be filtered from all, turn on filtering if app all filter over 100
+        if (!filterAll && !allFilterEmpty && getAllFilter().size() > 100) {
+            filterAll = true;
+        }
+
         if (!filterAll && !filterDuplicates && !filterPosts)
             return feedArray; // no filters applied
         // collect current ids
