@@ -27,6 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
     private boolean bigThumbs = false;
     private boolean hideInf = false;
     private boolean showItemSubreddit = false;
+    private long mLastRowImageClickTime = 0;
 
     public interface ActivityInterface {
         void loadMore();
@@ -448,6 +450,12 @@ public class SubredditFeedAdapter extends BaseAdapter implements VoteTask.Callba
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            // Prevent opening image twice
+                            if (SystemClock.elapsedRealtime() - mLastRowImageClickTime < 500) {
+                                return;
+                            }
+                            mLastRowImageClickTime = SystemClock.elapsedRealtime();
+
                             Intent intent = new Intent(context, ViewImageDialogActivity.class);
                             intent.putExtras(getItemExtras(position));
                             context.startActivity(intent);
