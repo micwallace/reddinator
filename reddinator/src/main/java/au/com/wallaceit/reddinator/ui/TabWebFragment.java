@@ -24,6 +24,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -142,7 +143,31 @@ public class TabWebFragment extends Fragment {
                                         "    style = document.createElement('style');" +
                                         "head.appendChild(style);\n" +
                                         "style.type = 'text/css';\n" +
-                                        "style.appendChild(document.createTextNode(css));");
+                                        "style.appendChild(document.createTextNode(css));\n" +
+                                        "let clickRedditButtonCounter = 0;\n" +
+                                        "const clickRedditButton = function() {\n" +
+                                        "	clickRedditButtonCounter++;\n" +
+                                        "	const shredditExperienceTree = document.querySelector('shreddit-experience-tree');\n" +
+                                        "	if(shredditExperienceTree != undefined) {\n" +
+                                        "		const shredditAsyncLoader = shredditExperienceTree.shadowRoot.querySelector('shreddit-async-loader');\n" +
+                                        "		if(shredditAsyncLoader != undefined) {\n" +
+                                        "			const xpromoAppSelector = shredditAsyncLoader.shadowRoot.querySelector('xpromo-app-selector');	\n" +
+                                        "			if(xpromoAppSelector != undefined) {\n" +
+                                        "				const button = xpromoAppSelector.shadowRoot.querySelector('#secondary-button');\n" +
+                                        "				if(button != undefined) {\n" +
+                                        "					button.click();\n" +
+                                        "					return\n" +
+                                        "				}\n" +
+                                        "			}\n" +
+                                        "		}\n" +
+                                        "	}\n" +
+                                        "	\n" +
+                                        "	if(clickRedditButtonCounter < 60) {\n" +
+                                        "		setTimeout(clickRedditButton, 1000);\n" +
+                                        "	}\n" +
+                                        "}\n" +
+                                        "setTimeout(clickRedditButton, 100)"
+                                );
 
                     super.onPageFinished(view, url);
                 }
